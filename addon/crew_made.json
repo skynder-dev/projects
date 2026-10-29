@@ -3,10 +3,131 @@
  "clips": [
   {
    "file": "clip_01.mp4",
-   "s": 143.55,
-   "e": 163.06,
-   "seconds": 19.51,
-   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_crew - clips\\01 - Happy to be here.mp4",
+   "s": 96.31,
+   "e": 117.02,
+   "seconds": 20.71,
+   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_crew - clips\\01 - Thank you it is wonderful to see.mp4",
+   "width": 1080,
+   "height": 1920,
+   "layouts": [
+    "crop"
+   ],
+   "shots": 5,
+   "faces": true,
+   "captions": 21,
+   "plan": [
+    {
+     "s": 0.0,
+     "e": 5.15,
+     "layout": "crop",
+     "cx": 0.5148,
+     "seen": {
+      "3": 63
+     },
+     "speaker": true
+    },
+    {
+     "s": 5.15,
+     "e": 8.383333,
+     "layout": "crop",
+     "cx": 0.6523,
+     "seen": {
+      "3": 63
+     },
+     "speaker": true
+    },
+    {
+     "s": 8.383333,
+     "e": 11.15,
+     "layout": "crop",
+     "cx": 0.5148,
+     "seen": {
+      "3": 63
+     },
+     "speaker": true
+    },
+    {
+     "s": 11.15,
+     "e": 18.05,
+     "layout": "crop",
+     "cx": 0.3875,
+     "seen": {
+      "3": 63
+     },
+     "speaker": true
+    },
+    {
+     "s": 18.05,
+     "e": 21.71,
+     "layout": "crop",
+     "cx": 0.5148,
+     "seen": {
+      "3": 63
+     },
+     "speaker": true
+    }
+   ],
+   "talk": [
+    {
+     "shot_s": 0.0,
+     "people": [
+      [
+       0.3875,
+       0.0422
+      ],
+      [
+       0.5148,
+       0.0422
+      ],
+      [
+       0.6523,
+       0.0453
+      ]
+     ],
+     "who": [
+      1,
+      2,
+      1,
+      0,
+      null,
+      1
+     ],
+     "units": [
+      [
+       0.13,
+       4.87
+      ],
+      [
+       5.37,
+       8.03
+      ],
+      [
+       8.6,
+       10.9
+      ],
+      [
+       11.37,
+       14.03
+      ],
+      [
+       14.47,
+       17.67
+      ],
+      [
+       18.27,
+       20.4
+      ]
+     ]
+    }
+   ],
+   "n": 1
+  },
+  {
+   "file": "clip_02.mp4",
+   "s": 143.63,
+   "e": 160.18,
+   "seconds": 16.55,
+   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_crew - clips\\02 - Happy to be here.mp4",
    "width": 1080,
    "height": 1920,
    "layouts": [
@@ -14,25 +135,25 @@
    ],
    "shots": 2,
    "faces": true,
-   "captions": 22,
+   "captions": 18,
    "plan": [
     {
      "s": 0.0,
-     "e": 1.883333,
+     "e": 1.75,
      "layout": "crop",
      "cx": 0.3852,
      "seen": {
-      "3": 59
+      "3": 50
      },
      "speaker": true
     },
     {
-     "s": 1.883333,
-     "e": 20.51,
+     "s": 1.75,
+     "e": 17.55,
      "layout": "crop",
      "cx": 0.5234,
      "seen": {
-      "3": 59
+      "3": 50
      },
      "speaker": true
     }
@@ -50,141 +171,27 @@
        0.0406
       ],
       [
-       0.6453,
+       0.6461,
        0.0437
       ]
      ],
      "who": [
       0,
       1,
-      1,
-      1,
-      null
-     ],
-     "units": [
-      [
-       0.13,
-       0.87
-      ],
-      [
-       2.1,
-       7.47
-      ],
-      [
-       9.37,
-       12.97
-      ],
-      [
-       14.0,
-       16.3
-      ],
-      [
-       17.63,
-       19.5
-      ]
-     ]
-    }
-   ],
-   "n": 1
-  },
-  {
-   "file": "clip_02.mp4",
-   "s": 314.89,
-   "e": 334.78,
-   "seconds": 19.89,
-   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_crew - clips\\02 - what experiments on this expedition.mp4",
-   "width": 1080,
-   "height": 1920,
-   "layouts": [
-    "crop"
-   ],
-   "shots": 3,
-   "faces": true,
-   "captions": 22,
-   "plan": [
-    {
-     "s": 0.0,
-     "e": 3.416667,
-     "layout": "crop",
-     "cx": 0.6234,
-     "seen": {
-      "3": 59,
-      "2": 1
-     },
-     "speaker": true
-    },
-    {
-     "s": 3.416667,
-     "e": 17.716667,
-     "layout": "crop",
-     "cx": 0.3703,
-     "seen": {
-      "3": 59,
-      "2": 1
-     },
-     "speaker": true
-    },
-    {
-     "s": 17.716667,
-     "e": 20.89,
-     "layout": "crop",
-     "cx": 0.5141,
-     "seen": {
-      "3": 59,
-      "2": 1
-     },
-     "speaker": true
-    }
-   ],
-   "talk": [
-    {
-     "shot_s": 0.0,
-     "people": [
-      [
-       0.3703,
-       0.0437
-      ],
-      [
-       0.5141,
-       0.0391
-      ],
-      [
-       0.6234,
-       0.0437
-      ]
-     ],
-     "who": [
-      2,
-      0,
-      0,
-      0,
-      0,
       1
      ],
      "units": [
       [
        0.13,
-       2.5
+       0.8
       ],
       [
-       3.63,
-       4.1
+       1.97,
+       7.4
       ],
       [
-       5.13,
-       6.5
-      ],
-      [
-       7.23,
-       10.63
-      ],
-      [
-       11.17,
-       16.97
-      ],
-      [
-       17.93,
-       19.9
+       8.53,
+       16.27
       ]
      ]
     }
@@ -193,26 +200,36 @@
   },
   {
    "file": "clip_03.mp4",
-   "s": 434.48,
-   "e": 461.71,
-   "seconds": 27.23,
-   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_crew - clips\\03 - What hits you.mp4",
+   "s": 415.76,
+   "e": 439.57,
+   "seconds": 23.81,
+   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_crew - clips\\03 - the accomplishments that that that we learn.mp4",
    "width": 1080,
    "height": 1920,
    "layouts": [
     "crop"
    ],
-   "shots": 1,
+   "shots": 2,
    "faces": true,
-   "captions": 24,
+   "captions": 26,
    "plan": [
     {
      "s": 0.0,
-     "e": 28.23,
+     "e": 14.45,
      "layout": "crop",
-     "cx": 0.5094,
+     "cx": 0.6375,
      "seen": {
-      "3": 82
+      "3": 72
+     },
+     "speaker": true
+    },
+    {
+     "s": 14.45,
+     "e": 24.81,
+     "layout": "crop",
+     "cx": 0.5133,
+     "seen": {
+      "3": 72
      },
      "speaker": true
     }
@@ -222,35 +239,35 @@
      "shot_s": 0.0,
      "people": [
       [
-       0.3766,
+       0.3859,
        0.0437
       ],
       [
-       0.5094,
-       0.0406
+       0.5133,
+       0.0391
       ],
       [
-       0.6406,
-       0.0437
+       0.6375,
+       0.0422
       ]
      ],
      "who": [
-      1,
+      2,
       null,
       1
      ],
      "units": [
       [
        0.13,
-       4.73
+       4.83
       ],
       [
-       9.43,
-       19.4
+       5.83,
+       13.7
       ],
       [
-       19.73,
-       26.93
+       14.67,
+       23.5
       ]
      ]
     }
@@ -259,5 +276,5 @@
   }
  ],
  "folder": "D:\\a\\_temp\\home-voice\\Exports\\nasa_crew - clips",
- "finished_at": "2026-10-28T13:22:11"
+ "finished_at": "2026-10-28T23:47:49"
 }

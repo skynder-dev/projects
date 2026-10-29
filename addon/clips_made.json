@@ -30,9 +30,9 @@
   },
   {
    "file": "clip_02.mp4",
-   "s": 337.29,
+   "s": 337.31,
    "e": 358.63,
-   "seconds": 21.34,
+   "seconds": 21.32,
    "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips\\02 - What are you most looking forward to.mp4",
    "width": 1080,
    "height": 1920,
@@ -45,11 +45,11 @@
    "plan": [
     {
      "s": 0.0,
-     "e": 22.34,
+     "e": 22.32,
      "layout": "crop",
      "cx": 0.4938,
      "seen": {
-      "1": 65
+      "1": 64
      }
     }
    ],
@@ -57,5 +57,5 @@
   }
  ],
  "folder": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips",
- "finished_at": "2026-10-28T13:17:58"
+ "finished_at": "2026-10-28T23:45:37"
 }

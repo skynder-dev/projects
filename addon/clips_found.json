@@ -8,11 +8,11 @@
  "result": {
   "ok": true,
   "language": "en",
-  "candidates": 19,
-  "words": 1382,
+  "candidates": 18,
+  "words": 1385,
   "duration": 556.0,
   "device": "cpu",
-  "finished_at": "2026-10-28T13:16:39"
+  "finished_at": "2026-10-28T23:44:52"
  },
  "candidates": [
   {
@@ -28,38 +28,38 @@
    ]
   },
   {
-   "id": "c337290",
-   "s": 337.29,
+   "id": "c337310",
+   "s": 337.31,
    "e": 358.63,
    "score": 65,
    "first": "What are you most looking forward to?",
-   "text": "What are you most looking forward to? There is so much to look forward to and I feel like time is moving so quickly. I want to capture it all, but we have a couple space walks coming up that will keep us busy around the holidays. We have another cargo vehicle coming to visit and of course a lot of science on board.",
+   "text": "What are you most looking forward to? There is so much to look forward to. And I feel like time is moving so quickly. I want to capture it all. But we have a couple of spacewalks coming up that will keep us busy around the holidays. We have another cargo vehicle coming to visit. And of course, a lot of science on board.",
    "why": [
     "a question at the start",
     "a strong opening"
    ]
   },
   {
-   "id": "c425190",
-   "s": 425.19,
-   "e": 446.18,
-   "score": 63,
-   "first": "You live life very differently.",
-   "text": "You live life very differently. Yes, it's surprising how it takes you a couple days just to adapt to microgravity, to floating around where you still don't bump into things, just to feed yourself and not lose all of your food when you're sitting in node one trying to enjoy your meal. But your body gets used to it and it's still fun.",
-   "why": []
-  },
-  {
-   "id": "c377690",
-   "s": 377.69,
-   "e": 394.34,
-   "score": 63,
+   "id": "c377890",
+   "s": 377.89,
+   "e": 405.08,
+   "score": 64,
    "first": "I think it drives home some concepts that you're aware of.",
-   "text": "I think it drives home some concepts that you're aware of. You're aware of the concept that Earth is, is an incredible fragile little ball floating in the universe and that we have people around the world that can be united in our one planet Earth.",
+   "text": "I think it drives home some concepts that you're aware of. You're aware of the concept that Earth is, is an incredible, fragile little ball floating in the universe and that we have people around the world that can be united in our one planet Earth. I'm aware of those concepts and you think about them, but when you're actually in space and you look back at the planet and you see just that fragile atmosphere, it really drives home that point.",
    "why": []
   },
   {
-   "id": "c235230",
-   "s": 235.23,
+   "id": "c425370",
+   "s": 425.37,
+   "e": 446.16,
+   "score": 63,
+   "first": "You live life very differently, yes.",
+   "text": "You live life very differently, yes. It's surprising how it takes you a couple of days just to adapt to microgravity, to floating around where you still don't bump into things, just to feed yourself and not lose all of your food when you're sitting in node one trying to enjoy your meal. But your body gets used to it and it's still fun.",
+   "why": []
+  },
+  {
+   "id": "c235210",
+   "s": 235.21,
    "e": 261.39,
    "score": 63,
    "first": "What are the projects that you're most excited about that you're working on right now?",
@@ -85,19 +85,19 @@
   {
    "id": "c478730",
    "s": 478.73,
-   "e": 498.3,
+   "e": 498.28,
    "score": 59,
    "first": "We work closely with the cosmonauts.",
-   "text": "We work closely with the cosmonauts. In fact, they had a Russian EVA yesterday that was very successful and we helped them with some of the transfer of those tools. We have a good working relationship on board and we focus on operating the International Space Station and conducting their science and that is our mission of focus.",
+   "text": "We work closely with the cosmonauts. In fact, they had a Russian EVA yesterday that was very successful and we helped them with some of the transfer of those tools. We have a good working relationship on board and we focus on operating the International Space Station and conducting their science. And that is our mission of focus.",
    "why": []
   },
   {
-   "id": "c152960",
-   "s": 152.96,
+   "id": "c153000",
+   "s": 153.0,
    "e": 175.01,
    "score": 58,
    "first": "To be honest, I did not.",
-   "text": "To be honest, I did not. I was certainly enamored with space and science, but that was not something as a child that I realized was an opportunity for me. It wasn't a little bit to later on in life that I realized that the path to becoming an astronaut is something that is feasible and something that I would like to go after as my dream.",
+   "text": "To be honest, I did not. I was certainly enamored with space and science, but that was not something as a child that I realized was an opportunity for me. It wasn't a little bit till later on in life that I realized that the path to becoming an astronaut is something that is feasible and something that I would like to go after as my dream.",
    "why": []
   },
   {
@@ -106,21 +106,21 @@
    "e": 311.89,
    "score": 57,
    "first": "I hope the entire world wants to be a part of the Artemis program.",
-   "text": "I hope the entire world wants to be a part of the Artemis program. As we move forward to the Moon, it's really the building blocks for our future exploration to Mars. And I think there'll be a role that each and every one of us can hopefully play in those missions. You know, I was speaking with former NASA astronaut Katie Coleman and she told me, what a different world it would be if we had seen a woman walk on the Moon.",
+   "text": "I hope the entire world wants to be a part of the Artemis program. As we move forward to the moon, it's really the building blocks for our future exploration to Mars. And I think there'll be a role that each and every one of us can hopefully play in those missions. You know, I was speaking with former NASA astronaut Katie Coleman and she told me, what a different world it would be if we had seen a woman walk on the moon.",
    "why": []
   },
   {
-   "id": "c115010",
-   "s": 115.01,
-   "e": 139.96,
+   "id": "c115070",
+   "s": 115.07,
+   "e": 139.94,
    "score": 57,
    "first": "You know, I think it's great that we recognize first anytime they happen throughout the world.",
    "text": "You know, I think it's great that we recognize first anytime they happen throughout the world. It gives a good message to the rest of the world and specifically to the younger generation that there are opportunities for all in this world. And I feel very proud to represent all Native Americans in space and just to represent my country and humans in space as well.",
    "why": []
   },
   {
-   "id": "c82160",
-   "s": 82.16,
+   "id": "c82100",
+   "s": 82.1,
    "e": 106.91,
    "score": 57,
    "first": "After all those years of training, it is really overwhelming a sense of emotions.",
@@ -133,52 +133,32 @@
    "e": 337.18,
    "score": 56,
    "first": "I think that is a very true possibility.",
-   "text": "I think that is a very true possibility. We have such a diverse office in the astronaut corps now. I think you'll see all different types of people walking on the Moon in the near future. You've got several months left there on the International Space Station in zero gravity.",
+   "text": "I think that is a very true possibility. We have such a diverse office in the astronaut corps now. I think you'll see all different types of people walking on the moon in the near future. You've got several months left there on the International Space Station in zero gravity.",
    "why": []
   },
   {
    "id": "c445950",
    "s": 445.95,
-   "e": 463.82,
+   "e": 463.84,
    "score": 54,
    "first": "I still smile every time I float through the lab and just marvel at the idea that I'm actually in microgravity.",
-   "text": "I still smile every time I float through the lab and just marvel at the idea that I'm actually in microgravity. We know that you are on the Space Station now with your Russian colleagues and we know what's happening here on Earth with Russia and the United States and Ukraine.",
+   "text": "I still smile every time I float through the lab and just marvel at the idea that I'm actually in microgravity. We know that you are on the space station now with your Russian colleagues and we know what's happening here on Earth with Russia and the United States and Ukraine.",
    "why": []
   },
   {
-   "id": "c394430",
-   "s": 394.43,
-   "e": 414.22,
-   "score": 47,
-   "first": "I'm aware of those concepts and you think about them, but when you're actually in space and you look back at the planet and you see just that fragile atmosphere, it really drives home that point and i",
-   "text": "I'm aware of those concepts and you think about them, but when you're actually in space and you look back at the planet and you see just that fragile atmosphere, it really drives home that point and it makes it very, very true in your heart how important it is that we take care of our planet and how important it is that we unite as human race.",
-   "why": []
-  },
-  {
-   "id": "c8600",
-   "s": 8.6,
-   "e": 27.29,
-   "score": 45,
-   "first": "Station, this is Houston, are you ready for the event?",
-   "text": "Station, this is Houston, are you ready for the event? Houston, this is Station, I am ready for the event. Good morning, America, this is Mission Control Houston. Please call Station for a voice check. Station, this is Geo Bonita's at ABC News.",
-   "why": [
-    "a question at the start"
-   ]
-  },
-  {
-   "id": "c261300",
-   "s": 261.3,
-   "e": 280.91,
+   "id": "c261340",
+   "s": 261.34,
+   "e": 280.93,
    "score": 45,
    "first": "Because of microgravity, we can produce these cells in a better, more truer form than we can on Earth.",
-   "text": "Because of microgravity, we can produce these cells in a better, more truer form than we can on Earth. And I really enjoy that because applications involve humans in space and exploration, but will also benefit humans back on Earth. We just saw that incredible Artemis -1 launch to the Moon.",
+   "text": "Because of microgravity, we can produce these cells in a better, more truer form than we can on Earth. And I really enjoy that because applications involve humans in space and exploration but will also benefit humans back on Earth. We just saw that incredible Artemis -1 launch to the moon.",
    "why": [
     "numbers"
    ]
   },
   {
-   "id": "c212710",
-   "s": 212.71,
+   "id": "c212690",
+   "s": 212.69,
    "e": 228.98,
    "score": 43,
    "first": "That starts with a good education and it also starts with relying on people around you that will help you throughout your journey in order to achieve your dreams.",
@@ -186,26 +166,34 @@
    "why": []
   },
   {
-   "id": "c27000",
-   "s": 27.0,
-   "e": 42.7,
-   "score": 38,
-   "first": "How do you hear me?",
-   "text": "How do you hear me? I hear you loud and clear, I am ready for the event. Oh, Commander Mann, thank you so much for joining us from the International Space Station, such an honor. You've been there now for just over a month.",
+   "id": "c8600",
+   "s": 8.6,
+   "e": 34.5,
+   "score": 34,
+   "first": "Station, this is Houston, are you ready for the event?",
+   "text": "Station, this is Houston, are you ready for the event? Houston, this is Station, I am ready for the event. Good morning America, this is Mission Control Houston. Please call Station for a voice check. Station, this is Geo Bonita's at ABC News, how do you hear me? I hear you loud and clear, I am ready for the event.",
    "why": [
-    "a question at the start",
-    "a strong opening"
+    "a question at the start"
    ]
   },
   {
-   "id": "c505680",
-   "s": 505.68,
-   "e": 526.92,
-   "score": 22,
-   "first": "Thank you very much.",
-   "text": "Thank you very much. It is an honor from the International Space Station. Godspeed. Station, this is Houston ACR. That concludes the event. Thank you to all the participants from Good Morning America Station. Please stand by. We can figure video and audio communications.",
+   "id": "c501650",
+   "s": 501.65,
+   "e": 517.81,
+   "score": 30,
+   "first": "Such an honor.",
+   "text": "Such an honor. Thank you very much. It is an honor from the International Space Station. Godspeed. Station, this is Houston A .C .R.",
+   "why": []
+  },
+  {
+   "id": "c404930",
+   "s": 404.93,
+   "e": 421.76,
+   "score": 27,
+   "first": "And it makes it very, very true in your heart how important it is that we take care of our planet and how important it is that we unite as human race.",
+   "text": "And it makes it very, very true in your heart how important it is that we take care of our planet and how important it is that we unite as human race. Was there anything that surprised you when you got there to the International Space Station? You've got to live life very differently, don't you?",
    "why": []
   }
  ],
- "heard_words": 1382
+ "heard_words": 1385
 }
