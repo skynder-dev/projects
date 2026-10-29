@@ -319,6 +319,13 @@ def main() -> int:
               and "Its cartoon:" in spage2 and "Read the story" in lst2 and "A series: several topics at once" in lst2
               and both.status_code == 400 and b"not both" in both.data,
               (rs_.status_code, len(series), [x.get("state") for x in done], [(f_.get("voices"), f_.get("captions"), f_.get("music")) for f_ in made]))
+        p_en = W.prompt({"mode": "topic", "topic": "Road repair", "lang": "en"})
+        p_ru = W.prompt({"mode": "topic", "topic": "Ремонт дороги", "lang": "ru"})
+        p_uk = W.prompt({"mode": "topic", "topic": "Road repair", "lang": "en", "country": "UK"})
+        check("measures by the viewers' country: miles for the United States (English's default), kilometres for Russia, "
+              "miles for roads in Britain; the example story in miles",
+              "measures: miles, feet, gallons" in p_en and "never kilometres" in p_en and "measures: kilometres" in p_ru
+              and "miles for roads" in p_uk and "a mile of road" in T.ROAD_TEXT and "kilomet" not in T.ROAD_TEXT, "")
         empty = c.post("/auto/cartoon/write", data={"about": " ", "lang": "en"}, headers=H)
         check("an empty topic is refused clearly", empty.status_code == 400 and b"Write what the cartoon is about" in empty.data,
               empty.status_code)

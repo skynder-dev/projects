@@ -512,7 +512,7 @@ Kate (explain, sly): Let's see how it ends up costing millions.
 
 == Road | road
 Lena (shrug, angry) [bubble]: This road is a disaster!
-Kate: The city announces a tender to repair two kilometers of road.
+Kate: The city announces a tender to repair a mile of road.
 Kate: A fair price is about one point two million dollars.
 
 == Office | tender: TENDER; 10 years of experience; special asphalt brand; 5 days to apply

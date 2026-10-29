@@ -90,7 +90,35 @@ def _to48k(src: Path, dst: Path) -> float:
     if cp.returncode != 0 or not dst.is_file():
         raise FilmError("A line of the voices could not be finished.")
     a, sr = _wav(dst)
+    _level(dst, a, sr)
     return len(a) / float(sr)
+
+
+SPEECH_RMS = 0.11                 # every line as loud as the others (about -19 dBFS while speaking)
+
+
+def _level(dst: Path, a: np.ndarray, sr: int) -> None:
+    """A line said as loud as the others: FFmpeg's loudnorm cannot measure a line of a second or two well (a quiet
+    voice stayed quiet next to a loud one), so the speech itself is measured and brought to SPEECH_RMS, never above
+    a peak of 0.95."""
+    hop = max(1, int(sr * 0.02))
+    n = len(a) // hop
+    if n < 5:
+        return
+    fr = np.sqrt(np.mean(a[: n * hop].reshape(n, hop) ** 2, axis=1))
+    voiced = fr[fr > max(0.004, float(fr.max()) * 0.1)]
+    if not len(voiced):
+        return
+    rms = float(np.sqrt(np.mean(voiced ** 2)))
+    peak = float(np.max(np.abs(a))) or 1.0
+    gain = min(SPEECH_RMS / max(rms, 1e-6), 0.95 / peak, 4.0)
+    if abs(gain - 1.0) < 0.05:
+        return
+    with wave.open(str(dst), "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(sr)
+        w.writeframes((np.clip(a * gain, -1, 1) * 32767).astype(np.int16).tobytes())
 
 
 _EN_MONEY = {"$": "dollars", "€": "euros", "£": "pounds"}

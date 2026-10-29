@@ -53,6 +53,9 @@ MONEY = {"united states": "dollars", "usa": "dollars", "us": "dollars", "america
          "russia": "roubles", "ukraine": "hryvnias", "kazakhstan": "tenge", "belarus": "Belarusian roubles",
          "россия": "roubles", "рф": "roubles", "молдова": "Moldovan lei", "румыния": "lei", "казахстан": "tenge",
          "україна": "hryvnias", "украина": "hryvnias", "беларусь": "Belarusian roubles", "românia": "lei", "romania ": "lei"}
+US_NAMES = ("united states", "usa", "u.s.", "us", "america", "сша", "америка", "statele unite", "sua")
+UK_NAMES = ("united kingdom", "uk", "england", "britain", "great britain", "scotland", "wales", "великобритания", "англия",
+            "marea britanie", "anglia")
 MAX_TOPIC = 600
 MAX_SOURCE = 5000
 
@@ -638,6 +641,17 @@ def money_of(country: str) -> str:
     return MONEY.get(c) or next((v for k, v in MONEY.items() if len(k) > 3 and k in c), "the local money")
 
 
+def measures_of(country: str) -> str:
+    """The measures the viewers of a country use: miles and gallons in the United States, miles for roads in Britain,
+    kilometres and litres elsewhere."""
+    c = re.sub(r"\s+", " ", str(country or "").strip().lower()).removeprefix("the ")
+    if c in US_NAMES or "united states" in c:
+        return "miles, feet, gallons, pounds and degrees Fahrenheit (never kilometres or litres)"
+    if c in UK_NAMES or "kingdom" in c:
+        return "miles for roads and speeds, otherwise metres, litres and kilograms"
+    return "kilometres, metres, litres, kilograms and degrees Celsius (never miles or gallons)"
+
+
 def prompt(job: dict) -> str:
     """The request to the model for a job: mode 'topic', 'text' or 'adapt'."""
     lang, fmt = job.get("lang") or "en", job.get("format") or "vertical"
@@ -661,8 +675,9 @@ def prompt(job: dict) -> str:
         who = "woman" if (h.get("look") or {}).get("female") else "man"
         rules += (f"\n- The narrator is {h['name']} ({who}, narrator) - the same host as in the earlier films; write "
                   f"this name exactly as here.")
-    country = str(job.get("country") or "").strip() or ("" if lang == "en" else COUNTRY.get(lang, ""))
-    where = (f"\nTHE VIEWERS: in {country}; names, money ({money_of(country)}) and offices usual there." if country else "")
+    country = str(job.get("country") or "").strip() or COUNTRY.get(lang, "")   # (English: the United States)
+    where = (f"\nTHE VIEWERS: in {country}; names, money ({money_of(country)}) and offices usual there; measures: "
+             f"{measures_of(country)}." if country else "")
     if job.get("mode") == "adapt":
         n = LANGS.get(lang, "English")
         country = country or COUNTRY.get(lang, "the United States")
@@ -671,7 +686,7 @@ def prompt(job: dict) -> str:
             "RULES:\n"
             "- Keep the scheme, the scenes, their order, the backgrounds and the kinds of visuals.\n"
             f"- Use first names and surnames usual in {country}, the local money ({money_of(country)}) with amounts that "
-            "make sense there, and the local names of offices and jobs.\n"
+            f"make sense there, the local measures ({measures_of(country)}) and the local names of offices and jobs.\n"
             f"- Translate everything that is said and every label in the visuals into natural spoken {n} (not word for word).\n"
             "- Keep the format's keywords in English exactly: Title, Format, Narrator, woman, man, ==, the backgrounds "
             "(City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home, Building site), the visual kinds (title, flow, contract, "

@@ -214,6 +214,19 @@ def main() -> int:
           shots[0] is None and shots[1] == l1["who"] and shots[2] is None and shots[3] is None and cut > 8
           and 0.1 <= heads["middle"][0] <= 0.24 and 0.18 <= heads["bottom"][0] <= 0.32 and heads["middle"][1] >= 2.4,
           (shots, cut, heads))
+    import wave as _wave
+    from archivist.cartoon import voices as _V
+    lv = {}
+    for nm, amp in (("quiet", 0.02), ("loud", 0.6)):            # (a quiet voice and a loud one: the same level after)
+        tt = np.arange(int(1.5 * 24000)) / 24000
+        xx = amp * np.sin(2 * np.pi * 220 * tt) * (0.6 + 0.4 * np.sin(2 * np.pi * 3 * tt))
+        with _wave.open(str(work / f"lv_{nm}.wav"), "wb") as w_:
+            w_.setnchannels(1); w_.setsampwidth(2); w_.setframerate(24000); w_.writeframes((xx * 32767).astype(np.int16).tobytes())
+        _V._to48k(work / f"lv_{nm}.wav", work / f"lv_{nm}48.wav")
+        aa, _sr = _V._wav(work / f"lv_{nm}48.wav")
+        lv[nm] = round(float(np.sqrt(np.mean(aa ** 2))), 3)
+    check("voices: every line as loud as the others (a quiet voice brought up, a loud one down)",
+          abs(lv["quiet"] - lv["loud"]) < 0.02 and 0.08 < lv["loud"] < 0.14, lv)
     a_, b_ = np.zeros((96, 54, 3), np.uint8), np.full((96, 54, 3), 200, np.uint8)
     tr = {k: F.transition(a_, b_, 0.15, same, i) for k, same, i in (("fade", True, 2), ("slide", False, 1), ("iris", False, 2))}
     check("transitions: a cross-fade in the same place; a slide or an opening circle to another place; then the new scene",

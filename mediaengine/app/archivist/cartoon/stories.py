@@ -34,7 +34,7 @@ ROAD_CONTRACT = {
                    {"who": "kate", "pose": "explain", "emotion": "sly", "text": "Let's see how it ends up costing millions."}]},
         {"bg": "road", "cast": ["lena"], "visual": {"kind": "road", "holes_at": None},
          "lines": [{"who": "lena", "pose": "shrug", "emotion": "angry", "bubble": True, "text": "This road is a disaster!"},
-                   {"who": "kate", "text": "The city announces a tender to repair two kilometers of road."},
+                   {"who": "kate", "text": "The city announces a tender to repair a mile of road."},
                    {"who": "kate", "text": "A fair price is about one point two million dollars."}]},
         {"bg": "office", "cast": ["ed"], "visual": {"kind": "contract", "title": "TENDER", "at": 0,
                                                      "notes": [{"text": "10 years of experience", "ok": False, "at": 1},
