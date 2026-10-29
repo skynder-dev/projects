@@ -485,7 +485,7 @@ def register(app, page, err_page, e, human_bytes):
         jump = ("<div class='vo-row' style='margin:-4px 0 12px'>"
                 f"<a class='btn' href='{e(fin)}'>Finish a video - all on one page</a>"
                 + "".join(f"<a class='btn btn2' href='#{k}'>{e(t)}</a>" for k, t in links) + "</div>")
-        body = ("<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Voice-over and text</h1>"
+        body = ("<div class='pagehead'><div class='eyebrow'>Create</div><h1>Voice-over and text</h1>"
                 "<div class='lead'>A text read by a voice, with captions timed to the words; captions and text for your own videos.</div></div>"
                 + jump + "".join(parts) + "<div class='row' id='voBack' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         steps = json.dumps({**_INSTALL_STEP})

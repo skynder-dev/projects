@@ -231,6 +231,32 @@ APP_PHRASES: dict[str, str] = {
     "Create local derived copies without altering originals.": "Уменьшенные копии без изменения оригиналов.",
     "Build nondestructive multi-clip compositions.": "Монтаж из нескольких клипов без изменения оригиналов.",
     "Folder of videos → finished reel from the best moments.": "Папка с видео → готовый ролик из лучших моментов.",
+    # the menu on the left (web.py MENU)
+    "Reel from your videos": "Ролик из своих видео", "Study a video": "Изучить видео", "Tools": "Инструменты",
+    "Orders from other programs": "Заказы от программ", "☰ Menu": "☰ Меню", "Edit by hand": "Ручной монтаж",
+    "Look": "Оформление", "A colour for each kind of work": "Свой цвет у каждого вида работы",
+    "Create - warm, Videos - teal, Tools - amber, on a dark base.": "Создать — тёплый, Видео — бирюзовый, Инструменты — янтарный, на тёмном фоне.",
+    "Neon on black": "Неон на чёрном", "True black, bright colours with a glow (also by kind of work).": "Чистый чёрный фон, яркие цвета со свечением (тоже по видам работы).",
+    "Calm night": "Спокойная ночь", "One calm blue everywhere, as before.": "Везде один спокойный синий, как раньше.",
+    # Home (what to make, recent work) and Activity
+    "What shall we make?": "Что будем делать?",
+    "Everything is made on this PC: your videos are only read and never changed, nothing is sent anywhere.":
+        "Всё делается на этом компьютере: твои видео только читаются и не меняются, ничего никуда не отправляется.",
+    "A folder of your videos → a finished reel of the best moments.": "Папка с твоими видео → готовый ролик из лучших моментов.",
+    "A podcast, a stream or an interview → short vertical clips with captions.": "Подкаст, стрим или интервью → короткие вертикальные клипы с субтитрами.",
+    "A voice reads your text; captions word by word; titles on a video.": "Голос читает твой текст; субтитры по словам; надписи на видео.",
+    "A short 2D cartoon: the story written for you, drawn, voiced, with captions.": "Короткий 2D-мультфильм: сюжет пишется за тебя, рисуется, озвучивается, с субтитрами.",
+    "A video, or a profile’s videos, from YouTube, TikTok and other sites.": "Видео или видео с профиля — с YouTube, TikTok и других сайтов.",
+    "Smaller copies to share: for a messenger, or to a size in MB.": "Уменьшенные копии, чтобы поделиться: для мессенджера или под размер в МБ.",
+    "Recent work": "Последние работы", "All work": "Все работы", "Nothing made yet: choose what to make above.": "Пока ничего не сделано: выбери выше, что делать.",
+    "Library:": "Библиотека:", "Import from a phone, a card or a folder": "Импорт с телефона, карты или из папки",
+    "Cartoon": "Мультфильм", "Studied video": "Изученное видео", "Clips": "Клипы", "Reel": "Ролик", "Downloaded": "Скачано",
+    "Stopped": "Остановлено", "Draft": "Черновик", "Nothing made yet.": "Пока ничего не сделано.",
+    "Your videos for work: what is on the sources, what is in the Library, where to find the best moments.":
+        "Твои видео для работы: что есть на источниках, что в Библиотеке, где найти лучшие моменты.",
+    "Everything made in MediaEngine, newest first; the import and analysis jobs and recovery below.":
+        "Всё, что сделано в MediaEngine, новое сверху; ниже — задачи импорта и анализа и восстановление.",
+    "All cartoons and stories": "Все мультфильмы и сюжеты",
     "Composer": "Монтаж", "Search": "Поиск", "Library": "Библиотека", "Convert": "Конвертация", "Best Moments": "Лучшие моменты",
     "Working collection": "Рабочая коллекция", "Search Library": "Поиск в библиотеке", "Import more": "Импортировать ещё",
     "Analyze local": "Анализировать", "Apply rights tag": "Отметить права", "Private forever": "Личное навсегда",

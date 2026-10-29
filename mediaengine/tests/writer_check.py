@@ -297,7 +297,7 @@ def main() -> int:
               and jn.get("topic") == j.get("topic") and jn.get("country") == "Moldova" and jn.get("state") == "done", (rw.status_code, nid))
         lst = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
         check("the list shows the stories with their state", "Story:" in lst and "Read it and make the cartoon" in lst
-              and "Cartoons and stories" in lst, "")
+              and "My cartoons and stories" in lst, "")
         # a series: a story for every line, each cartoon made at once (here without voices: no voice add-on)
         topics = ("Hospital pills that cost three times more", "A bridge that was never built")
         rs_ = c.post("/auto/cartoon/write", data={"topics": "\n".join(topics) + "\nx\n", "lang": "en", "secs": "60",

@@ -74,7 +74,7 @@ def _job_elapsed(j):
 
 CSS=r'''
 :root{color-scheme:dark;--bg:#090d12;--bg2:#0f151d;--card:#151b24;--card2:#1b232e;--line:#293442;--line2:#3a4758;--text:#f5f7fb;--muted:#94a1b2;--blue:#6d96ff;--blue2:#5177df;--green:#53c983;--orange:#d7a34a;--red:#d46b74;--violet:#a78bfa;--cyan:#67d7e8;--rose:#e78caf;--shadow:0 14px 40px #00000026}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(920px 520px at 8% -100px,#6d96ff20,transparent 62%),radial-gradient(760px 430px at 84% -80px,#a78bfa16,transparent 62%),radial-gradient(780px 520px at 55% 115%,#53c9830c,transparent 65%),linear-gradient(180deg,var(--bg2),var(--bg) 340px);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}a{color:inherit;text-decoration:none}nav{position:sticky;top:0;z-index:30;background:#0d1219df;border-bottom:1px solid #364253aa;backdrop-filter:blur(18px) saturate(120%)}.navin{max-width:1540px;margin:auto;padding:11px 20px;display:flex;align-items:center;gap:7px}.brand{font-weight:900;font-size:20px;letter-spacing:-.35px;margin-right:8px}.brand:before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;background:linear-gradient(135deg,var(--blue),var(--violet));box-shadow:0 0 18px #6d96ff88}.version{font-size:10px;background:#7b8aa81a;border:1px solid #8ea2c02d;padding:2px 6px;border-radius:999px;vertical-align:2px;color:#cbd6e7}.navlink{color:#bdc7d4!important;padding:8px 10px;border-radius:10px;white-space:nowrap;transition:.12s}.navlink:hover{background:#8aa1c314;color:#fff!important}.navlink.active{background:linear-gradient(135deg,#6d96ff20,#a78bfa18);border:1px solid #849cff28;color:#fff!important}.navextra{display:none}.navin.showmore .navextra{display:inline-block}.navin.showmore .navmorebtn{color:#fff!important}.navmorebtn:after{content:' ▾';font-size:11px}.navin.showmore .navmorebtn:after{content:' ▴'}.spacer{flex:1}.wrap{max-width:1540px;margin:auto;padding:24px 20px 42px}.card{background:linear-gradient(180deg,#1a202aee,#141a22ef);border:1px solid #344151c9;border-radius:15px;padding:15px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.space{justify-content:space-between}.muted{color:var(--muted)}.eyebrow{color:#a9c1ff;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.lead{font-size:16px;color:#b8c2cf;max-width:780px;margin-top:5px}.pagehead{margin-bottom:16px}.pagehead h1{font-size:31px;letter-spacing:-.6px;margin:2px 0 0}.device{display:flex;gap:10px;align-items:center}.device-dot{width:10px;height:10px;border-radius:50%;background:#687383;box-shadow:0 0 0 4px #6873831c;flex:0 0 auto}.device-dot.online{background:#3dcc72;box-shadow:0 0 0 4px #3dcc7221,0 0 14px #3dcc7255}.device-status{font-weight:750}.source-card{display:flex;align-items:center;justify-content:space-between;gap:18px}.section-title{font-size:18px;margin:24px 0 10px}.callout{border:1px solid #6d96ff38;background:linear-gradient(135deg,#6d96ff15,#a78bfa0e 55%,#53c9830a)}button,.btn{border:1px solid #96adff22;border-radius:10px;padding:9px 13px;background:linear-gradient(180deg,#7099ff,#5278df);color:#fff;font-weight:780;cursor:pointer;box-shadow:0 6px 18px #264b9930}button:hover,.btn:hover{filter:brightness(1.07)}.btn2{background:#91a2bd14;border-color:#91a2bd25}.ok{background:linear-gradient(180deg,#58c987,#3aa86a);border-color:#8ee1aa28}.warn{background:linear-gradient(180deg,#d5a54e,#ae7b27);border-color:#f1c16e25}.danger{background:linear-gradient(180deg,#d66d77,#b44f5a);border-color:#ef9aa225}button:disabled{opacity:.5;cursor:not-allowed}input,select{background:#0e131a;color:#fff;border:1px solid #364150;border-radius:9px;padding:8px 9px;outline:none}input:focus,select:focus{border-color:#5b86d8;box-shadow:0 0 0 3px #4a82f420}.hero{display:grid;grid-template-columns:repeat(6,minmax(140px,1fr));gap:11px;margin:16px 0}.metric{min-height:96px;position:relative;overflow:hidden}.metric:after{content:'';position:absolute;width:100px;height:100px;border-radius:50%;right:-36px;top:-42px;filter:blur(1px);opacity:.42}.tone-blue{border-color:#6d96ff30;background:linear-gradient(145deg,#6d96ff12,#151b24 60%)}.tone-blue:after{background:#6d96ff28}.tone-mint{border-color:#53c9832d;background:linear-gradient(145deg,#53c98310,#151b24 60%)}.tone-mint:after{background:#53c98325}.tone-violet{border-color:#a78bfa2f;background:linear-gradient(145deg,#a78bfa12,#151b24 60%)}.tone-violet:after{background:#a78bfa26}.tone-amber{border-color:#d7a34a2f;background:linear-gradient(145deg,#d7a34a10,#151b24 60%)}.tone-amber:after{background:#d7a34a25}.tone-rose{border-color:#e78caf2f;background:linear-gradient(145deg,#e78caf10,#151b24 60%)}.tone-rose:after{background:#e78caf24}.tone-cyan{border-color:#67d7e82f;background:linear-gradient(145deg,#67d7e810,#151b24 60%)}.tone-cyan:after{background:#67d7e824}.metric b{font-size:27px;display:block;margin-top:4px;letter-spacing:-.5px}.metric span:first-child{font-size:12px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.media-card{position:relative;background:linear-gradient(180deg,#171e27,#131920);border:1px solid #334050;border-radius:14px;overflow:hidden;cursor:pointer;box-shadow:0 8px 22px #0002;transition:transform .12s,border-color .12s,box-shadow .12s}.media-card:hover{transform:translateY(-2px);border-color:#61718a;box-shadow:0 14px 30px #0005,0 0 0 1px #6d96ff10}.media-card.selected{outline:2px solid var(--blue);outline-offset:1px}.thumb{height:145px;background:#080b0f;display:flex;align-items:center;justify-content:center}.thumb img{width:100%;height:100%;object-fit:cover;transition:opacity .12s}.storybadge{position:absolute;left:7px;top:7px;z-index:3;background:#10151ddd;border:1px solid #536071;border-radius:999px;padding:2px 6px;font-size:10px;display:none}.storystrip{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}.storyframe{position:relative;border:1px solid #303842;border-radius:8px;overflow:hidden;background:#090c10;cursor:pointer}.storyframe:hover{border-color:#58709a}.storyframe img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}.storytime{position:absolute;right:3px;bottom:3px;background:#000c;padding:1px 4px;border-radius:4px;font-size:10px}.meta{padding:9px}.name{font-weight:780;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.check{position:absolute;z-index:4;right:8px;top:8px;width:20px;height:20px;accent-color:var(--blue)}.badge{display:inline-block;font-size:11px;border-radius:999px;padding:3px 8px;background:#a9b7cd15;border:1px solid #a9b7cd1b;margin:5px 4px 0 0;box-shadow:inset 0 1px #ffffff08}.safe,.imported,.archived,.local,.quality-ok,.rights-cleared{background:#53c98316;border-color:#53c98329;color:#9be7b8}.review,.quality-review,.rights-review{background:#d7a34a16;border-color:#d7a34a2b;color:#edc979}.rights-permission{background:#e49b5517;border-color:#e49b552c;color:#efbd86}.private,.error,.cancelled,.rejected,.rights-blocked{background:#d66d7717;border-color:#d66d772d;color:#f1a2aa}.duplicate,.skipped_duplicate{background:#a78bfa17;border-color:#a78bfa2d;color:#c9b9ff}.ready,.audioflag{background:#67d7e815;border-color:#67d7e829;color:#9be9f2}.unreviewed,.rights-unknown{background:#9aabba12;border-color:#9aabba1e;color:#b8c3d0}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.toolpanel{background:#111821c9;border:1px solid #354253;border-radius:13px;padding:10px 11px;margin:12px 0;backdrop-filter:blur(12px)}.pagination{display:flex;gap:8px;align-items:center;margin:18px 0}.jobbar{position:sticky;top:59px;z-index:25;background:#151a20ee;border-bottom:1px solid var(--line);display:none;backdrop-filter:blur(8px)}.jobinner{max-width:1540px;margin:auto;padding:9px 20px}.progress{height:7px;background:#303741;border-radius:10px;overflow:hidden;margin-top:6px}.progress i{height:100%;display:block;background:linear-gradient(90deg,#6d96ff,#a78bfa,#67d7e8);width:0}.toast{position:fixed;right:18px;bottom:18px;z-index:100;background:#20262e;border:1px solid #3a4350;border-radius:10px;padding:11px 14px;display:none;max-width:440px;box-shadow:0 18px 50px #0008}.details{display:grid;grid-template-columns:minmax(340px,680px) minmax(300px,1fr);gap:18px}.preview{min-height:340px;background:#080a0d;border:1px solid #202833;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}.preview img,.preview video{max-width:100%;max-height:70vh}.kv{display:grid;grid-template-columns:150px 1fr;gap:8px 12px}.kv div:nth-child(odd){color:var(--muted)}.kv>div{min-width:0;overflow-wrap:anywhere}.details>*{min-width:0}.jobs{display:grid;gap:10px}.jobrow{display:grid;grid-template-columns:70px 130px 120px 1fr 180px;gap:10px;align-items:center}.errbox{white-space:pre-wrap;background:#27191a;border:1px solid #653537;padding:8px;border-radius:8px;color:#efb7b7}.about-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.about-hero{position:relative;overflow:hidden;padding:24px}.about-hero:after{content:'';position:absolute;width:340px;height:340px;border-radius:50%;right:-120px;top:-170px;background:radial-gradient(circle,#a78bfa35,transparent 68%);pointer-events:none}.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.principle{padding:13px;border:1px solid #3b4757;border-radius:13px;background:#111821aa}.principle b{display:block;margin-bottom:3px}.roadmap{display:grid;gap:8px}.roadmap-step{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #2c3744}.roadmap-step:last-child{border-bottom:0}.step-dot{width:9px;height:9px;border-radius:50%;margin-top:6px;flex:0 0 auto;background:linear-gradient(135deg,#6d96ff,#a78bfa);box-shadow:0 0 12px #6d96ff66}.about-list{display:grid;gap:9px}.about-list div{padding:10px 0;border-bottom:1px solid #29313d}.about-list div:last-child{border-bottom:0}.empty{padding:34px;text-align:center;border:1px dashed #394454;border-radius:14px;color:var(--muted);background:#11161d}.mode-note{font-size:13px;color:#aeb8c5}.softline{height:1px;background:var(--line);border:0;margin:18px 0}.hubgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.hubcard{display:flex;flex-direction:column;gap:7px;min-height:120px}.hubcard>b{font-size:18px}.hubcard>span,.hubcard>small{color:var(--muted)}.setupgrid{display:grid;gap:12px;margin-top:14px}.setupcard{display:grid;gap:12px}.setupmeta{display:grid;grid-template-columns:1fr 2fr;gap:12px}.setupmeta span{display:grid;gap:3px}.setupmeta small{color:var(--muted)}.navin{flex-wrap:wrap;row-gap:4px}.pagination{flex-wrap:wrap}@media (max-width:760px){.about-grid,.principles,.details,.setupmeta{grid-template-columns:1fr}}@media (max-width:1240px){.navin{flex-wrap:wrap;row-gap:4px;padding:8px 12px;gap:4px}.navlink{padding:6px 7px}.brand{font-size:17px;margin-right:4px}.navin .btn2,.navin button{padding:7px 9px}}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(920px 520px at 8% -100px,#6d96ff20,transparent 62%),radial-gradient(760px 430px at 84% -80px,#a78bfa16,transparent 62%),radial-gradient(780px 520px at 55% 115%,#53c9830c,transparent 65%),linear-gradient(180deg,var(--bg2),var(--bg) 340px);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}a{color:inherit;text-decoration:none}nav{position:sticky;top:0;z-index:30;background:#0d1219df;border-bottom:1px solid #364253aa;backdrop-filter:blur(18px) saturate(120%)}.navin{max-width:1540px;margin:auto;padding:11px 20px;display:flex;align-items:center;gap:7px}.brand{font-weight:900;font-size:20px;letter-spacing:-.35px;margin-right:8px}.brand:before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;background:linear-gradient(135deg,var(--blue),var(--violet));box-shadow:0 0 18px #6d96ff88}.version{font-size:10px;white-space:nowrap;background:#7b8aa81a;border:1px solid #8ea2c02d;padding:2px 6px;border-radius:999px;vertical-align:2px;color:#cbd6e7}.navlink{color:#bdc7d4!important;padding:8px 10px;border-radius:10px;white-space:nowrap;transition:.12s}.navlink:hover{background:#8aa1c314;color:#fff!important}.navlink.active{background:linear-gradient(135deg,#6d96ff20,#a78bfa18);border:1px solid #849cff28;color:#fff!important}.navextra{display:none}.navin.showmore .navextra{display:inline-block}.navin.showmore .navmorebtn{color:#fff!important}.navmorebtn:after{content:' ▾';font-size:11px}.navin.showmore .navmorebtn:after{content:' ▴'}.spacer{flex:1}.taskgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}.task{display:flex;flex-direction:column;gap:6px;min-height:112px;position:relative;overflow:hidden;--tone:#6d96ff;background:linear-gradient(160deg,color-mix(in srgb,var(--tone) 13%,transparent),transparent 62%),linear-gradient(180deg,#1a202aee,#141a22ef)}.task:before{content:'';position:absolute;left:0;top:0;right:0;height:3px;background:var(--tone)}.task b{font-size:18px}.task span{color:var(--muted)}.task:hover{border-color:var(--tone)}.task[data-tone=create]{--tone:#f0705a}.task[data-tone=videos]{--tone:#22ad9e}.task[data-tone=tools]{--tone:#dd9530}.worklist{display:flex;flex-direction:column;margin-top:8px}.workrow{display:flex;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid #2a3441}.workrow:last-child{border-bottom:0}.workrow:hover{background:#8aa1c30d}.workrow .badge{margin:0;flex:0 0 auto}.worktitle{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.worktime{font-size:13px;white-space:nowrap}@media(max-width:600px){.workrow{flex-wrap:wrap}.worktitle{flex-basis:100%;order:3}}.app{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}.side{position:sticky;top:0;height:100vh;overflow-y:auto;background:#0d1219ef;border-right:1px solid #364253aa;display:flex;flex-direction:column;padding:14px 10px 12px;z-index:30;scrollbar-width:thin}.sidetop{padding:2px 8px 10px}.side .brand{font-size:19px;margin:0}.sidenav,.sidebottom{display:flex;flex-direction:column;gap:1px}.sidehead{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7f8ea3;padding:13px 10px 4px}.side .navlink{display:block;padding:7px 10px;white-space:normal;line-height:1.25;border:1px solid transparent}.side .navsub{padding:5px 10px 5px 24px;font-size:13.5px}.side .navsub.active{background:#6d96ff18}.sidebottom{margin-top:auto;padding-top:10px;margin-top:14px;border-top:1px solid #2c3744}.navmore .navextra{display:none}.navmore.showmore .navextra{display:block;padding-left:24px}.sidebtns{display:flex;flex-wrap:wrap;gap:6px;padding:10px 4px 0}.sidebtns button{padding:6px 9px;font-size:13px}.main{min-width:0}.mobilebar{display:none}.sideshade{display:none}.jobbar{top:0!important}@media(max-width:900px){.app{grid-template-columns:minmax(0,1fr)}.side{position:fixed;left:0;top:0;bottom:0;width:270px;max-width:86vw;transform:translateX(-105%);transition:transform .15s;box-shadow:0 0 40px #000a}.app.menu-open .side{transform:none}.app.menu-open .sideshade{display:block;position:fixed;inset:0;background:#0008;z-index:29}.mobilebar{display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:28;background:#0d1219ef;border-bottom:1px solid #364253aa;padding:8px 12px}.mobilebar .brand{font-size:17px}.jobbar{top:51px!important}}.wrap{max-width:1540px;margin:auto;padding:24px 20px 42px}.card{background:linear-gradient(180deg,#1a202aee,#141a22ef);border:1px solid #344151c9;border-radius:15px;padding:15px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.space{justify-content:space-between}.muted{color:var(--muted)}.eyebrow{color:#a9c1ff;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.lead{font-size:16px;color:#b8c2cf;max-width:780px;margin-top:5px}.pagehead{margin-bottom:16px}.pagehead h1{font-size:31px;letter-spacing:-.6px;margin:2px 0 0}.device{display:flex;gap:10px;align-items:center}.device-dot{width:10px;height:10px;border-radius:50%;background:#687383;box-shadow:0 0 0 4px #6873831c;flex:0 0 auto}.device-dot.online{background:#3dcc72;box-shadow:0 0 0 4px #3dcc7221,0 0 14px #3dcc7255}.device-status{font-weight:750}.source-card{display:flex;align-items:center;justify-content:space-between;gap:18px}.section-title{font-size:18px;margin:24px 0 10px}.callout{border:1px solid #6d96ff38;background:linear-gradient(135deg,#6d96ff15,#a78bfa0e 55%,#53c9830a)}button,.btn{border:1px solid #96adff22;border-radius:10px;padding:9px 13px;background:linear-gradient(180deg,#7099ff,#5278df);color:#fff;font-weight:780;cursor:pointer;box-shadow:0 6px 18px #264b9930}button:hover,.btn:hover{filter:brightness(1.07)}.btn2{background:#91a2bd14;border-color:#91a2bd25}.ok{background:linear-gradient(180deg,#58c987,#3aa86a);border-color:#8ee1aa28}.warn{background:linear-gradient(180deg,#d5a54e,#ae7b27);border-color:#f1c16e25}.danger{background:linear-gradient(180deg,#d66d77,#b44f5a);border-color:#ef9aa225}button:disabled{opacity:.5;cursor:not-allowed}input,select{background:#0e131a;color:#fff;border:1px solid #364150;border-radius:9px;padding:8px 9px;outline:none}input:focus,select:focus{border-color:#5b86d8;box-shadow:0 0 0 3px #4a82f420}.hero{display:grid;grid-template-columns:repeat(6,minmax(140px,1fr));gap:11px;margin:16px 0}.metric{min-height:96px;position:relative;overflow:hidden}.metric:after{content:'';position:absolute;width:100px;height:100px;border-radius:50%;right:-36px;top:-42px;filter:blur(1px);opacity:.42}.tone-blue{border-color:#6d96ff30;background:linear-gradient(145deg,#6d96ff12,#151b24 60%)}.tone-blue:after{background:#6d96ff28}.tone-mint{border-color:#53c9832d;background:linear-gradient(145deg,#53c98310,#151b24 60%)}.tone-mint:after{background:#53c98325}.tone-violet{border-color:#a78bfa2f;background:linear-gradient(145deg,#a78bfa12,#151b24 60%)}.tone-violet:after{background:#a78bfa26}.tone-amber{border-color:#d7a34a2f;background:linear-gradient(145deg,#d7a34a10,#151b24 60%)}.tone-amber:after{background:#d7a34a25}.tone-rose{border-color:#e78caf2f;background:linear-gradient(145deg,#e78caf10,#151b24 60%)}.tone-rose:after{background:#e78caf24}.tone-cyan{border-color:#67d7e82f;background:linear-gradient(145deg,#67d7e810,#151b24 60%)}.tone-cyan:after{background:#67d7e824}.metric b{font-size:27px;display:block;margin-top:4px;letter-spacing:-.5px}.metric span:first-child{font-size:12px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.media-card{position:relative;background:linear-gradient(180deg,#171e27,#131920);border:1px solid #334050;border-radius:14px;overflow:hidden;cursor:pointer;box-shadow:0 8px 22px #0002;transition:transform .12s,border-color .12s,box-shadow .12s}.media-card:hover{transform:translateY(-2px);border-color:#61718a;box-shadow:0 14px 30px #0005,0 0 0 1px #6d96ff10}.media-card.selected{outline:2px solid var(--blue);outline-offset:1px}.thumb{height:145px;background:#080b0f;display:flex;align-items:center;justify-content:center}.thumb img{width:100%;height:100%;object-fit:cover;transition:opacity .12s}.storybadge{position:absolute;left:7px;top:7px;z-index:3;background:#10151ddd;border:1px solid #536071;border-radius:999px;padding:2px 6px;font-size:10px;display:none}.storystrip{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}.storyframe{position:relative;border:1px solid #303842;border-radius:8px;overflow:hidden;background:#090c10;cursor:pointer}.storyframe:hover{border-color:#58709a}.storyframe img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}.storytime{position:absolute;right:3px;bottom:3px;background:#000c;padding:1px 4px;border-radius:4px;font-size:10px}.meta{padding:9px}.name{font-weight:780;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.check{position:absolute;z-index:4;right:8px;top:8px;width:20px;height:20px;accent-color:var(--blue)}.badge{display:inline-block;font-size:11px;border-radius:999px;padding:3px 8px;background:#a9b7cd15;border:1px solid #a9b7cd1b;margin:5px 4px 0 0;box-shadow:inset 0 1px #ffffff08}.safe,.imported,.archived,.local,.quality-ok,.rights-cleared{background:#53c98316;border-color:#53c98329;color:#9be7b8}.review,.quality-review,.rights-review{background:#d7a34a16;border-color:#d7a34a2b;color:#edc979}.rights-permission{background:#e49b5517;border-color:#e49b552c;color:#efbd86}.private,.error,.cancelled,.rejected,.rights-blocked{background:#d66d7717;border-color:#d66d772d;color:#f1a2aa}.duplicate,.skipped_duplicate{background:#a78bfa17;border-color:#a78bfa2d;color:#c9b9ff}.ready,.audioflag{background:#67d7e815;border-color:#67d7e829;color:#9be9f2}.unreviewed,.rights-unknown{background:#9aabba12;border-color:#9aabba1e;color:#b8c3d0}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.toolpanel{background:#111821c9;border:1px solid #354253;border-radius:13px;padding:10px 11px;margin:12px 0;backdrop-filter:blur(12px)}.pagination{display:flex;gap:8px;align-items:center;margin:18px 0}.jobbar{position:sticky;top:59px;z-index:25;background:#151a20ee;border-bottom:1px solid var(--line);display:none;backdrop-filter:blur(8px)}.jobinner{max-width:1540px;margin:auto;padding:9px 20px}.progress{height:7px;background:#303741;border-radius:10px;overflow:hidden;margin-top:6px}.progress i{height:100%;display:block;background:linear-gradient(90deg,#6d96ff,#a78bfa,#67d7e8);width:0}.toast{position:fixed;right:18px;bottom:18px;z-index:100;background:#20262e;border:1px solid #3a4350;border-radius:10px;padding:11px 14px;display:none;max-width:440px;box-shadow:0 18px 50px #0008}.details{display:grid;grid-template-columns:minmax(340px,680px) minmax(300px,1fr);gap:18px}.preview{min-height:340px;background:#080a0d;border:1px solid #202833;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}.preview img,.preview video{max-width:100%;max-height:70vh}.kv{display:grid;grid-template-columns:150px 1fr;gap:8px 12px}.kv div:nth-child(odd){color:var(--muted)}.kv>div{min-width:0;overflow-wrap:anywhere}.details>*{min-width:0}.jobs{display:grid;gap:10px}.jobrow{display:grid;grid-template-columns:70px 130px 120px 1fr 180px;gap:10px;align-items:center}.errbox{white-space:pre-wrap;background:#27191a;border:1px solid #653537;padding:8px;border-radius:8px;color:#efb7b7}.about-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.about-hero{position:relative;overflow:hidden;padding:24px}.about-hero:after{content:'';position:absolute;width:340px;height:340px;border-radius:50%;right:-120px;top:-170px;background:radial-gradient(circle,#a78bfa35,transparent 68%);pointer-events:none}.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.principle{padding:13px;border:1px solid #3b4757;border-radius:13px;background:#111821aa}.principle b{display:block;margin-bottom:3px}.roadmap{display:grid;gap:8px}.roadmap-step{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #2c3744}.roadmap-step:last-child{border-bottom:0}.step-dot{width:9px;height:9px;border-radius:50%;margin-top:6px;flex:0 0 auto;background:linear-gradient(135deg,#6d96ff,#a78bfa);box-shadow:0 0 12px #6d96ff66}.about-list{display:grid;gap:9px}.about-list div{padding:10px 0;border-bottom:1px solid #29313d}.about-list div:last-child{border-bottom:0}.empty{padding:34px;text-align:center;border:1px dashed #394454;border-radius:14px;color:var(--muted);background:#11161d}.mode-note{font-size:13px;color:#aeb8c5}.softline{height:1px;background:var(--line);border:0;margin:18px 0}.hubgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.hubcard{display:flex;flex-direction:column;gap:7px;min-height:120px}.hubcard>b{font-size:18px}.hubcard>span,.hubcard>small{color:var(--muted)}.setupgrid{display:grid;gap:12px;margin-top:14px}.setupcard{display:grid;gap:12px}.setupmeta{display:grid;grid-template-columns:1fr 2fr;gap:12px}.setupmeta span{display:grid;gap:3px}.setupmeta small{color:var(--muted)}.navin{flex-wrap:wrap;row-gap:4px}.pagination{flex-wrap:wrap}@media (max-width:760px){.about-grid,.principles,.details,.setupmeta{grid-template-columns:1fr}}@media (max-width:1240px){.navin{flex-wrap:wrap;row-gap:4px;padding:8px 12px;gap:4px}.navlink{padding:6px 7px}.brand{font-size:17px;margin-right:4px}.navin .btn2,.navin button{padding:7px 9px}}
 @media(max-width:1000px){.hero{grid-template-columns:repeat(3,1fr)}.navin{overflow-x:auto}.navin::-webkit-scrollbar{display:none}}@media(max-width:850px){.hero{grid-template-columns:1fr 1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.details,.about-grid{grid-template-columns:1fr}.wrap{padding:14px}.jobrow{grid-template-columns:55px 1fr}.jobrow>*:nth-child(n+3){grid-column:2}.navin{gap:4px;padding:9px 10px}.navlink{padding:7px 8px}.thumb{height:120px}.pagehead h1{font-size:26px}}
 '''
 
@@ -133,6 +133,120 @@ window.addEventListener('DOMContentLoaded',()=>{const r=document.getElementById(
 '''
 
 
+# The colours: one dark base, and an accent per kind of work (Settings → Look): "sections" - Create warm, Videos teal,
+# Tools amber, the rest blue-violet; "neon" - the same on true black, brighter, with a glow; "night" - one calm blue
+# everywhere (as before). Set on <body data-theme=... data-tone=...> by layout(); everything else keeps its colours.
+THEMES=('sections','neon','night')
+THEME_CSS=r"""
+body{--acc:#7099ff;--acc2:#5278df;--acc-soft:#6d96ff20;--acc-line:#849cff30;--acc-text:#a9c1ff;--glow1:#6d96ff20;--glow2:#a78bfa16;--acc-shadow:#264b9930}
+body[data-theme=sections]{--acc:#7c86ff;--acc2:#5c52d6;--acc-soft:#7c86ff22;--acc-line:#8f98ff3a;--acc-text:#b5bcff;--glow1:#7c86ff22;--glow2:#a78bfa18;--acc-shadow:#2c2a8a40}
+body[data-theme=sections][data-tone=create]{--acc:#f0705a;--acc2:#c8417f;--acc-soft:#f0705a22;--acc-line:#f0705a44;--acc-text:#ffb09f;--glow1:#f0705a26;--glow2:#c8417f1c;--acc-shadow:#8c2a4a40}
+body[data-theme=sections][data-tone=videos]{--acc:#22ad9e;--acc2:#2a7cc9;--acc-soft:#22ad9e22;--acc-line:#22ad9e44;--acc-text:#86e3d6;--glow1:#22ad9e22;--glow2:#2a7cc91a;--acc-shadow:#0f5a5a40}
+body[data-theme=sections][data-tone=tools]{--acc:#dd9530;--acc2:#bd5d20;--acc-soft:#e3a03a22;--acc-line:#e3a03a44;--acc-text:#ffd08a;--glow1:#e3a03a20;--glow2:#c464241a;--acc-shadow:#6b3d1040}
+body[data-theme=neon]{--bg:#000;--bg2:#05070a;--line:#1d222a;--line2:#2b323c;--acc:#8b5cff;--acc2:#2f7dff;--acc-soft:#8b5cff26;--acc-line:#8b5cff66;--acc-text:#c3adff;--glow1:#8b5cff2e;--glow2:#00c2ff1c;--acc-shadow:#8b5cff70}
+body[data-theme=neon][data-tone=create]{--acc:#ff3d8b;--acc2:#a23cff;--acc-soft:#ff3d8b26;--acc-line:#ff3d8b66;--acc-text:#ff9ccb;--glow1:#ff3d8b30;--glow2:#a23cff22;--acc-shadow:#ff3d8b70}
+body[data-theme=neon][data-tone=videos]{--acc:#00c8ee;--acc2:#0a6cff;--acc-soft:#00d4ff22;--acc-line:#00d4ff66;--acc-text:#8beeff;--glow1:#00d4ff2a;--glow2:#0a6cff22;--acc-shadow:#00d4ff66}
+body[data-theme=neon][data-tone=tools]{--acc:#f2b705;--acc2:#ff6a00;--acc-soft:#ffc81a22;--acc-line:#ffc81a66;--acc-text:#ffe08a;--glow1:#ffc81a26;--glow2:#ff6a001e;--acc-shadow:#ff9a0066}
+body{background:radial-gradient(920px 520px at 8% -100px,var(--glow1),transparent 62%),radial-gradient(760px 430px at 84% -80px,var(--glow2),transparent 62%),radial-gradient(780px 520px at 55% 115%,#53c9830c,transparent 65%),linear-gradient(180deg,var(--bg2),var(--bg) 340px)}
+button,.btn{background:linear-gradient(180deg,var(--acc),var(--acc2));box-shadow:0 6px 18px var(--acc-shadow)}
+.btn2{background:#91a2bd14;border-color:#91a2bd25;box-shadow:none}.ok{background:linear-gradient(180deg,#58c987,#3aa86a);border-color:#8ee1aa28}.warn{background:linear-gradient(180deg,#d5a54e,#ae7b27);border-color:#f1c16e25}.danger{background:linear-gradient(180deg,#d66d77,#b44f5a);border-color:#ef9aa225}
+.navlink.active{background:linear-gradient(135deg,var(--acc-soft),transparent 90%);border-color:var(--acc-line)}.side .navsub.active{background:var(--acc-soft)}
+.eyebrow{color:var(--acc-text)}.brand:before{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 0 18px var(--acc)}
+input:focus,select:focus{border-color:var(--acc)}.progress i{background:linear-gradient(90deg,var(--acc),var(--acc2))}
+body:not([data-theme=night]) .sidehead[data-tone]:before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:1px}
+body[data-theme=sections] .sidehead[data-tone=create]:before{background:#f0705a}body[data-theme=sections] .sidehead[data-tone=videos]:before{background:#22ad9e}body[data-theme=sections] .sidehead[data-tone=tools]:before{background:#dd9530}
+body[data-theme=neon] .sidehead[data-tone=create]:before{background:#ff3d8b;box-shadow:0 0 8px #ff3d8b}body[data-theme=neon] .sidehead[data-tone=videos]:before{background:#00d4ff;box-shadow:0 0 8px #00d4ff}body[data-theme=neon] .sidehead[data-tone=tools]:before{background:#ffc81a;box-shadow:0 0 8px #ffc81a}
+body[data-theme=neon] .side,body[data-theme=neon] .mobilebar{background:#000000f2;border-color:#1d222a}
+body[data-theme=neon] .card{background:linear-gradient(180deg,#0c0e12f4,#08090cf4);border-color:#20252d}
+body[data-theme=neon] button:not(.btn2),body[data-theme=neon] .btn:not(.btn2){box-shadow:0 0 18px var(--acc-shadow)}
+body[data-theme=neon] .navlink.active{box-shadow:0 0 14px var(--acc-soft)}
+body[data-theme=neon] .task[data-tone=create]{--tone:#ff3d8b}body[data-theme=neon] .task[data-tone=videos]{--tone:#00c8ee}body[data-theme=neon] .task[data-tone=tools]{--tone:#f2b705}body[data-theme=neon] .task{--tone:#8b5cff}body[data-theme=night] .task{--tone:#6d96ff}body[data-theme=neon] .task{background:linear-gradient(160deg,color-mix(in srgb,var(--tone) 16%,transparent),transparent 62%),linear-gradient(180deg,#0c0e12f4,#08090cf4)}body[data-theme=neon] .task:hover{box-shadow:0 0 22px color-mix(in srgb,var(--tone) 45%,transparent)}
+.look-pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.look-pick label{display:block;border:1px solid var(--line2);border-radius:12px;padding:10px;cursor:pointer}
+.look-pick input{margin-right:6px}.look-sw{display:flex;gap:5px;margin-top:8px}.look-sw i{display:block;height:22px;flex:1;border-radius:6px}
+"""
+
+
+def ui_theme() -> str:
+    try:
+        t=str((load_config().get('ui') or {}).get('theme') or '')
+    except Exception:
+        t=''
+    return t if t in THEMES else 'sections'
+
+
+def _tone(path) -> str:
+    """The kind of work a page belongs to (its menu group): create, videos, tools - or base."""
+    for (head,items),tone in zip(MENU,('create','videos','tools')):
+        if any(hit(path) for _l,_h,hit,_p in items):
+            return tone
+    return 'base'
+
+
+_WORK_STATE={'done':('Ready','safe'),'failed':('Failed','error'),'working':('Working','review'),'waiting':('Waiting','review'),
+             'stopped':('Stopped',''),'interrupted':('Stopped',''),'draft':('Draft','')}
+
+
+def _recent_work(limit=8):
+    """What was made lately in every part of the program, newest first: [{when, kind, title, state, href}]."""
+    out=[]
+    try:
+        from . import voice as vo
+        from .voice_web import _kind_label
+        kinds={'cartoon_make':('Cartoon','/auto/cartoon/{}'),'cartoon_write':('Story','/auto/cartoon/{}'),
+               'cartoon_study':('Studied video','/auto/cartoon/{}'),'clips_find':('Clips','/auto/clips/{}')}
+        for j in vo.list_jobs(80):
+            k=str(j.get('kind') or '')
+            if k in kinds:
+                label,href=kinds[k][0],kinds[k][1].format(j['id'])
+            elif k in ('voiceover','captions','dub','render'):
+                label,href=(_kind_label(j) or 'Voice-over'),'/auto/voice'
+            else:
+                continue
+            title=(str(j.get('title') or '') or Path(str(j.get('video') or j.get('source') or '')).name
+                   or str(j.get('text') or '')[:60] or label)
+            out.append({'when':str(j.get('created_at') or ''),'kind':label,'title':title,'state':j.get('state') or '','href':href})
+    except Exception:
+        pass
+    try:
+        from . import auto_edit as ae
+        st={'READY':'done','REVIEW':'done','PROCESSING':'working','ATTENTION':'failed'}
+        for pr in ae.list_projects()[:20]:
+            out.append({'when':str(pr.get('updated_at') or ''),'kind':'Reel','title':str(pr.get('title') or ''),
+                        'state':st.get(pr.get('state'),'draft'),'href':f"/auto/p/{pr['id']}"})
+    except Exception:
+        pass
+    try:
+        from . import downloader as D
+        for j in D.list_jobs(20):
+            n=len(j.get('items') or [])
+            out.append({'when':str(j.get('created_at') or ''),'kind':'Downloaded',
+                        'title':(str(j.get('author') or (j.get('items') or [{}])[0].get('title') or j.get('title') or '')
+                                 + (f" (+{n-1})" if n>1 else '')),
+                        'state':j.get('state') or '','href':'/media/download'})
+    except Exception:
+        pass
+    try:
+        with db() as con:
+            rows=con.execute("SELECT id,status,created_at,current_filename,total FROM jobs WHERE kind='convert' ORDER BY id DESC LIMIT 20").fetchall()
+        st={'finished':'done','partial':'done','failed':'failed','running':'working','queued':'waiting','cancelled':'stopped'}
+        for r in rows:
+            out.append({'when':str(r['created_at'] or ''),'kind':'Conversion',
+                        'title':(Path(str(r['current_filename'] or '')).name or f"#{r['id']}"),
+                        'state':st.get(r['status'],''),'href':'/convert'})
+    except Exception:
+        pass
+    out.sort(key=lambda x:x['when'],reverse=True)
+    return out[:limit]
+
+
+def _work_row(x):
+    label,cls=_WORK_STATE.get(x['state'],('',''))
+    return (f"<a class='workrow' href='{e(x['href'])}'><span class='badge'>{e(x['kind'])}</span>"
+            f"<span class='worktitle' translate='no'>{e(x['title'])}</span>"
+            f"<span class='muted worktime' translate='no'>{e(x['when'][:16].replace('T',' '))}</span>"
+            + (f"<span class='badge {cls}'>{e(label)}</span>" if label else "") + "</a>")
+
+
 def _nav_link(href,label,active=False,extra=''):
     cls=('navlink active' if active else 'navlink')+(' '+extra if extra else '')
     return f"<a class='{cls}' href='{href}'>{e(label)}</a>"
@@ -167,32 +281,87 @@ def _data_note():
     return note
 
 
+def _starts(path, *prefixes):
+    return any(path==x or path.startswith(x.rstrip('/')+'/') for x in prefixes)
+
+
+def _is_reel(p):
+    return _starts(p,'/auto') and not _starts(p,'/auto/clips','/auto/voice','/auto/cartoon','/auto/check','/auto/orders','/auto/update')
+
+
+# The menu: a column on the left (as video tools usually have), grouped by what one does - make something, work with
+# the videos one has, small tools. The page open is lit; a place with parts of its own shows them under it while it is
+# open. (label, address, is-this-page, parts: (label, address, is-this-part)). The pages' addresses never change.
+MENU=[
+    ('Create',[
+        ('Auto Edit','/auto',_is_reel,[]),
+        ('Clips from a long video','/auto/clips',lambda p:_starts(p,'/auto/clips'),[]),
+        ('Voice-over and text','/auto/voice',lambda p:_starts(p,'/auto/voice'),[]),
+        ('Cartoon Studio','/auto/cartoon',lambda p:_starts(p,'/auto/cartoon'),[
+            ('My cartoons and stories','/auto/cartoon#films',
+             lambda p:p.startswith('/auto/cartoon/') and not _starts(p,'/auto/cartoon/characters','/auto/cartoon/style')),
+            ('Write a story','/auto/cartoon#writer',lambda p:False),
+            ('Study a video','/auto/cartoon#study',lambda p:_starts(p,'/auto/cartoon/style')),
+            ('New cartoon','/auto/cartoon#new',lambda p:False),
+            ('Characters','/auto/cartoon/characters',lambda p:_starts(p,'/auto/cartoon/characters'))]),
+        ('Edit by hand','/composer',lambda p:_starts(p,'/composer','/composition-file'),[])]),
+    ('Videos',[
+        ('Library','/library',lambda p:_starts(p,'/library','/item','/similar','/storyboard','/media')
+                                       and not _starts(p,'/media/download'),[]),
+        ('Import','/import',lambda p:_starts(p,'/import'),[]),
+        ('Search','/search',lambda p:_starts(p,'/search'),[]),
+        ('Best Moments','/best',lambda p:_starts(p,'/best','/clip','/clip-preview','/export-file'),[]),
+        ('Download by a link','/media/download',lambda p:_starts(p,'/media/download'),[])]),
+    ('Tools',[
+        ('Convert','/convert',lambda p:_starts(p,'/convert'),[]),
+        ('Check this PC','/auto/check',lambda p:_starts(p,'/auto/check'),[]),
+        ('Orders from other programs','/auto/orders',lambda p:_starts(p,'/auto/orders'),[])]),
+]
+MENU_BOTTOM=[
+    ('Activity','/activity',lambda p:_starts(p,'/activity','/jobs'),[]),
+    ('Settings','/settings',lambda p:_starts(p,'/settings','/about','/help','/auto/update','/welcome'),[
+        ('Setup & Connections','/settings/connections',lambda p:_starts(p,'/settings/connections')),
+        ('Updates','/auto/update',lambda p:_starts(p,'/auto/update')),
+        ('Help & Recovery','/help',lambda p:_starts(p,'/help','/welcome')),
+        ('About','/about',lambda p:_starts(p,'/about'))]),
+]
+
+
+def _menu_item(path,label,href,hit,parts):
+    on=hit(path)
+    out=_nav_link(href,label,on)
+    if on and parts:                        # the open place's own parts, under it
+        out+=''.join(f"<a class='navlink navsub{' active' if h(path) else ''}' href='{href_}'>{e(l)}</a>" for l,href_,h in parts)
+    return out
+
+
+def _menu(path):
+    more_active=path.startswith(('/social','/devices','/cloud'))
+    groups=''.join(f"<div class='sidehead' data-tone='{tone}'>{e(head)}</div>"+''.join(_menu_item(path,*it) for it in items)
+                   for (head,items),tone in zip(MENU,('create','videos','tools')))
+    bottom=''.join(_menu_item(path,*it) for it in MENU_BOTTOM)
+    more=(f"<div class='navmore{' showmore' if more_active else ''}'>"
+          "<a class='navlink navmorebtn' href='#' onclick=\"this.parentNode.classList.toggle('showmore');return false\">More</a>"
+          + _nav_link('/social','Social Lab',path.startswith('/social'),'navextra')
+          + _nav_link('/devices','Devices',path.startswith('/devices'),'navextra')
+          + _nav_link('/cloud','Cloud',path.startswith('/cloud'),'navextra') + "</div>")
+    btns=(f"<div class='sidebtns'>{_lang_button(path)}{_update_button()}<button id='restartBtn' class='btn2'>Restart</button>"
+          + ("<button id='updateBtn' class='ok'>Update</button>" if (INSTALL/'updater_config.json').exists()
+             else "<button id='quitBtn' class='btn2' title='Stop MediaEngine on this PC'>Quit</button>") + "</div>")
+    return (f"<aside class='side' id='side'><div class='sidetop'><a class='brand' href='/'>MediaEngine</a> "
+            f"<span class='version' title='{e(str(INSTALL))}'>v{VERSION}{(' ' + BUILD) if BUILD else ''}</span></div>"
+            f"<div class='sidenav'>{_nav_link('/','Home',path=='/')}{groups}</div>"
+            f"<div class='sidebottom'>{bottom}{more}{btns}</div></aside>")
+
+
 def layout(title,body,script="",script_srcs=()):
     path=request.path
-    media_active=(path=='/media' or path.startswith(('/media/download','/import','/convert','/library','/search','/best','/clip/','/composer','/item/','/similar/','/export-file/','/composition-file/')))
-    social_active=path.startswith('/social')
-    devices_active=path.startswith('/devices')
-    cloud_active=path.startswith('/cloud')
-    activity_active=(path.startswith('/activity') or path.startswith('/jobs'))
-    settings_active=(path.startswith('/settings') or path.startswith('/about'))
-    more_active=social_active or devices_active or cloud_active
-    # the everyday places first; the rarely used ones (social history, phone pairing, cloud folders) behind "More"
-    nav=''.join([
-        _nav_link('/','Home',path=='/'),
-        _nav_link('/auto','Auto Edit',path.startswith('/auto')),
-        _nav_link('/media','Media',media_active),
-        _nav_link('/activity','Activity',activity_active),
-        _nav_link('/settings','Settings',settings_active),
-        "<a class='navlink navmorebtn' href='#' onclick=\"this.parentNode.classList.toggle('showmore');return false\">More</a>",
-        _nav_link('/social','Social Lab',social_active,'navextra'),
-        _nav_link('/devices','Devices',devices_active,'navextra'),
-        _nav_link('/cloud','Cloud',cloud_active,'navextra'),
-    ])
     external_scripts=''.join(f"<script src='{e(src)}'></script>" for src in script_srcs)
-    return f"""<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(title)} · MediaEngine</title><link rel='icon' href='/favicon.ico'><style>{CSS}</style></head><body>
-<nav><div class='navin{" showmore" if more_active else ""}'><span class='brand'>MediaEngine <span class='version' title='{e(str(INSTALL))}'>v{VERSION}{(' ' + BUILD) if BUILD else ''}</span></span>{nav}<span class='spacer'></span>{_lang_button(path)}{_update_button()}<button id='restartBtn' class='btn2'>Restart</button>{"<button id='updateBtn' class='ok'>Update</button>" if (INSTALL/'updater_config.json').exists() else "<button id='quitBtn' class='btn2' title='Stop MediaEngine on this PC'>Quit</button>"}</div></nav>
+    return f"""<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(title)} · MediaEngine</title><link rel='icon' href='/favicon.ico'><style>{CSS}{THEME_CSS}</style></head><body data-theme='{ui_theme()}' data-tone='{_tone(path)}'>
+<div class='app' id='app'>{_menu(path)}<div class='sideshade' onclick="document.getElementById('app').classList.remove('menu-open')"></div><div class='main'>
+<div class='mobilebar'><button type='button' class='btn2' onclick="document.getElementById('app').classList.toggle('menu-open')">☰ Menu</button><a class='brand' href='/'>MediaEngine</a></div>
 <div id='jobbar' class='jobbar'><div class='jobinner'><div class='row space'><b id='jobtext'>Working…</b><a href='/activity' class='muted'>Open activity</a></div><div id='jobsub' class='muted'></div><div class='progress'><i id='jobpct'></i></div></div></div>
-<div class='wrap'>{_data_note()}{body}</div><div id='toast' class='toast'></div><script>{GLOBAL_JS}\n{script}</script>{external_scripts}</body></html>"""
+<div class='wrap'>{_data_note()}{body}</div></div></div><div id='toast' class='toast'></div><script>{GLOBAL_JS}\n{script}</script>{external_scripts}</body></html>"""
 
 
 def page_nav(page,pages,params=None):
@@ -581,8 +750,8 @@ def create_app():
     def source_status():
         return jsonify(phone_snapshot())
 
-    @app.get('/')
-    def dashboard():
+    def _library_figures():
+        """The Library's figures and the Android source (the Media overview)."""
         local_sql="excluded=0 AND work_selected=1 AND private_path IS NULL AND rejected_path IS NULL AND analysis_status<>'private' AND COALESCE(sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes) AND (source_kind='fixed' OR staging_path IS NOT NULL OR archive_path IS NOT NULL)"
         with db() as con:
             metrics=con.execute(f"""SELECT
@@ -603,29 +772,51 @@ def create_app():
         phone=phone_snapshot(); phone_text=(phone.get('model') or phone.get('serial') or 'Android')+' connected' if phone['connected'] else (phone.get('error') or 'not connected')
         if not phone['connected'] and 'ADB not installed' in str(phone.get('error') or ''):
             phone_text='Optional, not set up: copy the phone videos to this PC and choose that folder.'   # not an error
-        side_note=("<div class='card callout' style='margin-top:14px'><b>The Library is empty.</b> "
-                   "<span class='muted'>Add a folder on Import, or make a reel straight from a folder of videos with Auto Edit.</span>"
-                   "<div class='row' style='margin-top:8px'><a class='btn' href='/auto'>Auto Edit</a></div></div>") if (SIDE_BY_SIDE and not total) else ""
-        body=f"""<div class='pagehead row space'><div><div class='eyebrow'>Local-first media workspace</div><h1>Your footage, ready to work.</h1><div class='lead'>Browse Android, SD/USB and local folders in one place. Library stays clean: only media you explicitly add becomes part of the working collection.</div></div><div class='row'><a class='btn' href='/auto'>Auto Edit</a><a class='btn btn2' href='/convert'>Convert</a><a class='btn btn2' href='/auto/check'>Check this PC</a><a class='btn btn2' href='/welcome'>Start here</a><a class='btn btn2' href='/import'>Import new media</a><a class='btn btn2' href='/library'>Open Library</a></div></div>
-<div class='hero'><div class='card metric tone-blue'><span class='muted'>On sources</span><b>{total}</b></div><div class='card metric tone-amber'><span class='muted'>Waiting to import</span><b>{waiting}</b></div><div class='card metric tone-mint'><span class='muted'>In Library</span><b>{imported}</b></div><div class='card metric tone-cyan'><span class='muted'>Library videos</span><b>{videos}</b></div><div class='card metric tone-rose'><span class='muted'>Privacy review</span><b>{review}</b></div><a class='card metric tone-violet' href='/auto'><span class='muted'>Reel projects</span><b>{reels}</b></a></div>
-<div class='card source-card'><div class='device'><span class='device-dot {'online' if phone['connected'] else ''}' data-phone-dot></span><div><div class='device-status'>Android source</div><div class='muted' data-phone-text>{e(phone_text)}</div></div></div><div class='row'><span class='badge {'error' if errs else 'safe'}'>{errs} errors</span><a class='btn btn2' href='/jobs'>Jobs</a></div></div>
-{side_note}<div class='section-title'>How it works</div><div class='card callout'>Browse every source in <b>Import</b> → select what you want → <b>Add to Library</b> or <b>Add + Analyze</b>. Files in folders on this PC stay in place; files from a phone, SD card or USB stick (also a folder added there) copy to Staging. Private and Rejected media never appear in Library.</div>"""
-        return layout('Dashboard',body)
+        return dict(total=total,imported=imported,videos=videos,waiting=waiting,review=review,errs=errs,reels=reels,phone=phone,phone_text=phone_text)
 
+    @app.get('/')
+    def dashboard():
+        from .auto_edit_web import whats_new_card, first_time_card
+        tiles=(('create','/auto','Auto Edit','A folder of your videos → a finished reel of the best moments.'),
+               ('create','/auto/clips','Clips from a long video','A podcast, a stream or an interview → short vertical clips with captions.'),
+               ('create','/auto/voice','Voice-over and text','A voice reads your text; captions word by word; titles on a video.'),
+               ('create','/auto/cartoon','Cartoon Studio','A short 2D cartoon: the story written for you, drawn, voiced, with captions.'),
+               ('videos','/media/download','Download by a link','A video, or a profile’s videos, from YouTube, TikTok and other sites.'),
+               ('tools','/convert','Convert','Smaller copies to share: for a messenger, or to a size in MB.'))
+        grid=''.join(f"<a class='card task' data-tone='{t}' href='{h}'><b>{e(n)}</b><span>{e(d)}</span></a>" for t,h,n,d in tiles)
+        work=_recent_work(8)
+        recent=(''.join(_work_row(x) for x in work) if work else
+                "<div class='muted'>Nothing made yet: choose what to make above.</div>")
+        try:
+            with db() as con:
+                n_lib=int(con.execute("SELECT COUNT(*) FROM inventory WHERE excluded=0 AND work_selected=1 AND private_path IS NULL "
+                                      "AND rejected_path IS NULL AND media_type='video'").fetchone()[0])
+        except Exception:
+            n_lib=0
+        body=(f"<div class='pagehead'><div class='eyebrow'>MediaEngine</div><h1>What shall we make?</h1>"
+              f"<div class='lead'>Everything is made on this PC: your videos are only read and never changed, nothing is sent anywhere.</div></div>"
+              f"{first_time_card()}{whats_new_card(e)}<div class='taskgrid'>{grid}</div>"
+              f"<div class='card' style='margin-top:16px'><div class='row space'><h2 style='margin:0'>Recent work</h2>"
+              f"<a class='muted' href='/activity'>All work</a></div><div class='worklist'>{recent}</div></div>"
+              f"<div class='row muted' style='margin-top:14px;font-size:14px;gap:14px'>"
+              f"<a href='/media'><span>Library:</span> <span translate='no'>{n_lib}</span> <span>videos</span></a>"
+              f"<a href='/import'>Import from a phone, a card or a folder</a><a href='/auto/check'>Check this PC</a></div>")
+        return layout('Home',body)
 
     @app.get('/media')
     def media_hub():
-        body="""<div class='pagehead'><div class='eyebrow'>Media workspace</div><h1>Media</h1><div class='lead'>Ingest, understand, find, convert and compose from the local working library. Existing media routes remain unchanged under this section.</div></div>
-<div class='hubgrid'>
-<a class='card hubcard tone-blue' href='/import'><b>Import</b><span>Browse folders, Android and removable sources.</span></a>
-<a class='card hubcard tone-mint' href='/library'><b>Library</b><span>The media you explicitly selected for work.</span></a>
-<a class='card hubcard tone-violet' href='/search'><b>Search</b><span>Local semantic signals and Find Similar.</span></a>
-<a class='card hubcard tone-amber' href='/best'><b>Best Moments</b><span>Review Media Brain virtual clips.</span></a>
-<a class='card hubcard tone-amber' href='/auto'><b>Auto Edit</b><span>Folder of videos → finished reel from the best moments.</span></a>
-<a class='card hubcard tone-cyan' href='/composer'><b>Composer</b><span>Build nondestructive multi-clip compositions.</span></a>
-<a class='card hubcard tone-rose' href='/convert'><b>Convert</b><span>Create local derived copies without altering originals.</span></a>
-<a class='card hubcard tone-blue' href='/media/download'><b>Download by a link</b><span>A video or a profile's videos from YouTube, TikTok and other sites.</span></a>
-</div>"""
+        f=_library_figures(); phone=f['phone']
+        body=f"""<div class='pagehead'><div class='eyebrow'>Videos</div><h1>Media</h1><div class='lead'>Your videos for work: what is on the sources, what is in the Library, where to find the best moments.</div></div>
+<div class='hero'><div class='card metric tone-blue'><span class='muted'>On sources</span><b>{f['total']}</b></div><div class='card metric tone-amber'><span class='muted'>Waiting to import</span><b>{f['waiting']}</b></div><div class='card metric tone-mint'><span class='muted'>In Library</span><b>{f['imported']}</b></div><div class='card metric tone-cyan'><span class='muted'>Library videos</span><b>{f['videos']}</b></div><div class='card metric tone-rose'><span class='muted'>Privacy review</span><b>{f['review']}</b></div><a class='card metric tone-violet' href='/auto'><span class='muted'>Reel projects</span><b>{f['reels']}</b></a></div>
+<div class='card source-card'><div class='device'><span class='device-dot {'online' if phone['connected'] else ''}' data-phone-dot></span><div><div class='device-status'>Android source</div><div class='muted' data-phone-text>{e(f['phone_text'])}</div></div></div><div class='row'><span class='badge {'error' if f['errs'] else 'safe'}'>{f['errs']} errors</span><a class='btn btn2' href='/jobs'>Jobs</a></div></div>
+<div class='hubgrid' style='margin-top:14px'>
+<a class='card hubcard' href='/library'><b>Library</b><span>The media you explicitly selected for work.</span></a>
+<a class='card hubcard' href='/import'><b>Import</b><span>Browse folders, Android and removable sources.</span></a>
+<a class='card hubcard' href='/search'><b>Search</b><span>Local semantic signals and Find Similar.</span></a>
+<a class='card hubcard' href='/best'><b>Best Moments</b><span>Review Media Brain virtual clips.</span></a>
+<a class='card hubcard' href='/media/download'><b>Download by a link</b><span>A video or a profile's videos from YouTube, TikTok and other sites.</span></a>
+</div>
+<div class='section-title'>How it works</div><div class='card callout'>Browse every source in <b>Import</b> → select what you want → <b>Add to Library</b> or <b>Add + Analyze</b>. Files in folders on this PC stay in place; files from a phone, SD card or USB stick (also a folder added there) copy to Staging. Private and Rejected media never appear in Library.</div>"""
         return layout('Media',body)
 
     @app.get('/social')
@@ -861,7 +1052,10 @@ if(recheck)recheck.onclick=async()=>{
 
     @app.get('/activity')
     def activity_hub():
-        body="""<div class='pagehead'><div class='eyebrow'>Operations</div><h1>Activity</h1><div class='lead'>Jobs, failures and recovery history live here. Existing job details remain unchanged.</div></div>
+        work=_recent_work(60)
+        rows=''.join(_work_row(x) for x in work) or "<div class='muted'>Nothing made yet.</div>"
+        body="""<div class='pagehead'><div class='eyebrow'>Operations</div><h1>Activity</h1><div class='lead'>Everything made in MediaEngine, newest first; the import and analysis jobs and recovery below.</div></div>
+<div class='card' style='margin-bottom:14px'><h2 style='margin-top:0'>All work</h2><div class='worklist'>"""+rows+"""</div></div>
 <div class='hubgrid'>
 <a class='card hubcard tone-blue' href='/jobs'><b>Jobs & errors</b><span>Open the existing durable job history.</span></a>
 <a class='card hubcard' href='/help'><b>Recovery & support</b><span>Inspect failed jobs, retry safely, and review local diagnostic/support boundaries.</span></a>
@@ -1023,7 +1217,7 @@ if(recheck)recheck.onclick=async()=>{
             filters=f"""<form method='get' class='toolbar toolpanel'><input name='q' value='{e(q)}' placeholder='Search source media'><select name='media_type'>{opt(media_type,'','Photos + videos')}{opt(media_type,'video','Videos')}{opt(media_type,'image','Photos')}</select><select name='source_kind'>{opt(source_kind,'','All sources')}{opt(source_kind,'android','Android')}{opt(source_kind,'removable','SD/USB')}{opt(source_kind,'fixed','Local folders')}</select><select name='imported'>{opt(imported,'no','Not in Library')}{opt(imported,'yes','In Library')}{opt(imported,'','All source items')}</select><select name='sort'>{opt(sort,'date_desc','Newest')}{opt(sort,'date_asc','Oldest')}{opt(sort,'size_desc','Largest')}{opt(sort,'duration_desc','Longest')}{opt(sort,'name','Name')}</select><button>Apply</button></form>"""
             actions="""<div class='toolbar'><b id='selectedCount'>0 selected</b><span class='badge ready' id='previewCount'>Previews …</span><button class='btn2' id='selectPage'>Select page</button><button class='btn2' id='clearSel'>Clear</button><button id='importBtn'>Add to Library</button><button id='importAnalyzeBtn' class='ok'>Add + Analyze</button></div><div id='actionMsg' class='mode-note'>Files in folders on this PC stay in place. Files from a phone, SD card or USB stick are copied to Staging. Source originals are never deleted.</div>"""
         else:
-            head=f"""<div class='pagehead row space'><div><div class='eyebrow'>Working collection</div><h1>Library</h1><div class='lead'>{total} local item(s). This is the media already selected/imported and available for work.</div></div><div class='row'><a class='btn btn2' href='/import'>Import more</a><a class='btn btn2' href='/jobs'>Jobs / errors</a></div></div>"""
+            head=f"""<div class='pagehead row space'><div><div class='eyebrow'>Videos</div><h1>Library</h1><div class='lead'>{total} local item(s). This is the media already selected/imported and available for work.</div></div><div class='row'><a class='btn btn2' href='/import'>Import more</a><a class='btn btn2' href='/jobs'>Jobs / errors</a></div></div>"""
             source_options=opt(source_id,'','By source: all')
             for s in source_choices:
                 prefix={'android':'Android','removable':'SD/USB','fixed':'Folder'}.get(s['source_kind'],s['source_kind'])
@@ -1513,7 +1707,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
             active+=(f"<div class='card' id='convertQueue' style='margin-top:10px'><b>Waiting in line</b> <span class='badge'>{len(wl)}</span>"
                      + ("<div class='small' style='color:#f0b35a'>The graphics card is being tested first (about two minutes, test clips only): then they start, on whichever was faster with the same picture.</div>" if card_now else "")
                      + f"<div class='small muted'>They start one by one, by themselves, when the job before them ends.</div>{''.join(wl)}</div>")
-        body=f"""<div class='pagehead row space'><div><div class='eyebrow'>Local video utility</div><h1>Convert</h1><div class='lead'><span>Make smaller shareable copies without touching originals.</span> <span>Converted files go into:</span> <span class='ae-path'>{e(str(out_dir))}</span> <button class='btn2' type='button' data-cv='outdir' style='padding:2px 10px'>Change…</button>{"<button class='btn2' type='button' data-cv='outdir-reset' style='padding:2px 10px;margin-left:4px'>Back to Converted</button>" if out_dir!=HOME/'Converted' else ''}<br><span>Source folders and cards are never written to.</span></div></div><div class='row'><button class='btn' type='button' data-cv='folder'>Open the folder</button><a class='btn btn2' href='/import'>Add / discover a folder</a></div></div>
+        body=f"""<div class='pagehead row space'><div><div class='eyebrow'>Tools</div><h1>Convert</h1><div class='lead'><span>Make smaller shareable copies without touching originals.</span> <span>Converted files go into:</span> <span class='ae-path'>{e(str(out_dir))}</span> <button class='btn2' type='button' data-cv='outdir' style='padding:2px 10px'>Change…</button>{"<button class='btn2' type='button' data-cv='outdir-reset' style='padding:2px 10px;margin-left:4px'>Back to Converted</button>" if out_dir!=HOME/'Converted' else ''}<br><span>Source folders and cards are never written to.</span></div></div><div class='row'><button class='btn' type='button' data-cv='folder'>Open the folder</button><a class='btn btn2' href='/import'>Add / discover a folder</a></div></div>
 <div class='card'><div class='row space'><div style='min-width:0'><b>Preset</b><div class='muted small' style='white-space:normal'>Choose a preset. For messengers / sharing, Share 1080p is the balanced option.</div></div><span id='selectedCount' class='badge'>0 selected</span></div>
 <div id='estimateSummary' class='card' style='margin-top:10px;padding:10px 12px;background:#111823'><b id='estimateOutput'>Select videos to see estimated output size.</b><div id='estimateNote' class='small muted' style='margin-top:3px'>Estimate is shown before conversion and may vary with image complexity.</div></div>
 <style>.convertRow.convertSelected{{border-color:#6f91ff;box-shadow:0 0 0 1px #6f91ff inset;background:#192231}}.convertRow .estimateOne{{min-height:16px}}</style>
@@ -2536,7 +2730,7 @@ async function jobAction(btn,url,mode){
 
     @app.get('/settings')
     def settings():
-        cfg=load_config(); body=f"""<div class='pagehead'><div class='eyebrow'>Configuration</div><h1>Settings</h1><div class='lead'>Storage, privacy and local analysis behavior. External capabilities are managed separately in Setup & Connections.</div><div class='row' style='margin-top:10px'><a class='btn btn2' href='/auto/check'>Check this PC</a><a class='btn btn2' href='/auto/update'>Updates</a><a class='btn btn2' href='/settings/connections'>Setup & Connections</a><a class='btn btn2' href='/help'>Help & Recovery</a><a class='btn btn2' href='/about'>About</a></div><div class='row' style='margin-top:10px'><span class='muted'>Interface language</span><form method='post' action='/lang' style='margin:0'><input type='hidden' name='lang' value='en'><input type='hidden' name='back' value='/settings'><button class='{'btn2' if i18n.ui_language()=='ru' else ''}' translate='no'>English</button></form><form method='post' action='/lang' style='margin:0'><input type='hidden' name='lang' value='ru'><input type='hidden' name='back' value='/settings'><button class='{'' if i18n.ui_language()=='ru' else 'btn2'}' translate='no'>Русский</button></form></div></div><div class='about-grid'><div><div class='section-title'>Storage</div><div class='card about-list'><div><b>Data folder</b><div class='muted'>{e(HOME)} <span class='muted'>(projects, database, exports{' — kept outside the program folder, shared by every release' if INSTALL!=HOME else ''})</span></div></div><div><b>Program folder</b><div class='muted'>{e(INSTALL)}</div></div><div><b>Staging</b><div class='muted'>{e(STAGING)}</div></div><div><b>Private</b><div class='muted'>{e(PRIVATE)}</div></div><div><b>Rejected quarantine</b><div class='muted'>{e(REJECTED)}</div></div><div><b>Archive folder</b><div class='muted'>{e(cfg['archive_root'])}</div></div></div></div><div><div class='section-title'>Behavior</div><form method='post' action='/settings/save' class='card'><label>Archive folder<br><input name='archive_root' style='width:100%;margin-top:5px' value='{e(cfg['archive_root'])}'></label><br><br><label>Free-space reserve GB<br><input name='min_free_gb' type='number' value='{e(cfg['ingest']['min_free_gb'])}' style='margin-top:5px'></label><br><br><label><input type='checkbox' name='privacy' {'checked' if cfg['privacy']['enabled'] else ''}> Privacy screening</label><br><label><input type='checkbox' name='quality' {'checked' if cfg['analysis']['technical_quality'] else ''}> Technical quality triage</label><br><label><input type='checkbox' name='notify' {'checked' if (cfg.get('auto_edit') or {}).get('notify',True) is not False else ''}> Windows notification when a reel or a conversion that took more than a minute is ready</label><br>{_autostart_box()}<br><button>Save settings</button></form></div></div><div class='section-title'>Existing local sources</div><div class='card'>"""
+        cfg=load_config(); body=f"""<div class='pagehead'><div class='eyebrow'>Configuration</div><h1>Settings</h1><div class='lead'>Storage, privacy and local analysis behavior. External capabilities are managed separately in Setup & Connections.</div><div class='row' style='margin-top:10px'><span class='muted'>Interface language</span><form method='post' action='/lang' style='margin:0'><input type='hidden' name='lang' value='en'><input type='hidden' name='back' value='/settings'><button class='{'btn2' if i18n.ui_language()=='ru' else ''}' translate='no'>English</button></form><form method='post' action='/lang' style='margin:0'><input type='hidden' name='lang' value='ru'><input type='hidden' name='back' value='/settings'><button class='{'' if i18n.ui_language()=='ru' else 'btn2'}' translate='no'>Русский</button></form></div></div>{_look_card()}<div class='about-grid'><div><div class='section-title'>Storage</div><div class='card about-list'><div><b>Data folder</b><div class='muted'>{e(HOME)} <span class='muted'>(projects, database, exports{' — kept outside the program folder, shared by every release' if INSTALL!=HOME else ''})</span></div></div><div><b>Program folder</b><div class='muted'>{e(INSTALL)}</div></div><div><b>Staging</b><div class='muted'>{e(STAGING)}</div></div><div><b>Private</b><div class='muted'>{e(PRIVATE)}</div></div><div><b>Rejected quarantine</b><div class='muted'>{e(REJECTED)}</div></div><div><b>Archive folder</b><div class='muted'>{e(cfg['archive_root'])}</div></div></div></div><div><div class='section-title'>Behavior</div><form method='post' action='/settings/save' class='card'><label>Archive folder<br><input name='archive_root' style='width:100%;margin-top:5px' value='{e(cfg['archive_root'])}'></label><br><br><label>Free-space reserve GB<br><input name='min_free_gb' type='number' value='{e(cfg['ingest']['min_free_gb'])}' style='margin-top:5px'></label><br><br><label><input type='checkbox' name='privacy' {'checked' if cfg['privacy']['enabled'] else ''}> Privacy screening</label><br><label><input type='checkbox' name='quality' {'checked' if cfg['analysis']['technical_quality'] else ''}> Technical quality triage</label><br><label><input type='checkbox' name='notify' {'checked' if (cfg.get('auto_edit') or {}).get('notify',True) is not False else ''}> Windows notification when a reel or a conversion that took more than a minute is ready</label><br>{_autostart_box()}<br><button>Save settings</button></form></div></div><div class='section-title'>Existing local sources</div><div class='card'>"""
         for i,s in enumerate(cfg.get('sources',[])):
             body+=f"<div class='row space' style='padding:7px 0'><span><b translate='no'>{e(s.get('label') or s.get('path'))}</b><div class='muted' translate='no'>{e(s.get('path'))}</div></span><form method='post' action='/settings/remove-source'><input type='hidden' name='index' value='{i}'><input type='hidden' name='path' value='{e(str(s.get('path') or ''))}'><button class='danger'>Remove</button></form></div>"
         if request.args.get('source_error','').strip():
@@ -2584,6 +2778,29 @@ async function jobAction(btn,url,mode){
     @app.post('/settings/remove-source')
     def rem_source():
         _remove_source(request.form)
+        return redirect('/settings')
+
+    def _look_card():
+        cur=ui_theme()
+        opts=(('sections','A colour for each kind of work','Create - warm, Videos - teal, Tools - amber, on a dark base.',
+               ('#f0705a','#c8417f','#22ad9e','#2a7cc9','#dd9530','#7c86ff')),
+              ('neon','Neon on black','True black, bright colours with a glow (also by kind of work).',
+               ('#ff3d8b','#a23cff','#00c8ee','#0a6cff','#f2b705','#8b5cff')),
+              ('night','Calm night','One calm blue everywhere, as before.',('#7099ff','#5278df','#a78bfa','#6d96ff')))
+        def swatch(cols):
+            return ''.join("<i style='background:"+c+"'></i>" for c in cols)
+        cards=''.join(f"<label><input type='radio' name='theme' value='{k}' {'checked' if k==cur else ''} onchange='this.form.submit()'>"
+                      f"<b>{e(t)}</b><div class='muted' style='font-size:13px;margin-top:4px'>{e(d)}</div>"
+                      f"<div class='look-sw'>{swatch(sw)}</div></label>"
+                      for k,t,d,sw in opts)
+        return (f"<div class='section-title'>Look</div><form method='post' action='/settings/look' class='card'>"
+                f"<div class='look-pick'>{cards}</div><noscript><button style='margin-top:8px'>Save</button></noscript></form>")
+
+    @app.post('/settings/look')
+    def save_look():
+        t=str(request.form.get('theme') or '')
+        if t in THEMES:
+            update_config(lambda cfg:cfg.setdefault('ui',{}).__setitem__('theme',t))
         return redirect('/settings')
 
     @app.post('/settings/save')

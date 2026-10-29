@@ -66,6 +66,27 @@ _RESUMED: list = []
 _VOICE_RESUMED: list = []
 
 
+def whats_new_card(e) -> str:
+    """What changed in this version, once (only for someone who already used MediaEngine): the 8 newest, the rest
+    folded away. On Home and on Auto Edit; OK hides it on both."""
+    wn = [] if (ae.whats_new_seen() or not ae.selftest_passed()) else ae.whats_new_items()
+    return "" if not wn else (
+        "<div class='card callout' style='margin-bottom:14px'><div class='row space'><b>New in this version</b>"
+        "<form method='post' action='/auto/whats-new/seen' style='margin:0'><button class='btn2'>OK</button></form></div>"
+        "<ul style='margin:6px 0 0'>" + "".join(f"<li>{e(x)}</li>" for x in wn[:8]) + "</ul>"
+        + (f"<details style='margin-top:6px'><summary><span>Earlier changes:</span> {len(wn) - 8}</summary><ul style='margin:6px 0 0'>"
+           + "".join(f"<li>{e(x)}</li>" for x in wn[8:]) + "</ul></details>" if len(wn) > 8 else "")
+        + "</div>")
+
+
+def first_time_card() -> str:
+    return "" if ae.selftest_passed() else (
+        "<div class='card callout' style='margin-bottom:14px'><b>First time on this PC?</b> "
+        "<span class='muted'>Check this PC first: it shows whether the AI model and video tools are found and builds a 5-second test reel "
+        "(about a minute; your videos are not used).</span>"
+        "<div class='row' style='margin-top:8px'><a class='btn' href='/auto/check'>Check this PC</a></div></div>")
+
+
 def _voice_on_home() -> bool:
     try:
         from . import voice as _vo
@@ -397,12 +418,8 @@ def register(app, layout, e, human_bytes):
         check_btn = ("<div class='row' style='float:right;gap:8px'>"
                      + ("<form method='post' action='/auto/exports/open' style='margin:0'><button class='btn2'>Exported reels</button></form>"
                         if has_exports else "")
-                     + ("<a class='btn btn2' href='/auto/voice'>Voice-over and text</a>" if _voice_on_home() else "")
-                     + "<a class='btn btn2' href='/auto/clips'>Clips from a long video</a>"
-                     + "<a class='btn btn2' href='/auto/cartoon'>Cartoon Studio</a>"
-                     + "<a class='btn btn2' href='/auto/orders'>Orders"
-                     + (f" <span class='badge review' translate='no'>{n_orders}</span>" if n_orders else "") + "</a>"
-                     + "<a class='btn btn2' href='/auto/check'>Check this PC</a></div>")
+                     + (f"<a class='btn btn2' href='/auto/orders'><span>Orders</span> <span class='badge review' translate='no'>{n_orders}</span></a>"
+                        if n_orders else "") + "</div>")
         # folders of the last reels (one click to a new reel from the same place)
         recent, seen_f = [], set()
         for rp in ae.list_projects(include_archived=True):
@@ -415,21 +432,8 @@ def register(app, layout, e, human_bytes):
                        + "".join(f"<a class='btn btn2' style='padding:5px 9px;font-size:13px' title='{e(f_)}' "
                                  f"href='/auto/new?folder={urllib.parse.quote(f_)}' translate='no'>{e(Path(f_).name or f_)}</a>" for f_ in recent)
                        + "</div>") if recent else ""
-        # what changed in this version, once (only for someone who already used MediaEngine)
-        wn = [] if (ae.whats_new_seen() or not ae.selftest_passed()) else ae.whats_new_items()
-        whats_new = "" if not wn else (      # the 8 newest; the rest folded away
-            "<div class='card callout' style='margin-bottom:14px'><div class='row space'><b>New in this version</b>"
-            "<form method='post' action='/auto/whats-new/seen' style='margin:0'><button class='btn2'>OK</button></form></div>"
-            "<ul style='margin:6px 0 0'>" + "".join(f"<li>{e(x)}</li>" for x in wn[:8]) + "</ul>"
-            + (f"<details style='margin-top:6px'><summary><span>Earlier changes:</span> {len(wn) - 8}</summary><ul style='margin:6px 0 0'>"
-               + "".join(f"<li>{e(x)}</li>" for x in wn[8:]) + "</ul></details>" if len(wn) > 8 else "")
-            + "</div>")
-        first = "" if ae.selftest_passed() else (
-            "<div class='card callout' style='margin-bottom:14px'><b>First time on this PC?</b> "
-            "<span class='muted'>Check this PC first: it shows whether the AI model and video tools are found and builds a 5-second test reel "
-            "(about a minute; your videos are not used).</span>"
-            "<div class='row' style='margin-top:8px'><a class='btn' href='/auto/check'>Check this PC</a></div></div>")
-        body = f"""<div class='pagehead'>{check_btn}<div class='eyebrow'>MediaEngine</div><h1>Auto Edit</h1>
+        whats_new, first = whats_new_card(e), first_time_card()
+        body = f"""<div class='pagehead'>{check_btn}<div class='eyebrow'>Create</div><h1>Auto Edit</h1>
 <div class='lead'>Choose a folder of videos (or single videos), pick length, format and sound, and MediaEngine builds a reel from the best moments.
 Your original files are only read, never changed.</div></div>{first}{whats_new}
 <div class='card'><h2 style='margin-top:0'>New reel</h2>
@@ -533,7 +537,7 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
                            f"{human_bytes(int(request.args['freed']) if request.args['freed'].isascii() and request.args['freed'].isdigit() else 0)}</div>") + shared_html
         builds_html = shared_html + builds_html
         hw_html = _hwdecode_html(e) + _convert_gpu_html(e)
-        body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
+        body = (f"<div class='pagehead'><div class='eyebrow'>Tools</div><h1>Check this PC</h1>"
                 f"<div class='lead'>What MediaEngine needs, and a 5-second test reel made from generated clips (your videos are not used).</div></div>"
                 f"<div class='card'><table class='ae-files'>{table}</table></div>"
                 f"<form method='post' class='card' style='margin-top:14px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
@@ -623,7 +627,8 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
     @app.post("/auto/whats-new/seen")
     def ae_whats_new_seen():
         ae.mark_whats_new_seen()
-        return redirect("/auto")
+        back = urllib.parse.urlparse(request.referrer or "").path      # (shown on Home and on Auto Edit: back to it)
+        return redirect(back if back in ("/", "/auto") else "/auto")
 
     @app.post("/auto/check/free-caches")
     def ae_free_caches():

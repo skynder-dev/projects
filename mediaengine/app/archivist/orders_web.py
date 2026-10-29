@@ -180,7 +180,7 @@ def register(app, page, err_page, e, error_html):
                  f"<pre class='ae-path' style='white-space:pre-wrap'>{e(json.dumps(example_plan, indent=2, ensure_ascii=False))}</pre>"
                  "<div class='muted'>A reel from videos (MediaEngine chooses the moments):</div>"
                  f"<pre class='ae-path' style='white-space:pre-wrap'>{e(json.dumps(example_reel, indent=2, ensure_ascii=False))}</pre></details>")
-        body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Orders</h1>"
+        body = (f"<div class='pagehead'><div class='eyebrow'>Tools</div><h1>Orders</h1>"
                 f"<div class='lead'>Other programs on this PC can order a video: they put an order into the Inbox folder, "
                 f"MediaEngine makes the video and puts it into Done with a receipt. Nothing is published.</div>"
                 f"<div class='row' style='margin-top:10px;gap:6px'>"

@@ -535,7 +535,7 @@ def main():
               and "action='/lang'" in home_en and "href='/auto/check'" in home_en
               and "Проверка компьютера" in pages_ru["/"] and "Язык интерфейса" in pages_ru["/settings"]
               and "Библиотека" in pages_ru["/library"] and "<html lang='ru'>" in pages_ru["/jobs"]
-              and b"Your footage" in c.get("/", headers=H).data, {u: len(t) for u, t in pages_ru.items()})
+              and b"What shall we make?" in c.get("/", headers=H).data, {u: len(t) for u, t in pages_ru.items()})
 
         r = c.get("/auto/check", headers=H)
         check("check_this_pc_page", r.status_code == 200 and b"Engine libraries load" in r.data and "⚠️</td><td><b>Engine".encode() not in r.data)

@@ -4,6 +4,15 @@ MediaEngine is local-first. Your media stays on this PC unless you explicitly co
 
 No external account or billing is required for local use.
 
+## Where things are
+
+The menu on the left: **Home** (what to make, and the recent work of every part), **Create** (Auto Edit, Clips from a
+long video, Voice-over and text, Cartoon Studio, Edit by hand), **Videos** (Library, Import, Search, Best Moments,
+Download by a link), **Tools** (Convert, Check this PC, Orders from other programs), then Activity (all the work),
+Settings and More. The place open is lit; Cartoon Studio and Settings show their parts under it. In a narrow window the
+menu is behind "☰ Menu". Colours: Settings → Look - a colour for each kind of work (the usual), Neon on black, or Calm
+night.
+
 ## Making a reel (Auto Edit)
 
 1. Auto Edit -> "Choose folder..." (a folder of videos on this computer) or "Choose videos..." (single files).

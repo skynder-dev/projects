@@ -447,22 +447,18 @@ def register(app, page, err_page, e, human_bytes):
     @app.get("/auto/cartoon")
     def cartoon_home():
         mine = cj.films()
-        rows = "".join(_film_row(j) for j in mine)
-        jump = ("<div class='ct-row' style='margin-top:10px'>"
-                + (f"<a class='btn' href='#films'><span>My cartoons and stories</span> <span translate='no'>({len(mine)})</span></a>"
-                   if mine else "")
-                + "<a class='btn btn2' href='#writer'>Write a story</a><a class='btn btn2' href='#study'>Study a cartoon</a>"
-                  "<a class='btn btn2' href='/media/download'>Download by a link</a>"
-                  "<a class='btn btn2' href='#new'>New cartoon</a>"
-                + (f"<a class='btn btn2' href='/auto/cartoon/characters'><span>Characters</span> "
-                   f"<span translate='no'>({len(L.load())})</span></a>" if L.load() else "")
-                + "</div>")
+        rows = "".join(_film_row(j) for j in mine[:6])     # (the newest first; the rest folded away)
+        if len(mine) > 6:
+            rows += (f"<details style='margin-top:8px'><summary><span>All cartoons and stories</span> <span translate='no'>"
+                     f"({len(mine)})</span></summary>{''.join(_film_row(j) for j in mine[6:])}</details>")
         help_ = _help()
-        body = (f"{CSS}<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Cartoon Studio</h1>"
+        body = (f"{CSS}<div class='pagehead'><div class='eyebrow'>Create</div><h1>Cartoon Studio</h1>"
                 f"<div class='lead'>A short 2D cartoon made by MediaEngine: its own characters (the same in every episode), "
                 f"scenes, schemes of money and charts, the characters' voices and captions - one MP4. Change any line, "
-                f"background or feeling and make it again.</div>{jump}"
-                + f"</div>{_READY}{_writer_card()}{_study_card()}"
+                f"background or feeling and make it again.</div>"
+                + f"</div>{_READY}{_writer_card()}"
+                + (f"<div class='card' id='films' style='margin-top:14px'><h2 style='margin-top:0'>My cartoons and stories</h2>{rows}</div>" if rows else "")
+                + f"{_study_card()}"
                 f"<div class='card' id='new' style='margin-top:14px'><h2 style='margin-top:0'>New cartoon</h2>"
                 f"<form method='post' action='/auto/cartoon/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<b>Story</b><div class='muted' style='font-size:13px'>The example below - change it or write your own.</div>{help_}"
@@ -472,8 +468,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<textarea name='script' rows='6' style='width:100%' placeholder='Paste a script here (only for \"My script\")'></textarea></details>"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice('vertical')}</div>"
                 f"{_voices_choice()}{_captions_choice()}{_camera_choice()}{_music_choice()}"
-                f"<div style='margin-top:12px'><button class='ae-big'>Make the cartoon</button></div></form></div>"
-                + (f"<div class='card' id='films' style='margin-top:14px'><h2 style='margin-top:0'>Cartoons and stories</h2>{rows}</div>" if rows else ""))
+                f"<div style='margin-top:12px'><button class='ae-big'>Make the cartoon</button></div></form></div>")
         return page("Cartoon Studio", body, _POLL_JS + _PICK_JS + _MUSIC_JS)
 
     def _make(script: dict, f, keep: dict | None = None) -> str:

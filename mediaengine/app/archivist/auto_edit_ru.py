@@ -1056,6 +1056,8 @@ PHRASES = {
     "The one speaking, close up": "Тот, кто говорит, крупно",
     "Make the 5 likeliest": "Сделать 5 самых удачных",
     # Cartoon Studio (cartoon_web.py, cartoon/)
+    "A new look: the menu on the left, grouped by what you do (Create, Videos, Tools); Home shows what to make and the recent work of every part; each kind of work has its own colour (Settings → Look: also “Neon on black” or “Calm night”).":
+        "Новый вид: меню слева, по смыслу (Создать, Видео, Инструменты); на Главной — что можно сделать и последние работы из всех разделов; у каждого вида работы свой цвет (Настройки → Оформление: ещё «Неон на чёрном» и «Спокойная ночь»).",
     "Cartoon Studio: an author's style - several studied videos (say, the ones downloaded from one profile) taken together: the middle of their rhythms and their colours; then “Write a story in this style”. The topic of a story may be typed in any language, even in translit.":
         "Мультстудия: стиль автора — несколько изученных видео (например, скачанных с одного профиля) вместе: середина их ритмов и их цвета; потом «Написать сюжет в этом стиле». Тему сюжета можно писать на любом языке, даже транслитом.",
     "Download by a link (Media → Download by a link): a video, or chosen videos of a profile or channel, from YouTube, TikTok and other sites into the Downloaded folder - then study its rhythm, write a story from it, cut clips or convert.":

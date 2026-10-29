@@ -137,7 +137,7 @@ def register(app, page, err_page, e, human_bytes):
                                  f"<input type='hidden' name='back' value='/auto/clips'><button class='btn2'>Delete</button></form>")
                               + "</div>" + _state_html(j, "/auto/clips"))
         listed = (f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Videos listened to</h2>{rows}</div>" if rows else "")
-        body = (f"{CSS}<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Clips from a long video</h1>"
+        body = (f"{CSS}<div class='pagehead'><div class='eyebrow'>Create</div><h1>Clips from a long video</h1>"
                 f"<div class='lead'>A podcast, a stream or an interview: MediaEngine listens to it once and lists the parts that "
                 f"make good short clips, with their words - the likeliest first. Tick the ones you want: they are made "
                 f"vertical, with the face in the frame, the sound and captions. The video itself is only read.</div></div>"
