@@ -29,6 +29,7 @@ on:
       - '!mediaengine/tests/writer_addon_check.py'   # mediaengine-writer-addon.yml
       - '!mediaengine/tests/writer_probe.py'         # mediaengine-writer-probe.yml
       - '!mediaengine/tests/ro_voice_probe.py'       # mediaengine-ro-voice-probe.yml
+      - '!mediaengine/tests/ytdlp_probe.py'          # mediaengine-ytdlp-probe.yml
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:
