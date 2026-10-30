@@ -181,6 +181,12 @@ def _friendly(err: str) -> str:
     return "The link could not be read: " + re.sub(r"^ERROR:\s*", "", last[0])[:300]
 
 
+def _instagram_profile(url: str) -> bool:
+    """An Instagram profile (not one reel or post)."""
+    m = re.match(r"^https?://(?:www\.)?instagram\.com/([^/?#]+)/?(?:[?#].*)?$", str(url or ""), re.I)
+    return bool(m) and m.group(1).lower() not in ("reel", "reels", "p", "tv", "stories", "explore")
+
+
 def _base(t: tuple[list[str], str]) -> list[str]:
     cmd, deno = t
     return cmd + ["--no-config", "--no-warnings", "--no-cache-dir", "--encoding", "utf-8"] + (["--js-runtimes", f"deno:{deno}"] if deno else [])
@@ -198,6 +204,9 @@ def look(url: str) -> dict:
     except subprocess.TimeoutExpired:
         raise DownloadError("The site took too long to answer. Try again.")
     if cp.returncode != 0:
+        if _instagram_profile(url):          # (the owner chose not to give MediaEngine his Instagram sign-in)
+            raise DownloadError("Instagram shows a profile's videos only after signing in. Send links to single reels "
+                                "instead (in Instagram: Share → Copy link).")
         raise DownloadError(_friendly(cp.stderr or cp.stdout or ""))
     try:
         d = json.loads(cp.stdout or "{}")

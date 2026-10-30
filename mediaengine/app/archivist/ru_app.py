@@ -278,6 +278,8 @@ APP_PHRASES: dict[str, str] = {
     "This is not a bot token. It looks like 1234567890:AAH... (from @BotFather).": "Это не токен бота. Он выглядит так: 1234567890:AAH... (от @BotFather).",
     "Telegram did not confirm this token.": "Telegram не подтвердил этот токен.", "The bot is not set up.": "Бот не настроен.",
     "The token could not be kept (the Windows credential store). Try again.": "Не получилось сохранить токен (хранилище учётных данных Windows). Попробуй ещё раз.",
+    "Instagram shows a profile's videos only after signing in. Send links to single reels instead (in Instagram: Share → Copy link).":
+        "Instagram показывает видео профиля только после входа. Присылай ссылки на отдельные рилсы (в Instagram: Поделиться → Копировать ссылку).",
     "Idea for the Inbox": "Идея во «Входящие»", "in the Inbox": "во «Входящих»",
     "The idea needs a topic or links to videos.": "Идее нужна тема или ссылки на видео.", "A link of the idea is not a web address (https://).": "Ссылка идеи — не веб-адрес (https://).",
     "Look": "Оформление", "A colour for each kind of work": "Свой цвет у каждого вида работы",
