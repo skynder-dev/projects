@@ -985,6 +985,14 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 - 2026-10-29, **b264** published (commit c2dfdb8, ZIP 4,973,702 bytes, the same runtime; run 40957783662: cartoon
   37/37, writer 35/35, download 10/10, convert 66/66, browser 20/20, Russian 242 pages 0 English, route fuzz 4054
   requests 0 errors): the new interface (the menu on the left, Home, colours); the Windows screenshots show it in Edge.
+- 2026-10-29 evening, the owner on b264: "why is More folded if there is room", "everything is very small", "the colours
+  are colour dust in a corner on 3 % of the screen - give ~10 design pictures, the most modern, I will choose". Done: the
+  menu shows everything (Other: Social Lab, Devices, Cloud), bigger; the whole interface grows with a wide screen (CSS
+  zoom 1.1 from 1400 px, 1.2 from 1700, 1.3 from 2000, 1.45 from 2500; Settings → Look → Size: by the screen / 100-150 %);
+  ten colour schemes with strong colour per kind of work (Aurora, Glass, Tonal, Banners, Bento, Neon, Synthwave, Sunset,
+  Ocean, Acid; Calm night as before) - pictures sent, Aurora the default until he chooses. He also asked about a phone:
+  told him what a phone web app could do (share a link to download, send videos, start work, notifications, results) -
+  it needs the app opened to his own devices (pairing code, his network or Tailscale): only on his "yes".
 - 2026-10-29, an author's style (step 3 of the owner's "a profile whose videos suit our style"): several studied videos
   together (`cartoon/reference.py`: new_style / author_style; cartoon/styles/<id>.json) - the median of their shot
   length, words a second, first words, the share opening with a question (median: one odd video changes little), their

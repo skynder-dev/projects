@@ -58,10 +58,8 @@ def main():
         check("form_button_works_in_a_real_browser", resp and resp.status == 200 and lang == "ru", (resp and resp.status, lang))
         with pg.expect_navigation():
             pg.click("form[action='/lang'] button")
-        # the rarely used pages behind "More"
-        hidden = not pg.is_visible("a.navextra[href='/social']")
-        pg.click("a.navmorebtn")
-        check("more_shows_the_other_pages", hidden and pg.is_visible("a.navextra[href='/social']"))
+        # the rarely used pages are in the menu too, not folded away (the owner: nothing folded while there is room)
+        check("other_pages_in_the_menu", all(pg.is_visible(f"aside.side a[href='{u}']") for u in ("/social", "/devices", "/cloud", "/convert")))
         # a new reel through the setup page, like a user
         pg.goto(base + "/auto/new?folder=" + str(src))
         tech = pg.query_selector("input[name=mode][value=technical]")
