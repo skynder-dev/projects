@@ -982,6 +982,9 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   MediaEngine opens on Home. Local checks: unit 198, browser 20/20 (420 px and 1280 px, ru/en), e2e 79/79, library flow
   43/43, orders 53/53, voice 198, cartoon 37, clips 37, convert 66, writer 35, download 10, Russian 0 English, route
   fuzz 4074 requests 0 errors.
+- 2026-10-29, **b264** published (commit c2dfdb8, ZIP 4,973,702 bytes, the same runtime; run 40957783662: cartoon
+  37/37, writer 35/35, download 10/10, convert 66/66, browser 20/20, Russian 242 pages 0 English, route fuzz 4054
+  requests 0 errors): the new interface (the menu on the left, Home, colours); the Windows screenshots show it in Edge.
 - 2026-10-29, an author's style (step 3 of the owner's "a profile whose videos suit our style"): several studied videos
   together (`cartoon/reference.py`: new_style / author_style; cartoon/styles/<id>.json) - the median of their shot
   length, words a second, first words, the share opening with a question (median: one odd video changes little), their

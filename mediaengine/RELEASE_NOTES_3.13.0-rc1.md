@@ -303,6 +303,12 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   studied for its rhythm when asked; **an author's style** (several studied videos together: the median of their
   rhythms, their colours; "Write a story in this style"); a story's topic may be typed in translit (the title and the
   names then in the story's own letters). Builds b259-b262 were cancelled by newer pushes.
+- b264 (commit c2dfdb8, run 40957783662: cartoon 37/37, writer 35/35, download 10/10, convert 66/66, browser 20/20
+  (420 px and 1280 px, ru/en), Russian 242 pages 0 English, route fuzz 4054 requests 0 errors; ZIP 4,973,702 bytes, the
+  same runtime): **the interface regrouped** at the owner's request - a menu column on the left (Home; Create; Videos;
+  Tools; Activity, Settings, More), the open place lit with its parts under it, "☰ Menu" in a narrow window; Home = what
+  to make and the recent work of every part, Activity = all the work; a colour per kind of work (Settings → Look: also
+  Neon on black, Calm night); MediaEngine opens on Home. No page address changed.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
