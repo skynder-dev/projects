@@ -1263,6 +1263,13 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Deferred / waiting
 
+- Full access from the owner's phone at home over Wi-Fi (MediaEngine listening on the home network for paired phones
+  only: QR pairing, phone-safe pages without PC windows or Quit/Update, uploads from the phone, results to the phone,
+  "add to home screen"; about a day of work) - the owner: "leave it for later, not urgent" (2026-10-30). The Telegram bot
+  covers links, topics, short videos and notices meanwhile.
+- Instagram: the owner said no to using his browser's Instagram sign-in (2026-10-30): single reel links only; a
+  profile link now says so plainly.
+
 - `/media` file routes serve Private items to the local owner UI only (loopback + Host check) — kept by design (D17).
 - Per-cut sync on real camera footage (synthetic flash/beep: within ±7 ms; also checked on Windows CI).
 - Human review of AI selection quality on the owner's own footage (blind comparison is built in).
