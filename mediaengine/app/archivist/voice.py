@@ -1328,6 +1328,9 @@ def _do(jid: str) -> dict:
     if str(job.get("kind") or "").startswith("cartoon_"):    # cartoon films (cartoon/jobs.py), in the same queue
         from .cartoon import jobs as cartoon_jobs
         return cartoon_jobs.do(jid, d, job)
+    if job.get("kind") == "handedit_render":                # an edit made by hand (handedit.py): its MP4
+        from . import handedit
+        return handedit.do(jid, d, job)
     if job["kind"] == "voiceover":
         v = dict(job["voice"])
         if v.get("ref_source"):                      # the owner's recording: a clean mono WAV of at most 30 s

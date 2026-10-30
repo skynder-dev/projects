@@ -246,6 +246,12 @@ jobs:
           python -m pip install --disable-pip-version-check -q playwright==1.47.0
           python mediaengine/tests/browser_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\browser" --channel msedge 2>&1 | Tee-Object "$env:OUT\browser_check.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Edit by hand (pieces of any videos on a time line, the MP4 in every format, the pages; the editor used in Edge)
+        if: success()
+        shell: pwsh
+        run: |
+          python mediaengine/tests/handedit_check.py "$env:RUNNER_TEMP\handedit" --channel msedge 2>&1 | Tee-Object "$env:OUT\handedit_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Screenshots of the real pages in Edge
         if: always()
         shell: pwsh

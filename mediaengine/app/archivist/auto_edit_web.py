@@ -1596,6 +1596,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
     download_web.register(app, page, err_page, e, human_bytes)
     from . import inbox_web        # the Inbox (links and topics from the phone's bot, other programs, typed) and the phone
     inbox_web.register(app, page, err_page, e, human_bytes)
+    from . import handedit_web     # Edit by hand: pieces of any videos on a time line, one MP4
+    handedit_web.register(app, page, err_page, e, human_bytes)
 
 
 AI_LABEL = "AI — as before (fast)"

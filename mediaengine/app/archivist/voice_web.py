@@ -19,7 +19,7 @@ _JOB_STEP = {"starting": "Starting…", "loading": "Loading the voice model…",
              "joining": "Joining the parts…", "listening": "Listening to check every word…", "finishing": "Finishing the sound…",
              "reading": "Reading the sound of the video…", "video": "Making the video…", "checking": "Checking the video…"}
 _KIND = {"voiceover": "Voice-over", "captions": "Captions for a video", "dub": "Voice-over on a video",
-         "render": "Video with text and captions"}
+         "render": "Video with text and captions", "handedit_render": "Edit by hand (MP4)"}
 def _kind_label(j: dict) -> str:
     """What the job makes, in words: a video's label says what it got (voice / captions / text / music)."""
     if j.get("kind") != "render":
@@ -453,7 +453,7 @@ def register(app, page, err_page, e, human_bytes):
         s = vo.status()
         show_all = request.args.get("all") == "1"
         # (clips from a long video are on their own page: never counted here)
-        jobs = [j for j in vo.list_jobs(100000 if show_all else 400) if not str(j.get("kind") or "").startswith(("clips_", "cartoon_"))]
+        jobs = [j for j in vo.list_jobs(100000 if show_all else 400) if not str(j.get("kind") or "").startswith(("clips_", "cartoon_", "handedit_"))]
         more = 0
         if not show_all and len(jobs) > 50:                 # the newest 50; the rest one click away
             more = len(jobs) - 50
@@ -523,7 +523,7 @@ def register(app, page, err_page, e, human_bytes):
         s = vo.status()
         jobs = []
         for j in vo.list_jobs(60):
-            if not str(j.get("kind") or "").startswith(("clips_", "cartoon_")):
+            if not str(j.get("kind") or "").startswith(("clips_", "cartoon_", "handedit_")):
                 jobs.append({"id": j["id"], "state": j["state"], "progress": float(j.get("progress") or 0)})
         return jsonify({"install": {k: s.get(k) for k in ("state", "step", "done", "total", "detail", "error", "installed")},
                         "jobs": jobs})

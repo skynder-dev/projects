@@ -90,7 +90,7 @@ def main():
     for rule in rules:
         if time.time() > t_end:
             break
-        if rule.rule.startswith(SKIP_RULES) or rule.rule.endswith(("/open", "/reveal", "/open-folder")) or rule.endpoint == "static":
+        if rule.rule.startswith(SKIP_RULES) or rule.rule.endswith(("/open", "/reveal", "/open-folder", "/pick")) or rule.endpoint == "static":
             continue
         if rule.rule in PATH_ONLY:
             for v in ODD:

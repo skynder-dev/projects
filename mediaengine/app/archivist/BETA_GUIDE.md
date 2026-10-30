@@ -89,6 +89,21 @@ they were). Changing them later makes a new version quickly.
 come out livelier), "Warm" (golden light) or "Cinematic" (softer contrast, cooler shadows). Only the reel is coloured;
 the videos stay as they are. Another colour later is a new version made in about the time of a variant.
 
+## Edit by hand
+
+**Edit by hand** (Create): a video you put together yourself. **New edit** (a name and the format: vertical 9:16,
+wide 16:9, square 1:1 or 4:5), then add videos on the left - **This PC** (a window to choose them, or paste a path),
+**Library**, **Downloaded**, **Found moments** (Media Brain's moments, each just its part). They go to the end of the
+**time line** at the bottom: drag a piece's edge to cut it, drag the piece to move it, click to see that moment.
+**S** (or ✂ Split) cuts the piece where the red line is, **Delete** removes the chosen piece, **Ctrl+Z** undoes,
+**Space** plays. On the right, the chosen piece: its start and end to the tenth of a second, "Without its sound",
+earlier / later, Repeat. Everything is kept by itself; the edit can be opened again from Edit by hand. **Save MP4**
+makes the video in the background (you can go on editing) into an "Edits" folder next to the saved reels: every piece
+fills the frame of the format, 30 frames a second, the sound evened out (silence where a piece has none or it is
+turned off). The originals are never changed. A video the browser cannot show (an AVI, a camcorder's .MTS, HEVC
+without its Windows add-on) is shown from a small copy made for the page; the MP4 is made from the original. Text,
+music, voice-over and transitions come next.
+
 ## Clips from a long video
 
 Auto Edit → **Clips from a long video**: choose a podcast, a stream or an interview and the length of a clip (15–30,

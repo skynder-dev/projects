@@ -238,11 +238,12 @@ def _recent_work(limit=8):
         from . import voice as vo
         from .voice_web import _kind_label
         kinds={'cartoon_make':('Cartoon','/auto/cartoon/{}'),'cartoon_write':('Story','/auto/cartoon/{}'),
-               'cartoon_study':('Studied video','/auto/cartoon/{}'),'clips_find':('Clips','/auto/clips/{}')}
+               'cartoon_study':('Studied video','/auto/cartoon/{}'),'clips_find':('Clips','/auto/clips/{}'),
+               'handedit_render':('Edit by hand',None)}
         for j in vo.list_jobs(80):
             k=str(j.get('kind') or '')
             if k in kinds:
-                label,href=kinds[k][0],kinds[k][1].format(j['id'])
+                label,href=kinds[k][0],(kinds[k][1].format(j['id']) if kinds[k][1] else f"/edit/{j.get('edit') or ''}")
             elif k in ('voiceover','captions','dub','render'):
                 label,href=(_kind_label(j) or 'Voice-over'),'/auto/voice'
             else:
@@ -349,7 +350,7 @@ MENU=[
             ('Study a video','/auto/cartoon#study',lambda p:_starts(p,'/auto/cartoon/style')),
             ('New cartoon','/auto/cartoon#new',lambda p:False),
             ('Characters','/auto/cartoon/characters',lambda p:_starts(p,'/auto/cartoon/characters'))]),
-        ('Edit by hand','/composer',lambda p:_starts(p,'/composer','/composition-file'),[])]),
+        ('Edit by hand','/edit',lambda p:_starts(p,'/edit','/composer','/composition-file'),[])]),
     ('Videos',[
         ('Library','/library',lambda p:_starts(p,'/library','/item','/similar','/storyboard','/media')
                                        and not _starts(p,'/media/download'),[]),
