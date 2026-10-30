@@ -162,10 +162,12 @@ downloads them, studies their style) or writes a story about the topic. Needs no
 }
 ```
 
-`topic` (at most 300 characters) and/or `links` (at most 30, each `https://`) are needed; `why` (at most 1000) and
-`lang` (`en`, `ru`, `ro`) are optional. The answer is `Done\<order id>\result.json` with `"status": "done"` and
-`"inbox_item"` (the Inbox item's id) - there is no `video.mp4`. `IDEA_INVALID`: neither a topic nor links (or a field of
-the wrong kind); `IDEA_LINK_INVALID`: a link that is not a web address.
+`topic` (at most 300 characters) and/or `links` (at most 30 web addresses, `https://` or `http://`) are needed; `why`
+(at most 1000) and `lang` (`en`, `ru`, `ro`) are optional. The answer is `Done\<order id>\result.json` with
+`"status": "done"` and `"inbox_item"` (the Inbox item's id) - there is no `video.mp4`. An order done again (MediaEngine
+closed before it answered) never files the idea twice. `IDEA_INVALID`: neither a topic nor links, `links` not a list,
+an unknown `lang`; `IDEA_LINK_INVALID`: a link that is not a web address; `ORDER_FIELD_INVALID`: `topic` or `why` not a
+text or too long.
 
 ## Answer codes
 
@@ -184,7 +186,7 @@ the wrong kind); `IDEA_LINK_INVALID`: a link that is not a web address.
 | `REEL_NOT_STARTED` / `REEL_FAILED` | the reel could not be started / built (the message says why) |
 | `RENDER_FAILED` / `OUTPUT_CHECK_FAILED` / `OUTPUT_COPY_FAILED` | the video could not be made / failed its checks / copied |
 | `REJECTED_BY_OWNER` / `STOPPED_BY_OWNER` | the owner rejected or stopped it on the Orders page |
-| `IDEA_INVALID` / `IDEA_LINK_INVALID` | an idea without a topic or links (or a field of the wrong kind) / a link that is not https:// |
+| `IDEA_INVALID` / `IDEA_LINK_INVALID` | an idea without a topic or links (or `links` / `lang` of the wrong kind) / a link that is not a web address |
 | `INTERNAL_ERROR` | a MediaEngine bug: the message has the details |
 
 ## Notes

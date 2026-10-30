@@ -49,7 +49,15 @@ class FakeTelegram:
                 self.wfile.write(b)
 
             def do_GET(self):
-                if self.path.startswith(f"/file/bot{TOKEN}/"):
+                if self.path.startswith(f"/file/bot{TOKEN}/videos/short"):     # a download cut off half-way
+                    self.send_response(200)
+                    self.send_header("Content-Length", str(len(fake.video)))
+                    self.send_header("Connection", "close")
+                    self.end_headers()
+                    self.wfile.write(fake.video[:1000])
+                    self.wfile.flush()
+                    self.close_connection = True
+                elif self.path.startswith(f"/file/bot{TOKEN}/"):
                     self.send_response(200)
                     self.send_header("Content-Length", str(len(fake.video)))
                     self.end_headers()
@@ -83,18 +91,21 @@ class FakeTelegram:
                         fake.sent.append(body)
                     return self._json({"ok": True, "result": {"message_id": len(fake.sent)}})
                 if meth == "getFile":
-                    return self._json({"ok": True, "result": {"file_id": body.get("file_id"), "file_path": "videos/file_7.mp4"}})
+                    name = "videos/short_1.mp4" if body.get("file_id") == "SHORT" else "videos/file_7.mp4"
+                    return self._json({"ok": True, "result": {"file_id": body.get("file_id"), "file_path": name}})
+                if meth == "deleteWebhook":
+                    return self._json({"ok": True, "result": True})
                 return self._json({"ok": False, "description": "Bad Request: unknown method"}, 400)
 
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), H)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.url = f"http://127.0.0.1:{self.server.server_address[1]}"
 
-    def message(self, chat: int, text: str = "", **extra):
+    def message(self, chat: int, text: str = "", chat_type: str = "private", **extra):
         with self.lock:
             uid = self.next_id
             self.next_id += 1
-            msg = {"message_id": uid, "chat": {"id": chat, "type": "private", "first_name": "Owner"}, "date": int(time.time())}
+            msg = {"message_id": uid, "chat": {"id": chat, "type": chat_type, "first_name": "Owner"}, "date": int(time.time())}
             if text:
                 msg["caption" if extra else "text"] = text
             msg.update(extra)
@@ -193,6 +204,17 @@ def main() -> int:
               "the settings file; a pairing code to send",
               bad_tok.status_code == 400 and st["configured"] and st["bot"] == "@my_medeng_bot" and re.fullmatch(r"\d{6}", st["code"] or "")
               and f"/start {st['code']}" in s1 and tok_file and TOKEN not in cfg_text, (st, bad_tok.status_code))
+        fake.message(-100, f"/start {st['code']}", chat_type="group")  # a group, even with the right code: never
+        cfg_p = work / "home" / "config.json"
+        for _ in range(tg.CODE_TRIES):                                # wrong codes: the code changes after a few
+            tg.handle({"chat": {"id": 999, "type": "private"}, "text": "/start 111111"})
+        changed = tg.status()["code"] != st["code"]
+        from archivist.config import update_config
+        update_config(lambda cfg: cfg["telegram"].update(code_at=time.time() - tg.CODE_TTL_S - 5))
+        expired = tg.handle({"chat": {"id": 999, "type": "private"}, "text": "/start " + str(tg._cfg().get("code"))})
+        st = dict(st, code=tg.new_code())
+        check("pairing: never a group; a code expires and changes after a few wrong tries",
+              changed and "/start 123456" in (expired or "") and not tg.status()["paired"], (changed, expired))
         fake.message(555, "/start 000000")                          # a stranger with a wrong code
         fake.message(777, f"/start {st['code']}")                    # the owner
         sent = fake.wait_sent(2)
@@ -203,20 +225,28 @@ def main() -> int:
         fake.message(777, "kak gorod platit dvazhdy za dorogu")
         fake.message(777, "my video", video={"file_id": "F1", "file_size": len(fake.video), "file_name": "trip.mp4", "mime_type": "video/mp4"})
         fake.message(777, "", video={"file_id": "F2", "file_size": 25 * 1024 * 1024, "file_name": "big.mp4"})
-        sent = fake.wait_sent(6, 20)
+        fake.message(777, "", document={"file_id": "SHORT", "file_size": len(fake.video), "file_name": "cut.mp4", "mime_type": "video/mp4"})
+        fake.message(777, "", document={"file_id": "F3", "file_size": len(fake.video), "file_name": "invoice.exe", "mime_type": "video/mp4"})
+        sent = fake.wait_sent(8, 20)
         time.sleep(0.5)
         its = inbox.items()
         tele = [x for x in its if x.get("source") == "telegram"]
-        saved = [x for x in tele if x["kind"] == "file"]
+        saved = [x for x in tele if x["kind"] == "file" and Path(x["file"]).name.startswith("trip")]
         to = [m.get("chat_id") for m in sent]
+        tdir = D.folder() / "Telegram"
+        names = sorted(x.name for x in tdir.iterdir()) if tdir.is_dir() else []
         check("the phone: only the chat that sent the code is paired and answered; its links, its topic and a short video "
               "go into the Inbox (the video into Downloaded\\Telegram), a video over 20 MB refused politely",
               st2["paired"] and st2["chat"] == "Owner" and to.count(555) == 1 and 555 not in to[1:] and to.count(777) >= 5
               and any(x["kind"] == "link" and len(x["links"]) == 2 and "смотри" in x["text"] for x in tele)
               and any(x["kind"] == "topic" and x["text"].startswith("kak gorod") for x in tele)
               and len(saved) == 1 and Path(saved[0]["file"]).is_file() and Path(saved[0]["file"]).parent.name == "Telegram"
-              and Path(saved[0]["file"]).stat().st_size == len(fake.video) and any("20" in m.get("text", "") for m in sent[-2:]),
+              and Path(saved[0]["file"]).stat().st_size == len(fake.video) and any("20 MB" in m.get("text", "") for m in sent),
               ([m.get("text", "")[:60] for m in sent], [(x["kind"], x.get("source")) for x in its], st2))
+        check("a video cut off half-way is not kept (no file, no .part); a file sent as a video never keeps another kind's "
+              "extension (invoice.exe -> invoice.exe.mp4)",
+              any("cut off" in m.get("text", "") for m in sent) and not any(n.startswith("cut") for n in names)
+              and "invoice.exe.mp4" in names and len(saved) == 1, (names, [m.get("text", "")[:50] for m in sent[-3:]]))
 
         # 4. a download started from an Inbox item: the phone hears when it is done
         os.environ["MEDENG_YTDLP"] = f"{sys.executable}|{HERE / 'fake_ytdlp.py'}"
@@ -238,6 +268,15 @@ def main() -> int:
               look.status_code == 200 and f"name='inbox' value='{link_item['id']}'" in lt and st_.status_code == 302
               and it2.get("state") == "done" and len(it2.get("jobs") or []) == 1 and len(done_msgs) == 1
               and it2.get("notified") == it2.get("jobs"), (done_msgs, it2))
+
+        bad_item = inbox.root() / "20990101-000000-abcdef.json"
+        bad_item.write_text(json.dumps({"id": "20990101-000000-abcdef", "kind": "link", "links": 5, "jobs": 5, "created_ns": "x",
+                                        "text": {"a": 1}}), "utf-8")
+        odd = c.get("/inbox", headers=H)
+        bad_item.unlink()
+        check("an item file edited by hand never breaks the Inbox page; an idea's item is found again by its order "
+              "(an order done again is not filed twice)", odd.status_code == 200
+              and inbox.find_order("trend-1").get("id") == r_ok.get("inbox_item"), odd.status_code)
 
         # 5. the pages in Russian: no English left
         c.post("/lang", data={"lang": "ru"}, headers=H)

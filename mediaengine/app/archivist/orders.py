@@ -778,8 +778,9 @@ def _process(oid: str) -> str:
         _write_state(rdir, {"kind": spec["kind"], "title": spec["title"], "from": spec["from"]})
         if spec["kind"] == "idea":               # into the owner's Inbox: no video
             from . import inbox
-            iid = inbox.add("idea", links=spec["links"], text=spec["topic"], title=spec["title"], why=spec["why"],
-                            source="program:" + spec["from"], lang=spec["lang"], order_id=oid)
+            iid = (inbox.find_order(oid) or {}).get("id") or inbox.add(
+                "idea", links=spec["links"], text=spec["topic"], title=spec["title"], why=spec["why"],
+                source="program:" + spec["from"], lang=spec["lang"], order_id=oid)
             _publish_filed(oid, order, order_sha, iid, st)
             return "done"
         if spec["kind"] == "render_plan":

@@ -223,7 +223,7 @@ def register(app, page, err_page, e, human_bytes):
             try:
                 inbox.attach_job(iid, jid)
                 inbox.set_state(iid, "done")
-            except inbox.InboxError:
+            except (inbox.InboxError, OSError):
                 pass
         return redirect("/media/download#jobs")
 
@@ -258,6 +258,11 @@ def register(app, page, err_page, e, human_bytes):
 
     @app.post("/media/download/<jid>/retry")
     def download_retry(jid):
+        try:                              # (started from the Inbox: the phone is told again when it is done)
+            from . import inbox
+            inbox.clear_notified(jid)
+        except Exception:
+            pass
         return _act(jid, D.retry)
 
     @app.post("/media/download/<jid>/delete")

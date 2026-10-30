@@ -94,6 +94,20 @@ def add(kind: str, *, links=(), text: str = "", title: str = "", why: str = "", 
     return iid
 
 
+def _norm(d: dict) -> dict:
+    """An item with fields of the right kind (a file edited by hand never breaks a page or the bot)."""
+    def strs(v, limit):
+        return [str(x) for x in v if isinstance(x, (str, int))][:limit] if isinstance(v, list) else []
+    try:
+        ns = int(d.get("created_ns") or 0)
+    except (TypeError, ValueError):
+        ns = 0
+    return {**d, "kind": d.get("kind") if d.get("kind") in KINDS else "topic", "links": strs(d.get("links"), MAX_LINKS),
+            "jobs": strs(d.get("jobs"), 200), "notified": strs(d.get("notified"), 200), "created_ns": ns,
+            "state": "done" if d.get("state") == "done" else "new",
+            **{k: str(d.get(k) or "") for k in ("text", "title", "why", "file", "source", "lang", "order_id", "created_at")}}
+
+
 def get(iid: str) -> dict:
     if not _ID.fullmatch(str(iid or "")):
         return {}
@@ -101,7 +115,12 @@ def get(iid: str) -> dict:
         d = json.loads((root() / f"{iid}.json").read_text("utf-8"))
     except (OSError, ValueError):
         return {}
-    return d if isinstance(d, dict) and d.get("id") == iid else {}
+    return _norm(d) if isinstance(d, dict) and d.get("id") == iid else {}
+
+
+def find_order(order_id: str) -> dict:
+    """The item an order (of kind idea) already put in, or {} (an order done again never files it twice)."""
+    return next((x for x in items(MAX_ITEMS) if order_id and x.get("order_id") == order_id), {})
 
 
 def items(limit: int = 300) -> list[dict]:
@@ -115,8 +134,19 @@ def items(limit: int = 300) -> list[dict]:
     return out[:limit]
 
 
+_COUNT: dict = {"key": None, "n": 0}
+
+
 def count_new() -> int:
-    return sum(1 for x in items(MAX_ITEMS) if x.get("state") == "new")
+    """The new items (for the menu on every page: counted again only when the folder changed)."""
+    try:
+        st = root().stat()
+        key = (st.st_mtime_ns, len(os.listdir(root())))
+    except OSError:
+        return 0
+    if _COUNT["key"] != key:
+        _COUNT.update(key=key, n=sum(1 for x in items(MAX_ITEMS) if x.get("state") == "new"))
+    return _COUNT["n"]
 
 
 def _change(iid: str, fn) -> dict:
@@ -148,6 +178,16 @@ def mark_notified(iid: str, job_id: str) -> None:
         if job_id not in it.setdefault("notified", []):
             it["notified"].append(job_id)
     _change(iid, fn)
+
+
+def clear_notified(job_id: str) -> None:
+    """A download tried again: the phone is told again when it is finished."""
+    for it in items(MAX_ITEMS):
+        if job_id in (it.get("notified") or []):
+            try:
+                _change(it["id"], lambda x: x.__setitem__("notified", [j for j in x.get("notified") or [] if j != job_id]))
+            except InboxError:
+                pass
 
 
 def delete(iid: str) -> None:

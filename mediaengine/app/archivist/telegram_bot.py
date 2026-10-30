@@ -24,6 +24,8 @@ API = os.environ.get("MEDENG_TELEGRAM_API") or "https://api.telegram.org"
 SECRET = "telegram/bot_token"
 MAX_FILE = 20 * 1024 * 1024           # what Telegram lets a bot download
 _TOKEN_RE = re.compile(r"^[0-9]{5,12}:[A-Za-z0-9_-]{30,60}$")
+CODE_TTL_S = 15 * 60                  # a pairing code works this long
+CODE_TRIES = 5                        # wrong codes before it is changed (900 000 codes: guessing is hopeless)
 _STATE: dict = {"thread": None, "stop": threading.Event(), "error": "", "seen_at": "", "running": False}
 _LOCK = threading.Lock()
 
@@ -53,6 +55,7 @@ def _token_file() -> Path:
 
 
 def _windows_store() -> bool:
+    """The Windows credential store (MEDENG_TELEGRAM_TOKEN_FILE=1: the checks keep it in the data folder instead)."""
     return os.name == "nt" and not os.environ.get("MEDENG_TELEGRAM_TOKEN_FILE")
 
 
@@ -94,14 +97,15 @@ def _drop_token() -> None:
 def status() -> dict:
     c = _cfg()
     return {"configured": bool(c.get("bot")) and bool(_load_token()), "bot": c.get("bot") or "",
-            "paired": bool(c.get("chat_id")), "chat": c.get("chat_name") or "", "code": c.get("code") or "",
+            "paired": bool(c.get("chat_id")), "chat": c.get("chat_name") or "",
+            "code": (c.get("code") or "") if code_valid(c) else "",
             "running": bool(_STATE["running"]), "error": _STATE["error"], "seen_at": _STATE["seen_at"]}
 
 
 # ---------------------------------------------------------------- talking to Telegram
 
 def _call(method: str, params: dict | None = None, token: str = "", timeout: float = 20) -> object:
-    token = token or _load_token()
+    token = token or _load_token()            # (the loop passes its own: a bot changed meanwhile is never answered through)
     if not token:
         raise BotError("The bot is not set up.")
     req = urllib.request.Request(f"{API}/bot{token}/{method}", json.dumps(params or {}).encode("utf-8"),
@@ -156,16 +160,17 @@ def _say(key: str, **kw) -> str:
     return (t[0] if ru else t[1]).format(**kw)
 
 
-def send(text: str) -> bool:
-    """A message to the owner's paired chat (False when the bot is not set up or Telegram is not reachable)."""
+def send(text: str, token: str = "") -> bool | None:
+    """A message to the owner's paired chat: True sent, False not now (Telegram not reachable), None never (no chat,
+    or the owner blocked the bot / the token is gone)."""
     chat = _cfg().get("chat_id")
     if not chat:
-        return False
+        return None
     try:
-        _call("sendMessage", {"chat_id": chat, "text": str(text)[:3500], "disable_web_page_preview": True})
+        _call("sendMessage", {"chat_id": chat, "text": str(text)[:3500], "disable_web_page_preview": True}, token=token)
         return True
-    except BotError:
-        return False
+    except BotError as exc:
+        return None if re.search(r"Forbidden|blocked|Unauthorized|chat not found|deactivated", str(exc)) else False
 
 
 # ---------------------------------------------------------------- setting up
@@ -178,77 +183,109 @@ def set_token(token: str) -> dict:
     me = _call("getMe", token=token)
     if not isinstance(me, dict) or not me.get("is_bot"):
         raise BotError("Telegram did not confirm this token.")
+    try:                                       # (a webhook set elsewhere would make getUpdates fail for ever)
+        _call("deleteWebhook", {"drop_pending_updates": False}, token=token)
+    except BotError:
+        pass
     stop()
     _save_token(token)
-    _set(bot="@" + str(me.get("username") or ""), chat_id=0, chat_name="", code=f"{secrets.randbelow(900000) + 100000}", offset=0)
+    _set(bot="@" + str(me.get("username") or ""), bot_id=int(me.get("id") or 0), chat_id=0, chat_name="", offset=0, **_fresh_code())
     start()
     return status()
 
 
+def _fresh_code() -> dict:
+    return {"code": f"{secrets.randbelow(900000) + 100000}", "code_at": time.time(), "code_wrong": 0}
+
+
 def new_code() -> str:
-    code = f"{secrets.randbelow(900000) + 100000}"
-    _set(code=code)
-    return code
+    c = _fresh_code()
+    _set(**c)
+    return c["code"]
+
+
+def code_valid(c: dict | None = None) -> bool:
+    c = c if c is not None else _cfg()
+    return bool(c.get("code")) and time.time() - float(c.get("code_at") or 0) < CODE_TTL_S
 
 
 def forget() -> None:
     """The bot switched off here: its token and the paired chat forgotten (the bot itself stays in Telegram)."""
     stop()
     _drop_token()
-    _set(bot="", chat_id=0, chat_name="", code="", offset=0)
+    _set(bot="", bot_id=0, chat_id=0, chat_name="", code="", offset=0)
 
 
 def unpair() -> None:
-    _set(chat_id=0, chat_name="", code=f"{secrets.randbelow(900000) + 100000}")
+    _set(chat_id=0, chat_name="", **_fresh_code())
 
 
 # ---------------------------------------------------------------- the messages
 
-def _safe_name(name: str) -> str:
-    n = re.sub(r'[<>:"/\\|?*\x00-\x1f]+', "_", str(name or "")).strip(" .")[:90]
-    return n or "video.mp4"
+_EXT = {"video/mp4": ".mp4", "video/quicktime": ".mov", "video/webm": ".webm", "video/x-matroska": ".mkv",
+        "video/x-msvideo": ".avi", "video/3gpp": ".3gp", "video/mpeg": ".mpg"}
+_RESERVED = re.compile(r"^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$", re.I)
 
 
-def _save_file(f: dict, caption: str) -> str:
-    """A video sent to the bot: into Downloaded\\Telegram, and an Inbox item."""
+def _safe_name(name: str, mime: str = "") -> str:
+    """A file name Windows takes, with the extension of what it is (a video: never an .exe sent as a video)."""
+    stem = Path(str(name or "")).stem if Path(str(name or "")).suffix.lower() in set(_EXT.values()) | {".m4v"} else str(name or "")
+    stem = re.sub(r'[<>:"/\\|?*\x00-\x1f]+', "_", stem).strip(" .")[:80].strip(" .") or "video"
+    if _RESERVED.match(stem):
+        stem = "_" + stem
+    return stem + _EXT.get(str(mime or "").lower(), ".mp4")
+
+
+def _save_file(f: dict, caption: str, token: str = "") -> str:
+    """A video sent to the bot: into Downloaded\\Telegram, and an Inbox item. All of it or nothing (a cut-off download
+    never stays as a video)."""
     from . import downloader as D, inbox
     size = int(f.get("file_size") or 0)
     if size > MAX_FILE:
         return _say("too_big")
+    part = None
     try:
-        info = _call("getFile", {"file_id": f.get("file_id")})
+        info = _call("getFile", {"file_id": f.get("file_id")}, token=token)
         path = str((info or {}).get("file_path") or "")
+        size = size or int((info or {}).get("file_size") or 0)
         if not path or ".." in path:
             raise BotError("Telegram gave no file.")
+        if size > MAX_FILE:
+            return _say("too_big")
         dst_dir = D.folder() / "Telegram"
         dst_dir.mkdir(parents=True, exist_ok=True)
-        name = _safe_name(f.get("file_name") or Path(path).name or "video.mp4")
-        if not Path(name).suffix:
-            name += Path(path).suffix or ".mp4"
+        name = _safe_name(f.get("file_name") or Path(path).name, f.get("mime_type") or "video/mp4")
         dst = dst_dir / name
         k = 2
         while dst.exists():
             dst = dst_dir / f"{Path(name).stem} ({k}){Path(name).suffix}"
             k += 1
-        part = dst.with_suffix(dst.suffix + ".part")
-        url = f"{API}/file/bot{_load_token()}/{urllib.parse.quote(path)}"
+        part = dst.with_name(dst.name + ".part")
+        url = f"{API}/file/bot{token or _load_token()}/{urllib.parse.quote(path)}"
         got = 0
         with urllib.request.urlopen(url, timeout=120) as r, open(part, "wb") as out:
+            want = size or int(r.headers.get("Content-Length") or 0)
             while True:
                 chunk = r.read(1 << 16)
                 if not chunk:
                     break
                 got += len(chunk)
-                if got > MAX_FILE + 1024:
-                    raise BotError("the file is bigger than Telegram said")
+                if got > MAX_FILE:
+                    raise BotError("the file is bigger than 20 MB")
                 out.write(chunk)
+        if not got or (want and got != want):
+            raise BotError("the download was cut off")
         os.replace(part, dst)
-    except (BotError, OSError, urllib.error.URLError) as exc:
-        try:
-            part.unlink(missing_ok=True)           # (a half file never stays)
-        except Exception:
-            pass
-        return _say("file_failed", why=str(exc)[:120])
+        part = None
+    except Exception as exc:                       # (a short read, a lost connection, a full disk: said, never kept)
+        msg = str(exc) if isinstance(exc, BotError) else type(exc).__name__
+        return _say("file_failed", why=msg[:120])
+    finally:
+        if part is not None:
+            try:
+                part.unlink(missing_ok=True)
+            except OSError:
+                pass
     inbox.add("file", file=str(dst), text=caption, source="telegram")
     return _say("file", name=dst.name)
 
@@ -273,22 +310,33 @@ def _what_runs() -> str:
     return ", ".join(parts) or _say("idle")
 
 
-def handle(msg: dict) -> str | None:
-    """One message: what the bot answers (None: no answer). Only the paired chat is served."""
+def handle(msg: dict, token: str = "") -> str | None:
+    """One message: what the bot answers (None: no answer). Only the paired chat is served - a private chat with the
+    owner that sent the pairing code while it was valid."""
     from . import inbox
     if not isinstance(msg, dict) or not isinstance(msg.get("chat"), dict):
+        return None
+    if msg["chat"].get("type") != "private":           # (never a group: everyone in it could send things to the PC)
         return None
     c = _cfg()
     chat = msg["chat"].get("id")
     text = str(msg.get("text") or msg.get("caption") or "").strip()
     paired = c.get("chat_id")
     if not paired:
+        if not text.startswith("/start"):
+            return None
         m = re.match(r"^/start(?:@\w+)?\s+([0-9]{6})$", text)
-        if m and c.get("code") and secrets.compare_digest(m.group(1), str(c.get("code"))):
+        if m and code_valid(c) and secrets.compare_digest(m.group(1), str(c.get("code"))):
             who = " ".join(str(msg["chat"].get(k) or "") for k in ("first_name", "last_name")).strip() or str(msg["chat"].get("username") or "")
-            _set(chat_id=chat, chat_name=who[:60], code="")
+            _set(chat_id=chat, chat_name=who[:60], code="", code_wrong=0)
             return _say("paired")
-        return _say("need_code") if text.startswith("/start") else None
+        if m and code_valid(c):                          # a wrong code: after a few the code changes
+            wrong = int(c.get("code_wrong") or 0) + 1
+            if wrong >= CODE_TRIES:
+                _set(**_fresh_code())
+            else:
+                _set(code_wrong=wrong)
+        return _say("need_code")
     if chat != paired:
         return None                                   # (someone else's chat: never answered)
     if re.match(r"^/(start|help)\b", text):
@@ -300,7 +348,7 @@ def handle(msg: dict) -> str | None:
     if not f and str(doc.get("mime_type") or "").startswith("video/"):
         f = doc
     if f:
-        return _save_file(f, text)
+        return _save_file(f, text, token)
     links = inbox.links_in(text)
     if links:
         rest = text
@@ -317,8 +365,9 @@ def handle(msg: dict) -> str | None:
     return None
 
 
-def _check_downloads() -> None:
-    """Tell the phone once when a download started from an Inbox item is finished."""
+def _check_downloads(token: str = "") -> None:
+    """Tell the phone once when a download started from an Inbox item is finished (a download that was removed, or a
+    bot the owner blocked: given up, never asked again)."""
     from . import downloader as D, inbox
     for it in inbox.items(100):
         for jid in it.get("jobs") or []:
@@ -327,44 +376,58 @@ def _check_downloads() -> None:
             try:
                 j = D.read_job(jid)
             except Exception:
-                continue
-            if j.get("state") in ("working", "waiting"):
-                continue
-            res = j.get("result") or {}
-            ok = j.get("state") == "done"
-            text = (_say("dl_done", n=len(res.get("files") or [])) if ok else
-                    _say("dl_failed", why=str(res.get("error") or j.get("state") or "")[:200]))
-            if send(text) or not _cfg().get("chat_id"):
+                j = None
+            if j is not None and j.get("state") in ("working", "waiting", "interrupted"):
+                continue                             # (interrupted: made again at the next start)
+            sent = True
+            if j is not None and j.get("state") in ("done", "failed"):
+                res = j.get("result") or {}
+                text = (_say("dl_done", n=len(res.get("files") or [])) if j.get("state") == "done" else
+                        _say("dl_failed", why=str(res.get("error") or "")[:200]))
+                sent = send(text, token)
+            if sent is False:
+                continue                             # (Telegram not reachable now: told later)
+            try:
                 inbox.mark_notified(it["id"], jid)
+            except inbox.InboxError:
+                pass
 
 
 # ---------------------------------------------------------------- the loop
 
-def _loop(stop_ev: threading.Event) -> None:
+def _loop(stop_ev: threading.Event, token: str, bot_id: int) -> None:
     _STATE["running"] = True
     wait = 2.0
     try:
         while not stop_ev.is_set():
             try:
-                off = int(_cfg().get("offset") or 0)
-                ups = _call("getUpdates", {"offset": off, "timeout": 25, "allowed_updates": ["message"]}, timeout=40) or []
+                c = _cfg()
+                off = int(c.get("offset") or 0) if int(c.get("bot_id") or 0) == bot_id else 0
+                ups = _call("getUpdates", {"offset": off, "timeout": 25, "allowed_updates": ["message"]}, token=token, timeout=40) or []
+                if stop_ev.is_set():
+                    break                                  # (stopping: these messages are for the next loop)
                 _STATE["seen_at"] = time.strftime("%Y-%m-%d %H:%M")
                 _STATE["error"] = ""
-                for u in ups:
+                for u in ups if isinstance(ups, list) else []:
+                    if not isinstance(u, dict):
+                        continue
                     off = max(off, int(u.get("update_id") or 0) + 1)
-                    _set(offset=off)                      # (a message is never handled twice, even after a crash)
+                    _set(offset=off, bot_id=bot_id)        # (a message is never handled twice, even after a crash)
                     try:
-                        answer = handle(u.get("message") or {})
+                        answer = handle(u.get("message") or {}, token)
                     except Exception as exc:              # never let one odd message stop the bot
                         answer = None
                         _STATE["error"] = type(exc).__name__ + ": " + str(exc)[:160]
                     if answer:
                         chat = (u.get("message") or {}).get("chat", {}).get("id")
                         try:
-                            _call("sendMessage", {"chat_id": chat, "text": answer[:3500], "disable_web_page_preview": True})
+                            _call("sendMessage", {"chat_id": chat, "text": answer[:3500], "disable_web_page_preview": True}, token=token)
                         except BotError:
                             pass
-                _check_downloads()
+                try:
+                    _check_downloads(token)
+                except Exception as exc:                  # (an odd Inbox file never slows the bot down)
+                    _STATE["error"] = type(exc).__name__ + ": " + str(exc)[:160]
                 wait = 2.0
             except BotError as exc:
                 _STATE["error"] = str(exc)
@@ -386,13 +449,14 @@ def start() -> None:
     """The bot's loop, when it is set up (at the app's start and after the token is pasted)."""
     with _LOCK:
         t = _STATE.get("thread")
-        if t and t.is_alive():
-            return
-        if not (_cfg().get("bot") and _load_token()):
+        if t and t.is_alive() and not _STATE["stop"].is_set():
+            return                                         # (one still stopping is replaced: it handles nothing more)
+        c, token = _cfg(), _load_token()
+        if not (c.get("bot") and token):
             return
         ev = threading.Event()
         _STATE["stop"] = ev
-        t = threading.Thread(target=_loop, args=(ev,), daemon=True, name="telegram")
+        t = threading.Thread(target=_loop, args=(ev, token, int(c.get("bot_id") or 0)), daemon=True, name="telegram")
         _STATE["thread"] = t
         t.start()
 

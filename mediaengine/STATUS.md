@@ -1004,7 +1004,15 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   item, bigger refused politely; /status; a download started from an Inbox item is announced to the phone once). Next
   steps from an item: Show the videos (the download marks the item done and remembers the job), Write a story (the
   writer's form comes with the topic), Study its rhythm. Checks: inbox_check 8/8 with a stand-in Telegram server, orders
-  53/53, download 10/10, unit 198, browser 20/20, Russian 0 English (Social's fuzz pages aside), route fuzz 0 errors. He also asked about a phone:
+  53/53, download 10/10, unit 198, browser 20/20, Russian 0 English (Social's fuzz pages aside), route fuzz 0 errors.
+  An independent review of the Inbox and the bot found 8 defects - all fixed with checks (inbox_check 11/11): the pairing
+  code could be guessed and groups were accepted (now private chats only, the code expires in 15 min and changes after 5
+  wrong tries); a cut-off download was kept as a video (now the whole file or nothing, no .part left); the sender's
+  extension was kept (an .exe sent as a video -> "invoice.exe.mp4"); a bot changed while polling could lose or misroute
+  messages (each loop keeps its own token, the offset belongs to one bot, a batch fetched while stopping is left);
+  an idea order done again could file twice; hand-edited item files broke the page and slowed the bot (normalised);
+  notifications for removed downloads or a blocked bot retried for ever (given up once); a webhook set elsewhere
+  (deleteWebhook on connect); the new-items count read every file on every page (cached by the folder's change). He also asked about a phone:
   told him what a phone web app could do (share a link to download, send videos, start work, notifications, results) -
   it needs the app opened to his own devices (pairing code, his network or Tailscale): only on his "yes".
 - 2026-10-29, an author's style (step 3 of the owner's "a profile whose videos suit our style"): several studied videos
