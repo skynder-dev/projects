@@ -216,7 +216,7 @@ def ui_theme() -> str:
         t=str((load_config().get('ui') or {}).get('theme') or '')
     except Exception:
         t=''
-    return t if t in THEMES else 'aurora'
+    return t if t in THEMES else 'night'      # (the owner: the old look by default; the others in Settings → Look)
 
 
 def _tone(path) -> str:

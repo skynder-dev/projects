@@ -990,7 +990,7 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   menu shows everything (Other: Social Lab, Devices, Cloud), bigger; the whole interface grows with a wide screen (CSS
   zoom 1.1 from 1400 px, 1.2 from 1700, 1.3 from 2000, 1.45 from 2500; Settings → Look → Size: by the screen / 100-150 %);
   ten colour schemes with strong colour per kind of work (Aurora, Glass, Tonal, Banners, Bento, Neon, Synthwave, Sunset,
-  Ocean, Acid; Calm night as before) - pictures sent, Aurora the default until he chooses. He also asked about a phone:
+  Ocean, Acid; Calm night as before) - pictures sent; he chose: the old look (Calm night) by default, the others kept. He also asked about a phone:
   told him what a phone web app could do (share a link to download, send videos, start work, notifications, results) -
   it needs the app opened to his own devices (pairing code, his network or Tailscale): only on his "yes".
 - 2026-10-29, an author's style (step 3 of the owner's "a profile whose videos suit our style"): several studied videos
