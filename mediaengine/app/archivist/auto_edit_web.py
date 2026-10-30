@@ -25,7 +25,7 @@ PAGE_CSS = r"""
 .ae-big{font-size:17px;padding:12px 22px}
 .ae-bar{height:12px;border-radius:8px;background:#0b1118;border:1px solid var(--line);overflow:hidden}.ae-bar i{display:block;height:100%;background:var(--orange);transition:width .4s}
 .ae-player{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}@media(max-width:1000px){.ae-player{grid-template-columns:1fr}}
-.ae-video{display:block;margin:0 auto;max-width:100%;max-height:72vh;background:#000;border-radius:12px}
+.ae-video{display:block;margin:0 auto;max-width:100%;max-height:calc(72vh / var(--z,1));background:#000;border-radius:12px}
 .ae-strip{display:flex;height:34px;border-radius:8px;overflow:hidden;margin:10px 0;border:1px solid var(--line)}
 .ae-strip button{border:0;border-right:1px solid #0008;border-radius:0;padding:0;font-size:12px;color:#000;background:var(--orange);cursor:pointer}
 .ae-strip button:nth-child(even){background:#e8b765}.ae-strip button.on{outline:2px solid #fff;outline-offset:-2px}

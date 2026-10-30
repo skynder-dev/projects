@@ -23,7 +23,7 @@ CSS = """<style>
 .ct-line{display:grid;grid-template-columns:150px minmax(0,1fr) 130px 130px;gap:8px;margin:6px 0}
 @media(max-width:900px){.ct-line{grid-template-columns:1fr}}
 .ct-line input{width:100%}
-.ct-big video{max-width:100%;max-height:70vh;border-radius:12px;background:#000}
+.ct-big video{max-width:100%;max-height:calc(70vh / var(--z,1));border-radius:12px;background:#000}
 .ct-cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
 .ct-who{border:1px solid var(--line2);border-radius:12px;padding:10px;display:flex;gap:10px;align-items:flex-start}
 .ct-who img{width:96px;height:120px;border-radius:8px;background:#eef3f8;flex:none}
