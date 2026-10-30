@@ -1013,6 +1013,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   an idea order done again could file twice; hand-edited item files broke the page and slowed the bot (normalised);
   notifications for removed downloads or a blocked bot retried for ever (given up once); a webhook set elsewhere
   (deleteWebhook on connect); the new-items count read every file on every page (cached by the folder's change).
+- 2026-10-30, **b270** published (commit 3f0d8f1, ZIP 5,041,852 bytes, the same runtime; run 41031086548: all checks
+  green, browser 20/20 on Windows): an Instagram profile link says to send single reel links (no sign-in - his choice).
+  Waiting for the owner (kept back, not pushed): five drawing styles for Cartoon Studio (flat, hand-drawn, whiteboard,
+  paper cut-out, motion graphics - pictures sent, he chooses which stay) and livelier characters (the mouth's shape
+  from the sounds, glances, nods and raised brows on weighty words, gestures that swing past and settle, uneven blinks,
+  turning round, listeners startled by a shout) - his "can the animation be made stronger?".
 - 2026-10-30, **b269** published (commit 4496aa7, ZIP 5,040,970 bytes, the same runtime; run 41015179512: inbox 11/11 on
   Windows, cartoon 37/37, writer 35/35, download 10/10, convert 66/66, browser 20/20, Russian 247 pages 0 English, route
   fuzz 0 errors): the Inbox and the phone's bot; the owner said the automatic size was too big (145 %) - 120 % now. He also asked about a phone:

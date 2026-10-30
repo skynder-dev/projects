@@ -322,6 +322,10 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   pairing code; private chats only; nothing opened to the internet), fixes from an independent review (8), the automatic
   size smaller (120 % on a 2560 px screen), videos always fit the window's height. b267 (e334e5c) failed the writer
   check (the story box's hint stayed English in Russian) - fixed; b268 was cancelled by the newer push.
+- b270 (commit 3f0d8f1, run 41031086548: cartoon 37/37, writer 35/35, download 10/10, inbox 11/11, convert 66/66,
+  browser 20/20, unit 207/207, Russian 247 pages 0 English, route fuzz 4171 requests 0 errors; ZIP 5,041,852 bytes, the
+  same runtime): Download by a link says plainly that Instagram lists a profile's videos only after signing in - send
+  links to single reels (the owner chose not to give MediaEngine his Instagram sign-in).
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
