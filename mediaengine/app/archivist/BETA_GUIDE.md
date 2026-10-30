@@ -6,12 +6,22 @@ No external account or billing is required for local use.
 
 ## Where things are
 
-The menu on the left: **Home** (what to make, and the recent work of every part), **Create** (Auto Edit, Clips from a
-long video, Voice-over and text, Cartoon Studio, Edit by hand), **Videos** (Library, Import, Search, Best Moments,
-Download by a link), **Tools** (Convert, Check this PC, Orders from other programs), then Activity (all the work),
-Settings and More. The place open is lit; Cartoon Studio and Settings show their parts under it. In a narrow window the
-menu is behind "☰ Menu". Colours: Settings → Look - a colour for each kind of work (the usual), Neon on black, or Calm
-night.
+The menu on the left: **Home** (what to make, and the recent work of every part), **Inbox** (links and topics to work
+on), **Create** (Auto Edit, Clips from a long video, Voice-over and text, Cartoon Studio, Edit by hand), **Videos**
+(Library, Import, Search, Best Moments, Download by a link), **Tools** (Convert, Check this PC, Orders from other
+programs), then Activity (all the work), Settings and Other. The place open is lit; Cartoon Studio and Settings show
+their parts under it. In a narrow window the menu is behind "☰ Menu". Settings → Look: the size of everything (bigger on
+a wide screen by itself) and the colours - the calm night of before, or one of ten schemes.
+
+## The Inbox and the phone
+
+**Inbox**: links to videos you liked, topics, short videos - typed there, sent from your phone, or handed over by
+another program (an order of kind `idea`, ORDERS.md). A link → "Show the videos" (choose, download, study their style);
+a topic → "Write a story" (the story writer's form comes with it); a video → study its rhythm or write a story from it.
+**The phone**: Settings → Phone - make your own Telegram bot with @BotFather (free), paste its token, send the bot the
+code shown. Then share a link or a video to the bot (up to 20 MB), or write it a topic: it lands in the Inbox, and the
+bot says when a download started from the Inbox is done. Nothing on this PC is opened to the internet; only your chat
+is answered; the token stays in the Windows credential store.
 
 ## Making a reel (Auto Edit)
 

@@ -148,6 +148,11 @@ jobs:
         run: |
           python mediaengine/tests/download_check.py "$env:RUNNER_TEMP\download" 2>&1 | Tee-Object "$env:OUT\download_check.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Inbox and the phone (a link and a topic, an idea order, a stand-in Telegram - pairing, links, a video, a download's notice)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/inbox_check.py "$env:RUNNER_TEMP\inbox" 2>&1 | Tee-Object "$env:OUT\inbox_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Full-video Convert (1440p60, rotated phone clip, VFR)
         shell: pwsh
         run: |

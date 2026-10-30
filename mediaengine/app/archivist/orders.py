@@ -12,6 +12,8 @@ Kinds:
                     Library's videos of a theme; it is also a normal Auto Edit project (variants, edits, export).
   render_plan       an exact plan made by another program: pictures and/or pieces of videos with their times plus a
                     sound track (a narration, for example) -> one MP4. Only files inside the order folder are used.
+  idea              a topic and/or links to videos (a trend, a style to study) put into the owner's Inbox (inbox.py):
+                    no video is made; the answer says the Inbox item's id. The owner decides what to make of it.
 Private / Rejected videos are never used: the reel engine skips them, and a plan can only use the order's own files.
 Orders run one at a time; new ones start at once or wait for the owner's OK ("Run new orders at once").
 """
@@ -27,7 +29,7 @@ from .platform_adapter import process_kwargs
 
 SCHEMA = "mediaengine.order/1"
 RESULT_SCHEMA = "mediaengine.result/1"
-KINDS = ("reel_from_videos", "render_plan")
+KINDS = ("reel_from_videos", "render_plan", "idea")
 SETTLE_S = 3.0            # an order is taken only when nothing in it changed for this long (still being copied)
 POLL_S = 3.0
 MAX_PLAN_S = 600.0        # a plan of at most 10 minutes
@@ -362,10 +364,35 @@ def validate(order, base: Path) -> dict:
         raise OrderError("ORDER_SCHEMA_UNKNOWN", f'"schema" must be "{SCHEMA}"')
     kind = order.get("kind")
     if kind not in KINDS:
-        raise OrderError("ORDER_KIND_UNKNOWN", 'kind must be "reel_from_videos" or "render_plan"')
+        raise OrderError("ORDER_KIND_UNKNOWN", 'kind must be "reel_from_videos", "render_plan" or "idea"')
     spec = {"kind": kind, "from": _text(order.get("from"), "from", 60) or "?", "title": _text(order.get("title"), "title", 80)}
-    spec.update(_plan_spec(order, base) if kind == "render_plan" else _reel_spec(order, base))
+    spec.update(_plan_spec(order, base) if kind == "render_plan" else _idea_spec(order) if kind == "idea" else _reel_spec(order, base))
     return spec
+
+
+def _idea_spec(order: dict) -> dict:
+    """An idea: {"idea": {"topic": "...", "why": "...", "links": ["https://..."], "lang": "en"}} - a topic or links."""
+    idea = order.get("idea")
+    if not isinstance(idea, dict):
+        raise OrderError("IDEA_INVALID", '"idea" must be an object with "topic" and/or "links"')
+    topic = _text(idea.get("topic"), "idea.topic", 300)
+    why = _text(idea.get("why"), "idea.why", 1000)
+    links = idea.get("links") or []
+    if not isinstance(links, list) or len(links) > 30:
+        raise OrderError("IDEA_INVALID", '"idea.links" must be a list of at most 30 web addresses')
+    from . import downloader as D
+    good = []
+    for u in links:
+        try:
+            good.append(D.check_url(str(u or "")))
+        except D.DownloadError:
+            raise OrderError("IDEA_LINK_INVALID", f"Not a web address (https://): {str(u)[:120]}")
+    if not topic and not good:
+        raise OrderError("IDEA_INVALID", "An idea needs a topic or at least one link")
+    lang = str(idea.get("lang") or "")
+    if lang not in ("", "en", "ru", "ro"):
+        raise OrderError("IDEA_INVALID", '"idea.lang" must be "en", "ru" or "ro"')
+    return {"topic": topic, "why": why, "links": good, "lang": lang}
 
 
 def _plan_spec(order: dict, base: Path) -> dict:
@@ -749,6 +776,12 @@ def _process(oid: str) -> str:
         order = _read_json(oj)
         spec = validate(order, rdir)
         _write_state(rdir, {"kind": spec["kind"], "title": spec["title"], "from": spec["from"]})
+        if spec["kind"] == "idea":               # into the owner's Inbox: no video
+            from . import inbox
+            iid = inbox.add("idea", links=spec["links"], text=spec["topic"], title=spec["title"], why=spec["why"],
+                            source="program:" + spec["from"], lang=spec["lang"], order_id=oid)
+            _publish_filed(oid, order, order_sha, iid, st)
+            return "done"
         if spec["kind"] == "render_plan":
             work.mkdir(parents=True, exist_ok=True)
             video_path, extra = _render_plan(spec, rdir, work), {"plan": {"width": spec["width"], "height": spec["height"],
@@ -824,6 +857,26 @@ def _publish_done_now(oid, order, order_sha, video_path: Path, move: bool, check
         _move(part, final)
         _write_state(received_dir() / oid, {"finished": "done", "attempts": 0})
     _notify(oid, order, True)
+
+
+def _publish_filed(oid, order, order_sha, iid: str, st) -> None:
+    """The answer to an idea: put into the Inbox (no video)."""
+    final = done_dir() / oid
+    part = done_dir() / f".{oid}.partial"
+    shutil.rmtree(part, ignore_errors=True)
+    part.mkdir(parents=True)
+    try:
+        shutil.copy2(received_dir() / oid / "order.json", part / "order.json")
+    except OSError:
+        pass
+    _write_json(part / "result.json", _result(oid, order, "done", extra={"inbox_item": iid},
+                                              received_at=st.get("received_at", ""), started_at=st.get("started_at", ""),
+                                              order_sha=order_sha))
+    with _MOVE_LOCK:
+        if final.exists():
+            _retire(final)
+        _move(part, final)
+        _write_state(received_dir() / oid, {"finished": "done", "attempts": 0})
 
 
 def _publish_failed_now(oid, order, order_sha, code, message, st, retry=True) -> None:

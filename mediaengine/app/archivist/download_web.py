@@ -197,7 +197,10 @@ def register(app, page, err_page, e, human_bytes):
                 + f"</div><div class='card'><form method='post' action='/media/download/start' "
                 f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<input type='hidden' name='source' value='{e(r['url'])}'>"
-                f"<input type='hidden' name='author' value='{e(r.get('uploader') or '')}'>{hidden}{pick}"
+                f"<input type='hidden' name='author' value='{e(r.get('uploader') or '')}'>"
+                + (f"<input type='hidden' name='inbox' value='{e(request.form.get('inbox'))}'>"
+                   if re.fullmatch(r"[0-9]{8}-[0-9]{6}-[0-9a-f]{6}", str(request.form.get("inbox") or "")) else "")
+                + f"{hidden}{pick}"
                 f"<label style='display:block;margin-top:10px'><input type='checkbox' name='study' value='1'> Study each one's rhythm after "
                 f"(Cartoon Studio: shots, pace, the opening)</label>"
                 f"<div style='margin-top:12px'><button class='ae-big'>Download</button></div></form></div>")
@@ -211,9 +214,17 @@ def register(app, page, err_page, e, human_bytes):
             if re.fullmatch(r"\d{1,3}", str(n)):
                 items.append({"url": f.get(f"u{n}") or "", "title": f.get(f"t{n}") or ""})
         try:
-            D.new_download(items, f.get("study") == "1", f.get("source") or "", f.get("author") or "")
+            jid = D.new_download(items, f.get("study") == "1", f.get("source") or "", f.get("author") or "")
         except D.DownloadError as exc:
             return err_page(str(exc), "/media/download")
+        iid = str(f.get("inbox") or "")
+        if iid:
+            from . import inbox
+            try:
+                inbox.attach_job(iid, jid)
+                inbox.set_state(iid, "done")
+            except inbox.InboxError:
+                pass
         return redirect("/media/download#jobs")
 
     @app.post("/media/download/install")

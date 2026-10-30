@@ -1056,6 +1056,8 @@ PHRASES = {
     "The one speaking, close up": "Тот, кто говорит, крупно",
     "Make the 5 likeliest": "Сделать 5 самых удачных",
     # Cartoon Studio (cartoon_web.py, cartoon/)
+    "Inbox (in the menu, under Home): links and topics to work on - typed there, from other programs, or sent from your phone through your own Telegram bot (Settings → Phone). Settings → Look: the size of everything and ten colour schemes.":
+        "«Входящие» (в меню, под Главной): ссылки и темы для работы — добавленные там, от других программ или с телефона через своего Telegram-бота (Настройки → Телефон). Настройки → Оформление: размер всего и десять цветовых тем.",
     "A new look: the menu on the left, grouped by what you do (Create, Videos, Tools); Home shows what to make and the recent work of every part; each kind of work has its own colour (Settings → Look: also “Neon on black” or “Calm night”).":
         "Новый вид: меню слева, по смыслу (Создать, Видео, Инструменты); на Главной — что можно сделать и последние работы из всех разделов; у каждого вида работы свой цвет (Настройки → Оформление: ещё «Неон на чёрном» и «Спокойная ночь»).",
     "Cartoon Studio: an author's style - several studied videos (say, the ones downloaded from one profile) taken together: the middle of their rhythms and their colours; then “Write a story in this style”. The topic of a story may be typed in any language, even in translit.":
@@ -1402,6 +1404,9 @@ PHRASES = {
     "The downloader is not installed.": "Загрузчик не установлен.",
     "Nothing was downloaded.": "Ничего не скачалось.",
     "Show the videos": "Показать видео",
+    # an order of kind idea (orders_web: the error is followed by its code, so translated as a part of the text)
+    "The idea needs a topic or links to videos.": "Идее нужна тема или ссылки на видео.",
+    "A link of the idea is not a web address (https://).": "Ссылка идеи — не веб-адрес (https://).",
     # an author's style (several studied videos together)
     "Make a common style of several videos": "Сделать общий стиль из нескольких видео",
     "Whose style (a name, if you like)": "Чей стиль (имя, если хочешь)",

@@ -141,6 +141,32 @@ videos used and the number of moments. Names are the reel's names: a second vide
 folder is "DJI_0001 (2).MP4"; `inputs` gives every video's name with its SHA-256. A damaged, unreadable or missing video
 is left out (`videos_left_out`), as in a reel made in the app; a playlist or manifest among the videos refuses the order.
 
+## Kind 3: `idea` — a topic and links for the owner's Inbox
+
+For a program that watches social networks (Social): a trend, a topic, videos whose style is worth studying.
+No video is made: the idea goes into the owner's **Inbox** in MediaEngine, where he opens the links (chooses videos,
+downloads them, studies their style) or writes a story about the topic. Needs no files: a single `Inbox\<order id>.json`.
+
+```json
+{
+  "schema": "mediaengine.order/1",
+  "kind": "idea",
+  "from": "social",
+  "title": "Cartoons about city money",
+  "idea": {
+    "topic": "How a city pays twice for one road",
+    "why": "3 channels in the niche grew 40 % this week with it",
+    "links": ["https://www.youtube.com/watch?v=...", "https://www.tiktok.com/@.../video/..."],
+    "lang": "en"
+  }
+}
+```
+
+`topic` (at most 300 characters) and/or `links` (at most 30, each `https://`) are needed; `why` (at most 1000) and
+`lang` (`en`, `ru`, `ro`) are optional. The answer is `Done\<order id>\result.json` with `"status": "done"` and
+`"inbox_item"` (the Inbox item's id) - there is no `video.mp4`. `IDEA_INVALID`: neither a topic nor links (or a field of
+the wrong kind); `IDEA_LINK_INVALID`: a link that is not a web address.
+
 ## Answer codes
 
 | code | meaning |
@@ -158,6 +184,7 @@ is left out (`videos_left_out`), as in a reel made in the app; a playlist or man
 | `REEL_NOT_STARTED` / `REEL_FAILED` | the reel could not be started / built (the message says why) |
 | `RENDER_FAILED` / `OUTPUT_CHECK_FAILED` / `OUTPUT_COPY_FAILED` | the video could not be made / failed its checks / copied |
 | `REJECTED_BY_OWNER` / `STOPPED_BY_OWNER` | the owner rejected or stopped it on the Orders page |
+| `IDEA_INVALID` / `IDEA_LINK_INVALID` | an idea without a topic or links (or a field of the wrong kind) / a link that is not https:// |
 | `INTERNAL_ERROR` | a MediaEngine bug: the message has the details |
 
 ## Notes

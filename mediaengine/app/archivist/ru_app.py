@@ -246,6 +246,40 @@ APP_PHRASES: dict[str, str] = {
     "Ocean": "Океан", "Deep sea blue with aqua and sky blue.": "Глубокий морской синий с бирюзой и голубым.",
     "Acid": "Кислотный", "Black and white with acid orange, lime and yellow; sharp corners.": "Чёрно-белый с кислотным оранжевым, лаймом и жёлтым; острые углы.",
     "Size": "Размер", "By the screen (bigger on a wide one)": "По экрану (на широком — крупнее)",
+    # the Inbox (inbox_web.py) and the phone's Telegram bot (Settings → Phone)
+    "Inbox": "Входящие", "Inbox:": "Входящие:", "new": "новых", "— links and topics sent to MediaEngine. Open": "— ссылки и темы, присланные в MediaEngine. Открыть",
+    "What to work on: links to videos you liked, topics, short videos - from your phone, from other programs (Social) or added here. Open a link to choose its videos and study their style, or write a story about a topic.":
+        "С чем работать: ссылки на понравившиеся видео, темы, короткие видео — с телефона, от других программ (Social) или добавленные здесь. Открой ссылку, чтобы выбрать видео и изучить их стиль, или напиши сюжет на тему.",
+    "A link to a video or a profile, or a topic": "Ссылка на видео или профиль — или тема", "Add to the Inbox": "Добавить во «Входящие»",
+    "Phone connected": "Телефон подключён", "Connect your phone (a Telegram bot)": "Подключить телефон (Telegram-бот)",
+    "New": "Новые", "Nothing new. Links, topics and videos sent from your phone or by other programs appear here.":
+        "Нового нет. Здесь появляются ссылки, темы и видео, присланные с телефона или другими программами.",
+    "From the phone": "С телефона", "From": "От", "Added here": "Добавлено здесь", "Why:": "Почему:", "(not there any more)": "(файла больше нет)",
+    "Back to new": "Вернуть в новые", "Remove": "Убрать", "Open the Inbox": "Открыть «Входящие»",
+    "Paste a link that starts with https://": "Вставь ссылку, которая начинается с https://", "Write a topic or paste a link.": "Напиши тему или вставь ссылку.",
+    "An idea needs a topic or at least one link.": "Идее нужна тема или хотя бы одна ссылка.", "The Inbox could not be saved. Try again.": "Не получилось сохранить «Входящие». Попробуй ещё раз.",
+    "This item is not there any more.": "Этой записи больше нет.",
+    "Phone (Telegram bot)": "Телефон (Telegram-бот)",
+    "Send links, topics and short videos from your phone straight into MediaEngine's Inbox - through your own Telegram bot. Free; nothing on this PC is opened to the internet (MediaEngine asks Telegram for new messages itself).":
+        "Присылай с телефона ссылки, темы и короткие видео прямо во «Входящие» MediaEngine — через своего Telegram-бота. Бесплатно; компьютер в интернет не открывается (MediaEngine сам забирает новые сообщения у Telegram).",
+    "In Telegram, open": "В Telegram открой", ", send": ", отправь", ", choose a name and a username for the bot.": ", придумай имя и адрес бота.",
+    "BotFather answers with a token (like 1234567890:AAH…): copy it.": "BotFather пришлёт токен (вида 1234567890:AAH…): скопируй его.",
+    "Paste it here and press Connect.": "Вставь его сюда и нажми «Подключить».", "The bot token from @BotFather": "Токен бота от @BotFather",
+    "Connect": "Подключить",
+    "The token is kept in the Windows credential store of this user, never in a file of the program or a log.":
+        "Токен хранится в хранилище учётных данных Windows этого пользователя — никогда в файлах программы или журналах.",
+    "Your bot:": "Твой бот:", "Now, in Telegram, open your bot and send it this message:": "Теперь в Telegram открой своего бота и отправь ему это сообщение:",
+    "Only the chat that sends this code is served; other people writing to the bot get no answer. The page shows “Connected” when it is done (refresh it).":
+        "Бот будет слушать только чат, приславший этот код; другим людям он не отвечает. Когда всё получится, здесь появится «Подключено» (обнови страницу).",
+    "A new code": "Новый код", "Disconnect the bot": "Отключить бота", "Connected": "Подключено", "chat:": "чат:",
+    "Share a link or a video to the bot, or write it a topic - it appears in the Inbox.": "Поделись с ботом ссылкой или видео или напиши ему тему — это появится во «Входящих».",
+    "The bot says when a download started from the Inbox is done.": "Бот напишет, когда закончится загрузка, запущенная из «Входящих».",
+    "Last contact with Telegram:": "Последняя связь с Telegram:", "Connect another chat": "Подключить другой чат",
+    "This is not a bot token. It looks like 1234567890:AAH... (from @BotFather).": "Это не токен бота. Он выглядит так: 1234567890:AAH... (от @BotFather).",
+    "Telegram did not confirm this token.": "Telegram не подтвердил этот токен.", "The bot is not set up.": "Бот не настроен.",
+    "The token could not be kept (the Windows credential store). Try again.": "Не получилось сохранить токен (хранилище учётных данных Windows). Попробуй ещё раз.",
+    "Idea for the Inbox": "Идея во «Входящие»", "in the Inbox": "во «Входящих»",
+    "The idea needs a topic or links to videos.": "Идее нужна тема или ссылки на видео.", "A link of the idea is not a web address (https://).": "Ссылка идеи — не веб-адрес (https://).",
     "Look": "Оформление", "A colour for each kind of work": "Свой цвет у каждого вида работы",
     "Create - warm, Videos - teal, Tools - amber, on a dark base.": "Создать — тёплый, Видео — бирюзовый, Инструменты — янтарный, на тёмном фоне.",
     "Neon on black": "Неон на чёрном", "True black, bright colours with a glow (also by kind of work).": "Чистый чёрный фон, яркие цвета со свечением (тоже по видам работы).",
@@ -672,6 +706,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"The downloader was installed but does not start: (.*)", r"Загрузчик установлен, но не запускается: \1"),
     # an author's style (cartoon/reference.py: several studied videos together)
     (r"A common style \((\d+) videos\)", r"Общий стиль (видео: \1)"),
+    (r"Telegram could not be reached: (.*)", r"Telegram недоступен: \1"),
     (r"Clip (\d+) did not pass its check \((.+)\)\.", r"Клип \1 не прошёл проверку (\2)."),
     # voice-over add-on (voice.py)
     (r"The download answered HTTP (\d+)\. Try again later\.", r"Сайт ответил ошибкой HTTP \1. Попробуй позже."),

@@ -993,7 +993,18 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Ocean, Acid; Calm night as before) - pictures sent; he chose: the old look (Calm night) by default, the others kept.
 - 2026-10-30, **b266** published (commit f84c227, ZIP 4,981,498 bytes, the same runtime; run 40985971631: cartoon 37/37,
   writer 35/35, download 10/10, convert 66/66, browser 20/20, Russian 242 pages 0 English, route fuzz 4054 requests 0
-  errors): bigger interface, the menu without folding, ten colour schemes, the old look by default. He also asked about a phone:
+  errors): bigger interface, the menu without folding, ten colour schemes, the old look by default.
+- 2026-10-30, the owner: "where do I send a channel from my phone? nowhere"; roles agreed - RevEng = business ideas in
+  general, Social = monitoring, metrics, publishing, MediaEngine = production with an Inbox. Built: **Inbox** (menu under
+  Home, a count of new items; `inbox.py`, `inbox_web.py`): links, topics and videos - typed there, from another program
+  (new order kind `idea`: topic, why, links -> an Inbox item, answered done without a video; ORDERS.md Kind 3) or from
+  the owner's phone through **his own Telegram bot** (`telegram_bot.py`; Settings → Phone: token from @BotFather checked
+  with getMe and kept in the Windows credential store, a 6-digit pairing code - only that chat is served; long polling,
+  nothing opened to the internet; links -> link items, text -> a topic, a video up to 20 MB -> Downloaded\Telegram + an
+  item, bigger refused politely; /status; a download started from an Inbox item is announced to the phone once). Next
+  steps from an item: Show the videos (the download marks the item done and remembers the job), Write a story (the
+  writer's form comes with the topic), Study its rhythm. Checks: inbox_check 8/8 with a stand-in Telegram server, orders
+  53/53, download 10/10, unit 198, browser 20/20, Russian 0 English (Social's fuzz pages aside), route fuzz 0 errors. He also asked about a phone:
   told him what a phone web app could do (share a link to download, send videos, start work, notifications, results) -
   it needs the app opened to his own devices (pairing code, his network or Tailscale): only on his "yes".
 - 2026-10-29, an author's style (step 3 of the owner's "a profile whose videos suit our style"): several studied videos

@@ -8,10 +8,12 @@ from flask import jsonify, redirect, request
 from . import auto_edit as ae
 from . import orders
 
-KIND_LABEL = {"reel_from_videos": "Reel from videos", "render_plan": "Video by plan"}
+KIND_LABEL = {"reel_from_videos": "Reel from videos", "render_plan": "Video by plan", "idea": "Idea for the Inbox"}
 
 # what each answer code means, in words (the exact detail is shown small underneath, as it is)
 ERROR_TEXT = {
+    "IDEA_INVALID": "The idea needs a topic or links to videos.",
+    "IDEA_LINK_INVALID": "A link of the idea is not a web address (https://).",
     "ORDER_JSON_INVALID": "The order file is not valid JSON.",
     "ORDER_FILE_MISSING": "A file named in the order is not there.",
     "ORDER_SCHEMA_UNKNOWN": "The order is not in the MediaEngine order format.",
@@ -139,6 +141,11 @@ def register(app, page, err_page, e, error_html):
             elif st == "taken":
                 acts = proj(it) + btn(oid, "delete", "Delete", "btn2", "delq")
                 cards["done"].append(f"<div class='card'>{head(it)}<div class='muted' style='margin-top:6px'>The program took the answer.</div>"
+                                     f"<div class='row' style='margin-top:8px;gap:6px;flex-wrap:wrap'>{acts}</div></div>")
+            elif it.get("kind") == "idea":           # (no video: it went into the Inbox)
+                acts = "<a class='btn' href='/inbox'>Open the Inbox</a>" + btn(oid, "delete", "Delete", "btn2", "delq")
+                cards["done"].append(f"<div class='card'>{head(it)}<div class='muted' style='margin-top:6px'>"
+                                     f"<span class='badge safe'>in the Inbox</span> <span translate='no'>{e(_when(it.get('finished_at')))}</span></div>"
                                      f"<div class='row' style='margin-top:8px;gap:6px;flex-wrap:wrap'>{acts}</div></div>")
             else:
                 v = it.get("video") or {}

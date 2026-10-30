@@ -2667,6 +2667,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
+    ("2026-10-30", "Inbox (in the menu, under Home): links and topics to work on - typed there, from other programs, or sent from your phone through your own Telegram bot (Settings → Phone). Settings → Look: the size of everything and ten colour schemes."),
     ("2026-10-29d", "A new look: the menu on the left, grouped by what you do (Create, Videos, Tools); Home shows what to make and the recent work of every part; each kind of work has its own colour (Settings → Look: also “Neon on black” or “Calm night”)."),
     ("2026-10-29c", "Cartoon Studio: an author's style - several studied videos (say, the ones downloaded from one profile) taken together: the middle of their rhythms and their colours; then “Write a story in this style”. The topic of a story may be typed in any language, even in translit."),
     ("2026-10-29b", "Download by a link (Media → Download by a link): a video, or chosen videos of a profile or channel, from YouTube, TikTok and other sites into the Downloaded folder - then study its rhythm, write a story from it, cut clips or convert."),

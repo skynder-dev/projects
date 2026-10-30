@@ -352,6 +352,11 @@ def register(app, layout, e, human_bytes):
             orders.start()
         except Exception:
             pass
+        try:          # the owner's phone (his Telegram bot), when he set it up
+            from . import telegram_bot
+            telegram_bot.start()
+        except Exception:
+            pass
 
     def page(title, body, script=""):
         return layout(title, PAGE_CSS + body, script + _REENABLE_JS)      # translated (if Russian) for every page in i18n.install
@@ -1589,6 +1594,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
     cartoon_web.register(app, page, err_page, e, human_bytes)
     from . import download_web     # videos downloaded by a link (yt-dlp, installed with a button)
     download_web.register(app, page, err_page, e, human_bytes)
+    from . import inbox_web        # the Inbox (links and topics from the phone's bot, other programs, typed) and the phone
+    inbox_web.register(app, page, err_page, e, human_bytes)
 
 
 AI_LABEL = "AI — as before (fast)"
