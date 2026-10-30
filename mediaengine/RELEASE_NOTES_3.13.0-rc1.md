@@ -309,6 +309,12 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   Tools; Activity, Settings, More), the open place lit with its parts under it, "☰ Menu" in a narrow window; Home = what
   to make and the recent work of every part, Activity = all the work; a colour per kind of work (Settings → Look: also
   Neon on black, Calm night); MediaEngine opens on Home. No page address changed.
+- b266 (commit f84c227, run 40985971631: cartoon 37/37, writer 35/35, download 10/10, convert 66/66, browser 20/20,
+  Russian 242 pages 0 English, route fuzz 4054 requests 0 errors; ZIP 4,981,498 bytes, the same runtime): from the
+  owner's look at b264 - **bigger** (the whole interface grows with a wide screen; Settings → Look → Size: by the screen
+  or 100-150 %), the menu shows everything (no "More"; Other: Social Lab, Devices, Cloud), **ten colour schemes** with a
+  strong colour per kind of work (Aurora, Glass, Tonal, Banners, Bento, Neon, Synthwave, Sunset, Ocean, Acid) in
+  Settings → Look; the old look stays the default (his choice). b265 (08b2787) was cancelled by the newer push.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
