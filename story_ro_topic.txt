@@ -1,0 +1,70 @@
+Title: Cum o firmă de administrare bani câștigă pe o renovare a scării blocului
+Format: vertical
+Language: ro
+Narrator: Ana (woman, narrator)
+Ion (man, manager of the building)
+Lidia (woman, resident)
+Gheorghe (man, administrator company boss)
+Serghei (man, technician)
+Maria (woman, inspector)
+
+== Home | title: Cum o firmă de administrare bani câștigă pe o renovare a scării blocului / care nu s-a făcut niciodată
+Ana (wave, happy): Un bloc cu o scară în stare de ruine. Renovarea ar trebui să fie simplă, nu?
+Ana (explain, sly): Dar unele firme au un plan mai subtil. Unul care nu necesită niciun lucru real.
+
+== Building site | road: repair
+Lidia (point up, surprised) [bubble]: Scara e închisă de șase ani! Nu a fost vreodată reparată!
+Ana: Într-un bloc din Chișinău, o firmă de administrare bani propune o renovare completă.
+Ana: Fără a verifica dacă scara există sau nu.
+
+== Office | tender: TENDER; must have experience with staircases; no prior work required; 3 days to apply
+Ana: Se anunță un concurs pentru renovarea scării.
+Gheorghe (explain, sly): Doar experiență în scări. Nu e nevoie să ai vreun proiect.
+Gheorghe (point, happy): Oportunitatea este perfectă pentru noi.
+
+== Night | office
+Serghei (rub hands, sly) [bubble]: O firmă fără lucruri. Fără costuri. Doar o listă.
+Ana: Gheorghe și echipa lui scriu cerințele ca să fie dificil de îndeplinit.
+Ana: Nu se cere nicio imagine, niciun plan, doar un „fapt”.
+
+== Office | contract: CONTRACT; price 120 000 lei; stamp APPROVED; no inspection needed
+Ana: Firma câștigă cu 120.000 lei.
+Gheorghe (present, happy): A fost aprobat! Nu a fost nevoie de verificare.
+Ana: Contractul nu include niciun serviciu real. Nu există scara.
+
+== Board | flow: City budget -> Administrator company 120.000 lei; company -> Gheorghe’s office 30.000 lei; company -> Marketing 10.000 lei
+Ana: O firmă plătește 120.000 lei pentru o renovare care nu există.
+Ana: 30.000 lei sunt trimise în birou, ca „cost de administrare”.
+Ana: 10.000 lei se folosesc pentru publicitate – „scara a fost reparată!”.
+
+== Home | bag: “Scara renovată” / 120.000 lei
+Lidia (facepalm, sad) [bubble]: Așa că nu am avut scara? Nu a fost niciun lucru?
+Ana: Firma creează un document fals. Spune că scara a fost reparată.
+Ana: Dar nu a fost făcut nimic.
+
+== Board | compare: Real work 200.000 lei vs. Paper work 120.000 lei
+Ana: O renovare reală costă cel puțin 200.000 lei.
+Ana: Aici, doar 120.000 lei sunt plătite pentru o lucrare care nu a fost făcută.
+
+== Office | timeline: March 5 – Tender announced; March 8 – Contract signed; March 10 – “Work begins” on paper; March 12 – Report sent to residents
+Ana: 5 martie: concursul este anunțat.
+Ana: 8 martie: contractul este aprobat.
+Ana: 10 martie: „muncă începe” – pe hârtie.
+Ana: 12 martie: o raport este trimis că scara a fost reparată.
+
+== Board | percent: 25% kickback to officials
+Ana: 25% din plata firmelor se dă în mod secret oficialilor.
+Gheorghe (smile, sly): Este o parte normală a serviciului.
+Ana: O firmă care nu face nimic câștigă totuși.
+
+== City hall | list: Red flags; No actual work; Paper-based “work” schedule; Price below market; 25% kickback to officials
+Lidia (point, angry): Cum pot să știu dacă lucrurile sunt adevărate?
+Lidia (point up): Nu există scara. Nu există muncă.
+Ana (wave, happy): Verifică dacă există o imagine reală.
+Ana: Caută dacă firma are un plan, un lucru făcut.
+Ana (final, calm): Dacă nu există lucruri, atunci nu există renovare.
+
+== Home | visual: empty staircase with a sign “Renovată”
+Ana (explain, neutral): O firmă de administrare bani poate câștiga fără a face nimic.
+Ana (point, calm): Plătește pentru un lucru care nu există.
+Ana (final, clear): Verifică întotdeauna dacă lucrarea e reală – nu doar ce se spune pe hârtie.

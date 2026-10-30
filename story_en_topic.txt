@@ -1,0 +1,51 @@
+Title: Why a City Hospital Pays Three Times More for the Same Medicine
+Format: vertical
+Language: en
+Narrator: Dana (woman, narrator)
+Dr. Elaine (woman, hospital doctor)
+Mr. Frank (man, pharmacy buyer)
+Miles Co. (man, medicine supplier)
+Dr. Lee (man, hospital administrator)
+
+== Hospital | title: Why a City Hospital Pays Three Times More / for the Same Medicine
+Dana (point up, surprised): A single dose of insulin costs more than it should.
+Dana (explain, sly): Let’s see how the price gets tripled — and who ends up paying.
+
+== Office | contract: CONTRACT; price $120 000; stamp APPROVED; for 1000 vials per month
+Dr. Elaine (rubbing hands, happy): We signed a deal for insulin. $120,000 a month.
+Mr. Frank (think, worried): That’s three times what we paid last year.
+Dana: Last year it was $40,000. This year? $120,000.
+
+== Shop | tender: TENDER; must be "premium" brand; delivered in 3 days; only one pharmacy allowed
+Mr. Frank (point, sly): The tender says only Miles Co. can supply.
+Dr. Lee (present, neutral): They claim their insulin is “clinically superior.”
+Dana: But the medicine is the same. Just labeled differently.
+
+== Board | compare: Standard insulin $40k vs Premium brand $120k
+Mr. Frank (facepalm, angry) [bubble]: Same dose. Same effect. Three times more.
+Dana: The price difference comes from branding — not quality.
+
+== Office | flow: Hospital budget -> Miles Co. $120K; Miles Co. -> Retail $80K; Miles Co. -> Officials $15K
+Dana (explain, sly): The hospital pays $120,000.
+Dana: Miles Co. sells $80,000 to a retail pharmacy.
+Dana: And keeps $15,000 as a kickback to the officials who approved it.
+
+== Home | bag: "Premium insulin" / 1000 vials / $120K
+Dr. Elaine (wave, sad): We’re giving patients the same medicine — just more expensive.
+Dana: The cost doesn’t go to research or better care. It goes to profit.
+
+== Board | percent: 30% kickback
+Mr. Frank (point up, angry): Thirty percent of the price goes back to the buyers.
+Dana: That’s a kickback. A secret share. Hidden in the contract.
+
+== Timeline: January — Tender issued; March — Miles Co. wins; June — First delivery; September — Audit
+Dr. Lee (think, worried): We didn’t notice the price jump until the audit.
+Dana: The audit found the tender had no real competition. Only one bidder.
+
+== List: Red flags; Only one supplier; Price three times higher; Kickback 30%; No quality test
+Mr. Frank (point, angry): These are warning signs.
+Dana (wave, happy): If you see only one name in a tender — that’s a red flag.
+
+== Hospital | lesson: Watch the tender. Ask who wrote it. Compare prices.
+Dana (explain, calm): Next time, ask: Is this really better medicine?
+Dana (point, happy): Or is it just more expensive — with a secret profit for someone else?

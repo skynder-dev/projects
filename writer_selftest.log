@@ -1,0 +1,18 @@
+0.00.042.824 I srv  llama_server: initializing ...
+0.00.042.852 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.043.194 I srv  init_listene: The UI is disabled
+0.00.043.204 I srv  init_listene: Use --ui/--no-ui (or deprecated --webui/--no-webui) to enable/disable
+0.00.059.087 I srv    load_model: loading model 'D:\a\_temp\home-writer\addons\writer\model\qwen3-4b-instruct-2507-q8_0.gguf'
+0.00.364.476 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.865.275 I cmn          init: llama threadpool init, n_threads = 2
+0.02.184.919 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 8192, kv_unified = 'false'
+0.02.197.611 I srv  server_run_i: model loaded
+0.02.197.651 I srv  server_on_li: listening on http://127.0.0.1:64381
+0.02.527.270 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 0, t_last = -1
+0.02.527.339 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.03.719.797 I slot print_timing: id  0 | task 0 | prompt eval time =    1021.87 ms /    14 tokens (   72.99 ms per token,    13.70 tokens per second)
+0.03.719.816 I slot print_timing: id  0 | task 0 |        eval time =     170.49 ms /     2 tokens (  170.49 ms per token,     5.87 tokens per second)
+0.03.719.818 I slot print_timing: id  0 | task 0 |       total time =    1192.36 ms /    16 tokens
+0.03.719.819 I slot print_timing: id  0 | task 0 |    graphs reused =          1
+0.03.719.821 I slot print_timing: id  0 | task 0 |   graph reallocs =          0    /     0        (same size) / (changed size)
+0.03.719.848 I slot      release: id  0 | task 0 | stop processing: n_tokens = 15, truncated = 0

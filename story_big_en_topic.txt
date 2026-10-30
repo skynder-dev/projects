@@ -1,0 +1,50 @@
+Title: Why a City Hospital Pays Three Times More for the Same Medicine
+Format: vertical
+Language: en
+Narrator: Dana (woman, narrator)
+Dr. Helen (woman, hospital director)
+Mark (man, procurement officer)
+Tony (man, supplier)
+Lena (woman, journalist)
+Mayor Grace (woman, mayor)
+
+== Hospital | title: Why a City Hospital / Pays Three Times More for the Same Medicine
+Dana (wave, neutral): A hospital buys medicine. Simple, right?
+Dana (explain, sly): Let's see how it ends up costing three times more.
+
+== Office | tender: TENDER; 10 years of experience; special delivery service; 3 days to apply
+Dana: The hospital needs a new drug. A fair price is about one hundred thousand dollars per box.
+Mark (point, neutral): I’ve written the tender. Only one company can deliver.
+
+== Shop | compare: Generic medicine $100 vs Brand name medicine $300
+Lena (think, worried) [bubble]: Why pay three times more for the same drug?
+Dana: The tender says only the brand name medicine is acceptable.
+
+== Office | contract: CONTRACT; price $300 000; stamp APPROVED
+Mark (present, happy): Tony’s company wins with a price three times higher.
+Mayor Grace (nod, neutral): Approved. We need quality medicine.
+
+== Board | flow: Hospital budget -> Tony's Co. $300K; Tony's Co. -> Generic drug $100K; Tony's Co. -> Kickback
+Dana: The hospital pays Tony’s company three hundred thousand.
+Dana: He buys the generic drug for one hundred thousand and sends the rest back.
+
+== Hospital | bag: $200 000
+Tony (rubs hands, sly) [bubble]: A little extra for my time.
+Mark (shrug, neutral): It’s just business.
+
+== Board | timeline: Jan 1st: Tender posted; Jan 3rd: Only one bidder; Feb 1st: Contract signed; Mar 1st: Medicine arrives
+Dana: The tender was posted on January 1st.
+Dana: By March, the medicine arrives. And the hospital pays three times more.
+
+== Board | bars: fair price $100K, paid $300K
+Lena (point up, angry) [bubble]: This is not fair!
+Dana: One box of medicine. Paid three times the fair price.
+
+== City hall | list: Red flags; Only one bidder; Rushed deadlines; Price far above market
+Lena (explain, angry): How to spot it?
+Lena (point): Only one bidder and rushed deadlines.
+Lena (point up): And a price way above the market.
+
+== Hospital | magnifier: Tender
+Dana (wave, happy): Follow the money. Check who wrote the tender.
+Dana (think, sly): Sometimes, it’s not about quality. It’s about profit.
