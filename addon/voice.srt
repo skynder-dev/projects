@@ -15,7 +15,7 @@ Packing light changed every
 trip we took.
 
 5
-00:00:05,520 --> 00:00:06,330
+00:00:05,500 --> 00:00:06,330
 Three outfits,
 
 6
