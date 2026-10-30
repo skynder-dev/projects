@@ -1013,6 +1013,15 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   an idea order done again could file twice; hand-edited item files broke the page and slowed the bot (normalised);
   notifications for removed downloads or a blocked bot retried for ever (given up once); a webhook set elsewhere
   (deleteWebhook on connect); the new-items count read every file on every page (cached by the folder's change).
+- 2026-10-30, **b273** published (commit ad3e921, ZIP 5,157,659 bytes, the same runtime; run 41104078757: all green,
+  handedit 11/11 with the editor used in Edge): Edit by hand (a real time-line editor; the owner: "typing a title does
+  nothing" on the old page, then "how do you see it?" - step 1 of 3: pieces, order, cuts, MP4 in four formats; next: text,
+  captions, music, voice-over, then transitions, speed, an Auto Edit draft); Cartoon Studio drawing styles (the owner did
+  not choose - all five kept, flat by default, as he was told), livelier characters (his "make the animation stronger",
+  step 1: our own rig; step 2 proposed: an AI model on his RTX 3060 draws characters and backgrounds once, the program
+  animates them), the film's page as an editor with the language at the top (his "change language belongs in Change").
+  The owner handed over Merch Forge for a deep analysis (12:15 Chicago): its package MIGRATION/forge/2026-10-30 had not
+  arrived in the repository by 20:34Z.
 - 2026-10-30, **b270** published (commit 3f0d8f1, ZIP 5,041,852 bytes, the same runtime; run 41031086548: all checks
   green, browser 20/20 on Windows): an Instagram profile link says to send single reel links (no sign-in - his choice).
   Waiting for the owner (kept back, not pushed): five drawing styles for Cartoon Studio (flat, hand-drawn, whiteboard,

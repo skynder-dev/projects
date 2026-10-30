@@ -326,6 +326,17 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   browser 20/20, unit 207/207, Russian 247 pages 0 English, route fuzz 4171 requests 0 errors; ZIP 5,041,852 bytes, the
   same runtime): Download by a link says plainly that Instagram lists a profile's videos only after signing in - send
   links to single reels (the owner chose not to give MediaEngine his Instagram sign-in).
+- b273 (commit ad3e921, run 41104078757: cartoon 43/43, writer 37/37, **handedit 11/11** (the editor used in Edge),
+  inbox 11/11, download 10/10, convert 66/66, browser 20/20, unit 208/208, Russian 255 pages 0 English, route fuzz 4546
+  requests 0 errors; ZIP 5,157,659 bytes, the same runtime): **Edit by hand** - a real editor (pieces of any videos on a
+  time line: cut by the edges, move, split, remove, undo; one MP4 in 9:16 / 16:9 / 1:1 / 4:5 in the background; the
+  old moments-only page explains where its moments come from); **Cartoon Studio** - five drawing styles (flat as before
+  by default, hand-drawn, whiteboard, paper cut-out, motion graphics), livelier characters (the mouth's shape from the
+  sounds, glances, nods and brows on weighty words, gestures that swing past and settle, uneven blinks, turning round),
+  the film's page as an editor (another language at the top - translated with the same people and voices, or retold
+  for a country; a picture of each scene; lines added and removed, scenes moved and removed; the title). b271 was
+  cancelled by the newer push; b272 (82a034e) was all green but not published: the Russian-page check flagged "Media
+  Brain" (the Library button's own name) and "AVI" - kept as they are in b273.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
