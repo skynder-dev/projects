@@ -1,6 +1,8 @@
 """Cartoon characters: a description (a dict: build, skin, hair, face, clothes, a hat, glasses ...) drawn the same
 way every time, so a character looks the same in every scene and every episode; a pose (arms, lean, head), an
-emotion (eyes, brows, mouth), a mouth opening (lip sync), blinking and breathing, a direction it looks to.
+emotion (eyes, brows, mouth), a mouth opening and its shape for the sound said (lip sync: "a", "o", "u", "e", lips
+closed for m/b/p, teeth on the lip for f/v), blinking and breathing, a direction it looks to, nods and raised brows on the
+words that matter, a gesture that swings a little past and settles.
 
 Drawn in the character's own units: its feet at (0, 0), up is negative y, about 560 units tall (a medium build).
 """
@@ -11,7 +13,7 @@ import math
 import random
 import re
 
-from .draw import INK, Canvas, arc, bezier, ease, lerp, rounded, shade
+from .draw import INK, Canvas, arc, back, bezier, ease, lerp, rounded, shade
 
 SKINS = ["#f6d3b8", "#efc29f", "#e0a982", "#c98d63", "#a8704c", "#80513a", "#5d3a2a"]
 HAIRS = ["#2b211c", "#4a3326", "#7a5232", "#b07a45", "#d6b26e", "#8f8f96", "#e7e2d8", "#a33c2a", "#1d1d24"]
@@ -91,14 +93,17 @@ def _body(c: dict) -> dict:
 
 def draw(cv: Canvas, c: dict, x: float, y: float, scale: float = 1.0, look: int = 1, pose: str = "idle",
          pose2: str | None = None, mix_t: float = 0.0, emotion: str = "neutral", mouth: float = 0.0, blink: float = 0.0,
-         t: float = 0.0, walk: float | None = None, gaze: tuple = (0.0, 0.0), alpha_shadow: float = 0.2):
-    """A character with its feet at stage (x, y). look: 1 right, -1 left. pose2/mix_t: halfway between two poses.
-    mouth: 0 closed .. 1 wide open. t: seconds (breathing). walk: the step's phase (None: standing)."""
+         t: float = 0.0, walk: float | None = None, gaze: tuple = (0.0, 0.0), alpha_shadow: float = 0.2,
+         nod: float = 0.0, brow: float = 0.0, snap: bool = False):
+    """A character with its feet at stage (x, y). look: 1 right, -1 left. pose2/mix_t: halfway between two poses
+    (snap: a new gesture - it swings a little past and settles). mouth: 0 closed .. 1 wide open, or (opening, the
+    sound's shape: SHAPES). t: seconds (breathing, shifting the weight). walk: the step's phase (None: standing).
+    nod: the head dips (0..1); brow: the brows go up (0..1)."""
     b = _body(c)
     p = dict(POSES.get(pose, POSES["idle"]))
     if pose2 and mix_t > 0:
         q = POSES.get(pose2, POSES["idle"])
-        m = ease(mix_t)
+        m = back(mix_t, 1.25) if snap else ease(mix_t)
         p = {key: (tuple(lerp(u, v, m) for u, v in zip(p[key], q[key])) if isinstance(p[key], tuple) else lerp(p[key], q[key], m))
              for key in p}
     breath = math.sin(t * 2.2) * 2.5
@@ -107,7 +112,7 @@ def draw(cv: Canvas, c: dict, x: float, y: float, scale: float = 1.0, look: int 
         legs = b["leg_h"]
         hip_y = -legs
         _legs(cv, c, b, walk)
-        lean = p["lean"] + (math.sin(walk * 2) * 2 if walk is not None else 0)
+        lean = p["lean"] + (math.sin(walk * 2) * 2 if walk is not None else math.sin(t * 0.8) * 1.1)   # (the weight shifts)
         bob = -abs(math.sin(walk)) * 8 if walk is not None else breath * 0.4
         with cv.at(0, hip_y + bob, lean):
             top = -b["torso_h"]
@@ -118,8 +123,8 @@ def draw(cv: Canvas, c: dict, x: float, y: float, scale: float = 1.0, look: int 
             _torso(cv, c, b, breath)
             _arm(cv, c, b, -sh_x, sh_y, p["b"][0] - swing, p["b"][1], back=True)
             _arm(cv, c, b, sh_x, sh_y, p["a"][0] + swing, p["a"][1], back=False)
-            with cv.at(0, top - b["neck"] + breath * 0.3, p["tilt"] + math.sin(t * 1.3) * 1.2):
-                _head(cv, c, b, emotion, mouth, blink, gaze)
+            with cv.at(0, top - b["neck"] + breath * 0.3 + nod * 7, p["tilt"] + math.sin(t * 1.3) * 1.2 + nod * 2.5):
+                _head(cv, c, b, emotion, mouth, blink, gaze, brow)
 
 
 def _legs(cv: Canvas, c: dict, b: dict, walk):
@@ -212,7 +217,7 @@ def _arm(cv: Canvas, c: dict, b: dict, sx: float, sy: float, a_up: float, bend: 
             cv.circle(side * 12, b["arm_l"] + 2, 7, c.get("skin"), INK, 2.5)
 
 
-def _head(cv: Canvas, c: dict, b: dict, emotion: str, mouth: float, blink: float, gaze: tuple):
+def _head(cv: Canvas, c: dict, b: dict, emotion: str, mouth, blink: float, gaze: tuple, brow: float = 0.0):
     hw, hh = b["head_w"], b["head_h"]
     skin = c.get("skin", "#efc29f")
     hair = c.get("hair", "#2b211c")
@@ -242,7 +247,7 @@ def _head(cv: Canvas, c: dict, b: dict, emotion: str, mouth: float, blink: float
     elif c.get("beard") == "full":
         cv.poly(arc(0, cy + hh * 0.12, hw * 0.5, hh * 0.42, -5, 185, 18), hair, INK, 3.5)
     _hair_front(cv, c, hw, hh, cy, hair, style)
-    _eyes(cv, emotion, blink, gaze, hw, hh, cy, c)
+    _eyes(cv, emotion, blink, gaze, hw, hh, cy, c, brow)
     if c.get("female") and blink <= 0.5:                                    # lashes
         for side in (-1, 1):
             ex, ey = side * hw * 0.2, cy - hh * 0.04
@@ -297,7 +302,7 @@ def _hair_front(cv, c, hw, hh, cy, hair, style):
             + [(hw * 0.25, top + 24), (-hw * 0.2, top + 30)], hair, INK, 4)
 
 
-def _eyes(cv, emotion, blink, gaze, hw, hh, cy, c):
+def _eyes(cv, emotion, blink, gaze, hw, hh, cy, c, brow: float = 0.0):
     ey = cy - hh * 0.04
     big = 1.25 if emotion == "surprised" else 1.0
     gx, gy = gaze
@@ -315,7 +320,7 @@ def _eyes(cv, emotion, blink, gaze, hw, hh, cy, c):
             cv.circle(ex + 5 + gx * 6, ey + 2 + gy * 6, 8.5 * big * max(0.4, min(1, open_k + 0.2)), "#20232e")
             cv.circle(ex + 8 + gx * 6, ey - 2 + gy * 6, 3, "#ffffff")
         # brows
-        by = ey - 30 * big
+        by = ey - 30 * big - 9 * max(0.0, min(1.0, brow))
         if emotion == "angry":
             pts = [(ex - 22, by - 6 if side < 0 else by + 10), (ex + 20, by + 10 if side < 0 else by - 6)]
         elif emotion in ("sad", "worried"):
@@ -334,10 +339,39 @@ def _eyes(cv, emotion, blink, gaze, hw, hh, cy, c):
 def _mouth(cv, emotion, mouth, hw, hh, cy, skin, lips=None):
     my = cy + hh * 0.3
     w = 44
-    o = max(0.0, min(1.0, mouth))
+    shape = ""
+    if isinstance(mouth, (tuple, list)):
+        mouth, shape = (mouth[0], mouth[1]) if len(mouth) > 1 else (mouth[0], "")
+    o = max(0.0, min(1.0, float(mouth or 0.0)))
     curve = {"happy": 10, "sly": 6, "angry": -6, "sad": -9, "worried": -5, "surprised": 0}.get(emotion, 3)
     if emotion == "surprised":
         o = max(o, 0.45)
+    line_c, line_w = lips or INK, (5.5 if lips else 4.5)
+    if shape == "M" and o >= 0.08:                       # lips pressed together (m, b, p)
+        cv.line(bezier((-w * 0.42, my - curve * 0.15), (-w / 5, my + 2 + curve * 0.4), (w / 5, my + 2 + curve * 0.4),
+                       (w * 0.42, my - curve * 0.15), 10), line_c, line_w + 1.5)
+        return
+    if shape == "F" and o >= 0.08:                       # the top teeth on the lower lip (f, v)
+        ow = w * 0.78
+        cv.poly(rounded(-ow / 2, my - 7, ow, 13, 6), "#6b2430", line_c, 4)
+        cv.rect(-ow * 0.36, my - 7, ow * 0.72, 7, "#ffffff", None, 0, 2)
+        return
+    if shape in ("O", "U") and o >= 0.08:                # round lips: "o" open, "u" small and pushed out
+        rx = w * (0.3 if shape == "O" else 0.2)
+        ry = (9 + 15 * o) if shape == "O" else (8 + 6 * o)
+        cv.ellipse(0, my + ry * 0.35, rx, ry, "#6b2430", line_c, 4.5 if lips else 4)
+        if shape == "O" and o > 0.3:
+            cv.ellipse(0, my + ry * 0.95, rx * 0.55, ry * 0.3, "#e2737c")
+        return
+    if shape in ("E", "C") and o >= 0.08:                # wide and flat, the teeth showing ("e", "i"; most consonants)
+        o = o * (0.45 if shape == "E" else 0.6)
+        ow = w * (1.08 if shape == "E" else 0.9)
+        oh = 5 + 22 * o
+        pts = bezier((-ow / 2, my - curve * 0.3), (-ow / 3, my - oh * 0.2), (ow / 3, my - oh * 0.2), (ow / 2, my - curve * 0.3), 8) + \
+            bezier((ow / 2, my - curve * 0.3), (ow / 3, my + oh), (-ow / 3, my + oh), (-ow / 2, my - curve * 0.3), 12)[1:]
+        cv.poly(pts, "#6b2430", line_c, 4.5 if lips else 4)
+        cv.rect(-ow * 0.34, my - oh * 0.15, ow * 0.68, max(4, oh * 0.38), "#ffffff", None, 0, 3)
+        return
     if o < 0.08:
         if emotion == "sly":
             cv.line(bezier((-w / 2, my), (-6, my + 4), (10, my + 2), (w / 2 + 6, my - 10), 10), INK, 4.5)
@@ -354,6 +388,49 @@ def _mouth(cv, emotion, mouth, hw, hh, cy, skin, lips=None):
         cv.ellipse(0, my + oh * 0.62, ow * 0.26, oh * 0.22, "#e2737c")
     if emotion == "happy" or o > 0.5:
         cv.rect(-ow * 0.32, my - oh * 0.2, ow * 0.64, max(4, oh * 0.22), "#ffffff", None, 0, 3)
+
+
+SHAPES = ("A", "E", "O", "U", "M", "F", "C")             # (the mouth for a sound: a, e/i, o, u, m/b/p, f/v, the rest)
+_SOUND: dict = {}
+for _shape, _letters in (("A", "аяaáâăàäæ"), ("O", "оёoóôöò"), ("U", "уюuúùüûw"), ("E", "еэиыeéèêëiíîïyй"),
+                         ("M", "мбпmbp"), ("F", "фвfv")):
+    for _ch in _letters:
+        _SOUND[_ch] = _shape
+
+
+def sound_shapes(words: list, start: float, n: int, fps: int = 30) -> list:
+    """The mouth's shape in each of n pictures from start (seconds), from the letters of the words said then (a word's
+    time shared among its letters, vowels longer); "" between words. A shape lasts at least two pictures."""
+    spans = []
+    for w in words:
+        letters = [ch_ for ch_ in str(w.get("w") or "").lower() if ch_.isalpha() and ch_ not in "ьъ"]
+        if not letters:
+            letters = ["a", "t"]                           # (a number said: the mouth moves anyway)
+        shapes = [_SOUND.get(ch_, "C") for ch_ in letters]
+        merged = []                                        # (the same shape twice in a row: one longer sound)
+        for sh in shapes:
+            wt = 1.7 if sh in ("A", "E", "O", "U") else 1.2 if sh in ("M", "F") else 1.0
+            if merged and merged[-1][0] == sh:
+                merged[-1][1] += wt
+            else:
+                merged.append([sh, wt])
+        s0, e0 = float(w["s"]), float(w["e"])
+        tot = sum(x[1] for x in merged)
+        t0 = s0
+        for sh, wt in merged:
+            t1 = t0 + (e0 - s0) * wt / tot
+            spans.append((t0, t1, sh))
+            t0 = t1
+    out, j = [], 0
+    for k in range(n):
+        tt = start + k / fps
+        while j < len(spans) and spans[j][1] < tt:
+            j += 1
+        out.append(spans[j][2] if j < len(spans) and spans[j][0] <= tt <= spans[j][1] else "")
+    for k in range(1, len(out) - 1):                       # (one picture of a shape is not seen: held for two)
+        if out[k] != out[k - 1] and out[k] != out[k + 1] and out[k - 1] == out[k + 1] and out[k]:
+            out[k + 1] = out[k]
+    return out
 
 
 def visemes(env: list, fps: int = 30) -> list:

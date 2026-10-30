@@ -68,7 +68,7 @@ def main() -> int:
     sys.path.insert(0, str(ROOT / "app"))
     sys.path.insert(0, str(HERE))
     from archivist import voice as vo
-    from archivist.cartoon import chars as ch, film as F, stories
+    from archivist.cartoon import chars as ch, film as F, jobs as cj, stories
     from archivist.cartoon.draw import Canvas
     ff = vo._ffmpeg()
 
@@ -161,6 +161,30 @@ def main() -> int:
           "gesture grows out of the one before; a speaker's arms move a little",
           enter[0] == [] and enter[2] == ["ed"] and moved > 3 and grow[1] == "point_up" and 0 < grow[2] < 1
           and held[0] == "point_up", (enter[:4], moved, grow, held))
+    # lip sync beyond open and closed: the mouth's shape from the letters (English, Russian), drawn differently;
+    # blinks at uneven times; a nod and raised brows on a word said with weight
+    shp = [ch.sound_shapes([{"w": w_, "s": 0.0, "e": 0.6}], 0.0, 18) for w_ in ("Mama", "true", "five", "мама", "уф", "eel")]
+    seen = [set(x) - {""} for x in shp]
+    ok_shapes = ({"M", "A"} <= seen[0] and "U" in seen[1] and "F" in seen[2] and {"M", "A"} <= seen[3]
+                 and {"U", "F"} <= seen[4] and "E" in seen[5])
+    kate = ch.make("Kate", "narrator", female=True)
+    faces = {}
+    for shape_ in ("M", "O", "E"):
+        cvm = Canvas(300, 300, 300)
+        cvm.fill("#eef2f6")
+        ch.draw(cvm, kate, 150, 800, 1.6, 1, "idle", mouth=(0.8, shape_), t=0.0)
+        faces[shape_] = cvm.img[150:260, 80:220].astype(np.int16)
+    diff_mo = float(np.abs(faces["M"] - faces["O"]).mean())
+    diff_oe = float(np.abs(faces["O"] - faces["E"]).mean())
+    shut = [k_ / 30 for k_ in range(0, 30 * 30) if F._blink(k_ / 30, 0) >= 1.0]
+    starts = [x_ for i_, x_ in enumerate(shut) if i_ == 0 or x_ - shut[i_ - 1] > 0.1]
+    gaps = [round(b_ - a_, 2) for a_, b_ in zip(starts, starts[1:])]
+    beat = (F._beat({"words": [{"w": "simple", "s": 1.0, "e": 1.4}, {"w": "millions!", "s": 2.0, "e": 2.5}]}, 2.19),
+            F._beat({"words": [{"w": "a", "s": 1.0, "e": 1.1}]}, 1.1))
+    check("lip sync: the mouth's shape follows the sounds (m/b/p closed, o, u, e, f/v; English and Russian) and is drawn "
+          "differently; blinks at uneven times; a nod and raised brows on a word said with weight, not on a small one",
+          ok_shapes and diff_mo > 2 and diff_oe > 2 and 5 <= len(starts) <= 16 and len(set(gaps)) > 3 and beat[0] > 0.8
+          and beat[1] == 0.0, (seen, round(diff_mo, 2), round(diff_oe, 2), gaps, beat))
     from archivist.cartoon.voices import spoken
     sp = (spoken("The city pays $4.8M, the crew gets $300K - 30% of it.", "en"),
           spoken("Город платит 480 млн ₽, бригада получает 1,2 млн. Это $300 и 21 млн рублей.", "ru"))
@@ -308,6 +332,37 @@ def main() -> int:
     check("example: 8-12 scenes, 60-120 s, own characters (6)", 8 <= len(film["scenes"]) <= 12 and 60 <= tl2["seconds"] <= 120
           and len(film["cast"]) >= 4, (len(film["scenes"]), tl2["seconds"], len(film["cast"])))
 
+    # 4b. drawing styles: the same shapes drawn another way (hand-drawn, a whiteboard, paper, motion graphics)
+    from archivist.cartoon.draw import STYLES
+    bad_s, mid = [], {}
+    for fmt in ("vertical", "horizontal"):
+        W, H = F.FORMATS[fmt]
+        for st_ in STYLES:
+            cv = Canvas(W // 2, H // 2, 1920 if W > H else 1080, st_)
+            for i, s in enumerate(tl2["scenes"]):
+                try:
+                    F.draw_frame(cv, film, s, (s["s"] + s["e"]) / 2, {})
+                    cv.finish()
+                    if float(cv.img.std()) < 8:
+                        bad_s.append(f"{fmt} {st_} scene {i + 1}: blank")
+                    if i in (0, 1):
+                        mid[(fmt, st_, i)] = cv.img.astype(np.float32)
+                except Exception as exc:
+                    bad_s.append(f"{fmt} {st_} scene {i + 1}: {type(exc).__name__}: {exc}")
+    away = {f"{k[0]} {k[1]} {k[2]}": round(float(np.abs(v - mid[(k[0], "flat", k[2])]).mean()), 1)
+            for k, v in mid.items() if k[1] != "flat"}
+    s1 = tl2["scenes"][1]
+    plain, flat_, odd = Canvas(480, 270, 1920), Canvas(480, 270, 1920, "flat"), Canvas(480, 270, 1920, "crayon")
+    for cv in (plain, flat_, odd):
+        F.draw_frame(cv, film, s1, s1["s"] + 1.0, {})
+        cv.finish()
+    check("drawing styles: every scene of the example draws in each style (hand-drawn, whiteboard, paper, motion) in both "
+          "formats, each clearly unlike the flat one; the flat one (and an unknown name) draws as a canvas without a style",
+          len(STYLES) == 5 and not bad_s and len(away) == 16 and all(v > 6 for v in away.values())
+          and np.array_equal(plain.img, flat_.img) and np.array_equal(plain.img, odd.img) and odd.style == "flat", (bad_s[:5], away))
+    kept_s = [F.check_script(dict(SHORT, drawing=d)).get("drawing") for d in ("hand", "crayon", None, 5)]
+    check("drawing styles: a script keeps its style; an unknown one is the flat", kept_s == ["hand", "flat", "flat", "flat"], kept_s)
+
     # 5. the pages
     from archivist.web import create_app
     app = create_app()
@@ -316,8 +371,15 @@ def main() -> int:
         home = c.get("/auto/cartoon", headers=H)
         check("pages: Cartoon Studio opens, with the example story to change", home.status_code == 200 and b"Make the cartoon" in home.data
               and b"== Board | flow: City budget -&gt; RoadCo" in home.data, home.status_code)
+        samples = [c.get(f"/auto/cartoon/drawing/{k}.jpg", headers=H) for k in STYLES]
+        no_sample = c.get("/auto/cartoon/drawing/crayon.jpg", headers=H)
+        check("pages: the new cartoon's form shows the five drawing styles with a picture of each (flat chosen)",
+              all(x.status_code == 200 and x.mimetype == "image/jpeg" and x.data[:2] == b"\xff\xd8" and len(x.data) > 3000 for x in samples)
+              and no_sample.status_code == 404 and home.data.count(b"name='drawing'") >= 5
+              and b"name='drawing' value='flat' checked" in home.data and b"Drawing style" in home.data,
+              ([x.status_code for x in samples], no_sample.status_code))
         r = c.post("/auto/cartoon/new", data={"story": "own", "script": json.dumps(SHORT), "format": "horizontal", "captions": "1",
-                                              "style": "box"}, headers=H)
+                                              "style": "box", "drawing": "paper"}, headers=H)
         jid = next((j["id"] for j in vo.list_jobs() if j.get("kind") == "cartoon_make"), "")
         t0 = time.time()
         while jid and vo.read_job(jid)["state"] in ("waiting", "working") and time.time() - t0 < 900:
@@ -331,6 +393,9 @@ def main() -> int:
         fm = c.get(f"/auto/cartoon/{jid}/film.mp4", headers=H)
         check("pages: the film's page plays it and shows its lines to change", one.status_code == 200 and fm.status_code == 200
               and fm.mimetype == "video/mp4" and b"t_0_0" in one.data and b"Make it again" in one.data, (one.status_code, fm.status_code))
+        check("pages: the film is drawn in the style chosen (paper) and its page has it chosen",
+              cj.script_of(jid).get("drawing") == "paper" and b"name='drawing' value='paper' checked" in one.data,
+              cj.script_of(jid).get("drawing"))
         ag = c.post(f"/auto/cartoon/{jid}/again", data={"t_0_0": "The price is five times higher.", "e_0_1": "angry", "bg_1": "paper",
                                                         "format": "horizontal"}, headers=H)
         nid = (ag.headers.get("Location") or "").rstrip("/").split("/")[-1]
@@ -338,7 +403,42 @@ def main() -> int:
         check("pages: a changed line, feeling and background make a new version", ag.status_code == 302 and sc2
               and sc2["scenes"][0]["lines"][0]["text"] == "The price is five times higher."
               and sc2["scenes"][0]["lines"][1]["emotion"] == "angry" and sc2["scenes"][1]["bg"] == "paper"
-              and sc2.get("camera") != "still" and b"Close-ups of the one speaking" in one.data, (ag.status_code, nid))
+              and sc2.get("camera") != "still" and b"Close-ups of the one speaking" in one.data
+              and sc2.get("drawing") == "paper", (ag.status_code, nid))
+        # the editor: a picture of each scene; lines removed and added where wanted; scenes moved and removed; the title;
+        # the language (the story writer is not installed here: said how to get it)
+        n_sc = len(F.check_script(cj.script_of(jid))["scenes"])
+        thumbs = [c.get(f"/auto/cartoon/{jid}/scene/{i}.jpg", headers=H) for i in range(n_sc)]
+        no_thumb = c.get(f"/auto/cartoon/{jid}/scene/{n_sc + 3}.jpg", headers=H)
+        base = F.check_script(cj.script_of(jid))
+        first0 = base["scenes"][0]["lines"][0]["text"]
+        ed = c.post(f"/auto/cartoon/{jid}/again", data={
+            "title": "  Edited   film ", "order": ",".join(str(i) for i in range(n_sc - 1, -1, -1)),
+            "x_0_0": "1", "n_0_3_t": "Added after the second line.", "n_0_3_at": "1", "n_0_3_w": "ann", "n_0_3_e": "angry",
+            "n_0_3_p": "point", "n_0_1_t": "Added first.", "n_0_1_at": "-1", "n_0_1_w": "nobody", "n_0_9_t": "   ",
+            "n_0_9_at": "0"}, headers=H)
+        eid = (ed.headers.get("Location") or "").rstrip("/").split("/")[-1]
+        es = F.check_script(cj.script_of(eid)) if re.fullmatch(r"[0-9-a-f]{22}", eid) else {}
+        if es:
+            vo.cancel_job(eid)
+        last_sc = (es.get("scenes") or [{}])[-1].get("lines") or []
+        old0 = base["scenes"][0]["lines"]
+        want = (["Added first."] + [x["text"] for x in old0[1:2]] + ["Added after the second line."] + [x["text"] for x in old0[2:]])
+        empty_o = c.post(f"/auto/cartoon/{jid}/again", data={"order": ""}, headers=H)
+        lang_no = c.post(f"/auto/cartoon/{jid}/language", data={"lang": "ru"}, headers=H)
+        check("pages: the editor - a picture of every scene; a line removed, lines added where wanted (an empty one left "
+              "out); the scenes' order turned round; the title; no scenes refused; the language needs the story writer",
+              all(x.status_code == 200 and x.mimetype == "image/jpeg" and len(x.data) > 3000 for x in thumbs)
+              and no_thumb.status_code == 404 and b"id='ctScenes'" in one.data and b"name='order'" in one.data
+              and b"install the story writer" in one.data and ed.status_code == 302 and bool(es)
+              and es["title"] == "Edited film" and len(es["scenes"]) == n_sc
+              and [x["text"] for x in last_sc] == want and first0 not in [x["text"] for x in last_sc]
+              and last_sc[0]["who"] == es["narrator"] and last_sc[1 + (len(old0) > 1)]["emotion"] == "angry"
+              and es.get("drawing") == "paper"
+              and empty_o.status_code == 400 and b"at least one scene" in empty_o.data
+              and lang_no.status_code == 400 and b"Install the story writer" in lang_no.data,
+              ([x.status_code for x in thumbs], no_thumb.status_code, ed.status_code, es.get("title") if es else None,
+               [x["text"] for x in last_sc], want, empty_o.status_code, lang_no.status_code))
         ag_still = c.post(f"/auto/cartoon/{jid}/again", data={"camera_form": "1", "format": "horizontal", "pace": "calm"}, headers=H)
         nid_s = (ag_still.headers.get("Location") or "").rstrip("/").split("/")[-1]
         sc_s = json.loads((vo._job_dir(nid_s) / "job.json").read_text("utf-8"))["script"] if re.fullmatch(r"[0-9-a-f]{22}", nid_s) else {}

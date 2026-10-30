@@ -117,6 +117,26 @@ change any line, who says it, the feeling, the gesture or a scene's background a
 version, the old one stays. Without the voice add-on: a quick preview without voices. Saved in "Cartoons" next to the
 saved reels. The story is plain text: change the example or write your own (the help on the page shows how).
 
+**Drawing style** (next to the format, with a little picture of each): flat - clean shapes with dark outlines (as
+before); hand-drawn - wobbly marker lines on paper; whiteboard - black marker on white with a few colours; paper
+cut-out - paper shapes with soft shadows, no outlines; motion graphics - bright shapes on deep blue with a soft glow.
+The same characters, scenes and pictures, only drawn another way; a film made again keeps its style unless you choose
+another. A style other than flat takes a little longer to draw.
+
+The characters move by themselves: the mouth takes the shape of each sound (open for "a", round for "o" and "u", wide
+for "e", closed for m, b, p, the teeth on the lip for f and v), the eyes glance about and look at the one speaking, the
+speaker nods and raises the brows on the words said with weight (long words, numbers, the end of a question), listeners
+nod now and then, a new gesture swings a little past and settles, an exclamation gets a little jump.
+
+**Change and make again** (a film's page): at the top, **Language** - the same film in Russian, English or Romanian:
+"Translate" keeps the people, the story and the pictures (the names written in the new language's letters); "Retell for
+viewers in a country" gives them local names, money and offices. The story writer translates it (a minute or two), then
+the cartoon is made at once with the same looks, voices, drawing style, format, captions and music - or, with "Let me
+read the story first", the story opens to read and change. Below: the title, and every scene with a picture of it - its
+background, its lines (who says it, the words, the feeling, the gesture); "+" adds a line after that one, "+ Line" at
+the scene's end, "✕" removes a line (press again to keep it); "↑" "↓" move a scene, "✕" removes it. Then "Make it
+again": a new version, the old one stays.
+
 **Write a story** (a free model on this PC): install the story writer once - Qwen3-14B (Alibaba, Apache-2.0, about 9 GB:
 writes better, Russian and Romanian too; for a graphics card with 12 GB) or Qwen3-4B (about 4.3 GB, any PC), with
 llama.cpp (MIT), into the data folder; it runs on the graphics card (or the processor) and sends nothing anywhere;

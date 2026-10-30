@@ -191,6 +191,57 @@ def main() -> int:
               and "Retell this cartoon script for viewers in Россия, in Russian" in ask4 and "roubles" in ask4
               and "Kate (wave, happy)" in ask4 and len(sc4["scenes"]) == 10, (j4.get("title"), sc4.get("language"), ask4[:200]))
 
+        # a film in another language from its own page (Change): translated, then made at once with the same
+        # people (looks, voices' keys), look and settings; or opened to read first and made from the story page
+        from archivist.cartoon import film as F, jobs as cj
+        src_sc = T.parse(T.ROAD_TEXT)
+        src_sc.update(format="horizontal", drawing="hand", pace="calm", camera="still")
+        fid = cj.new_make(src_sc, False, {"style": "box", "color": "white", "position": "top"},
+                          music={"kind": "made", "mood": "suspense"})
+        vo.cancel_job(fid)
+        orig = F.check_script(cj.script_of(fid))
+        fpage = c.get(f"/auto/cartoon/{fid}", headers=H).get_data(as_text=True)
+        rt = c.post(f"/auto/cartoon/{fid}/language", data={"lang": "ru", "how": "translate"}, headers=H)
+        jt = wait(vo, (rt.headers.get("Location") or "").rstrip("/").split("/")[-1])
+        askt = json.loads(sorted((work / "asked").glob("request_*.json"))[-1].read_text("utf-8"))["messages"][-1]["content"]
+        ft_id = (jt.get("result") or {}).get("film") or ""
+        ft = vo.read_job(ft_id) if ft_id else {}
+        if ft_id:
+            vo.cancel_job(ft_id)
+        st_ = F.check_script(ft.get("script") or {"scenes": []}) if ft else {}
+        same_people = bool(st_) and list(st_["cast"]) == list(orig["cast"]) and all(
+            st_["cast"][k]["skin"] == orig["cast"][k]["skin"] and st_["cast"][k]["hair"] == orig["cast"][k]["hair"]
+            for k in orig["cast"]) and st_["cast"]["kate"]["name"] == "Катя" and st_["narrator"] == orig["narrator"]
+        check("a film in another language (its page → Language): translated by the model, then made at once in Russian "
+              "with the same people (looks and voices kept), drawing style, format, pace, captions and music",
+              "Make it in this language" in fpage and "name='how' value='translate'" in fpage
+              and rt.status_code == 302 and jt.get("mode") == "translate" and jt.get("state") == "done"
+              and "Translate this cartoon script into Russian" in askt and "Kate - Кейт" in askt and "Kate (wave, happy)" in askt
+              and same_people and st_.get("language") == "ru" and st_.get("drawing") == "hand" and st_.get("format") == "horizontal"
+              and st_.get("pace") == "calm" and st_.get("camera") == "still"
+              and (ft.get("captions") or {}).get("style") == "box" and (ft.get("captions") or {}).get("position") == "top"
+              and (ft.get("music") or {}).get("mood") == "suspense" and str(jt.get("title")).startswith("How a City Loses Millions")
+              and str(jt.get("title")).endswith("… (Русский)") and len(str(jt.get("title"))) <= 60,
+              (rt.status_code, jt.get("mode"), jt.get("state"), jt.get("title"), ft_id, same_people,
+               {k: st_.get(k) for k in ("language", "drawing", "format", "pace", "camera")} if st_ else None))
+        rr = c.post(f"/auto/cartoon/{fid}/language", data={"lang": "ru", "how": "adapt", "country": "Россия", "read": "1"}, headers=H)
+        jr = wait(vo, (rr.headers.get("Location") or "").rstrip("/").split("/")[-1])
+        rpage = c.get(f"/auto/cartoon/{jr['id']}", headers=H).get_data(as_text=True)
+        mk = c.post("/auto/cartoon/new", data={"text": W.story_of(jr["id"]), "story_job": jr["id"], "format": "horizontal",
+                                               "drawing": "hand", "captions": "1"}, headers=H)
+        fr = next((j_ for j_ in vo.list_jobs(20) if j_.get("kind") == "cartoon_make" and j_["id"] not in (fid, ft_id)), {})
+        if fr:
+            vo.cancel_job(fr["id"])
+        sr_ = F.check_script(fr.get("script")) if fr else {}
+        check("retold for a country, read first: no cartoon until asked; the story page keeps the film's look, and the "
+              "cartoon made from it has the film's people and the new language",
+              jr.get("mode") == "adapt" and jr.get("state") == "done" and not (jr.get("result") or {}).get("film")
+              and (jr.get("make") or {}).get("hold") is True and "name='drawing' value='hand' checked" in rpage
+              and f"name='story_job' value='{jr['id']}'" in rpage and mk.status_code == 302 and bool(sr_)
+              and list(sr_["cast"]) == list(orig["cast"]) and sr_.get("language") == "ru",
+              (jr.get("mode"), jr.get("state"), (jr.get("result") or {}).get("film"), mk.status_code,
+               list(sr_["cast"]) if sr_ else None))
+
         # Stop while it writes
         r5 = c.post("/auto/cartoon/write", data={"about": "slow", "lang": "en"}, headers=H)
         jid5 = (r5.headers.get("Location") or "").rstrip("/").split("/")[-1]
@@ -301,7 +352,7 @@ def main() -> int:
         # a series: a story for every line, each cartoon made at once (here without voices: no voice add-on)
         topics = ("Hospital pills that cost three times more", "A bridge that was never built")
         rs_ = c.post("/auto/cartoon/write", data={"topics": "\n".join(topics) + "\nx\n", "lang": "en", "secs": "60",
-                                                   "make": "1", "style": "box"}, headers=H)
+                                                   "make": "1", "style": "box", "drawing": "board"}, headers=H)
         series = [j_ for j_ in vo.list_jobs(80) if j_.get("kind") == "cartoon_write" and j_.get("topic") in topics]
         done = [wait(vo, j_["id"]) for j_ in series]
         made = [vo.read_job(x["result"]["film"]) for x in done if (x.get("result") or {}).get("film")]
@@ -311,11 +362,11 @@ def main() -> int:
         both = c.post("/auto/cartoon/write", data={"about": "One story", "topics": "\n".join(topics), "lang": "en"}, headers=H)
         lst2 = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
         check("a series: a story for every topic line (a too short one left out), each with its cartoon made at once "
-              "(captions, the program's music; no voices without the add-on); the story shows its cartoon",
+              "(captions, the program's music, the drawing style chosen; no voices without the add-on); the story shows its cartoon",
               rs_.status_code == 302 and len(series) == 2 and all(x.get("state") == "done" for x in done) and len(made) == 2
               and all(f_.get("kind") == "cartoon_make" and not f_.get("voices") and (f_.get("captions") or {}).get("style") == "box"
                       and (f_.get("music") or {}).get("kind") == "made" and (f_.get("script") or {}).get("camera") == "close"
-                      for f_ in made)
+                      and (f_.get("script") or {}).get("drawing") == "board" for f_ in made)
               and "Its cartoon:" in spage2 and "Read the story" in lst2 and "A series: several topics at once" in lst2
               and both.status_code == 400 and b"not both" in both.data,
               (rs_.status_code, len(series), [x.get("state") for x in done], [(f_.get("voices"), f_.get("captions"), f_.get("music")) for f_ in made]))

@@ -676,7 +676,7 @@ def prompt(job: dict) -> str:
     words = int(secs * 1.9)                                # (the model writes about a third more than asked)
     style = job.get("style") if isinstance(job.get("style"), dict) else None
     extra = ""
-    if style and job.get("mode") != "adapt":               # the rhythm of a cartoon studied (reference.py)
+    if style and job.get("mode") not in ("adapt", "translate"):     # the rhythm of a cartoon studied (reference.py)
         from . import reference as R
         extra, w = R.rules_of(style, secs)
         words = w or words
@@ -688,13 +688,31 @@ def prompt(job: dict) -> str:
         h = library.host(lang)
     except Exception:
         h = None
-    if h and job.get("mode") != "adapt":
+    if h and job.get("mode") not in ("adapt", "translate"):
         who = "woman" if (h.get("look") or {}).get("female") else "man"
         rules += (f"\n- The narrator is {h['name']} ({who}, narrator) - the same host as in the earlier films; write "
                   f"this name exactly as here.")
     country = str(job.get("country") or "").strip() or COUNTRY.get(lang, "")   # (English: the United States)
     where = (f"\nTHE VIEWERS: in {country}; names, money ({money_of(country)}) and offices usual there; measures: "
              f"{measures_of(country)}." if country else "")
+    keywords = ("- Keep the format's keywords in English exactly: Title, Format, Narrator, woman, man, ==, the backgrounds "
+                "(City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home, Building site), the visual kinds (title, flow, contract, "
+                "tender, bars, counter, compare, list, bag, magnifier, road, percent, timeline), CONTRACT, TENDER, APPROVED, price, stamp, [bubble], "
+                "the gestures and the feelings in brackets.\n"
+                "- In what is said, numbers as words; in the visuals, digits.")
+    if job.get("mode") == "translate":                     # the same film in another language (Cartoon Studio → Change)
+        n = LANGS.get(lang, "English")
+        return "\n\n".join([
+            f"Translate this cartoon script into {n}.",
+            "RULES:\n"
+            "- Keep everything else as it is: the scenes and their order, the backgrounds, the visuals and their numbers, "
+            "who says each line, [bubble].\n"
+            f"- Translate what is said and every label in the visuals into natural spoken {n} (not word for word), with "
+            "the same meaning and about the same length.\n"
+            f"- The same people in the same order: write each name as it sounds, in {n} letters"
+            + (" (Kate - Кейт)" if lang == "ru" else "") + "; keep their roles.\n"
+            "- Keep the money and the amounts as they are.\n" + keywords,
+            "SCRIPT:\n\n" + str(job.get("source") or "").strip()[:MAX_SOURCE], f"Now write the whole script in {n}."])
     if job.get("mode") == "adapt":
         n = LANGS.get(lang, "English")
         country = country or COUNTRY.get(lang, "the United States")
@@ -702,14 +720,11 @@ def prompt(job: dict) -> str:
             f"Retell this cartoon script for viewers in {country}, in {n}.",
             "RULES:\n"
             "- Keep the scheme, the scenes, their order, the backgrounds and the kinds of visuals.\n"
+            "- The same people in the same order (only their names change), the same men and women.\n"
             f"- Use first names and surnames usual in {country}, the local money ({money_of(country)}) with amounts that "
             f"make sense there, the local measures ({measures_of(country)}) and the local names of offices and jobs.\n"
             f"- Translate everything that is said and every label in the visuals into natural spoken {n} (not word for word).\n"
-            "- Keep the format's keywords in English exactly: Title, Format, Narrator, woman, man, ==, the backgrounds "
-            "(City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home, Building site), the visual kinds (title, flow, contract, "
-            "tender, bars, counter, compare, list, bag, magnifier, road, percent, timeline), CONTRACT, TENDER, APPROVED, price, stamp, [bubble], "
-            "the gestures and the feelings in brackets.\n"
-            "- In what is said, numbers as words; in the visuals, digits.",
+            + keywords,
             "SCRIPT:\n\n" + str(job.get("source") or "").strip()[:MAX_SOURCE], f"Now write the whole script in {n}."])
     if job.get("mode") == "text":
         return "\n\n".join(["Write a new cartoon script that explains what the TEXT below is about. Use its facts and "
@@ -805,10 +820,10 @@ def do(jid: str, d: Path, job: dict) -> dict:
             return heard
         job.update(mode="text", source=heard["text"])
     secs = int(job.get("secs") or 75)
-    if job.get("mode") == "adapt":                         # (a retelling: as long as the story retold)
+    if job.get("mode") in ("adapt", "translate"):          # (a retelling or a translation: as long as the story)
         src = T.parse(str(job.get("source") or ""))
         secs = max(30, int(sum(len(ln["text"].split()) for s in src["scenes"] for ln in s["lines"]) / 2.2))
-    expect = 1500 if job.get("mode") != "adapt" else max(800, len(str(job.get("source") or "")) // 2)
+    expect = 1500 if job.get("mode") not in ("adapt", "translate") else max(800, len(str(job.get("source") or "")) // 2)
     vo._CURRENT.update(step="loading", progress=0.02)
     box = {"srv": open_server(stop, log=d / "server.log")}
 
@@ -860,7 +875,8 @@ def do(jid: str, d: Path, job: dict) -> dict:
                                      round(min(base + span, base + span * n / expect), 3))),
                     stop=stop)
             text = clean(r["text"], job.get("format") or "", job.get("lang") or "")
-            info, problem = judge(text, secs, job.get("style") if isinstance(job.get("style"), dict) and job.get("mode") != "adapt" else None)
+            info, problem = judge(text, secs, job.get("style") if isinstance(job.get("style"), dict)
+                                  and job.get("mode") not in ("adapt", "translate") else None)
             if not problem and r.get("finish") == "length":
                 problem = "it was cut off before its end (it is too long): write it shorter"
             rank = (not problem, info["scenes"], info["words"])
@@ -881,18 +897,28 @@ def do(jid: str, d: Path, job: dict) -> dict:
     out = {"ok": True, "file": "story.txt", "title": best_info.get("title") or "", "scenes": best_info["scenes"],
            "words": best_info["words"], "lines": best_info["lines"], "attempts": used, "device": srv.device,
            **({"note": best_problem} if best_problem else {})}
-    if isinstance(job.get("make"), dict) and not stop():  # the cartoon made at once (a series made while you are away)
+    if isinstance(job.get("make"), dict) and not job["make"].get("hold") and not stop():   # the cartoon made at once
+                                                                                          # (a series made while away)
         out.update(_make_film(best, job, best_info.get("title") or job.get("title") or ""))
     return out
 
 
 def _make_settings(make: dict) -> dict:
-    """How a story's cartoon is made at once: voices (when the voice add-on is there), captions, music, close-ups."""
+    """How a story's cartoon is made at once: voices (when the voice add-on is there), captions, music, close-ups,
+    the drawing style."""
     from . import jobs as cj
-    music = make.get("music") if make.get("music") in ("made", "none") else "made"
+    from .draw import STYLES
+    from .film import PACES
+    music = make.get("music") if make.get("music") in ("made", "none", "file") else "made"
+    look = make.get("caption_look") if isinstance(make.get("caption_look"), dict) else {}
     return {"voices": bool(make.get("voices", True)), "captions": make.get("captions") if make.get("captions") in cj.CAPTION_STYLES else None,
             "music": music, "mood": make.get("mood") if make.get("mood") in cj.MUSIC_MOODS else "light",
-            "camera": "still" if make.get("camera") == "still" else "close"}
+            **({"music_path": str(make.get("music_path") or "")[:500]} if music == "file" else {}),
+            "camera": "still" if make.get("camera") == "still" else "close",
+            "drawing": make.get("drawing") if make.get("drawing") in STYLES else "flat",
+            **({"pace": make.get("pace")} if make.get("pace") in PACES else {}),
+            **({"caption_look": {k: str(look[k])[:20] for k in ("color", "size", "position") if look.get(k)}} if look else {}),
+            **({"hold": True} if make.get("hold") else {})}
 
 
 def _make_film(story: str, job: dict, title: str) -> dict:
@@ -903,11 +929,19 @@ def _make_film(story: str, job: dict, title: str) -> dict:
     script = T.parse(story)
     script["format"] = job.get("format") or script.get("format") or "vertical"
     script["camera"] = m["camera"]
+    script["drawing"] = m["drawing"]
     from . import reference as R
-    script["pace"] = R.pace_of(job.get("style"))           # (the rhythm of a reference: the film's pauses too)
+    script["pace"] = m.get("pace") or R.pace_of(job.get("style"))   # (the rhythm of a reference: the film's pauses too)
+    if job.get("mode") in ("adapt", "translate"):          # another language: its voices; the film's own people
+        script["language"] = job.get("lang") or script.get("language") or "en"
+        if isinstance(job.get("cast"), dict):
+            script = F.keep_cast(script, job["cast"])
+    music = ({"kind": "made", "mood": m["mood"]} if m["music"] == "made" else
+             {"kind": "file", "path": m.get("music_path") or ""} if m["music"] == "file" else None)
     try:
-        fid = cj.new_make(script, m["voices"] and vo.installed(), {"style": m["captions"]} if m["captions"] else None,
-                          title=title, music={"kind": "made", "mood": m["mood"]} if m["music"] == "made" else None,
+        fid = cj.new_make(script, m["voices"] and vo.installed(),
+                          {"style": m["captions"], **(m.get("caption_look") or {})} if m["captions"] else None,
+                          title=title, music=music,
                           next_up=True)                    # (each cartoon right after its story, not after the series)
     except (F.FilmError, vo.VoiceError) as exc:
         return {"film_error": str(exc)}
@@ -947,14 +981,16 @@ def _listen(d: Path, job: dict) -> dict:
 
 def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75, topic: str = "", source: str = "",
               country: str = "", title: str = "", video: str = "", style: dict | None = None,
-              make: dict | None = None) -> str:
-    """A story to write (a job of the queue)."""
+              make: dict | None = None, cast: dict | None = None) -> str:
+    """A story to write (a job of the queue). Mode "translate": a film's story in another language (the same people);
+    "adapt": retold for viewers in another country. cast: the film's own people ({"cast": ..., "narrator": ...}) - the
+    new story's people get their looks and voices (in the same order)."""
     from .. import voice as vo
     if not installed():
         raise WriterError("Install the story writer first.")
     if installing():
         raise WriterError("The story writer is being installed. Wait until it is ready.")
-    mode = mode if mode in ("topic", "text", "adapt", "video") else "topic"
+    mode = mode if mode in ("topic", "text", "adapt", "translate", "video") else "topic"
     if mode == "video":
         p = Path(str(video or "").strip().strip('"'))
         if not p.is_file():
@@ -966,9 +1002,9 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
     topic, source = str(topic or "").strip()[:MAX_TOPIC], str(source or "").strip()[:MAX_SOURCE]
     if mode == "topic" and len(topic) < 3:
         raise WriterError("Write what the cartoon is about.")
-    if mode in ("text", "adapt") and len(source) < 40:
+    if mode in ("text", "adapt", "translate") and len(source) < 40:
         raise WriterError("The text is too short to make a story of it.")
-    if mode == "adapt" and not T.parse(source)["scenes"]:
+    if mode in ("adapt", "translate") and not T.parse(source)["scenes"]:
         raise WriterError("The story to retell has no scenes.")
     lang = lang if lang in LANGS else "en"
     name = title or (topic if mode == "topic" else Path(video).stem if mode == "video" else source.split("\n", 1)[0])
@@ -977,8 +1013,10 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
                        "secs": max(45, min(120, int(secs or 75))), "topic": topic, "source": source,
                        "country": str(country or "").strip()[:60], "title": name, "seed": secrets.randbelow(10 ** 6),
                        "video": video if mode == "video" else "",
-                       **({"style": style} if isinstance(style, dict) and style and mode != "adapt" else {}),
+                       **({"style": style} if isinstance(style, dict) and style and mode not in ("adapt", "translate") else {}),
                        **({"make": _make_settings(make)} if isinstance(make, dict) else {}),
+                       **({"cast": cast} if isinstance(cast, dict) and isinstance(cast.get("cast"), dict) and mode in ("adapt", "translate")
+                          else {}),
                        "needs_addon": False}, addon=False)
 
 

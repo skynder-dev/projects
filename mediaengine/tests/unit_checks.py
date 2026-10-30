@@ -673,6 +673,17 @@ def main():
     with _ca().test_client() as _c:
         _c.get("/api/ping", headers={"Host": "127.0.0.1:8765"})
     check("crashed build is marked interrupted by the first request", ae.job(jid_)["status"] == "failed", ae.job(jid_)["status"])
+    # Edit by hand without any moments found yet: said where they come from (no form that can only fail), Create only
+    # with a moment ticked; its refusal in the page's language
+    with _ca().test_client() as _c:
+        _hd = {"Host": "127.0.0.1:8765", "Origin": "http://127.0.0.1:8765", "Sec-Fetch-Site": "same-origin"}
+        cmp_ = _c.get("/composer", headers=_hd).get_data(as_text=True)
+        cmp_err = _c.post("/composer/create", data={"title": "x", "aspect": "16:9"}, headers=_hd)
+    check("Edit by hand: no moments yet - where they come from (Library, Media Brain, Auto Edit), Create only with a "
+          "moment ticked, a clear refusal",
+          "No moments to put together yet" in cmp_ and "href='/library?media_type=video'" in cmp_ and "id='cmpForm' hidden" in cmp_
+          and "id='cmpGo' disabled" in cmp_ and cmp_err.status_code == 400 and b"Choose at least one virtual clip" in cmp_err.data,
+          cmp_err.status_code)
     # the language chosen in a Setup run applies once (also over an older build's saved choice); a later switch in
     # the program is kept until the next Setup run
     from archivist import i18n as _lang

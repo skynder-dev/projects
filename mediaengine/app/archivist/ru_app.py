@@ -465,6 +465,15 @@ APP_PHRASES: dict[str, str] = {
     "Select existing Virtual Clips, choose one target aspect and build a local composition. Renders run locally in the background with normalized stereo audio; silent clips receive silence so every segment concatenates reliably. Originals stay untouched.":
         "Выбери клипы и формат кадра — получится монтаж. Сборка идёт на компьютере в фоне, звук выравнивается; оригиналы не меняются.",
     "Composition title": "Название", "Create composition": "Создать монтаж", "Recent compositions": "Последние монтажи",
+    "No moments to put together yet": "Пока нечего собирать",
+    "Here you put together moments that MediaEngine found in your videos. First let it find them: in the Library tick your videos and press Media Brain (a few minutes for an hour of video); the moments then appear here and in Best Moments. To make a reel from a whole folder of videos at once, use Auto Edit.": "Здесь собирается монтаж из моментов, которые MediaEngine нашёл в твоих видео. Сначала дай ему их найти: в библиотеке отметь видео и нажми Media Brain (несколько минут на час видео) — моменты появятся здесь и в «Лучших моментах». Чтобы сделать ролик сразу из целой папки видео, используй Автомонтаж.",
+    "Import videos": "Импорт видео", "Tick the moments below": "Отметь моменты ниже", "Chosen:": "Выбрано:",
+    "Could not create composition": "Не получилось создать монтаж",
+    "Choose at least one virtual clip": "Отметь хотя бы один момент",
+    "Composer currently supports up to 20 clips": "В монтаже пока не больше 20 клипов",
+    "Choose a supported target aspect": "Выбери формат кадра из списка",
+    "One or more clips are unavailable for normal Library composition": "Некоторые клипы сейчас недоступны (видео скрыто или убрано из библиотеки)",
+    "Composition is limited to 180 seconds": "Монтаж — не длиннее 180 секунд",
     "Up to 20 clips / 180 seconds": "До 20 клипов / 180 секунд", "Open latest MP4": "Открыть последний MP4", "draft": "черновик", "Composition": "Монтаж",
     "Render composition": "Собрать монтаж", "Render MP4": "Собрать MP4",
     "Local MP4 rendered in the background. Every segment is normalized to the target aspect and stereo AAC; silent clips receive a silent track. Existing Smart Crop plans are used when available.":

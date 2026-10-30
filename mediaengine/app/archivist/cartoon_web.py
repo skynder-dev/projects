@@ -12,6 +12,7 @@ from flask import jsonify, redirect, request, send_file
 
 from . import voice as vo
 from .cartoon import bgs, chars as ch, film as F, jobs as cj, library as L, reference as R, stories, textscript as T, writer as W
+from .cartoon.draw import STYLES
 
 CSS = """<style>
 .ct-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -20,8 +21,17 @@ CSS = """<style>
 .ct-film{border-top:1px solid var(--line);padding:12px 0}
 .ct-film video{max-width:240px;max-height:320px;border-radius:10px;background:#000}
 .ct-scene{border:1px solid var(--line2);border-radius:12px;padding:10px 12px;margin:10px 0}
-.ct-line{display:grid;grid-template-columns:150px minmax(0,1fr) 130px 130px;gap:8px;margin:6px 0}
-@media(max-width:900px){.ct-line{grid-template-columns:1fr}}
+.ct-line{display:grid;grid-template-columns:130px minmax(0,1fr) 118px 118px auto;gap:8px;margin:6px 0}
+.ct-line.gone input:not([type=hidden]),.ct-line.gone select{opacity:.4;text-decoration:line-through}
+.ct-ops{display:inline-flex;gap:4px;align-items:center}.ct-ops .btn2{padding:3px 10px;min-width:0;margin:0}
+.ct-scene{display:grid;grid-template-columns:200px minmax(0,1fr);gap:12px;align-items:start}
+.ct-thumb{width:200px;aspect-ratio:16/9;border-radius:8px;object-fit:cover;background:#0003;display:block}
+.ct-thumb.tall{width:120px;aspect-ratio:9/16;justify-self:center}
+.ct-scene.gone{opacity:.45}.ct-scene.gone [data-lines],.ct-scene.gone [data-addend]{display:none}
+.ct-lang{border:1px solid var(--line2);border-radius:12px;padding:10px 12px;margin:6px 0 4px}
+@media(max-width:700px){.ct-scene{grid-template-columns:1fr}.ct-thumb{width:100%;max-width:320px}.ct-thumb.tall{width:140px}}
+@media(max-width:900px){.ct-line{grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:6px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.ct-line>input:not([type=hidden]){grid-column:1/-1;order:-1}}
 .ct-line input{width:100%}
 .ct-big video{max-width:100%;max-height:calc(70vh / var(--z,1));border-radius:12px;background:#000}
 .ct-cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
@@ -39,7 +49,29 @@ CSS = """<style>
 .ct-strip{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line2);margin-top:6px}
 .ct-strip a{display:block;min-width:0;border-right:2px solid var(--bg,#111)}
 .ct-strip.dense a{border-right:0}
+.ct-draw{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.ct-draw label{display:flex;flex-direction:column;gap:4px;cursor:pointer;font-size:13px;width:164px}
+.ct-draw img{width:160px;height:90px;border-radius:8px;border:2px solid var(--line2);background:#0003;object-fit:cover;display:block}
+.ct-draw label:has(input:checked) img{border-color:var(--acc,#7aa2ff);box-shadow:0 0 0 2px var(--acc,#7aa2ff)}
+.ct-draw span{display:inline-flex;gap:6px;align-items:center}
 </style>"""
+_EDIT_JS = """;(()=>{const box=document.getElementById('ctScenes');if(!box)return;
+const order=document.getElementById('ctOrder');let n=0;
+const changed=()=>box.closest('form').dispatchEvent(new Event('input',{bubbles:true}));
+const renum=()=>{const ss=[...box.querySelectorAll('.ct-scene:not(.gone)')];order.value=ss.map(x=>x.dataset.scene).join(',');
+let k=0;box.querySelectorAll('.ct-scene').forEach(x=>{const m=x.querySelector('[data-num]');if(m)m.textContent=x.classList.contains('gone')?'-':++k;});changed();};
+const newRow=(i,at)=>{const t=document.getElementById('ctNew').content.firstElementChild.cloneNode(true);const k=n++;
+t.querySelectorAll('[data-f]').forEach(el=>el.name='n_'+i+'_'+k+'_'+el.dataset.f);t.querySelector('[data-f=at]').value=at;return t;};
+box.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||!box.contains(b))return;
+const sc=b.closest('.ct-scene');const i=sc.dataset.scene;const row=b.closest('.ct-line');
+if(b.hasAttribute('data-del')){const x=row.querySelector('input[name^=x_]');if(x){x.value=x.value?'':'1';row.classList.toggle('gone',!!x.value);}else row.remove();changed();}
+else if(b.hasAttribute('data-add')){const at=row.dataset.at!==undefined?row.dataset.at:row.querySelector('[data-f=at]').value;
+const r=newRow(i,at);row.after(r);r.querySelector('[data-f=t]').focus();changed();}
+else if(b.hasAttribute('data-addend')){const ls=sc.querySelector('[data-lines]');const r=newRow(i,ls.dataset.last);ls.appendChild(r);
+r.querySelector('[data-f=t]').focus();changed();}
+else if(b.hasAttribute('data-up')){const p=sc.previousElementSibling;if(p)p.before(sc);renum();}
+else if(b.hasAttribute('data-down')){const x=sc.nextElementSibling;if(x)x.after(sc);renum();}
+else if(b.hasAttribute('data-drop')){sc.classList.toggle('gone');renum();}});})();"""
 _JOB_ID = r"[0-9]{8}-[0-9]{6}-[0-9a-f]{6}"
 _STEP = {"starting": "Starting…", "voices": "The characters are speaking…", "drawing": "Drawing the pictures…",
          "checking": "Checking the film…", "loading": "Starting the story writer…", "writing": "Writing the story…",
@@ -49,6 +81,8 @@ _WR_STEP = {"checking": "Checking the PC…", "program": "Downloading llama.cpp 
             "model": "Downloading the language model…", "checking_model": "Checking the downloaded model…",
             "testing": "Starting the story writer for a test…"}
 LANG_LABELS = {"en": "English", "ru": "Русский", "ro": "Română"}
+DRAW_LABELS = {"flat": "Flat (as before)", "hand": "Hand-drawn", "board": "Whiteboard", "paper": "Paper cut-out",
+               "motion": "Motion graphics"}
 BUSY = "The characters' file is held by another program a moment (a virus check, a sync). Try again."
 BG_LABELS = {"city": "City street", "office": "Office", "city_hall": "City hall", "road": "Road", "bank": "Bank",
              "night": "Night street", "board": "Board (schemes, charts)", "paper": "Paper", "hospital": "Hospital",
@@ -208,6 +242,18 @@ def register(app, page, err_page, e, human_bytes):
         return "".join(f"<label><input type='radio' name='format' value='{k}' {'checked' if k == current else ''}> {e(v)}</label>"
                        for k, v in (("vertical", "Vertical 9:16 (TikTok, Reels, Shorts)"), ("horizontal", "Wide 16:9 (YouTube)")))
 
+    def _drawing_choice(current: str = "flat") -> str:
+        """How the cartoon is drawn: a little picture of each style (the example's road, drawn by the program)."""
+        cur = current if current in DRAW_LABELS else "flat"
+        cards = "".join(f"<label><img src='/auto/cartoon/drawing/{k}.jpg' alt='' loading='lazy' width='160' height='90'>"
+                        f"<span><input type='radio' name='drawing' value='{k}' {'checked' if k == cur else ''}> {e(v)}</span></label>"
+                        for k, v in DRAW_LABELS.items() if k in STYLES)
+        return f"<div style='margin-top:8px'><b>Drawing style</b><div class='ct-draw'>{cards}</div></div>"
+
+    def _drawing_select(current: str = "flat") -> str:
+        return "".join(f"<option value='{k}' {'selected' if k == current else ''}>{e(v)}</option>"
+                       for k, v in DRAW_LABELS.items() if k in STYLES)
+
     def _music_choice(current: dict | None | str = "") -> str:
         """current: the film's own music (None: it had none; "": a new film - the program's)."""
         cur = current if isinstance(current, dict) else {"kind": "none"} if current is None else {"kind": "made"}
@@ -310,6 +356,7 @@ def register(app, page, err_page, e, human_bytes):
                     f"made at once (below), the whole series is ready when you come back.</div></details>"
                     f"<label style='display:block;margin-top:8px'><input type='checkbox' name='make' value='1'> Make the cartoon "
                     f"at once, without reading the story first (voices, captions, the program's music)</label>"
+                    f"<div class='ct-row' style='margin:4px 0 0 24px'><span>Drawing style</span><select name='drawing'>{_drawing_select()}</select></div>"
                     f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice('vertical')}</div>"
                     f"<div style='margin-top:12px'><button class='ae-big'>Write the story</button></div></form>"
                     f"<div class='muted' style='font-size:13px;margin-top:8px'><span>The free model on this PC</span> "
@@ -468,7 +515,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<details style='margin-top:6px'><summary>A script as JSON instead</summary>"
                 f"<textarea name='script' rows='6' style='width:100%' placeholder='Paste a script here (only for \"My script\")'></textarea></details>"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice('vertical')}</div>"
-                f"{_voices_choice()}{_captions_choice()}{_camera_choice()}{_music_choice()}"
+                f"{_drawing_choice()}{_voices_choice()}{_captions_choice()}{_camera_choice()}{_music_choice()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the cartoon</button></div></form></div>")
         return page("Cartoon Studio", body, _POLL_JS + _PICK_JS + _MUSIC_JS)
 
@@ -482,6 +529,8 @@ def register(app, page, err_page, e, human_bytes):
             script["camera"] = "close" if f.get("camera") == "1" else "still"
         if f.get("pace") in F.PACES:
             script["pace"] = f.get("pace")
+        if f.get("drawing") in STYLES:
+            script["drawing"] = f.get("drawing")
         if f.get("music") in ("made", "file", "none"):
             kind = f.get("music")
             music = {"kind": kind, "mood": f.get("mood") or "light", "path": f.get("music_path") or ""} if kind != "none" else None
@@ -504,6 +553,13 @@ def register(app, page, err_page, e, human_bytes):
                 script = T.parse(f.get("text") or "")
                 if not script["scenes"]:
                     raise F.FilmError("The story has no scenes: start each scene with == and its background.")
+                sj = _job(str(f.get("story_job") or ""))
+                if sj and sj.get("kind") == "cartoon_write" and sj.get("mode") in ("adapt", "translate"):
+                    script["language"] = sj.get("lang") or script.get("language") or "en"   # (a film in another language:
+                    if isinstance(sj.get("cast"), dict):                                   # its own people and voices)
+                        script = F.keep_cast(script, sj["cast"])
+                    if (sj.get("make") or {}).get("pace") and not f.get("pace"):
+                        script["pace"] = sj["make"]["pace"]
             else:
                 script = copy.deepcopy(stories.STORIES.get(f.get("story") or "", stories.ROAD_CONTRACT))
             jid = _make(script, f)
@@ -530,6 +586,7 @@ def register(app, page, err_page, e, human_bytes):
         except F.FilmError as exc:
             return err_page(str(exc), "/auto/cartoon")
         who = "".join(f"<option value='{k}' translate='no'>{e(c.get('name') or k)}</option>" for k, c in film["cast"].items())
+        tall = film["format"] == "vertical"
         scenes = ""
         for i, s in enumerate(film["scenes"]):
             bgsel = "".join(f"<option value='{k}' {'selected' if k == s['bg'] else ''}>{e(v)}</option>" for k, v in BG_LABELS.items())
@@ -540,11 +597,48 @@ def register(app, page, err_page, e, human_bytes):
                                for k, v in EMO_LABELS.items())
                 psel = "".join(f"<option value='{k}' {'selected' if k == (ln.get('pose') or '') else ''}>{e(v)}</option>"
                                for k, v in POSE_LABELS.items())
-                lines += (f"<div class='ct-line'><select name='w_{i}_{jn}'>{wsel}</select>"
+                lines += (f"<div class='ct-line' data-at='{jn}'><select name='w_{i}_{jn}'>{wsel}</select>"
                           f"<input name='t_{i}_{jn}' value='{e(ln['text'])}' maxlength='400' translate='no'>"
-                          f"<select name='e_{i}_{jn}' title='Feeling'>{esel}</select><select name='p_{i}_{jn}' title='Gesture'>{psel}</select></div>")
-            scenes += (f"<div class='ct-scene'><div class='ct-row'><b><span>Scene</span> <span translate='no'>{i + 1}</span></b>"
-                       f"<select name='bg_{i}'>{bgsel}</select></div>{lines}</div>")
+                          f"<select name='e_{i}_{jn}' title='Feeling'>{esel}</select><select name='p_{i}_{jn}' title='Gesture'>{psel}</select>"
+                          f"<span class='ct-ops'><button type='button' class='btn2' data-add title='Add a line after this one'>+</button>"
+                          f"<button type='button' class='btn2' data-del title='Remove this line (press again to keep it)'>✕</button>"
+                          f"<input type='hidden' name='x_{i}_{jn}' value=''></span></div>")
+            scenes += (f"<div class='ct-scene' data-scene='{i}'>"
+                       f"<img class='ct-thumb{' tall' if tall else ''}' src='/auto/cartoon/{jid}/scene/{i}.jpg' alt='' loading='lazy'>"
+                       f"<div style='min-width:0'><div class='ct-row'><b><span>Scene</span> <span translate='no' data-num>{i + 1}</span></b>"
+                       f"<select name='bg_{i}' title='Background'>{bgsel}</select>"
+                       f"<span class='ct-ops' style='margin-left:auto'>"
+                       f"<button type='button' class='btn2' data-up title='Move the scene up'>↑</button>"
+                       f"<button type='button' class='btn2' data-down title='Move the scene down'>↓</button>"
+                       f"<button type='button' class='btn2' data-drop title='Remove the scene (press again to keep it)'>✕</button></span></div>"
+                       f"<div data-lines data-last='{len(s['lines']) - 1}'>{lines}</div>"
+                       f"<button type='button' class='btn2' data-addend style='margin-top:4px'>+ Line</button></div></div>")
+        new_line = (f"<template id='ctNew'><div class='ct-line ct-new'><select data-f='w'>{who}</select>"
+                    f"<input data-f='t' maxlength='400' placeholder='What is said' translate='no'>"
+                    f"<select data-f='e' title='Feeling'>{''.join(f'<option value={chr(39)}{k}{chr(39)}>{e(v)}</option>' for k, v in EMO_LABELS.items())}</select>"
+                    f"<select data-f='p' title='Gesture'>{''.join(f'<option value={chr(39)}{k}{chr(39)}>{e(v)}</option>' for k, v in POSE_LABELS.items())}</select>"
+                    f"<span class='ct-ops'><button type='button' class='btn2' data-add title='Add a line after this one'>+</button>"
+                    f"<button type='button' class='btn2' data-del title='Remove this line'>✕</button>"
+                    f"<input type='hidden' data-f='at' value='-1'></span></div></template>")
+        cur_lang = film.get("language") if film.get("language") in LANG_LABELS else "en"
+        if W.installed():
+            others = "".join(f"<option value='{k}' translate='no'>{e(v)}</option>" for k, v in LANG_LABELS.items() if k != cur_lang)
+            lang_box = (f"<form method='post' action='/auto/cartoon/{jid}/language' class='ct-lang' "
+                        f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                        f"<div class='ct-row'><b>Language</b><span class='muted'>now</span> <span translate='no'>{e(LANG_LABELS[cur_lang])}</span>"
+                        f"<span>→</span><select name='lang'>{others}</select></div>"
+                        f"<div class='ct-choices' style='margin-top:4px'>"
+                        f"<label><input type='radio' name='how' value='translate' checked> Translate: the same people and story</label>"
+                        f"<label><input type='radio' name='how' value='adapt'> Retell for viewers in a country (their names, money, offices)</label>"
+                        f"<input name='country' maxlength='60' placeholder='(a country)' style='width:170px'></div>"
+                        f"<label style='display:block;margin-top:4px'><input type='checkbox' name='read' value='1'> Let me read the "
+                        f"story before the cartoon is made</label>"
+                        f"<div style='margin-top:8px'><button>Make it in this language</button></div>"
+                        f"<div class='muted' style='font-size:13px;margin-top:4px'>The free model on this PC translates it (a minute or "
+                        f"two), then the cartoon is made with the same people, voices and look. This version stays.</div></form>")
+        else:
+            lang_box = ("<div class='ct-lang'><b>Language</b> <span class='muted'>To make this cartoon in another language, "
+                        "install the story writer (a free model on this PC):</span> <a href='/auto/cartoon#writer'>Write a story</a></div>")
         res = j.get("result") or {}
         video = (f"<div class='ct-big'><video controls preload='metadata' src='/auto/cartoon/{jid}/film.mp4'></video></div>"
                  if j["state"] == "done" else _block(j, _state_html(j)))
@@ -553,10 +647,15 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div class='card'>{video}"
                 + (f"<div class='muted' style='font-size:13px;margin-top:6px'><span>Saved in</span> <span class='ae-path' translate='no'>"
                    f"{e(res.get('saved') or '')}</span></div>" if res.get("saved") else "")
-                + f"</div><div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Change and make again</h2>"
+                + f"</div><div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Change and make again</h2>{lang_box}"
                 f"<form method='post' action='/auto/cartoon/{jid}/again' data-dirty-watch "
-                f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">{scenes}"
+                f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                f"<div class='ct-row' style='margin-top:10px'><b>Title</b><input name='title' value='{e(film['title'])}' maxlength='120' "
+                f"translate='no' style='flex:1;min-width:200px'></div>"
+                f"<input type='hidden' name='order' id='ctOrder' value='{','.join(str(i) for i in range(len(film['scenes'])))}'>"
+                f"<div id='ctScenes'>{scenes}</div>{new_line}"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(film['format'])}</div>"
+                f"{_drawing_choice(film.get('drawing') or 'flat')}"
                 f"{_voices_choice()}{_captions_choice()}{_camera_choice(film.get('camera') != 'still', film.get('pace') or '')}{_music_choice(j.get('music'))}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make it again</button></div></form>"
                 f"<details style='margin-top:12px'><summary>The whole story as text</summary>"
@@ -564,23 +663,21 @@ def register(app, page, err_page, e, human_bytes):
                 f"<textarea name='text' rows='18' style='width:100%;font-family:Consolas,monospace;font-size:13px' translate='no'>"
                 f"{e(T.to_text(cj.script_of(jid)))}</textarea>"
                 f"<input type='hidden' name='format' value='{e(film['format'])}'><input type='hidden' name='captions' value='1'>"
+                f"<input type='hidden' name='drawing' value='{e(film.get('drawing') or 'flat')}'>"
                 f"<input type='hidden' name='camera_form' value='1'>"
                 + ("<input type='hidden' name='camera' value='1'>" if film.get("camera") != "still" else "")
                 + f"<input type='hidden' name='pace' value='{e(film.get('pace') or '')}'>"
                 + ("<input type='hidden' name='voices' value='1'>" if j.get("voices") else "")
                 + f"<div style='margin-top:8px'><button>Make it again from this text</button></div></form></details>"
-                + (f"<details style='margin-top:8px'><summary>Another language or country</summary>"
-                   f"{_adapt_form(T.to_text(cj.script_of(jid)), film['format'], film['title'], film.get('language') or 'en')}</details>"
-                   if W.installed() else "")
                 + f"<details style='margin-top:8px'><summary>The whole script (JSON)</summary>"
                 f"<textarea readonly rows='12' style='width:100%' translate='no'>{e(json.dumps(cj.script_of(jid), ensure_ascii=False, indent=1))}</textarea>"
                 f"</details></div>")
-        return page("Cartoon Studio", body, _POLL_JS + _MUSIC_JS)
+        return page("Cartoon Studio", body, _POLL_JS + _MUSIC_JS + _EDIT_JS)
 
     def _story_page(j: dict):
         jid, res = j["id"], j.get("result") or {}
         asked = {"topic": "Topic", "text": "Retelling a text", "adapt": "Retelling a story for another country",
-                 "video": "Retelling a video"}.get(j.get("mode"), "")
+                 "translate": "A cartoon in another language", "video": "Retelling a video"}.get(j.get("mode"), "")
         what = str(j.get("topic") or j.get("source") or "")
         if j.get("mode") == "video":
             heard = vo._job_dir(jid) / "heard.txt"
@@ -609,7 +706,9 @@ def register(app, page, err_page, e, human_bytes):
                 f"make the cartoon. How the text is written: see the help below.</div>{_help()}"
                 f"<form method='post' action='/auto/cartoon/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<textarea name='text' rows='22' style='width:100%;font-family:Consolas,monospace;font-size:13px' translate='no'>{e(story)}</textarea>"
+                f"<input type='hidden' name='story_job' value='{e(jid)}'>"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(fmt)}</div>"
+                f"{_drawing_choice((j.get('make') or {}).get('drawing') or 'flat')}"
                 f"{_voices_choice()}{_captions_choice()}{_camera_choice(True, R.pace_of(j.get('style')))}{_music_choice()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the cartoon</button></div></form></div>"
                 f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Not quite right?</h2>"
@@ -773,6 +872,13 @@ def register(app, page, err_page, e, human_bytes):
             return ("", 404)
         from flask import Response
         return Response(L.portrait(_who(key, en)), mimetype="image/png", headers={"Cache-Control": "no-store"})
+
+    @app.get("/auto/cartoon/drawing/<name>.jpg")
+    def cartoon_drawing_jpg(name):
+        if name not in STYLES:
+            return ("", 404)
+        from flask import Response
+        return Response(F.style_sample(name), mimetype="image/jpeg", headers={"Cache-Control": "max-age=3600"})
 
     @app.get("/auto/cartoon/characters/<key>")
     def cartoon_character(key):
@@ -959,7 +1065,7 @@ def register(app, page, err_page, e, human_bytes):
         except ValueError:
             secs = 75
         make = ({"voices": True, "captions": f.get("style") or "pop", "music": "made", "mood": f.get("mood") or "light",
-                 "camera": "close"} if f.get("make") == "1" else None)
+                 "camera": "close", "drawing": f.get("drawing") or "flat"} if f.get("make") == "1" else None)
         topics = [x.strip() for x in str(f.get("topics") or "").splitlines() if len(x.strip()) >= 3][:10]
         if topics and mode != "adapt" and (about or str(f.get("video") or "").strip()):
             return err_page("Write either one story's topic (or a text, or a video) or a series of topics - not both.", "/auto/cartoon")
@@ -1003,7 +1109,8 @@ def register(app, page, err_page, e, human_bytes):
                     j["source"] = notes.read_text("utf-8")
             new = W.new_write(mode, j.get("lang") or "en", j.get("format") or "vertical", j.get("secs") or 75,
                               topic=j.get("topic") or "", source=j.get("source") or "", country=j.get("country") or "",
-                              title=j.get("title") or "", video=j.get("video") or "", style=j.get("style"))
+                              title=j.get("title") or "", video=j.get("video") or "", style=j.get("style"),
+                              cast=j.get("cast"), make=dict(j["make"], hold=True) if isinstance(j.get("make"), dict) else None)
         except (W.WriterError, vo.VoiceError) as exc:
             return err_page(str(exc), f"/auto/cartoon/{jid}")
         return redirect(f"/auto/cartoon/{new}")
@@ -1064,6 +1171,7 @@ def register(app, page, err_page, e, human_bytes):
                     if prev:
                         new["cast"][k] = dict(prev)
                 new["format"] = script.get("format") or new["format"]
+                new["drawing"] = script.get("drawing") or "flat"
                 script = new
             for i, s in enumerate(script.get("scenes") or []):
                 if f.get(f"bg_{i}") in bgs.BACKGROUNDS:
@@ -1078,11 +1186,47 @@ def register(app, page, err_page, e, human_bytes):
                         ln["emotion"] = f.get(f"e_{i}_{jn}") if f.get(f"e_{i}_{jn}") in ch.EMOTIONS else None
                     if f.get(f"p_{i}_{jn}") is not None:
                         ln["pose"] = f.get(f"p_{i}_{jn}") if f.get(f"p_{i}_{jn}") in ch.POSES else None
-                s["lines"] = kept
+                s["lines"] = _edited_lines(f, i, kept, script)
+            if str(f.get("title") or "").strip():
+                script["title"] = re.sub(r"\s+", " ", str(f.get("title"))).strip()[:120]
+            if f.get("order") is not None:                 # scenes moved or removed (the page's arrows and crosses)
+                old = script.get("scenes") or []
+                picked = [int(x) for x in str(f.get("order") or "").split(",") if x.strip().isdigit() and int(x) < len(old)]
+                if not picked:
+                    raise F.FilmError("A cartoon needs at least one scene.")
+                script["scenes"] = [old[k] for k in dict.fromkeys(picked)]
+            if not any(s_.get("lines") for s_ in script.get("scenes") or []):
+                raise F.FilmError("Nothing is said in the cartoon: write at least one line.")
             new = _make(script, f, keep=(_job(jid) or {}).get("music"))
         except (F.FilmError, vo.VoiceError) as exc:
             return err_page(str(exc), f"/auto/cartoon/{jid}")
         return redirect(f"/auto/cartoon/{new}")
+
+    def _edited_lines(f, i: int, kept: list, script: dict) -> list:
+        """A scene's lines after the page's crosses (x_<scene>_<line>) and new lines (n_<scene>_<k>_w/t/e/p/at: put
+        after line "at", -1 = first), in the page's order."""
+        cast = script.get("cast") or {}
+        new: dict = {}
+        for key in f.keys():                               # (the order the page sends them in: as they are on it)
+            m = re.fullmatch(rf"n_{i}_(\d+)_t", key)
+            text = re.sub(r"\s+", " ", str(f.get(key) or "")).strip()[:400] if m else ""
+            if not text:
+                continue
+            k = m.group(1)
+            try:
+                at = int(f.get(f"n_{i}_{k}_at") or -1)
+            except ValueError:
+                at = -1
+            w_, e_, p_ = f.get(f"n_{i}_{k}_w"), f.get(f"n_{i}_{k}_e"), f.get(f"n_{i}_{k}_p")
+            new.setdefault(max(-1, min(at, len(kept) - 1)), []).append(
+                {"who": w_ if w_ in cast else script.get("narrator"), "text": text, "emotion": e_ if e_ in ch.EMOTIONS else None,
+                 "pose": p_ if p_ in ch.POSES else None, "bubble": False})
+        out = list(new.get(-1, []))
+        for jn, ln in enumerate(kept):
+            if f.get(f"x_{i}_{jn}") != "1":
+                out.append(ln)
+            out += new.get(jn, [])
+        return out
 
     def _job(jid: str) -> dict | None:
         if not re.fullmatch(_JOB_ID, jid):
@@ -1092,6 +1236,59 @@ def register(app, page, err_page, e, human_bytes):
         except vo.VoiceError:
             return None
         return j if str(j.get("kind") or "").startswith("cartoon_") else None
+
+    _THUMBS: dict = {}
+
+    @app.get("/auto/cartoon/<jid>/scene/<int:i>.jpg")
+    def cartoon_scene_jpg(jid, i):
+        """A picture of a film's scene (a little after it starts), drawn as the film draws it."""
+        j = _job(jid)
+        if not j or j.get("kind") != "cartoon_make":
+            return ("", 404)
+        key = (jid, i)
+        if key not in _THUMBS:
+            try:
+                _THUMBS[key] = F.scene_picture(cj.script_of(jid), i)
+            except (F.FilmError, IndexError, KeyError, ValueError):
+                return ("", 404)
+            if len(_THUMBS) > 400:
+                _THUMBS.pop(next(iter(_THUMBS)))
+        from flask import Response
+        return Response(_THUMBS[key], mimetype="image/jpeg", headers={"Cache-Control": "max-age=600"})
+
+    @app.post("/auto/cartoon/<jid>/language")
+    def cartoon_language(jid):
+        """The film in another language: its story translated (or retold for a country) by the story writer, then
+        made at once with the same people, voices and look (or opened to read first)."""
+        j = _job(jid)
+        if not j or j.get("kind") != "cartoon_make":
+            return redirect("/auto/cartoon")
+        f = request.form
+        try:
+            film = F.check_script(copy.deepcopy(cj.script_of(jid)))
+            lang = f.get("lang") if f.get("lang") in LANG_LABELS else "en"
+            how = "adapt" if f.get("how") == "adapt" else "translate"
+            cap = j.get("captions") if isinstance(j.get("captions"), dict) else None
+            mus = j.get("music") if isinstance(j.get("music"), dict) else None
+            make = {
+                "voices": bool(j.get("voices")), "captions": (cap or {}).get("style"),
+                "caption_look": {k: (cap or {}).get(k) for k in ("color", "size", "position") if (cap or {}).get(k)},
+                "music": (mus or {}).get("kind") or "none", "mood": (mus or {}).get("mood") or "light",
+                "music_path": (mus or {}).get("path") or "", "camera": film.get("camera") or "close",
+                "drawing": film.get("drawing") or "flat", "pace": film.get("pace") or ""}
+            if not cap:
+                make["captions"] = None
+            if f.get("read") == "1":                       # (the story opens to read; the film's look kept for it)
+                make["hold"] = True
+            title, tail = re.sub(r"\s*\((English|Русский|Română)\)$", "", film["title"]).strip(), f" ({LANG_LABELS[lang]})"
+            if len(title) > 60 - len(tail):                # (the job's name holds 60: cut at a word, the language kept)
+                title = title[:59 - len(tail)].rsplit(" ", 1)[0].rstrip(" ,.;:-") + "…"
+            new = W.new_write(how, lang, film["format"], 75, source=T.to_text(film), country=f.get("country") or "",
+                              title=title + tail, make=make,
+                              cast={"cast": film["cast"], "narrator": film["narrator"]})
+        except (W.WriterError, F.FilmError, vo.VoiceError) as exc:
+            return err_page(str(exc), f"/auto/cartoon/{jid}")
+        return redirect(f"/auto/cartoon/{new}")
 
     @app.get("/auto/cartoon/<jid>/film.mp4")
     def cartoon_file(jid):

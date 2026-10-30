@@ -152,7 +152,7 @@ def main() -> int:
             slow = "TOPIC: slow" in everything
             if "Answer with one word" in user:
                 text = "Ready"
-            elif "Retell this cartoon script" in everything:
+            elif "Retell this cartoon script" in everything or "Translate this cartoon script" in everything:
                 text = STORY_RU
             elif "TOPIC: broken" in everything and "This script cannot be used" not in everything:
                 text = "Sorry, I can only write a short note about it."

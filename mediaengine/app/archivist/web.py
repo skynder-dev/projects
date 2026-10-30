@@ -1522,7 +1522,15 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
     @app.get('/composer')
     def composer_home():
         ensure_composer_schema();clips=best_clips(80)
-        body="<div class='pagehead'><div class='eyebrow'>Content Composer</div><h1>Content Composer</h1><div class='lead'>Select existing Virtual Clips, choose one target aspect and build a local composition. Renders run locally in the background with normalized stereo audio; silent clips receive silence so every segment concatenates reliably. Originals stay untouched.</div></div><form method='post' action='/composer/create'><div class='card toolbar'><input name='title' placeholder='Composition title' maxlength='80'><select name='aspect'><option>16:9</option><option>9:16</option><option>4:5</option><option>1:1</option></select><button>Create composition</button><span class='muted'>Up to 20 clips / 180 seconds</span></div><div class='grid'>"
+        body="<div class='pagehead'><div class='eyebrow'>Content Composer</div><h1>Content Composer</h1><div class='lead'>Select existing Virtual Clips, choose one target aspect and build a local composition. Renders run locally in the background with normalized stereo audio; silent clips receive silence so every segment concatenates reliably. Originals stay untouched.</div></div>"
+        if not clips:     # (nothing to choose from yet: say where the moments come from, not a form that cannot work)
+            body+=("<div class='card'><b>No moments to put together yet</b><div class='muted' style='margin-top:6px'>Here you put "
+                   "together moments that MediaEngine found in your videos. First let it find them: in the Library tick your "
+                   "videos and press Media Brain (a few minutes for an hour of video); the moments then appear here and in "
+                   "Best Moments. To make a reel from a whole folder of videos at once, use Auto Edit.</div>"
+                   "<div class='row' style='margin-top:10px;gap:8px;flex-wrap:wrap'><a class='btn' href='/library?media_type=video'>Library</a>"
+                   "<a class='btn btn2' href='/import'>Import videos</a><a class='btn btn2' href='/auto'>Auto Edit</a></div></div>")
+        body+="<form method='post' action='/composer/create' id='cmpForm'"+(" hidden" if not clips else "")+"><div class='card toolbar'><input name='title' placeholder='Composition title' maxlength='80'><select name='aspect'><option>16:9</option><option>9:16</option><option>4:5</option><option>1:1</option></select><button id='cmpGo' disabled>Create composition</button><span class='muted'>Up to 20 clips / 180 seconds</span><span class='muted' id='cmpHint'>Tick the moments below</span></div><div class='grid'>"
         for r in clips:
             st=float(r['start_ms'])/1000;en=float(r['end_ms'])/1000
             body+=f"<label class='media-card'><input class='check' type='checkbox' name='clip_id' value='{int(r['id'])}'><div class='thumb'><img loading='lazy' src='/clip-preview/{int(r['id'])}'></div><div class='meta'><div class='row space'><b>{e(r['label'])} {e(r['score'])}</b><span class='small'>{int(st//60)}:{int(st%60):02d}–{int(en//60)}:{int(en%60):02d}</span></div><div class='name' translate='no'>{e(r['filename'])}</div></div></label>"
@@ -1532,6 +1540,10 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
             body+="<div class='section-title'>Recent compositions</div><div class='jobs'>"
             for x in existing:body+=f"<a class='card jobrow' href='/composer/{int(x['id'])}'><b>#{int(x['id'])}</b><span>{e(x['title'])}</span><span class='badge {e(x['status'])}'>{e(x['status'])}</span><span>{e(x['aspect'])} · {human_bytes(x['output_bytes']) if x['output_bytes'] else 'not rendered'}</span></a>"
             body+="</div>"
+        body+=("<script>(()=>{const f=document.getElementById('cmpForm');if(!f)return;const go=document.getElementById('cmpGo'),"
+               "h=document.getElementById('cmpHint');const upd=()=>{const n=f.querySelectorAll('input[name=clip_id]:checked').length;"
+               "go.disabled=!n;h.textContent=n?((window.ME_L?ME_L('Chosen:'):'Chosen:')+' '+n):(window.ME_L?ME_L('Tick the moments below'):"
+               "'Tick the moments below');};f.addEventListener('change',upd);upd();})();</script>")
         return layout('Content Composer',body)
 
     @app.post('/composer/create')
@@ -1540,6 +1552,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
             cid=create_composition(request.form.getlist('clip_id'),request.form.get('aspect','16:9'),request.form.get('title',''))
             return redirect(f'/composer/{cid}')
         except Exception as exc:return layout('Composer',f"<div class='card'><h2>Could not create composition</h2><div class='errbox'>{e(str(exc)[:500])}</div><a class='btn btn2' href='/composer'>Back</a></div>"),400
+    # (the message is the composer's own sentence: translated like the page)
 
     @app.get('/composer/<int:cid>')
     def composer_detail_page(cid):

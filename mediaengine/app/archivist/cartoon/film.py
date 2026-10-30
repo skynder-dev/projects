@@ -3,7 +3,7 @@ money, a contract, a chart, a road ...), the lines said by the characters' voice
 of the words, short sounds, one MP4.
 
 A script is plain data (JSON) - what a person or a language model writes:
-  {"title": ..., "language": "en", "format": "vertical" | "horizontal",
+  {"title": ..., "language": "en", "format": "vertical" | "horizontal", "drawing": "flat" (draw.STYLES),
    "cast": {"kate": {"name": "Kate", "role": "narrator", "female": true, ...}, ...},
    "narrator": "kate",
    "scenes": [{"bg": "office", "cast": ["ed"], "visual": {"kind": "contract", ...},
@@ -22,7 +22,7 @@ from pathlib import Path
 import numpy as np
 
 from . import bgs, chars as ch, props as P
-from .draw import INK, Canvas, back, ease, lerp, rounded
+from .draw import INK, STYLES, Canvas, back, ease, lerp, rounded
 
 FPS = 30
 FORMATS = {"vertical": (1080, 1920), "horizontal": (1920, 1080)}
@@ -95,7 +95,58 @@ def check_script(sc: dict) -> dict:
     out["scenes"] = scenes
     out["title"] = str(sc.get("title") or "Cartoon")[:120]
     out["pace"] = sc.get("pace") if isinstance(sc.get("pace"), str) and sc.get("pace") in PACES else ""
+    out["drawing"] = sc.get("drawing") if isinstance(sc.get("drawing"), str) and sc.get("drawing") in STYLES else "flat"
     out["language"] = str(sc.get("language") or "en")[:5]
+    return out
+
+
+def keep_cast(new: dict, old: dict) -> dict:
+    """A film's story in another language (or retold for another country) played by the film's own people: the new
+    story's people in order get the old ones' looks, voices and keys (a woman stays a woman); only the names change.
+    old: {"cast": {key: spec}, "narrator": key} of the film (checked: with the looks)."""
+    o_cast = old.get("cast") if isinstance(old.get("cast"), dict) else {}
+    n_cast = new.get("cast") if isinstance(new.get("cast"), dict) else {}
+    if not o_cast or not n_cast:
+        return new
+    o_keys, used, ren = list(o_cast), set(), {}
+    nar_o = old.get("narrator") if old.get("narrator") in o_cast else o_keys[0]
+    nar_n = new.get("narrator") if new.get("narrator") in n_cast else next(iter(n_cast))
+    for pos, nk in enumerate(n_cast):
+        spec = n_cast[nk] if isinstance(n_cast[nk], dict) else {}
+        want = nar_o if nk == nar_n else (o_keys[pos] if pos < len(o_keys) else None)
+        if want in used or want is None or (want != nar_o and bool(o_cast[want].get("female")) != bool(spec.get("female"))):
+            want = next((k for k in o_keys if k not in used and k != nar_o
+                         and bool(o_cast[k].get("female")) == bool(spec.get("female"))), None)
+        if want is None or want in used:
+            continue
+        used.add(want)
+        ren[nk] = want
+    if not ren:
+        return new
+    out = dict(new)
+    cast = {}
+    for nk, spec in n_cast.items():
+        if nk in ren:
+            ok = ren[nk]
+            cast[ok] = dict(o_cast[ok], name=str((spec or {}).get("name") or o_cast[ok].get("name") or ok), keep_look=True)
+        elif nk not in o_cast:
+            cast[nk] = spec
+    out["cast"] = cast
+    out["narrator"] = ren.get(nar_n, nar_n)
+    scenes = []
+    for sc_ in new.get("scenes") or []:
+        if not isinstance(sc_, dict):
+            continue
+        sc2 = dict(sc_)
+        if isinstance(sc_.get("cast"), list):
+            sc2["cast"] = [ren.get(k, k) for k in sc_["cast"]]
+        for field in ("mood", "pose"):
+            if isinstance(sc_.get(field), dict):
+                sc2[field] = {ren.get(k, k): v for k, v in sc_[field].items()}
+        sc2["lines"] = [dict(ln, who=ren.get(ln.get("who"), ln.get("who"))) if isinstance(ln, dict) else ln
+                        for ln in (sc_.get("lines") or [])]
+        scenes.append(sc2)
+    out["scenes"] = scenes
     return out
 
 
@@ -438,6 +489,7 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
     names = _shown(film, scene)                            # (nobody else there: the narrator presents it)
     xs, sc, box = _layout(cv, len(names), bool(scene.get("visual")))
     cam_x, cam_y, zoom = _camera(cv, film, scene, t, names, xs, sc)
+    cv.lens = zoom
     with cv.at(cv.SW / 2, cv.SH / 2, 0, zoom):
         with cv.at(-cam_x, -cam_y):
             gy = bgs.draw(cv, scene["bg"], t)
@@ -452,23 +504,41 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
             for k, key in enumerate(names):
                 c = cast[key]
                 x = xs[k]
-                if speaker in names and speaker != key:
-                    look = 1 if xs[names.index(speaker)] > x else -1
-                elif box and cv.SW >= cv.SH:
-                    look = 1 if box[0] > x else -1
-                else:
-                    look = 1 if x < cv.SW / 2 else -1
+                look = _facing(cv, scene, names, xs, box, key, t)
+                turn = look                                # (turning round: the body narrows and comes back the other way)
+                edge = max((ln_["s"] - 0.05 for ln_ in scene["lines"] if ln_["s"] - 0.05 <= t), default=None)
+                if edge is not None and t - edge < TURN_S:
+                    before = _facing(cv, scene, names, xs, box, key, edge - 0.01)
+                    if before != look:
+                        f_ = (t - edge) / TURN_S
+                        turn = (before if f_ < 0.5 else look) * max(0.15, abs(math.cos(math.pi * f_)))
                 mine = last if last and last["who"] == key else None
                 pose, pose2, mix = _pose_mix(scene, key, t, k)
+                snap = bool(pose2) and pose2 == _pose_at(scene, key, t)          # (a new gesture, not the speaker's sway)
                 emo = (mine or {}).get("emotion") or scene["mood"].get(key) or ("happy" if speaker == key else "neutral")
-                blink = 1.0 if (t * 0.9 + k * 0.37) % 3.7 < 0.12 else 0.0
+                blink = _blink(t, k)
+                gzx, gzy = 0.6 * look, (-0.25 if box else 0.0)                # (eyes: to the one looked at, up to a picture)
+                gzx += 0.18 * (_hash01(k, math.floor(t * 1.1 + k * 0.3)) - 0.5)  # (and small glances, now and then)
+                gzy += 0.14 * (_hash01(k, math.floor(t * 0.9 + k * 0.7), 3) - 0.5)
+                nod = brow = 0.0
+                hop = 0.0
+                if speaker == key:
+                    nod = brow = _beat(ln, t)
+                    if ln and str(ln.get("text") or "").rstrip().endswith("!") and 0 <= t - ln["s"] < 0.32:
+                        hop = math.sin(math.pi * (t - ln["s"]) / 0.32) * 14 * sc     # (an exclamation: a little jump)
+                elif speaker in names:                     # (the others listen: a slow nod now and then; startled by a
+                    nod = 0.5 * max(0.0, math.sin(2 * math.pi * (t * 0.31 + k * 0.37))) ** 8      # shout or a surprise)
+                    if ln and ln.get("emotion") in ("angry", "surprised") and 0 <= t - ln["s"] < 0.45:
+                        f_ = math.sin(math.pi * (t - ln["s"]) / 0.45)
+                        nod, brow = -0.7 * f_, 0.9 * f_
                 walk = None
                 if key in (scene.get("enter") or []) and st < WALK_IN:     # walking in from the nearer side
                     side = -1 if x < cv.SW / 2 else 1
                     x += side * (1 - ease(st / WALK_IN)) * (cv.SW * 0.55)
                     walk, look, pose, pose2, emo = st * 9.0, -side, "idle", None, emo
-                ch.draw(cv, c, x, gy, sc, look, pose, pose2, mix, emo, mouths.get(key, 0.0) if speaker == key else 0.0, blink,
-                        t + k, walk, (0.6 * look, 0.0))
+                    gzx, nod, brow, hop = 0.6 * look, 0.0, 0.0, 0.0
+                ch.draw(cv, c, x, gy - hop, sc, turn if walk is None else look, pose, pose2, mix, emo, mouths.get(key, 0.0) if speaker == key else 0.0,
+                        blink, t + k, walk, (gzx, gzy), nod=nod, brow=brow, snap=snap)
                 if speaker == key and ln.get("bubble"):
                     _bubble_for(cv, ln, x, gy - 600 * sc, t)
 
@@ -584,6 +654,64 @@ def mouth_tracks(tl: dict) -> dict:
     return out
 
 
+def shape_tracks(tl: dict) -> dict:
+    """Per line: the mouth's shape in each picture, from the sounds of its words (lip sync beyond open and closed)."""
+    return {f"{i}.{j}": ch.sound_shapes(ln["words"], ln["s"], max(1, int(math.ceil((ln["e"] - ln["s"]) * FPS)) + 2), FPS)
+            for i, s in enumerate(tl["scenes"]) for j, ln in enumerate(s["lines"])}
+
+
+TURN_S = 0.22                  # seconds a character takes to turn round
+
+
+def _facing(cv: Canvas, scene: dict, names: list, xs: list, box, key: str, t: float) -> int:
+    """Where a character looks at time t (1 right, -1 left): to the one speaking or who spoke last (no turning back
+    and forth in the pauses), else to the picture (a wide film), else to the middle."""
+    j = max(0, _line_at(scene, t))                         # (before the first line: already to its speaker)
+    talker = scene["lines"][j]["who"] if scene["lines"] else None
+    x = xs[names.index(key)]
+    if talker in names and talker != key:
+        return 1 if xs[names.index(talker)] > x else -1
+    if box and cv.SW >= cv.SH:
+        return 1 if box[0] > x else -1
+    return 1 if x < cv.SW / 2 else -1
+
+
+def _hash01(*a) -> float:
+    """A number 0..1 that looks random but is always the same for the same arguments."""
+    x = math.sin(sum(float(v) * m for v, m in zip(a, (12.9898, 78.233, 37.719, 4.581)))) * 43758.5453
+    return x - math.floor(x)
+
+
+def _blink(t: float, k: int) -> float:
+    """How shut the eyes are (0..1): a blink every 2-5 s at uneven times, now and then two in a row."""
+    bt, n = _hash01(k, 1) * 2.0, 0
+    while bt <= t and n < 4000:
+        for b0 in ((bt, bt + 0.26) if _hash01(k, n, 7) > 0.85 else (bt,)):
+            d = t - b0
+            if 0 <= d < 0.15:
+                return 0.35 if d < 0.03 or d >= 0.1 else 1.0
+        bt += 2.0 + 3.0 * _hash01(k, n)
+        n += 1
+    return 0.0
+
+
+def _stressed(w: dict) -> bool:
+    """A word said with weight: a long one, a number, the end of a sentence."""
+    word = str(w.get("w") or "")
+    return len(re.sub(r"\W", "", word)) >= 7 or bool(re.search(r"\d", word)) or bool(re.search(r"[!?]$", word))
+
+
+def _beat(ln: dict | None, t: float, dur: float = 0.38) -> float:
+    """0..1: how far into a nod (and raised brows) the speaker is - on the words said with weight."""
+    if not ln:
+        return 0.0
+    for w in ln.get("words") or []:
+        d = t - float(w["s"])
+        if 0 <= d <= dur and _stressed(w):
+            return math.sin(math.pi * d / dur)
+    return 0.0
+
+
 # ------------------------------------------------------------------------------------------------- the film
 
 TRANS_S = {"fade": 0.3, "slide": 0.4, "iris": 0.45}
@@ -628,6 +756,50 @@ def captions_ass(tl: dict, width: int, height: int, opts: dict, work: Path, film
     p = work / "captions.ass"
     p.write_text(tf.document(width, height, cs, [], o, 0.0), "utf-8")
     return p
+
+
+def scene_picture(script: dict, i: int, width: int = 400) -> bytes:
+    """A small picture (JPEG) of scene i of a script, a little after it starts (its people and picture there)."""
+    import cv2
+    film = check_script(script)
+    film["caption_at"] = ""
+    scene = timeline(film)["scenes"][i]
+    W, H = FORMATS[film["format"]]
+    k = width / float(min(W, H)) if W < H else width / float(W)
+    cv = Canvas(int(W * k * 2), int(H * k * 2), 1920 if W >= H else 1080, film.get("drawing") or "flat")
+    t = min(scene["e"] - 0.05, scene["s"] + max(1.6, min(3.0, (scene["e"] - scene["s"]) / 2)))
+    cv.push(0, 0)
+    draw_frame(cv, film, scene, t, {})
+    cv.pop()
+    cv.finish()
+    ok, buf = cv2.imencode(".jpg", cv2.resize(cv.img, (int(W * k), int(H * k)), interpolation=cv2.INTER_AREA),
+                           [cv2.IMWRITE_JPEG_QUALITY, 85])
+    return buf.tobytes() if ok else b""
+
+
+_SAMPLES: dict = {}
+
+
+def style_sample(style: str) -> bytes:
+    """A small picture (JPEG) of a drawing style: a part of the example's road scene, drawn as the film draws it."""
+    if style not in _SAMPLES:
+        import cv2
+        from . import textscript as T
+        sc = dict(T.parse(T.ROAD_TEXT), format="horizontal")
+        sc["cast"] = {k: dict(v, keep_look=True) for k, v in sc["cast"].items()}   # (the example's own people, always)
+        film = check_script(sc)
+        film["caption_at"] = ""
+        scene = timeline(film)["scenes"][1]
+        cv = Canvas(1920, 1080, 1920, style)
+        cv.push(0, 0)
+        draw_frame(cv, film, scene, scene["s"] + 1.6, {})
+        cv.pop()
+        cv.finish()
+        part = cv.img[150:150 + 630, 20:20 + 1120]                      # (the one speaking and the road, closer)
+        ok, buf = cv2.imencode(".jpg", cv2.resize(part, (320, 180), interpolation=cv2.INTER_AREA),
+                               [cv2.IMWRITE_JPEG_QUALITY, 88])
+        _SAMPLES[style] = buf.tobytes() if ok else b""
+    return _SAMPLES[style]
 
 
 def render(script: dict, out: Path, work: Path, voices: dict | None = None, captions: dict | None = None,
@@ -684,7 +856,8 @@ def render(script: dict, out: Path, work: Path, voices: dict | None = None, capt
     ae._attach_job_object(proc)                            # (closed with the program; Stop and Quit end it)
     vo._track(proc)
     mouths = mouth_tracks(tl)
-    cv = Canvas(W, H, 1920 if W >= H else 1080)
+    shapes = shape_tracks(tl)
+    cv = Canvas(W, H, 1920 if W >= H else 1080, film["drawing"])
     prev_last = None
     try:
         for f in range(0, frames, max(1, every)):
@@ -697,11 +870,13 @@ def render(script: dict, out: Path, work: Path, voices: dict | None = None, capt
             for j, ln in enumerate(scene["lines"]):
                 if ln["s"] <= t <= ln["e"]:
                     tr = mouths.get(f"{si}.{j}") or []
+                    sh = shapes.get(f"{si}.{j}") or []
                     k = int((t - ln["s"]) * FPS)
-                    m[ln["who"]] = tr[k] if k < len(tr) else 0.0
+                    m[ln["who"]] = (tr[k] if k < len(tr) else 0.0, sh[k] if k < len(sh) else "")
             cv.push(0, 0)
             draw_frame(cv, film, scene, t, m)
             cv.pop()
+            cv.finish()
             st = t - scene["s"]
             if si > 0 and prev_last is not None:
                 cv.img[:] = transition(prev_last, cv.img, st, tl["scenes"][si - 1].get("bg") == scene.get("bg"), si)
