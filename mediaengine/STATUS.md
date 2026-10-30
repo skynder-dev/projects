@@ -1012,7 +1012,10 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   messages (each loop keeps its own token, the offset belongs to one bot, a batch fetched while stopping is left);
   an idea order done again could file twice; hand-edited item files broke the page and slowed the bot (normalised);
   notifications for removed downloads or a blocked bot retried for ever (given up once); a webhook set elsewhere
-  (deleteWebhook on connect); the new-items count read every file on every page (cached by the folder's change). He also asked about a phone:
+  (deleteWebhook on connect); the new-items count read every file on every page (cached by the folder's change).
+- 2026-10-30, **b269** published (commit 4496aa7, ZIP 5,040,970 bytes, the same runtime; run 41015179512: inbox 11/11 on
+  Windows, cartoon 37/37, writer 35/35, download 10/10, convert 66/66, browser 20/20, Russian 247 pages 0 English, route
+  fuzz 0 errors): the Inbox and the phone's bot; the owner said the automatic size was too big (145 %) - 120 % now. He also asked about a phone:
   told him what a phone web app could do (share a link to download, send videos, start work, notifications, results) -
   it needs the app opened to his own devices (pairing code, his network or Tailscale): only on his "yes".
 - 2026-10-29, an author's style (step 3 of the owner's "a profile whose videos suit our style"): several studied videos

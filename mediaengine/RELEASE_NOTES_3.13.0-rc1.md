@@ -315,6 +315,13 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   or 100-150 %), the menu shows everything (no "More"; Other: Social Lab, Devices, Cloud), **ten colour schemes** with a
   strong colour per kind of work (Aurora, Glass, Tonal, Banners, Bento, Neon, Synthwave, Sunset, Ocean, Acid) in
   Settings → Look; the old look stays the default (his choice). b265 (08b2787) was cancelled by the newer push.
+- b269 (commit 4496aa7, run 41015179512: cartoon 37/37, writer 35/35, download 10/10, **inbox 11/11**, convert 66/66,
+  browser 20/20, Russian 247 pages 0 English, route fuzz 4171 requests 0 errors; ZIP 5,040,970 bytes, the same runtime):
+  **Inbox** (links, topics, videos to work on - typed, from other programs as an `idea` order, or from the phone) and
+  **the phone through the owner's own Telegram bot** (Settings → Phone; the token in the Windows credential store; a
+  pairing code; private chats only; nothing opened to the internet), fixes from an independent review (8), the automatic
+  size smaller (120 % on a 2560 px screen), videos always fit the window's height. b267 (e334e5c) failed the writer
+  check (the story box's hint stayed English in Russian) - fixed; b268 was cancelled by the newer push.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
