@@ -291,7 +291,7 @@ def register(app, page, err_page, e, human_bytes):
                     f"article, notes, what is said in a video): the story retells it with its own characters. In any language, even "
                     f"in translit; the story's language is chosen below.</div>"
                     f"<textarea name='about' rows='4' maxlength='5000' style='width:100%' "
-                    f"placeholder='Why a city hospital pays three times more for the same medicine' translate='no'>"
+                    f"placeholder='Why a city hospital pays three times more for the same medicine'>"
                     f"{e(str(request.args.get('about') or '')[:5000])}</textarea>"
                     f"<details style='margin-top:6px'><summary>Or a video on this PC</summary>"
                     f"<div class='ct-row' style='margin-top:6px'><input name='video' placeholder='A video whose story to retell (its full path)' "

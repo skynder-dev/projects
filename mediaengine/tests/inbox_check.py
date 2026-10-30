@@ -166,7 +166,7 @@ def main() -> int:
         finally:
             W.installed, W.status = real_inst, real_status
         check("Write a story from the Inbox: the story writer's form comes with the topic",
-              "translate='no'>Why a school pays twice</textarea>" in prefill, prefill.split("name='about'", 1)[-1][:300])
+              "medicine'>Why a school pays twice</textarea>" in prefill, prefill.split("name='about'", 1)[-1][:300])
 
         # 2. an order of kind "idea" from another program goes into the Inbox; a bad one is refused
         orders.ensure_dirs()
