@@ -1,0 +1,16 @@
+release: MediaEngine-3.13.0-rc1-b274
+ping: {"build":"","install":"D:\\a\\_temp\\pkg-test\\MediaEngine \u0422\u0435\u0441\u0442","ok":true,"tray":"starting","version":"3.13.0-rc1"}
+
+auto page: HTTP 200, Quit button: True
+status: running update_check: updates_off
+data outside the release: db=True release\data=False
+desktop shortcut 'MediaEngine RC': True; stable shortcut touched: False
+desktop shortcut runs: C:\Windows\System32\wscript.exe "D:\a\_temp\pkg-test\MediaEngine Тест\Start MediaEngine.vbs" (expected "D:\a\_temp\pkg-test\MediaEngine Тест\Start MediaEngine.vbs")
+create project: True
+second copy exited: True code: 1 message: Port 8775 is already in use (MediaEngine already running?) 
+restart: True
+stopped: True
+switched from the running release to the next one: True
+files added to the release folder by running it: 0 
+next release sees the project: True; its own data folder created: False
+package smoke PASS

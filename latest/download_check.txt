@@ -1,0 +1,11 @@
+PASS install with the button: a file with a wrong checksum refused; then yt-dlp and deno in the data folder
+PASS a link: one video shown with its title; a profile listed (title, length, views) with quick choices
+PASS a site asking to sign in, and a link that is not a web address, are said plainly
+PASS three chosen videos downloaded into the Downloaded folder, each studied for its rhythm after; the page offers to study, retell or show each
+PASS the three studied: their common style made from the download's row (the author's name, the three videos), pressed twice still one; the row then links it
+PASS a private video is said plainly (not public), the other one downloaded
+PASS too many at once refused; Stop ends a download, Try again finishes it
+PASS a video with a Russian title, downloaded into the Russian-named folder (Скачанные), is found and kept
+PASS pages: in Russian, no English left (the download page, a profile's list, the Media page)
+PASS a download removed from the list: its videos stay in the folder
+{"passed": 10, "total": 10}

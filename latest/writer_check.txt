@@ -1,0 +1,38 @@
+PASS not installed: the page offers both models (the smaller first on a PC with no known graphics card), the data folder; writing is refused
+PASS installation: a download that is not the exact file is refused, nothing installed
+PASS installation: llama.cpp from its GitHub release and the model from Hugging Face at the pinned commit, checked, unpacked, started for a test
+PASS installed: the page has the story form (what about, language, country, length, format) and says where it runs
+PASS a topic: the free model's story in the program's format (scenes, people, pictures), the markdown taken off
+PASS a topic: the request names the topic, the language, the length, the viewers' money and the format's rules
+PASS a story's page: the story to read and change, Make the cartoon, another version, another country
+PASS the writer's server is stopped after the story (its port closed, nothing left running)
+PASS the story written becomes a cartoon (7 scenes)
+PASS an answer that is not a story is asked again once, saying what was wrong
+PASS a pasted text: retold as a story (not copied), wide format kept
+PASS another country: the story retold in Russian (names, roubles), its scenes and pictures kept
+PASS a film in another language (its page → Language): translated by the model, then made at once in Russian with the same people (looks and voices kept), drawing style, format, pace, captions and music
+PASS retold for a country, read first: no cartoon until asked; the story page keeps the film's look, and the cartoon made from it has the film's people and the new language
+PASS Stop: the story is not finished, the writer's server is killed
+PASS a graphics card that fails to start: the story is written on the processor; no card the Vulkan build sees: the processor at once; a card it sees is named
+PASS a graphics card that stops in the middle of a story: the story is finished on the processor (the cut-off answer not taken for a story), the card is not tried again for the next ones (the page says so) until 'Try the graphics card again'
+PASS a video on this PC: refused without the voice add-on; with it heard once, its facts noted in parts, a new story written from the notes
+PASS a video's story page says what was heard and shows the facts noted from it
+PASS another model: only the model is downloaded, the one before deleted; the page says which writes
+PASS Write another version: a new story of the same topic and settings
+PASS the list shows the stories with their state
+PASS a series: a story for every topic line (a too short one left out), each with its cartoon made at once (captions, the program's music, the drawing style chosen; no voices without the add-on); the story shows its cartoon
+PASS measures by the viewers' country: miles for the United States (English's default), kilometres for Russia, miles for roads in Britain; the example story in miles
+PASS an empty topic is refused clearly
+PASS Reference Lab: a video studied - its four shots found, a picture of each, its colours; what is said in each shot, how fast, how soon, the opening question, music under the words
+PASS Reference Lab: a cross-fade and a hard cut are both found; a busy moving picture is not taken for cuts
+PASS the study's page: the rhythm (a strip of the shots), the colours, a storyboard with the pictures and the words; a form to write with this rhythm
+PASS a story written with the studied rhythm: as many scenes for its quick cuts, an opening question; the story page says whose rhythm
+PASS the rhythm follows the reference's shots and the story's own length: a calm one asks for fewer scenes and words, and the writer's own check asks no more than that
+PASS a topic typed in translit: the model told so (and, for Russian, to write the title and names in Cyrillic); a topic in Cyrillic, in English or in Romanian asked as before
+PASS the home page: a video to study, the studies listed, the rhythm to choose for a story
+PASS an author's style: three studied videos together - the middle of their shots (not the average), the listened ones' pace of words and opening question; one video alone refused; its page with the figures, the colours, the videos and a form to write in this style
+PASS a story written in an author's style: the style's rhythm asked (an author's cartoons, quick cuts, an opening question), the story page links the style; Cartoon Studio offers the style for a story and lists it
+PASS pages: in Russian, no English left (the story writer, a story, a stopped story, a study, an author's style)
+PASS an author's style forgotten: its videos' studies stay
+PASS Remove: the story writer's files are gone, the stories stay
+{"passed": 37, "total": 37}

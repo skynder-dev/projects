@@ -1,0 +1,8 @@
+{"pkg": "MediaEngine-3.13.0-rc1-b100274", "file": "MediaEngine-3.13.0-rc1-b100274-update.zip", "size": 5164812, "sha256": "a79a288e4f60c7c6262978d94c2d6127619c315bc7d3d53b27cee8d24ef683a6", "runtime": "b9810d447e8c86c5", "files": 231}
+started: D:\a\_temp\upd\Программы\MediaEngine-3.13.0-rc1-b274 b274
+Update button in the top bar: True
+next build found: True
+switched to the new build: True D:\a\_temp\upd\Программы\MediaEngine-3.13.0-rc1-b100274 b100274
+names of the runtime's python.exe (hard links, the old and the new build): 2
+new build pages: 200; old build kept: True; nothing half-made: True
+update button smoke PASS

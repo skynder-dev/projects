@@ -1,0 +1,39 @@
+PASS finding: sentences end at their stops
+PASS finding: whole sentences within the length, never overlapping
+PASS finding: the question with strong words is the likeliest clip
+PASS finding: greetings, thanks and adverts make a clip unlikely
+PASS finding: ordinary speech is not taken for greetings or adverts
+PASS finding: laughter makes a clip likelier
+PASS finding: speech without stops is split into pieces
+PASS making: the face finder is YuNet, the program's own (Windows)
+PASS making: the found clips are kept with the job
+PASS making: five clips made
+PASS making: vertical 1080x1920, the length asked, with sound
+PASS making: the crop follows the face (shot with one face on the right)
+PASS making: two people apart - each face in its own half, one above the other
+PASS making: a clip across the cut switches at the cut
+PASS making: the framing changes exactly at the cut
+PASS making: three people are shown whole on blurred edges
+PASS making: two faces one above the other - the captions between them
+PASS making: captions with the words are drawn
+PASS making: the first sentence as a title at the top for 3 s
+PASS making: a streamer's camera in a corner - the camera above, the game below
+PASS making: copies saved next to the reels, named by their words
+PASS making: made again, the clips made are kept (nothing made or saved twice)
+PASS making: a clip's own title at the top (without the first-sentence choice)
+PASS making: square 1080x1080 (the face kept) and as filmed 1920x1080
+PASS making: a walk's clips found
+PASS making: someone walking across - the crop goes with them
+PASS making: a long walk in a clip of 150 shots is made; two people found in turns are not panned between
+PASS making: two people side by side - both in the picture, as big as they fit
+PASS making: "the one speaking, close up" - the crop on the one who talks, switching when the other talks
+PASS pages: the clips page and a video's clips
+PASS pages: a small picture of each found clip
+PASS pages: how far the jobs are, for the page to ask
+PASS pages: another length found again from the words heard (no listening)
+PASS pages: making without a tick is refused
+PASS pages: "Make the 5 likeliest" makes the first five of the list without ticks
+PASS pages: finding is refused clearly without the add-on or the file
+PASS pages: in Russian, no English left
+PASS pages: deleting a video's clips job takes its made clips' jobs along, the saved files stay
+{"passed": 38, "total": 38}

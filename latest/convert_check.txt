@@ -1,0 +1,70 @@
+PASS convert_walkthrough_1440p60_h264_size
+PASS convert_walkthrough_1440p60_fps_kept
+PASS convert_walkthrough_1440p60_no_frames_lost
+PASS convert_walkthrough_1440p60_full_length
+PASS convert_walkthrough_1440p60_decodes_clean
+PASS convert_walkthrough_1440p60_source_unchanged
+PASS convert_Отпуск — пляж_h264_size
+PASS convert_Отпуск — пляж_fps_kept
+PASS convert_Отпуск — пляж_no_frames_lost
+PASS convert_Отпуск — пляж_full_length
+PASS convert_Отпуск — пляж_decodes_clean
+PASS convert_Отпуск — пляж_source_unchanged
+PASS convert_Отпуск — пляж_upright
+PASS convert_переменная частота_h264_size
+PASS convert_переменная частота_no_frames_lost
+PASS convert_переменная частота_full_length
+PASS convert_переменная частота_decodes_clean
+PASS convert_переменная частота_source_unchanged
+PASS convert_hdr_hlg_normal_colours
+PASS convert_card_failure_falls_back_to_processor
+PASS convert_no_part_files
+PASS convert_twice_at_once_two_whole_outputs
+PASS convert_cancel_leaves_nothing
+PASS convert_start_sweeps_interrupted_names_only
+PASS join_parts_in_recording_order
+PASS join_whole_length_one_file
+PASS join_every_frame
+PASS join_sound_in_step_after_every_join
+PASS join_sound_as_long_as_picture_decodes_clean
+PASS join_refuses_different_videos_naming_one
+PASS join_job_of_chosen_files
+PASS convert_cut_only_that_part_in_step
+PASS save_the_picture_shown_at_that_moment
+PASS save_a_picture_of_a_moment
+PASS convert_turn_the_picture
+PASS convert_faster_2x_in_step_4x_without_sound
+PASS convert_vertical_9_16
+PASS convert_logo_in_the_corner
+PASS convert_less_wind_noise
+PASS convert_slow_motion
+PASS convert_joined_at_half_speed_in_step
+PASS convert_even_out_the_sound
+PASS convert_brighter
+PASS more_options_on_the_card_way
+PASS convert_date_and_time_in_the_corner
+PASS pictures_in_one_pdf
+PASS pictures_by_seeking_are_the_same
+PASS pictures_every_n_seconds
+PASS conversions_wait_in_line
+PASS a_missing_video_is_named
+PASS size_target_with_gaps_and_without_sound
+PASS a_small_size_for_a_chat
+PASS a_half_copied_video_is_said_short
+PASS convert_without_sound
+PASS join_one_video_per_recording
+PASS more_options_on_the_card_way_tv_levels
+PASS join_gopro_like_4k_hevc_parts
+INFO 4K HEVC 60 fps, 4 s in two parts -> 1080p: 4.6 s on this machine (cpu)
+PASS convert_full_range_camera_video_to_tv_levels_without_resize
+PASS reel_and_finished_video_from_full_range_footage_at_tv_levels
+INFO a raw engine piece (before the reel render puts it into TV levels): full range ('Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuvj420p(pc, progressive), ', 28, 226, 41, 210)
+INFO card test: {'tested_at': '2026-10-31 02:19', 'use': False, 'gpu': ['Microsoft Hyper-V Video - 10.0.26100.1150'], 'cpu_s': 5.4, 'error': 'no NVIDIA graphics card that this FFmpeg can encode on'} (23 s)
+PASS convert_card_test_said_and_remembered
+PASS convert_job_of_chosen_files_one_by_one
+PASS convert_into_a_chosen_folder
+PASS convert_resumed_in_a_chosen_folder_sweeps_only_its_own
+PASS join_job_refused_at_once
+PASS join_leaves_no_part_list
+PASS convert_picture_length_read_apart_from_sound
+{"passed": 66, "total": 66}

@@ -1,0 +1,18 @@
+PASS model_not_there_before
+PASS fast_local_downloaded_by_the_app_into_its_data_folder
+PASS aiplus_downloaded_by_the_app_and_verified
+PASS test_reel_semantic
+PASS test_reel_semantic_plus
+PASS test_reel_aiplus_reports_speed
+PASS setup_offers_ai_and_aiplus
+PASS aiplus_project_created
+PASS aiplus_reel_built
+PASS ai_variant_of_the_same_project
+PASS review_says_aiplus
+PASS aiplus_theme_variant
+PASS blind_compare_ai_vs_aiplus_starts
+PASS library_indexed_with_real_aiplus
+PASS library_theme_search_answers
+PASS library_prepared_for_reels_with_real_aiplus
+PASS aiplus_reel_after_prepare_looks_at_no_frame
+{"passed": 17, "total": 17, "timings": {"download_fast_local_s": 17.1, "download_aiplus_s": 180.0, "test_reel_semantic_s": 19.4, "test_reel_semantic_plus_s": 32.1, "test_reel_aiplus_s_per_frame": 0.536, "aiplus_first_build_s": 197.6, "aiplus_stage_seconds": {"analyze": 131.52, "finish": 37.14, "inputs": 1.37, "render": 23.07, "select": 0.04, "trim": 3.63}, "aiplus_videos_embedded": 9, "aiplus_frames_embedded": 114, "aiplus_scout_s_total": 8.6, "aiplus_embed_s_total": 60.7, "aiplus_embed_s_per_frame": 0.533, "ai_variant_build_s": 119.8, "ai_stage_seconds": {"analyze": 73.99, "finish": 26.29, "inputs": 0.18, "render": 17.13, "select": 0.05, "trim": 0.93}, "aiplus_theme_variant_s": 85.1, "aiplus_theme_stage_seconds": {"analyze": 21.35, "finish": 36.32, "inputs": 0.96, "render": 22.04, "select": 0.04, "trim": 3.02}, "aiplus_theme_warnings": ["THEME:sunset:0_MATCHING_MOMENTS", "THEME_FEW_MATCHES:sunset", "OVERLAPPING_MOMENTS_DROPPED:12"], "aiplus_sources": ["clip_2 copy.mp4", "clip_3.mp4", "clip_4.mp4"], "ai_sources": ["clip_4.mp4", "clip_5.mp4", "clip_6.mp4"], "library_index_s": 38.2, "library_search_ms": 2.0, "library_search_top": [{"inventory_id": 2, "filename": "clip_3.mp4", "best_s": 9.52, "frame": 5, "score": -2.418}, {"inventory_id": 1, "filename": "clip_1.mp4", "best_s": 1.12, "frame": 0, "score": -7.089}], "aiplus_build_after_prepare_s": 65.3, "aiplus_build_after_prepare_timing": {"clips_cached": 11, "clips_cut": 0, "clips_s": 0.08, "rank_s": 10.3, "score_s": 0.01, "scout_embed_s": 0.0}}}

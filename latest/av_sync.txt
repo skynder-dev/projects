@@ -1,0 +1,41 @@
+{
+ "reel_s": 19.2,
+ "segments": 4,
+ "flashes": 16,
+ "beeps": 18,
+ "matched": 16,
+ "picture_s": 19.2,
+ "sound_s": 19.2,
+ "worst_abs_ms": 20.0,
+ "sound_early_max_ms": 20.0,
+ "sound_late_max_ms": -16.7,
+ "per_segment_ms": {
+  "1": [
+   -16.7,
+   -16.7,
+   -16.7,
+   -16.7,
+   -16.7
+  ],
+  "2": [
+   -20.0,
+   -20.0,
+   -20.0
+  ],
+  "3": [
+   -18.3,
+   -18.3,
+   -18.3,
+   -18.3
+  ],
+  "4": [
+   -16.7,
+   -16.7,
+   -16.7,
+   -16.7
+  ]
+ }
+}
+PASS av_sync_every_cut
+{"late_sound_offsets_ms": [-5.0, -5.0, -5.0]}
+PASS late_sound_stays_in_place

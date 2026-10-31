@@ -1,0 +1,45 @@
+PASS characters: the same name is the same character, drawn the same every time
+PASS characters: a man's role gets a suit, a worker's a vest and a hard hat
+PASS scripts: empty ones refused with a reason; an unknown background, speaker, pose or feeling made safe
+PASS film: a tall 1080x1920 MP4 of the script's length, with sound
+NOTE 8.3 s of film drawn in 9.3 s
+PASS film: captions of the words drawn in the colour chosen
+PASS film: the speaker's mouth opens and closes along the words
+PASS film: the second scene (a chart on the board) is drawn
+PASS film: a wide 1920x1080 MP4, without captions when none are asked
+PASS example: every scene of 'How a City Loses Millions' draws in both formats
+PASS animation: a character not in the scene before walks in (the first scene's people are just there); a new gesture grows out of the one before; a speaker's arms move a little
+PASS lip sync: the mouth's shape follows the sounds (m/b/p closed, o, u, e, f/v; English and Russian) and is drawn differently; blinks at uneven times; a nod and raised brows on a word said with weight, not on a small one
+PASS voices: money written short is said in full (dollars, millions, roubles, percent), nothing else touched
+PASS sounds: a speech bubble pops up (just before its words), a magnifier rings; silence before them
+PASS pace: shorter pauses for a quick film, longer for a calm one; an unknown pace is the usual
+PASS camera: a cut to a close-up of the one speaking on a scene's second line (not its first, not while a picture is to be read, never with the camera still); the face above captions in the middle
+PASS voices: every line as loud as the others (a quiet voice brought up, a loud one down)
+PASS transitions: a cross-fade in the same place; a slide or an opening circle to another place; then the new scene
+PASS pictures: a share of a whole (a pie) and a timeline, read from a story and drawn
+PASS music: the program's own bed in three moods, quiet, lowered under a voice, mixed into a film
+PASS stories: numbers in pictures (4,800,000; a year before a value; 1,050), the narrator named 'Narrator', a bulleted cast, a note that is not a line, a place named in more words
+PASS backgrounds: all thirteen draw in both formats (a hospital, a school, a shop, a block of flats, a building site among them); a doctor wears a white coat
+PASS example: 8-12 scenes, 60-120 s, own characters (6)
+PASS drawing styles: every scene of the example draws in each style (hand-drawn, whiteboard, paper, motion) in both formats, each clearly unlike the flat one; the flat one (and an unknown name) draws as a canvas without a style
+PASS drawing styles: a script keeps its style; an unknown one is the flat
+PASS pages: Cartoon Studio opens, with the example story to change
+PASS pages: the new cartoon's form shows the five drawing styles with a picture of each (flat chosen)
+PASS pages: my script made as a cartoon (a preview without voices), checked, saved in Cartoons
+PASS pages: the film's page plays it and shows its lines to change
+PASS pages: the film is drawn in the style chosen (paper) and its page has it chosen
+PASS pages: a changed line, feeling and background make a new version
+PASS pages: the editor - a picture of every scene; a line removed, lines added where wanted (an empty one left out); the scenes' order turned round; the title; no scenes refused; the language needs the story writer
+PASS pages: close-ups turned off and a calm pace are kept in the new version
+PASS pages: a story written as plain text becomes a cartoon (scenes, characters, a contract, a chart, a bubble)
+PASS pages: the film's story changed as text makes a new version (the rest kept)
+PASS characters' library: the film's people kept (look, voice); the page lists them with a picture; a changed look and voice are used by the next film naming them
+PASS characters: one added before any film (its look from its name), made the host - the writer gives new stories this narrator, a story naming her takes her look; the host taken off again; an empty name refused
+PASS pages: scripts of odd shapes, a film made of one, Reveal of a film not made - no server error
+PASS pages: a music file that is not there is refused clearly
+PASS music: a film without music made again stays without; its page has 'No music' chosen
+PASS pages: a broken script and voices without the add-on are refused clearly
+PASS pages: how far the films are, for the page to ask
+PASS pages: in Russian, no English left
+PASS pages: a film's job deleted, its saved file stays
+{"passed": 43, "total": 43}

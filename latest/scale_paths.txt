@@ -1,0 +1,7 @@
+LongPathsEnabled on the runner: 1 -> 0 for this test
+PASS scan_many_long_names
+PASS build_done
+PASS reel_uses_several_sources
+PASS no_input_skipped_for_path_length
+PASS long_names_cut_from_original
+{"files": 64, "build_s": 98.2, "longest_internal_path": 169, "passed": 5, "total": 5}

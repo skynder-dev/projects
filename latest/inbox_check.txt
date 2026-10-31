@@ -1,0 +1,12 @@
+PASS the Inbox: a link and a topic added by hand, each with its next step (show the videos, write a story); an empty one refused; the menu and Home show the new ones
+PASS Write a story from the Inbox: the story writer's form comes with the topic
+PASS an order of kind idea (from Social): into the Inbox with its topic, why and links, answered done without a video; a link that is not a web address refused
+PASS the bot set up: a wrong token refused, the right one checked with Telegram (its name shown) and kept outside the settings file; a pairing code to send
+PASS pairing: never a group; a code expires and changes after a few wrong tries
+PASS the phone: only the chat that sent the code is paired and answered; its links, its topic and a short video go into the Inbox (the video into Downloaded\Telegram), a video over 20 MB refused politely
+PASS a video cut off half-way is not kept (no file, no .part); a file sent as a video never keeps another kind's extension (invoice.exe -> invoice.exe.mp4)
+PASS a download started from an Inbox item: the item done, the phone told once when the video is downloaded
+PASS an item file edited by hand never breaks the Inbox page; an idea's item is found again by its order (an order done again is not filed twice)
+PASS pages: the Inbox and Settings (the phone) in Russian, no English left
+PASS disconnect: the token forgotten and the bot stopped; a removed item's video stays in its folder
+{"passed": 11, "total": 11}
