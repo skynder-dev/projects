@@ -1,0 +1,14 @@
+{
+  "findings": [],
+  "checked_for": [
+    "credential values/private keys",
+    "absolute user/task paths",
+    "unexpected binaries",
+    "workflow write permissions/secrets/self-hosted/push"
+  ],
+  "fixture_review": "Only synthetic fixture fields, example.invalid URLs, synthetic proposal; historical owner prompts/results/archives and tenant queues excluded",
+  "production_source": "Candidate hashes preserved as original_candidate_files; shipped CI copies pinned independently; see SOURCE_SANITIZATION.json",
+  "limitations": "Pattern scan plus manual fixture review is not proof against every possible secret; public source disclosure still requires explicit approval",
+  "published": false,
+  "machine_default_paths": "Four CI copies sanitized after automatic review flagged a machine-specific runtime default. Original candidate hashes retained separately; no original path strings shipped."
+}
