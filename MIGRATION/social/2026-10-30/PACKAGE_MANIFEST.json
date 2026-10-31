@@ -1,0 +1,376 @@
+{
+  "project": "Social",
+  "snapshot_date": "2026-10-30",
+  "public_repository_path": "MIGRATION/social/2026-10-30/",
+  "package_kind": "Полная передача проекта с точным поднабором исходников и историческим каталогом; не установщик",
+  "main_document": "01_Social_Передача_Claude.docx",
+  "full_text": "02_Social_Полный_контекст.md",
+  "source_archive": {
+    "name": "CORE_SOURCE_FIXES_001_20261028.zip",
+    "bytes": 1288003,
+    "sha256": "76afccb5a55b1a7aa0c8aa29a56f8f7a256e8c1d6c2884b067719ff74f092d73",
+    "included_original_entries": 34,
+    "included_original_bytes": 254050,
+    "exact_subset_manifest": "source_material/latest_20261028/FILES_SHA256.json"
+  },
+  "curation_ru": [
+    "Точные исходные файлы сохранены без изменений; metadata и пояснения добавлены отдельно.",
+    "Каталоги содержат отобранные проектные поля; приватные имена, контакты, внутренние примечания и операционный project_ref исключены.",
+    "Social score history агрегирована; объём и ограничения указаны в каталоге.",
+    "Сырые repo_evidence не включены; сохранены публичные ссылки и подробные проектные разборы.",
+    "Первичные private chat links в analysis сохраняют происхождение, но могут требовать аккаунт владельца."
+  ],
+  "validation_scope_ru": "Подготовка передачи: чтение, редактура, сравнение хешей и визуальная проверка DOCX. Программа, её тесты, модели, установки и внешние публикации не запускались.",
+  "excluded": [
+    "QA PNG/PDF",
+    "builders and temporary scripts",
+    "raw unrelated repository notes",
+    "credentials and account configuration",
+    "full multi-project source ZIP",
+    "models and installers"
+  ],
+  "file_count_excluding_this_manifest": 68,
+  "total_bytes_excluding_this_manifest": 6839589,
+  "files": [
+    {
+      "path": "00_НАЧАТЬ_ЗДЕСЬ.txt",
+      "bytes": 625,
+      "sha256": "72b2a7aee0b2562ca33d7514f4fb229bcb6add1430304ebd041068f5164ba826"
+    },
+    {
+      "path": "01_Social_Передача_Claude.docx",
+      "bytes": 79713,
+      "sha256": "3c448c7fa2f6c2280966ebc701cfbc23f731014cf59f8dcbfa8b32db857f46b3"
+    },
+    {
+      "path": "02_Social_Полный_контекст.md",
+      "bytes": 108774,
+      "sha256": "b1a2f6b050256a9348090110e2af5014fd677e4497733d5d8845fb901c75e017"
+    },
+    {
+      "path": "03_Стартовый_запрос_Claude.txt",
+      "bytes": 8646,
+      "sha256": "85f203be8a2debd91525de12a8062b4066a48ea6a1a47d7b9965a909f900a102"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4536,
+      "sha256": "6562f4bb1bf26bee83d9c276d7bcc7f378e29e71ac9963574532d509e35bc247"
+    },
+    {
+      "path": "analysis/artifacts.md",
+      "bytes": 4627,
+      "sha256": "daebcadc594281d0a12228297e81eebba1bc02f07a6e0139d1faaa1bd6ef098d"
+    },
+    {
+      "path": "analysis/history.md",
+      "bytes": 67709,
+      "sha256": "6bace77084539d5e44f5a6017dd326d6a2e16e4a1db136b9ab5ea8b4e58edf39"
+    },
+    {
+      "path": "analysis/repository.md",
+      "bytes": 17187,
+      "sha256": "600dc7d179f9a58fbeee8e16be7f7938d4b85cc03012e59bcb15f5381bceb848"
+    },
+    {
+      "path": "catalog/CATALOG_RU.md",
+      "bytes": 607724,
+      "sha256": "b93ee1ab694553cc1cd02b84c2e272333a4bd36400a4df05aba55e80129aab83"
+    },
+    {
+      "path": "catalog/SHA256SUMS",
+      "bytes": 1589,
+      "sha256": "97eebacc9ca9699721fbf7c93961e1715fc6f2cba17b7448ef038bffdd12da10"
+    },
+    {
+      "path": "catalog/SHA256SUMS.json",
+      "bytes": 2654,
+      "sha256": "d5a73eff8e7a4fcfbeed9cd9169853e344c7e1976bc08fd8539fd8b1171c9a66"
+    },
+    {
+      "path": "catalog/candidate_score_history_summary.json",
+      "bytes": 262403,
+      "sha256": "164df3b56697da5f9673540a2703c6c22a725b88d138ff0b8c8eaab15ef9b572"
+    },
+    {
+      "path": "catalog/candidate_source_events.json",
+      "bytes": 278759,
+      "sha256": "19f67f063242cbc83de738c09c5bfe354ab3a0cbb5eeaea1bf16474c3a1bdb2f"
+    },
+    {
+      "path": "catalog/claim_evidence.json",
+      "bytes": 12381,
+      "sha256": "aececd981c76ad558331d7cb81f19b19fb95e047e4a47596ce0821bd7760e412"
+    },
+    {
+      "path": "catalog/claims.json",
+      "bytes": 26489,
+      "sha256": "6839127cd7033bf1254707300b72e1a681ca7b437b76b79c928d54a382ace579"
+    },
+    {
+      "path": "catalog/content_artifacts.json",
+      "bytes": 36982,
+      "sha256": "af4c5956e0987d60444f1c996e438acbc2428fb7b47e3ab4e2efd031c5afe543"
+    },
+    {
+      "path": "catalog/evidence_nodes.json",
+      "bytes": 22009,
+      "sha256": "d1709ae1e6d7c6b39ccc25147a436a9c17b81ae28e44136785894a672483a028"
+    },
+    {
+      "path": "catalog/factual_cores.json",
+      "bytes": 63420,
+      "sha256": "32acc85375fc50976d430fb3650a1d2f6aab432cd47777648eab57d4ec500c7f"
+    },
+    {
+      "path": "catalog/latest_candidate_scores.json",
+      "bytes": 578475,
+      "sha256": "4b5e9c3b48cb9807fb5fc64b11b8ed3d04c27c83f7f8386d9098432cb32bb285"
+    },
+    {
+      "path": "catalog/privacy_redactions.json",
+      "bytes": 72,
+      "sha256": "1b193cc16cd0db36841ea31f09324f90c3ce99c526ff33e3060bab7adef5c406"
+    },
+    {
+      "path": "catalog/provenance.json",
+      "bytes": 5445,
+      "sha256": "ecefab1c83f02eda08aff309a0a710598feb9f06fdefb2d84709969ec4276310"
+    },
+    {
+      "path": "catalog/research_packets.json",
+      "bytes": 21907,
+      "sha256": "2f04094cd661bdd1e1c078c4a7cdb8f7a64b03f0b2f2c16f039c6b1497e10987"
+    },
+    {
+      "path": "catalog/review_decisions.json",
+      "bytes": 85529,
+      "sha256": "7c5c29bf8058491f59f545d7e6fb388ff67d86a226ddbee7f1f6b3a059d3f9ad"
+    },
+    {
+      "path": "catalog/scoring_policy_distribution.json",
+      "bytes": 1080,
+      "sha256": "9a48c94b648c6c734cb1e175845ecd7a4bfcd7fa7d1fb269199302156cd091c7"
+    },
+    {
+      "path": "catalog/source_definitions.json",
+      "bytes": 6541,
+      "sha256": "854790caa2135b8ed471a49fa00fdf47fa17662432ff174a3f939710b934a677"
+    },
+    {
+      "path": "catalog/source_events.json",
+      "bytes": 2750915,
+      "sha256": "72aa32f1b5205437096897bb49d2a5e411261c2e7156f381490656f247dfffda"
+    },
+    {
+      "path": "catalog/story_candidates.json",
+      "bytes": 1493477,
+      "sha256": "34747ca8e3d1032aed4f90dc264fa6207980e7aa2a993478bf7e082835427c90"
+    },
+    {
+      "path": "catalog/workspaces.json",
+      "bytes": 504,
+      "sha256": "29b57abd6d022d221980f0996a3839103638822b3fcced96530f2df0eaf60e70"
+    },
+    {
+      "path": "module_inventory.md",
+      "bytes": 6139,
+      "sha256": "158fc3ac6fba50e5404f301ceca1c62e9a98b4217936514712cfd93ebdb0d11e"
+    },
+    {
+      "path": "repo_manifest.json",
+      "bytes": 14284,
+      "sha256": "e29747883264274e2af53c0e334b57c7820275c90403cb258c878a00e9aff911"
+    },
+    {
+      "path": "source_diff_vs_oct22.json",
+      "bytes": 8084,
+      "sha256": "93d60dbd31029c61ac656910e51af1d31ffe8095de1cba204a8a006ed1a69714"
+    },
+    {
+      "path": "source_material/latest_20261028/.ci/tests/run_social_concept_core.py",
+      "bytes": 1570,
+      "sha256": "ada87a18fe34e213e39183abe962890efd7d657d1ca3b0e4407e8e36427ee3a2"
+    },
+    {
+      "path": "source_material/latest_20261028/FILES_SHA256.json",
+      "bytes": 5948,
+      "sha256": "34a3b317b4a4a63debc3ed4b59ecbe5bed86fa9491cf87d2971570949ce652b6"
+    },
+    {
+      "path": "source_material/latest_20261028/READ_FIRST_RU.txt",
+      "bytes": 556,
+      "sha256": "d729e50f0c139c2825749b9577962353675997a58aa8ecbcb91e71be552bd38b"
+    },
+    {
+      "path": "source_material/latest_20261028/VALIDATION_SUMMARY.json",
+      "bytes": 356,
+      "sha256": "7014492159c30a1630607a381c2eb0972fbfa65cd89a3c1073d05996af26991d"
+    },
+    {
+      "path": "source_material/latest_20261028/social/CONCEPT_CORE_OFFLINE.md",
+      "bytes": 4935,
+      "sha256": "edb4ebbfe845aff31520cd40d53208ac9803f50af07bdd3a54f09e6b2b3f4d64"
+    },
+    {
+      "path": "source_material/latest_20261028/social/CONCEPT_RESULT_V2.md",
+      "bytes": 2691,
+      "sha256": "141fd6ab6ab6f817112733304eb9d94724b87be1c4c2346356d3dbd1a7fba49e"
+    },
+    {
+      "path": "source_material/latest_20261028/social/OWNER_CONTEXT_RECOVERY.md",
+      "bytes": 1030,
+      "sha256": "0fd1fc76f6778b7d634f92c2ba325ae815317d61a16e5f57c2b01ac761b0a17d"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/__init__.py",
+      "bytes": 109,
+      "sha256": "bcedec234724ffb9d1a632d9a886a5d65b6dd8f706f2cf8e6b073e936292289c"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/__main__.py",
+      "bytes": 3631,
+      "sha256": "5404720bf3fdab6f3d816de94ef77f856a98377de46b3d7ed329016378813509"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/claims.py",
+      "bytes": 15353,
+      "sha256": "39006920e8a9eb0c8aa11f455a8f43e7f5f3bfa1a6fba514a96f288213e90bdf"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/common.py",
+      "bytes": 4141,
+      "sha256": "83bf07636def05f967c8776992a3eefa1a9db8b9e2ab2744f5680d57fc3f246f"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/concept_admission.py",
+      "bytes": 4505,
+      "sha256": "ee3b2e2df15b632a54311bce0ec9c8eb641d4cd1ef9b40eb21ab6cdf8cfebe4f"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/concept_core.py",
+      "bytes": 24839,
+      "sha256": "268b6cb57fbf1a641074259dccc7441ee10da24a5020f28f70c2457e65b6c62f"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/concept_decision_ledger.py",
+      "bytes": 1424,
+      "sha256": "33ec7981d784ce32e76eae34b64bdc91eee2c39fc2dc48d127c8aac69ef1cd8b"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/concept_excerpt_evidence.py",
+      "bytes": 3107,
+      "sha256": "b18dd34810f12af1914ab22997375dfa1750221106e2fcd8f91b507bae8670af"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/concept_locks.py",
+      "bytes": 1406,
+      "sha256": "7175236ab6ac099c452147375a5e0ae8e5570e92ef72877b50efd3767dbaa12c"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/concept_owner_context.py",
+      "bytes": 4050,
+      "sha256": "0e5af550fd5a2e8c12d41870bdf0e4a6be991eeac4fecad16beab17dce13f385"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/concept_storage.py",
+      "bytes": 1402,
+      "sha256": "3d35e6c35119357aef049c61c5ae46395dcd82af64ca7fe528395e7608134331"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/concept_store.py",
+      "bytes": 2300,
+      "sha256": "ef5397bd5cd03b9d9ff40983bdffd3bdc8555eb6e1c39c2969433f30d8598112"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/grants.py",
+      "bytes": 12943,
+      "sha256": "3623460752a9a05a166a6f9b39e196c0b237994a0822862b91b07fb65e1f1d9e"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/json_contract.py",
+      "bytes": 3991,
+      "sha256": "9805d1c84afb83f11b20b6059be0a304512186dd05b37e10f401eb211f588d31"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/pipeline.py",
+      "bytes": 17889,
+      "sha256": "bad83d70a5c418af6a10857379273a63e9fff564c37ac197e33749d0ef8950fa"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/render.py",
+      "bytes": 11861,
+      "sha256": "8b04937146ef86440b6b380c8b36c6db8bff130a8c1d9b6eb95e53104d1130e4"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/source_documents.py",
+      "bytes": 2385,
+      "sha256": "346668ad6bf9a9b0c13c6f65fc12dcb1d3e17b12f67ffd592fc323d91a16da72"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/source_excerpt_model_view.py",
+      "bytes": 10157,
+      "sha256": "2f02559560bce56e867a258f0dcaa3d61b76566bff9495567aed8318d84e918b"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/source_excerpt_projection.py",
+      "bytes": 12307,
+      "sha256": "308daad17d0ebce37ebe7be50bb8a95ab86a33f9f699ac495f0b0cf746de25d4"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/topic_intent.py",
+      "bytes": 1096,
+      "sha256": "82e36adaf7ce5bb5562e2831cb8bd1c72b98a53de4fc4baf526e6933402cbacf"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/verify.py",
+      "bytes": 5359,
+      "sha256": "036ef65d96de506418b81d9e2e76b99d3acae4374b3d88346b2bb4e394679e3e"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/voice.py",
+      "bytes": 5632,
+      "sha256": "8311e276d1ea46b0da2b9bf193a6f286b613c47ac1587047349156ad0f0861f2"
+    },
+    {
+      "path": "source_material/latest_20261028/social/socialreel/writer.py",
+      "bytes": 16741,
+      "sha256": "4c3001fabb28cb599a0c80a349e9dc641f10e705cc7d046f074c7eadb41b2f33"
+    },
+    {
+      "path": "source_material/latest_20261028/social/tests/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source_material/latest_20261028/social/tests/test_concept_abstention.py",
+      "bytes": 7850,
+      "sha256": "3633b604e36d1df923ea445bd2a7475fa98ede8c7af30eafbdf2d8472f94ac23"
+    },
+    {
+      "path": "source_material/latest_20261028/social/tests/test_concept_offline.py",
+      "bytes": 14331,
+      "sha256": "f07b47f4464465424d2538da98fdf61f29ac852329e9a02c0de939a5c8ccfe0b"
+    },
+    {
+      "path": "source_material/latest_20261028/social/tests/test_concept_persistence.py",
+      "bytes": 7153,
+      "sha256": "e7d253950555d81fe226fb39c22cef340b8e4a041c48808064912196a16e596a"
+    },
+    {
+      "path": "source_material/latest_20261028/social/tests/test_concept_source_cards.py",
+      "bytes": 15539,
+      "sha256": "41fd4b6d30c6a432654a3c5cb2fcf7a25409114d813e0c675195e306405f4e0d"
+    },
+    {
+      "path": "source_material/latest_20261028/social/tests/test_core.py",
+      "bytes": 9514,
+      "sha256": "ecadb873d38b9d143818d8a597096b3db5d10cf35d93e8e2fb8ee1910a61c291"
+    },
+    {
+      "path": "source_material/latest_20261028/social/tests/test_live_source_context.py",
+      "bytes": 22809,
+      "sha256": "4ebc5492b8c5b7c4bef3edbb975404ed7447ec48df7d99aa7c9186f68d6b4123"
+    }
+  ]
+}

@@ -1,0 +1,768 @@
+{
+  "baseline": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+  "archive_date": "2026-10-28",
+  "files": [
+    {
+      "path": "reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json",
+      "archive_git_blob_sha1": "b3d09c50ff52f5da86e30869e32625131d8179d0",
+      "baseline_git_blob_sha1": "f80e4ecbfe1c2a696b203b2986c4faa6f5fad9f9",
+      "state": "changed"
+    },
+    {
+      "path": ".ci/test-only/harness/guard.py",
+      "archive_git_blob_sha1": "b13ad18354ac28da92de67e2714680139fc53f48",
+      "baseline_git_blob_sha1": "b13ad18354ac28da92de67e2714680139fc53f48",
+      "state": "identical"
+    },
+    {
+      "path": ".ci/test-only/harness/canonical_source.py",
+      "archive_git_blob_sha1": "a25d5c5fe9f3d5cb9d6448bbc58b412583a74737",
+      "baseline_git_blob_sha1": "a25d5c5fe9f3d5cb9d6448bbc58b412583a74737",
+      "state": "identical"
+    },
+    {
+      "path": ".ci/test-only/harness/run.py",
+      "archive_git_blob_sha1": "a1f8a5be5a478471492a07c6e3a8f59e3140acd3",
+      "baseline_git_blob_sha1": "0d720ae513dd2cb4fa524f259efab888d3d77831",
+      "state": "changed"
+    },
+    {
+      "path": ".ci/test-only/harness/reveng_followon.py",
+      "archive_git_blob_sha1": "ac60102b1c2f74ad3e404bb4b2a5ba307d4284ae",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/TestOutcome.cs",
+      "archive_git_blob_sha1": "eb3392a08b6a3b19481e9a25fbc26b910f32eaad",
+      "baseline_git_blob_sha1": "eb3392a08b6a3b19481e9a25fbc26b910f32eaad",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/tests/TestOwnerPreferencePresentation.cs",
+      "archive_git_blob_sha1": "bae148982d7826c4baaea8c15a8cec8e6fc27095",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/test_identity_portable.py",
+      "archive_git_blob_sha1": "ba3b45b8364f89b3ed080159fab533077f6f3abb",
+      "baseline_git_blob_sha1": "ba3b45b8364f89b3ed080159fab533077f6f3abb",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/tests/test_collection_integrity.py",
+      "archive_git_blob_sha1": "bbafec7995b30ee35bbe1ee1d47d8f6de7eefd72",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/test_integrated_ci_contract.py",
+      "archive_git_blob_sha1": "7351e7d0b27926d0b7a8219c0b0eda0b309dc09f",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/test_researchlocal_offline.py",
+      "archive_git_blob_sha1": "27335ae1f5f890d75446446b5514d4727b5e06f7",
+      "baseline_git_blob_sha1": "27335ae1f5f890d75446446b5514d4727b5e06f7",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/tests/test_hypothesis_contract.py",
+      "archive_git_blob_sha1": "35cbf5bcaa768625af9989d8410797e2215f6194",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/test_answer_cache_integrity.py",
+      "archive_git_blob_sha1": "64ef093780c16163956a4c13887daf98f2ca1fae",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/TestPriceExperimentPresentation.cs",
+      "archive_git_blob_sha1": "8df52be47609bd3085a15ee5fabe59d1dd777b1a",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/test_price_ui_contract.py",
+      "archive_git_blob_sha1": "0e418a5fe12a9d300e0bafbe96fb1b9ddbfe104b",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/test_price_experiment_projection.py",
+      "archive_git_blob_sha1": "d6466a181fea32c972b3e4ef80c392c740f55ae2",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/test_price_cache_integrity.py",
+      "archive_git_blob_sha1": "cffc33f980692669c9ceb61e3be2d6de1162119f",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/TestOperationOutcome.cs",
+      "archive_git_blob_sha1": "4c0591d2b363f48f22743bf19ed55c23c12ebb55",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/test_task_routing.py",
+      "archive_git_blob_sha1": "68766bb046751cfd90afd7ad592b944967999bf6",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/TestPortableRuntimeDrain.cs",
+      "archive_git_blob_sha1": "46985159312282265af73b962b9b90e8bf9da3db",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/test_capability_portable.py",
+      "archive_git_blob_sha1": "6f241d2c59d973b134ca3a4771848ad89e548f78",
+      "baseline_git_blob_sha1": "be31dd51d985fe736f8b8b865beb438c687145b6",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/tests/test_saved_analysis_context.py",
+      "archive_git_blob_sha1": "85e6b8998b5d3cf6cf3ccd93ce18b60194d36e9d",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/price_ui_vectors.json",
+      "archive_git_blob_sha1": "d5a17dafa9780f9e050fad5a0f2d0aaac9b99cad",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/tests/test_owner_preference_overlay.py",
+      "archive_git_blob_sha1": "1f3544f684809fe4547d97c8f1076238b05672c1",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/ResearchLocal/reveng_buyer_worker.py",
+      "archive_git_blob_sha1": "ba3901720de74d4adaff24e59571f7cb079dedd8",
+      "baseline_git_blob_sha1": "ba3901720de74d4adaff24e59571f7cb079dedd8",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/price_experiments.py",
+      "archive_git_blob_sha1": "f95a1ba163c13dc9171ef6dba385786a1dda35a1",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/ResearchLocal/observation_history.py",
+      "archive_git_blob_sha1": "5d6fe510bc93409e952e86fd6bcf60ea27af7956",
+      "baseline_git_blob_sha1": "95333014748e50952b2eacceb22e7959a2789dcb",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_export.py",
+      "archive_git_blob_sha1": "18985958de16be50a706344483baf636e2d86602",
+      "baseline_git_blob_sha1": "57e8c90f86eec83ae23788e2a47ea9da5dffe7ef",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/answer_context.py",
+      "archive_git_blob_sha1": "f3c50e011f93530b29b574ddacc0e15b24f1209e",
+      "baseline_git_blob_sha1": "1aa9e15b9b58c110899f7e121538ae761caf98f5",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/EvidenceWorkbench.cs",
+      "archive_git_blob_sha1": "0fdd234f2c0b7abb2962212ddbde8b027a2af8e1",
+      "baseline_git_blob_sha1": "0fdd234f2c0b7abb2962212ddbde8b027a2af8e1",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/restore_difference.py",
+      "archive_git_blob_sha1": "80c423eeddbb86061908677211264d039bd347e0",
+      "baseline_git_blob_sha1": "80c423eeddbb86061908677211264d039bd347e0",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/proposal_quality.py",
+      "archive_git_blob_sha1": "4996f901b32109ec5f32afc8ad4d88b2567bc4ff",
+      "baseline_git_blob_sha1": "4996f901b32109ec5f32afc8ad4d88b2567bc4ff",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/LegacyCandidateReviews.cs",
+      "archive_git_blob_sha1": "c3046942c9b4c241062ac5ea620aaa52634f93ac",
+      "baseline_git_blob_sha1": "c3046942c9b4c241062ac5ea620aaa52634f93ac",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v3.py",
+      "archive_git_blob_sha1": "812c59e9d35fb0e78c55e86506252059f867dcca",
+      "baseline_git_blob_sha1": "812c59e9d35fb0e78c55e86506252059f867dcca",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/DecisionStore.cs",
+      "archive_git_blob_sha1": "d0a56be3fed5cbc9d776d118682ab9acae3e2ee0",
+      "baseline_git_blob_sha1": "d0a56be3fed5cbc9d776d118682ab9acae3e2ee0",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v3_legacy33.py",
+      "archive_git_blob_sha1": "0174d41b399f53286a4ccad0e582b55e8e405283",
+      "baseline_git_blob_sha1": "0174d41b399f53286a4ccad0e582b55e8e405283",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/PublicResearchAudit.cs",
+      "archive_git_blob_sha1": "91881ed17508fc0b27f7e05674093267b4c6633d",
+      "baseline_git_blob_sha1": "91881ed17508fc0b27f7e05674093267b4c6633d",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/analysis_jobs.py",
+      "archive_git_blob_sha1": "025010886eb53caf1ec2d69732fc06da664b36a4",
+      "baseline_git_blob_sha1": "3f9b9746a7b92d209c139c0a12cb14ee5ed7ec45",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/reveng_local_research.py",
+      "archive_git_blob_sha1": "aefdd2ef26c59278c631af380ed339a16ed26985",
+      "baseline_git_blob_sha1": "49b96b16cf54a6c2145d35cf6bdcf51c51600460",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/capture_dates.py",
+      "archive_git_blob_sha1": "cb2f41ac643d85a2cc70ccc67c366ebb4221725b",
+      "baseline_git_blob_sha1": "cb2f41ac643d85a2cc70ccc67c366ebb4221725b",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/SourceLedgerComparison.cs",
+      "archive_git_blob_sha1": "408fc9ac103f1ab33cee25e2a0d684126e35a63e",
+      "baseline_git_blob_sha1": "3eaca5e3b23a4d282a80d7befaff4d5c00ce667a",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/ProductLayout.cs",
+      "archive_git_blob_sha1": "002b4bfa45a48b1fa5ee707590e64cd8d32c22e3",
+      "baseline_git_blob_sha1": "002b4bfa45a48b1fa5ee707590e64cd8d32c22e3",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/competitor_match.py",
+      "archive_git_blob_sha1": "258abddf0b3062312bc66480fd6f646d8da595d1",
+      "baseline_git_blob_sha1": "258abddf0b3062312bc66480fd6f646d8da595d1",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/source_ledger.py",
+      "archive_git_blob_sha1": "f380a12e0099ef16ad3324b7ee66db759691d69d",
+      "baseline_git_blob_sha1": "f380a12e0099ef16ad3324b7ee66db759691d69d",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/test_local_research.py",
+      "archive_git_blob_sha1": "9c3f74a93af2bf0d9b1352619d0fabfe9062681e",
+      "baseline_git_blob_sha1": "9c3f74a93af2bf0d9b1352619d0fabfe9062681e",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/runtime_diagnostics.py",
+      "archive_git_blob_sha1": "232501a60c6f1358c37f8470940c54b86f8eb89a",
+      "baseline_git_blob_sha1": "232501a60c6f1358c37f8470940c54b86f8eb89a",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/source_context.py",
+      "archive_git_blob_sha1": "7f30fabfe9d99254c7a64c8d7a718c996a22c83c",
+      "baseline_git_blob_sha1": "3bd84944704dde8e75015b233dce1a12d363930c",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/comparison_data.py",
+      "archive_git_blob_sha1": "76f2c56aa02b75abe51d44ad94e33a1f5a40f20a",
+      "baseline_git_blob_sha1": "5ba14633c38b5f86cc29bf10f349679a5fa876ec",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/official_html.py",
+      "archive_git_blob_sha1": "a0c6d7728b5467ac6d156c129452aa68f4bf67d8",
+      "baseline_git_blob_sha1": "dbbf8ce4aee830d0c1df7363819a6c841ce51a0d",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/ArchivePreview.cs",
+      "archive_git_blob_sha1": "7ebc723b19957bd5eebff148455af6d9839ae437",
+      "baseline_git_blob_sha1": "7ebc723b19957bd5eebff148455af6d9839ae437",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/BuyerSourcePresentation.cs",
+      "archive_git_blob_sha1": "3d9ce969b368e5823ab72dfe398072bad25093d1",
+      "baseline_git_blob_sha1": "3d9ce969b368e5823ab72dfe398072bad25093d1",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/EvidenceDates.cs",
+      "archive_git_blob_sha1": "a63b88b1a3521486cc23b4d312fa7d669e56139d",
+      "baseline_git_blob_sha1": "a63b88b1a3521486cc23b4d312fa7d669e56139d",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/reveng_competitor_worker.py",
+      "archive_git_blob_sha1": "3f1658d784610b91cfa61249c08feaae7a426b3f",
+      "baseline_git_blob_sha1": "9106343971123ca2e3f5386d98fc49d90b63d854",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/OfficialObservationPresentation.cs",
+      "archive_git_blob_sha1": "bcc9eaf4be91647ef2248219b0c7a797860bad6a",
+      "baseline_git_blob_sha1": "bcc9eaf4be91647ef2248219b0c7a797860bad6a",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/ManualDraftRecovery.cs",
+      "archive_git_blob_sha1": "d49cff101efc8292d0e13c418651acd6f3677757",
+      "baseline_git_blob_sha1": "d49cff101efc8292d0e13c418651acd6f3677757",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/commercial_review.py",
+      "archive_git_blob_sha1": "a4eb7f85d083c221791acfc7ed791e9e7c580ab0",
+      "baseline_git_blob_sha1": "90293d871677e4be26adbb1a1081f53fd165d272",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/ManualHypotheses.cs",
+      "archive_git_blob_sha1": "20b820934681d2f876e276a8560f48aaa7aca138",
+      "baseline_git_blob_sha1": "20b820934681d2f876e276a8560f48aaa7aca138",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/wordpress_identity.py",
+      "archive_git_blob_sha1": "42c84559bfe5c700231edc8f72e61b56c6aaac6c",
+      "baseline_git_blob_sha1": "42c84559bfe5c700231edc8f72e61b56c6aaac6c",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/CorroborationPresentation.cs",
+      "archive_git_blob_sha1": "9d4d1654cc622a4adbe4cb58ef5b81b376d42c6b",
+      "baseline_git_blob_sha1": "9d4d1654cc622a4adbe4cb58ef5b81b376d42c6b",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/RevEngLocalResearch.cs",
+      "archive_git_blob_sha1": "d5d6a1cf81e3b391a74951ba732989ab552ddcd6",
+      "baseline_git_blob_sha1": "6fe0b3739d4d6a4392da989ef8fbc0a73d80cbb3",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/plan_mapping.py",
+      "archive_git_blob_sha1": "e69b02189440d3d3ed193ce559079df15f64102a",
+      "baseline_git_blob_sha1": "e69b02189440d3d3ed193ce559079df15f64102a",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_reviews.py",
+      "archive_git_blob_sha1": "ed05f6065043cd360c82f87a72d6594b86dbde62",
+      "baseline_git_blob_sha1": "ed05f6065043cd360c82f87a72d6594b86dbde62",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/AttemptPublication.cs",
+      "archive_git_blob_sha1": "301f98677dd7e1573111d10d199bcf4d384ac9b7",
+      "baseline_git_blob_sha1": "301f98677dd7e1573111d10d199bcf4d384ac9b7",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/json_contract.py",
+      "archive_git_blob_sha1": "82b0d56addc98d3b5bee6787728c7f8874d93475",
+      "baseline_git_blob_sha1": "82b0d56addc98d3b5bee6787728c7f8874d93475",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v4.py",
+      "archive_git_blob_sha1": "37da4164fc3f2f13347349ae9fae2239c7c0247f",
+      "baseline_git_blob_sha1": "37da4164fc3f2f13347349ae9fae2239c7c0247f",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/html_document_identity.py",
+      "archive_git_blob_sha1": "31f085ea821d313020696ffc428b3698eefe6e16",
+      "baseline_git_blob_sha1": "31f085ea821d313020696ffc428b3698eefe6e16",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/ScenarioIdentity.cs",
+      "archive_git_blob_sha1": "40527a1d98ecb37fd138217cdaedf8ebd87ae919",
+      "baseline_git_blob_sha1": "40527a1d98ecb37fd138217cdaedf8ebd87ae919",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/wp_context_checkpoint.py",
+      "archive_git_blob_sha1": "e71d80b9fd385c58e58e843ead4943878cc8f6fc",
+      "baseline_git_blob_sha1": "e71d80b9fd385c58e58e843ead4943878cc8f6fc",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/legacy_candidate_reviews.py",
+      "archive_git_blob_sha1": "01c2e5cc2a9be719558b663df53e860cbb449f0b",
+      "baseline_git_blob_sha1": "01c2e5cc2a9be719558b663df53e860cbb449f0b",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/analysis_quality.py",
+      "archive_git_blob_sha1": "170550051512d4b47a54687a78a8bf07bb3789f5",
+      "baseline_git_blob_sha1": "170550051512d4b47a54687a78a8bf07bb3789f5",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/quote_contract.py",
+      "archive_git_blob_sha1": "b15d30e60d7e44cc31792bc852f4bb27d0fc7994",
+      "baseline_git_blob_sha1": "ceba74d6b69477106883bb23295da7c7998a9d7a",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/test_commercial.py",
+      "archive_git_blob_sha1": "e620daa5901eb3686f926932ca777c5965bf3a9c",
+      "baseline_git_blob_sha1": "e620daa5901eb3686f926932ca777c5965bf3a9c",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v3_legacy.py",
+      "archive_git_blob_sha1": "98fac5dc8126d25907bddf4ba8a067213341b975",
+      "baseline_git_blob_sha1": "98fac5dc8126d25907bddf4ba8a067213341b975",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/collection_attempts.py",
+      "archive_git_blob_sha1": "c07a4937089778afdf4a71b3cc64da2ae782d952",
+      "baseline_git_blob_sha1": "c07a4937089778afdf4a71b3cc64da2ae782d952",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/decision_recovery.py",
+      "archive_git_blob_sha1": "777b98873a6e787e96b54209a5c20c86abc92a8d",
+      "baseline_git_blob_sha1": "ccd800f0291863a4319835529854fe294d757ce7",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/ManualHypothesisEditor.cs",
+      "archive_git_blob_sha1": "f5f1fb1cb2c77a16e1f861be5669c7c0038d9d63",
+      "baseline_git_blob_sha1": "f5f1fb1cb2c77a16e1f861be5669c7c0038d9d63",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_chain.py",
+      "archive_git_blob_sha1": "fb3e7f658881f6dafb0eef8eee675dee90e54059",
+      "baseline_git_blob_sha1": "fb3e7f658881f6dafb0eef8eee675dee90e54059",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/discovery_plan.py",
+      "archive_git_blob_sha1": "e4836e6dfedbfdf75eb0f4939844d806331c8ea8",
+      "baseline_git_blob_sha1": "e4836e6dfedbfdf75eb0f4939844d806331c8ea8",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/social_idea_preview.py",
+      "archive_git_blob_sha1": "f7cf66ee7a305130fccd2bf7b38424ed53a4b58b",
+      "baseline_git_blob_sha1": "8e167102419f221ecf4b2649f732d702a4028075",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/README.md",
+      "archive_git_blob_sha1": "ccc661711ac6371fe07a302f44b95f9b02af725c",
+      "baseline_git_blob_sha1": "e8090270a406f0110ea8ee60fe7dbb2effae79f6",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/FactualObservationPresentation.cs",
+      "archive_git_blob_sha1": "4e6daba399c3b486569ac6a29e02bd13481a2648",
+      "baseline_git_blob_sha1": "4e6daba399c3b486569ac6a29e02bd13481a2648",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/model_contract.py",
+      "archive_git_blob_sha1": "f1e23c328c5f0d60eb29415d1c47abcb3c95ac5d",
+      "baseline_git_blob_sha1": "f1e23c328c5f0d60eb29415d1c47abcb3c95ac5d",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/AnalysisOutcomePresentation.cs",
+      "archive_git_blob_sha1": "82f6495edd7bd0bad8502f3a1d5d35625e82ea11",
+      "baseline_git_blob_sha1": "82f6495edd7bd0bad8502f3a1d5d35625e82ea11",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/EvidenceComparison.cs",
+      "archive_git_blob_sha1": "5529b059bcaaa3593508f4a0438982befb8069a2",
+      "baseline_git_blob_sha1": "30723fae46b6eee7c1c1c947f8d7fe3a52544f69",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/ResearchRunPresentation.cs",
+      "archive_git_blob_sha1": "b1e9fa904f21bede94dba4b8f7c6b5c76ed9bde5",
+      "baseline_git_blob_sha1": "b1e9fa904f21bede94dba4b8f7c6b5c76ed9bde5",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/html_references.py",
+      "archive_git_blob_sha1": "07766b3d9e2d697857bf48a9e0ec4ae26e212b87",
+      "baseline_git_blob_sha1": "07766b3d9e2d697857bf48a9e0ec4ae26e212b87",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/archive_preview.py",
+      "archive_git_blob_sha1": "4e9cb337a4e72faf0bdc4e6b49ebe3864f37d485",
+      "baseline_git_blob_sha1": "4e9cb337a4e72faf0bdc4e6b49ebe3864f37d485",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/saved_analysis_context.py",
+      "archive_git_blob_sha1": "472eda17ae06ef0a4c50120ef4edcc90e8ed2fd1",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/ResearchLocal/model_packet.py",
+      "archive_git_blob_sha1": "91ef6aa787bef97f6d2e2193bcdef47946466f39",
+      "baseline_git_blob_sha1": "0660e15c9b541385dbbef0ecb6962c9da3333989",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/buyer_evidence.py",
+      "archive_git_blob_sha1": "fca99d8533dde77926a906da8daef756b9cb5a33",
+      "baseline_git_blob_sha1": "d6e0f18193870f5337dbf7cca58854f01e3706e1",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/portable_paths.py",
+      "archive_git_blob_sha1": "7a9888b3c33105a72ed98d9029545658ecb02461",
+      "baseline_git_blob_sha1": "7a9888b3c33105a72ed98d9029545658ecb02461",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/analysis_readiness.py",
+      "archive_git_blob_sha1": "321a0376f1593f88e6165052c2ceba51b8f1e640",
+      "baseline_git_blob_sha1": "321a0376f1593f88e6165052c2ceba51b8f1e640",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v3_legacy32.py",
+      "archive_git_blob_sha1": "256d5ffefebf7c3665715fdf3ca57ad1fcff1f82",
+      "baseline_git_blob_sha1": "256d5ffefebf7c3665715fdf3ca57ad1fcff1f82",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_candidate_review.py",
+      "archive_git_blob_sha1": "44249002a54e15f504f459acd9355b660fe78691",
+      "baseline_git_blob_sha1": "e73aba1c22994f099d0786fa74e13b7f39f570b9",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_tasks.py",
+      "archive_git_blob_sha1": "ec42c23b4d043a7287e89a58e73b745c05bf40be",
+      "baseline_git_blob_sha1": "f40638034e97c2d12d7a1d080271567a33322e8e",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/candidate_publication.py",
+      "archive_git_blob_sha1": "7c6c7414755c45d550f233fa3e95bd3facb3f1ae",
+      "baseline_git_blob_sha1": "7c6c7414755c45d550f233fa3e95bd3facb3f1ae",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/candidate_queue.py",
+      "archive_git_blob_sha1": "93a0af55581d45d90a1e5d9daac707f259859084",
+      "baseline_git_blob_sha1": "b586bed1dd1350e5763383c463815bf6639b42e8",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/collection_versions.py",
+      "archive_git_blob_sha1": "3ee30a568f229c7c10805ab36cb4f01972bf5ae5",
+      "baseline_git_blob_sha1": "3ee30a568f229c7c10805ab36cb4f01972bf5ae5",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/SourceTaskPresentation.cs",
+      "archive_git_blob_sha1": "9e0a73138ebb66624c17252d3bc33dbbef12de2f",
+      "baseline_git_blob_sha1": "9e0a73138ebb66624c17252d3bc33dbbef12de2f",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/collector_capabilities.py",
+      "archive_git_blob_sha1": "05b7efbf637ac46c5aa5c32b2d7bc1b8484a5155",
+      "baseline_git_blob_sha1": "05b7efbf637ac46c5aa5c32b2d7bc1b8484a5155",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/monetary_utterances.py",
+      "archive_git_blob_sha1": "047ccbfec4f7d84338da367b53a7661ae99e49b7",
+      "baseline_git_blob_sha1": "047ccbfec4f7d84338da367b53a7661ae99e49b7",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/PriorityExplanation.cs",
+      "archive_git_blob_sha1": "62bd3140a3568a8d192320150b47bb81db72a881",
+      "baseline_git_blob_sha1": "62bd3140a3568a8d192320150b47bb81db72a881",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/PriceExperimentPresentation.cs",
+      "archive_git_blob_sha1": "1c14d556ec6f830b797b599322808b26d4029c05",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "reveng/ResearchLocal/manual_hypotheses.py",
+      "archive_git_blob_sha1": "5da533ee0507ad5b9c77ba14dd17537eb4253b89",
+      "baseline_git_blob_sha1": "5da533ee0507ad5b9c77ba14dd17537eb4253b89",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/response_diagnostics.py",
+      "archive_git_blob_sha1": "425f79a06ee78caa526046eec93eabe539043b13",
+      "baseline_git_blob_sha1": "425f79a06ee78caa526046eec93eabe539043b13",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/proposal_replay.py",
+      "archive_git_blob_sha1": "347bcabb9551194dbc89f73da6166ae691ac763f",
+      "baseline_git_blob_sha1": "347bcabb9551194dbc89f73da6166ae691ac763f",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/evidence_workspace.py",
+      "archive_git_blob_sha1": "f3b540c7f75e41eaee8e1302a6b5b17e9e69af10",
+      "baseline_git_blob_sha1": "f3b540c7f75e41eaee8e1302a6b5b17e9e69af10",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v2.py",
+      "archive_git_blob_sha1": "74ec6209be3fd9dc0a7ac62822462f36857faca6",
+      "baseline_git_blob_sha1": "74ec6209be3fd9dc0a7ac62822462f36857faca6",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/PortableRuntime.cs",
+      "archive_git_blob_sha1": "c601ae64fdd530008ea9b0a8f61ccfd8cad50b28",
+      "baseline_git_blob_sha1": "020d3fdfd678b832039df80a878ff3b48f7f0dbf",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/api_capability.py",
+      "archive_git_blob_sha1": "3ac3d97af299fdf364f3d5aff90455701f90fb1d",
+      "baseline_git_blob_sha1": "3ac3d97af299fdf364f3d5aff90455701f90fb1d",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/ProvenanceAudit.cs",
+      "archive_git_blob_sha1": "e9a0d88a88b58e01cd77e652f27c96b2d7772ef8",
+      "baseline_git_blob_sha1": "e9a0d88a88b58e01cd77e652f27c96b2d7772ef8",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_review.py",
+      "archive_git_blob_sha1": "0321c8321092d145ca02a5e5efcadd5ef7ed7c8a",
+      "baseline_git_blob_sha1": "0321c8321092d145ca02a5e5efcadd5ef7ed7c8a",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/editor_recovery.py",
+      "archive_git_blob_sha1": "47aa809dd75f0add7c545bc34a220e495ef84c91",
+      "baseline_git_blob_sha1": "47aa809dd75f0add7c545bc34a220e495ef84c91",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/analysis_lineage.py",
+      "archive_git_blob_sha1": "b2b25925051d55615f8a3b9ce6b12a9203be705b",
+      "baseline_git_blob_sha1": "b2b25925051d55615f8a3b9ce6b12a9203be705b",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/AnalysisReadiness.cs",
+      "archive_git_blob_sha1": "552288d0470e4d2a5d1f9c45f601788b95d02112",
+      "baseline_git_blob_sha1": "552288d0470e4d2a5d1f9c45f601788b95d02112",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/source_rules.py",
+      "archive_git_blob_sha1": "d7778ee692c6f3175bc3375afb3b9f5bf686855d",
+      "baseline_git_blob_sha1": "eec103b72a9dd58354805b84e1c96d3884d61b09",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/SourceProposalPresentation.cs",
+      "archive_git_blob_sha1": "d17d95403cc96ed18208399c2adf897c912cb649",
+      "baseline_git_blob_sha1": "d17d95403cc96ed18208399c2adf897c912cb649",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/field_references.py",
+      "archive_git_blob_sha1": "c791ee53b06e2dd2d2502589ea56d925402f470f",
+      "baseline_git_blob_sha1": "c791ee53b06e2dd2d2502589ea56d925402f470f",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/executor_exchange.py",
+      "archive_git_blob_sha1": "c63cd06e3ec6b6ace20f8716c704a261bb81f6ae",
+      "baseline_git_blob_sha1": "c63cd06e3ec6b6ace20f8716c704a261bb81f6ae",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/EvidenceBindings.cs",
+      "archive_git_blob_sha1": "e20900f75f3d6008ad810b3ea1b39da436abb4ee",
+      "baseline_git_blob_sha1": "e20900f75f3d6008ad810b3ea1b39da436abb4ee",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/diagnostic_route.py",
+      "archive_git_blob_sha1": "9f2d92b4b662ce803fd925a3eb711a48ae7c40b8",
+      "baseline_git_blob_sha1": "9f2d92b4b662ce803fd925a3eb711a48ae7c40b8",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/.gitignore",
+      "archive_git_blob_sha1": "111a81741400197550d10208a495e6f3e78e3267",
+      "baseline_git_blob_sha1": "111a81741400197550d10208a495e6f3e78e3267",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/LocalJson.cs",
+      "archive_git_blob_sha1": "f29dede4f59189f0a826e5780a71af4ab600c219",
+      "baseline_git_blob_sha1": "f29dede4f59189f0a826e5780a71af4ab600c219",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/source_proposals.py",
+      "archive_git_blob_sha1": "8c7a66c1ad7fdf116b2c21032e4a466024525e74",
+      "baseline_git_blob_sha1": "8c7a66c1ad7fdf116b2c21032e4a466024525e74",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/offline_entry.py",
+      "archive_git_blob_sha1": "f83bd1c7c33c6b86a51fdd8c91bcd1cd44bce1e0",
+      "baseline_git_blob_sha1": "f83bd1c7c33c6b86a51fdd8c91bcd1cd44bce1e0",
+      "state": "identical"
+    },
+    {
+      "path": "reveng/ResearchLocal/direct_alternatives.py",
+      "archive_git_blob_sha1": "42cc4be28edbc83efb52a02d923265e5db218e1b",
+      "baseline_git_blob_sha1": "00a643d1ae09b4ef04c281d2b3a5aa9f9f6fdd59",
+      "state": "changed"
+    },
+    {
+      "path": "reveng/ResearchLocal/official_observations.py",
+      "archive_git_blob_sha1": "5117018827f94cdecf201872fe2bbe5d46110f8c",
+      "baseline_git_blob_sha1": "5117018827f94cdecf201872fe2bbe5d46110f8c",
+      "state": "identical"
+    }
+  ]
+}

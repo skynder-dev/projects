@@ -1,0 +1,253 @@
+{
+  "scope": "SYNTHETIC display-contract cases; no real prices or payments",
+  "cases": [
+    {
+      "name": "missing",
+      "candidate": {},
+      "expected_status": "absent",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "null",
+      "candidate": {
+        "price_experiment": null
+      },
+      "expected_status": "absent",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "integer",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": 10,
+          "currency": "USD"
+        }
+      },
+      "expected_status": "proposed_unverified",
+      "expected_display": "10 USD",
+      "free_test": false
+    },
+    {
+      "name": "free",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": 0,
+          "currency": "USD"
+        }
+      },
+      "expected_status": "proposed_unverified",
+      "expected_display": "0 USD",
+      "free_test": true
+    },
+    {
+      "name": "fraction",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": 12.5,
+          "currency": "USD"
+        }
+      },
+      "expected_status": "proposed_unverified",
+      "expected_display": "12.5 USD",
+      "free_test": false
+    },
+    {
+      "name": "exponent",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": 1e+30,
+          "currency": "USD"
+        }
+      },
+      "expected_status": "proposed_unverified",
+      "expected_display": "1E+30 USD",
+      "free_test": false
+    },
+    {
+      "name": "unverified_currency",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": 10,
+          "currency": "ZZZ"
+        }
+      },
+      "expected_status": "proposed_unverified",
+      "expected_display": "10 ZZZ",
+      "free_test": false
+    },
+    {
+      "name": "boolean",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": true,
+          "currency": "USD"
+        }
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "numeric_string",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": "10",
+          "currency": "USD"
+        }
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "negative",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": -1,
+          "currency": "USD"
+        }
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "null_amount",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": null,
+          "currency": "USD"
+        }
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "bad_status",
+      "candidate": {
+        "price_experiment": {
+          "status": "verified_payment",
+          "amount": 10,
+          "currency": "USD"
+        }
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "lowercase_currency",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": 10,
+          "currency": "usd"
+        }
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "currency_newline",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": 10,
+          "currency": "USD\n"
+        }
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "missing_currency",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": 10
+        }
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "extra_field",
+      "candidate": {
+        "price_experiment": {
+          "status": "proposed_unverified",
+          "amount": 10,
+          "currency": "USD",
+          "payment_evidence": true
+        }
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "scalar",
+      "candidate": {
+        "price_experiment": "10 USD"
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    },
+    {
+      "name": "array",
+      "candidate": {
+        "price_experiment": []
+      },
+      "expected_status": "malformed_untrusted_offer",
+      "expected_display": null,
+      "free_test": false
+    }
+  ],
+  "reader_precision_cases": [
+    {
+      "name": "decimal_zero",
+      "candidate_json": "{\"price_experiment\":{\"status\":\"proposed_unverified\",\"amount\":0.0,\"currency\":\"USD\"}}",
+      "meaning": "Native JSON-reader precision case; must never infer exact free offer from decoded zero"
+    },
+    {
+      "name": "tiny_positive",
+      "candidate_json": "{\"price_experiment\":{\"status\":\"proposed_unverified\",\"amount\":1e-30,\"currency\":\"USD\"}}",
+      "meaning": "Native JSON-reader precision case; must never infer exact free offer from decoded zero"
+    },
+    {
+      "name": "tiny_negative",
+      "candidate_json": "{\"price_experiment\":{\"status\":\"proposed_unverified\",\"amount\":-1e-30,\"currency\":\"USD\"}}",
+      "meaning": "Native JSON-reader precision case; must never infer exact free offer from decoded zero"
+    },
+    {
+      "name": "tinier_positive",
+      "candidate_json": "{\"price_experiment\":{\"status\":\"proposed_unverified\",\"amount\":1e-100,\"currency\":\"USD\"}}",
+      "meaning": "Native JSON-reader precision case; must never infer exact free offer from decoded zero"
+    },
+    {
+      "name": "tinier_negative",
+      "candidate_json": "{\"price_experiment\":{\"status\":\"proposed_unverified\",\"amount\":-1e-100,\"currency\":\"USD\"}}",
+      "meaning": "Native JSON-reader precision case; must never infer exact free offer from decoded zero"
+    },
+    {
+      "name": "high_precision_fraction",
+      "candidate_json": "{\"price_experiment\":{\"status\":\"proposed_unverified\",\"amount\":1.23456789012345678901234567890123456789,\"currency\":\"USD\"}}",
+      "meaning": "Native JSON-reader precision case; must never infer exact free offer from decoded zero"
+    }
+  ]
+}

@@ -1,0 +1,866 @@
+[
+  {
+    "id": "25cd7933-d82f-4612-95ee-9cc70463f59b",
+    "fingerprint": "fa453c77cf68ce4ae4d30d3843ad1bd24dffa89c12e107bb9ab10720787dfbd3",
+    "candidate_key": "FC2-RAW-02",
+    "analysis_level": "niche",
+    "raw_name": "Employer-paid CDL driver recruiting",
+    "normalized_name": "Small-carrier employer-paid CDL driver recruiting",
+    "buyer_segment": "Small carriers with empty seats / idle trucks that need Class A drivers",
+    "core_job": "Source, screen and recommend CDL candidates for employer-paid placement without charging drivers.",
+    "primary_outcome": "Fill revenue-producing seats faster.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 3,
+    "evidence_hints": [
+      {
+        "url": "https://truckdispatchingusa.com/driver-recruiting.html",
+        "signal": "$650 per hire, screened driver, DQ file build, 60-day guarantee",
+        "source": "Truck Dispatching USA"
+      },
+      {
+        "url": "https://boostpoint.com/industries-trucking/truck-driver-recruiting-agency-cost/",
+        "signal": "2026 agency-placement benchmark $2,500-$6,000+ per Class A driver",
+        "source": "Boostpoint"
+      },
+      {
+        "url": "https://www.ilga.gov/ftp/ILCS/Ch%200225/Act%200515/022505150K1.1.html",
+        "signal": "Employer-only paid consulting/recruiting exclusion from Private Employment Agency definition if statutory conditions are met",
+        "source": "Illinois General Assembly"
+      }
+    ],
+    "rejection_reason": "POST_SCREEN_EDGE_GATE_FAILED: macro CDL hiring demand and employer WTP are verified, but owned-network two-sided liquidity is not. Re-enter only if current hiring-carrier + available-driver supply is evidenced without paid lead dependence.",
+    "metadata": {
+      "edge": "EDGE-TRUCK-NETWORK-01",
+      "fast_cash": "screen",
+      "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+      "external_actions": false,
+      "candidate_fee_forbidden": true
+    },
+    "first_seen_at": "2026-10-03 20:37:09.407505+00",
+    "last_seen_at": "2026-10-03 23:40:02.731914+00"
+  },
+  {
+    "id": "4eb16a33-04dc-43bc-9fbb-4ac4a1fad874",
+    "fingerprint": "1715b59e9aa135ec72ebf8f9539de755",
+    "candidate_key": "fixture-candidate-a",
+    "analysis_level": "business_opportunity",
+    "raw_name": "Printable activity product business",
+    "normalized_name": "Printable activity products for parents",
+    "buyer_segment": "Parents of children ages 4-8",
+    "core_job": "Keep children engaged with useful offline activities",
+    "primary_outcome": "Convenient themed activity packs",
+    "suggested_model_key": "digital_download",
+    "suggested_market_key": "family_activities",
+    "status": "normalized",
+    "source_count": 2,
+    "evidence_hints": [],
+    "rejection_reason": null,
+    "metadata": {
+      "fixture": true,
+      "duplicate_test": true
+    },
+    "first_seen_at": "2026-09-25 05:04:46.68536+00",
+    "last_seen_at": "2026-09-25 05:04:46.68536+00"
+  },
+  {
+    "id": "9cd9a4d8-ac8e-48a9-90e5-1d91a2073292",
+    "fingerprint": "bd5def6dac7ae3a4a4e7efbf6327663b",
+    "candidate_key": "fixture-offer-only",
+    "analysis_level": "offer",
+    "raw_name": "Dinosaur coloring PDF",
+    "normalized_name": "Dinosaur coloring PDF",
+    "buyer_segment": "Parents of children ages 4-8",
+    "core_job": "Keep children engaged with useful offline activities",
+    "primary_outcome": "One dinosaur coloring PDF",
+    "suggested_model_key": "digital_download",
+    "suggested_market_key": "family_activities",
+    "status": "new",
+    "source_count": 1,
+    "evidence_hints": [],
+    "rejection_reason": null,
+    "metadata": {
+      "fixture": true
+    },
+    "first_seen_at": "2026-09-25 05:04:46.68536+00",
+    "last_seen_at": "2026-09-25 05:04:46.68536+00"
+  },
+  {
+    "id": "95f17bc8-8723-46db-bf7b-b24c64091acf",
+    "fingerprint": "a5c1c263bf983d28a29dd65c5c043940",
+    "candidate_key": "alpha-clean-digital-inventory",
+    "analysis_level": "business_opportunity",
+    "raw_name": "Digital home inventory organizer for renters",
+    "normalized_name": "Digital home inventory organizer for renters",
+    "buyer_segment": "Apartment renters and frequent movers",
+    "core_job": "Document possessions and move-related details quickly",
+    "primary_outcome": "Reusable structured inventory, move and claim-ready records",
+    "suggested_model_key": "digital_download",
+    "suggested_market_key": "home_inventory_tools",
+    "status": "promoted",
+    "source_count": 1,
+    "evidence_hints": [],
+    "rejection_reason": null,
+    "metadata": {
+      "fixture": true,
+      "revsoft": "140",
+      "tenant_neutral": true,
+      "promoted_opportunity_id": "777118d4-c16b-40a4-9c85-70a96ab85b77"
+    },
+    "first_seen_at": "2026-09-25 06:23:48.466324+00",
+    "last_seen_at": "2026-09-25 06:23:48.466324+00"
+  },
+  {
+    "id": "53c2e73f-30b2-4635-b217-3fe3b2aabfb4",
+    "fingerprint": "5c5aecaad4f774a5218438ec050c3ecde0cd930b037201d4e6ea8d4ea009ef29",
+    "candidate_key": "FC2-RAW-01",
+    "analysis_level": "niche",
+    "raw_name": "Carrier billing / POD / invoice desk",
+    "normalized_name": "Small-carrier billing packet, POD and invoice operations",
+    "buyer_segment": "Owner-operators and small fleets, initially 1-10 trucks",
+    "core_job": "Turn delivered loads into complete billing packets/invoices and keep payment status organized without acting as a collection agency.",
+    "primary_outcome": "Faster correct invoicing and fewer missing-document/payment-status gaps.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "promoted",
+    "source_count": 4,
+    "evidence_hints": [
+      {
+        "url": "https://truck-owner.com/",
+        "signal": "Billing & payments $199 per active truck/month",
+        "source": "Fleet Assist"
+      },
+      {
+        "url": "https://www.adwafreight.com/",
+        "signal": "Owner-operator back-office tier $149/month includes billing packet readiness/invoice workflow",
+        "source": "Adwa Freight"
+      },
+      {
+        "url": "https://getclearlane.com/pricing/",
+        "signal": "Managed billing/POD/AR desk sold as a standalone outsourced function",
+        "source": "ClearLane"
+      },
+      {
+        "url": "https://ilga.gov/legislation/ilcs/fulltext?DocName=020507400K2.03",
+        "signal": "Creditor-name debt notifications have a statutory exemption; broader collection activity requires licensing",
+        "source": "Illinois General Assembly"
+      }
+    ],
+    "rejection_reason": null,
+    "metadata": {
+      "edge": "EDGE-TRUCK-NETWORK-01",
+      "fast_cash": "screen",
+      "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+      "external_actions": false
+    },
+    "first_seen_at": "2026-10-03 20:37:09.407505+00",
+    "last_seen_at": "2026-10-03 20:37:09.407505+00"
+  },
+  {
+    "id": "63f5bce4-fe42-4c4b-a622-51b83766b8a9",
+    "fingerprint": "8b7030d7b21c9e122b42d2125b0d39ba89db645ddd7463b2e064b9261a122a9f",
+    "candidate_key": "FC2-RAW-03",
+    "analysis_level": "niche",
+    "raw_name": "Standalone DQ-file setup/audit",
+    "normalized_name": "Driver qualification file setup/audit for small carriers",
+    "buyer_segment": "Small carriers hiring or maintaining CDL drivers",
+    "core_job": "Build, review and remediate DQ files.",
+    "primary_outcome": "Audit-ready driver files.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 3,
+    "evidence_hints": [
+      {
+        "url": "https://truckingcomply.com/service/driver-qualification-file",
+        "signal": "$179 new DQ file / $95 annual renewal",
+        "source": "Trucking Comply"
+      },
+      {
+        "url": "https://www.usdot.co/services/dq-file",
+        "signal": "$160/driver DQ-file service",
+        "source": "USDOT.co"
+      },
+      {
+        "url": "https://www.getuptime.ai/",
+        "signal": "$60/file under 50 drivers for compliance audit",
+        "source": "Uptime"
+      }
+    ],
+    "rejection_reason": "MERGE_EXISTING_DOT: same buyer/problem cluster as V5-03 managed DOT compliance; use as an offer/wedge, not a duplicate niche.",
+    "metadata": {
+      "fast_cash": "offer_wedge",
+      "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+      "merge_niche_key": "V5-03"
+    },
+    "first_seen_at": "2026-10-03 20:37:09.407505+00",
+    "last_seen_at": "2026-10-03 20:37:09.407505+00"
+  },
+  {
+    "id": "204e5d4e-de59-4b7c-a8e9-b4fa19aa3b60",
+    "fingerprint": "d5de45fc22c15f2c3ab0846c04d0498050ad899b8d8890196157e68bfd59446b",
+    "candidate_key": "FC2-RAW-04",
+    "analysis_level": "niche",
+    "raw_name": "DataQs challenge support",
+    "normalized_name": "Small-carrier FMCSA DataQs review/filing support",
+    "buyer_segment": "Carriers/drivers with incorrect or disputable FMCSA crash/inspection/violation data",
+    "core_job": "Assemble evidence and draft/track Requests for Data Review.",
+    "primary_outcome": "Correct inaccurate safety data when evidence supports a challenge.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 3,
+    "evidence_hints": [
+      {
+        "url": "https://dataqs.fmcsa.dot.gov/HelpCenter/Faqs?topic_id=1",
+        "signal": "RDR system is free; carriers, drivers and public users can submit requests",
+        "source": "FMCSA DataQs"
+      },
+      {
+        "url": "https://www.tenfourcompliance.com/pricing",
+        "signal": "DataQs drafting sold at $99; market comparison $25-$250 each",
+        "source": "TenFour"
+      },
+      {
+        "url": "https://safehaulsolutions.com/pricing",
+        "signal": "Data Q Assistance $50",
+        "source": "Safe Haul Solutions"
+      }
+    ],
+    "rejection_reason": "MERGE_EXISTING_DOT: event-driven support fits inside V5-03 compliance/audit-readiness instead of a separate recurring niche.",
+    "metadata": {
+      "fast_cash": "offer_wedge",
+      "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+      "merge_niche_key": "V5-03"
+    },
+    "first_seen_at": "2026-10-03 20:37:09.407505+00",
+    "last_seen_at": "2026-10-03 20:37:09.407505+00"
+  },
+  {
+    "id": "1d784954-ea16-41e2-9fb4-a9014d80ae6d",
+    "fingerprint": "883e12c666e8edf063a85531325823bae960ddef322c016ae922a4dc90ba9252",
+    "candidate_key": "FC2-RAW-05",
+    "analysis_level": "niche",
+    "raw_name": "New authority setup coordination",
+    "normalized_name": "New-carrier authority setup and activation coordination",
+    "buyer_segment": "New owner-operators starting interstate authority",
+    "core_job": "Sequence USDOT/MC/UCR/BOC-3/insurance/compliance setup and track activation.",
+    "primary_outcome": "Get authority operational without missing required steps.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 3,
+    "evidence_hints": [
+      {
+        "url": "https://truckdispatchingusa.com/mc-authority-setup.html",
+        "signal": "Published $649 service fee for MC authority setup",
+        "source": "Truck Dispatching USA"
+      },
+      {
+        "url": "https://www.fmcsa.dot.gov/registration/process-agents/pa",
+        "signal": "Motor carriers require process-agent designation; BOC-3 filing belongs to authorized process-agent path",
+        "source": "FMCSA"
+      },
+      {
+        "url": "https://truckingcomply.com/",
+        "signal": "Filing services from $70 per filing",
+        "source": "Trucking Comply"
+      }
+    ],
+    "rejection_reason": "MERGE_EXISTING_DOT: one-time onboarding/setup is a natural acquisition wedge for V5-03, not a separate defensible niche.",
+    "metadata": {
+      "fast_cash": "offer_wedge",
+      "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+      "merge_niche_key": "V5-03"
+    },
+    "first_seen_at": "2026-10-03 20:37:09.407505+00",
+    "last_seen_at": "2026-10-03 20:37:09.407505+00"
+  },
+  {
+    "id": "cb30be2e-b575-4958-be72-5659f620207d",
+    "fingerprint": "1a5631cb7fbf64d27cc02783c350b73554e1d8878e8dacfe914748c7bd0204b7",
+    "candidate_key": "FC2-RAW-06",
+    "analysis_level": "niche",
+    "raw_name": "IFTA quarterly filing concierge",
+    "normalized_name": "IFTA quarterly return preparation/filing concierge",
+    "buyer_segment": "Owner-operators and small fleets subject to IFTA",
+    "core_job": "Turn fuel/mileage records into quarterly filing-ready returns.",
+    "primary_outcome": "Avoid quarterly filing work/errors.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 4,
+    "evidence_hints": [
+      {
+        "url": "https://www.milebinder.com/",
+        "signal": "$15/quarter one truck; $57/quarter five trucks",
+        "source": "MileBinder"
+      },
+      {
+        "url": "https://iftaplus.com/pricing/",
+        "signal": "$39 per quarter for 1-2 trucks filing preparation",
+        "source": "IFTA Plus"
+      },
+      {
+        "url": "https://www.truckopedia.com/pricing/",
+        "signal": "$34.99 quarterly report for 0-2 vehicles",
+        "source": "Truckopedia"
+      },
+      {
+        "url": "https://sandbox.iftae-file.com/pricing/",
+        "signal": "$20/quarter/truck individual + $15 e-file service",
+        "source": "Truck e-Services"
+      }
+    ],
+    "rejection_reason": "LOW_ARPU_COMMODITY: current public prices around $15-$39 per quarter for 1-2 trucks leave too little standalone gross profit relative to support/error burden; retain only as DOT/bookkeeping add-on.",
+    "metadata": {
+      "fast_cash": "reject_standalone",
+      "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+      "merge_niche_key": "V5-03"
+    },
+    "first_seen_at": "2026-10-03 20:37:09.407505+00",
+    "last_seen_at": "2026-10-03 20:37:09.407505+00"
+  },
+  {
+    "id": "e90f2b95-c4e1-4f14-be4f-d9d365fc8842",
+    "fingerprint": "b18237385838e63454f806411239195417abf62a60f458733b92996c2cf56e20",
+    "candidate_key": "FC2-RAW-07",
+    "analysis_level": "niche",
+    "raw_name": "Truck maintenance coordination",
+    "normalized_name": "Small-carrier maintenance and repair coordination",
+    "buyer_segment": "Owner-operators and small fleets with breakdown/repair/admin burden",
+    "core_job": "Find shops, review estimates, schedule/follow repairs and maintain service history.",
+    "primary_outcome": "Reduce owner time lost coordinating repairs.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 2,
+    "evidence_hints": [
+      {
+        "url": "https://truck-owner.com/services/fleet-maintenance",
+        "signal": "$49 per active truck/month, 24/7 maintenance coordination",
+        "source": "Fleet Assist"
+      },
+      {
+        "signal": "Repair-center access exists only as conditional/unconfirmed EDGE-TRUCK-SERVICE-DISTRIBUTION-01",
+        "source": "RevEng edge asset"
+      }
+    ],
+    "rejection_reason": "EDGE_NOT_READY_AND_LOW_PRICE: $49/truck/month with 24/7 expectations is weak without confirmed embedded repair-center distribution/vendor economics.",
+    "metadata": {
+      "fast_cash": "reject_for_now",
+      "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+      "conditional_edge": "EDGE-TRUCK-SERVICE-DISTRIBUTION-01"
+    },
+    "first_seen_at": "2026-10-03 20:37:09.407505+00",
+    "last_seen_at": "2026-10-03 20:37:09.407505+00"
+  },
+  {
+    "id": "3b0c0841-a399-4c6a-942c-d5f0d75437ed",
+    "fingerprint": "d89d16046bbb72ab86b610fb4920d0a9753f39f1bfc571197c607a6eaf6a9606",
+    "candidate_key": "FC2-RAW-08",
+    "analysis_level": "niche",
+    "raw_name": "Realtor listing reel editing",
+    "normalized_name": "Real-estate listing reel editing from existing photos/video",
+    "buyer_segment": "Residential real-estate agents with active listings",
+    "core_job": "Turn existing listing media into social-ready vertical videos.",
+    "primary_outcome": "More listing/agent social content without another shoot.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 4,
+    "evidence_hints": [
+      {
+        "url": "https://listingcut.com/",
+        "signal": "$99-$199 per listing",
+        "source": "ListingCut"
+      },
+      {
+        "url": "https://www.gemsmedia.co/real-estate",
+        "signal": "$225 single reel / $549 three-video launch / $995 monthly",
+        "source": "GEMS Media"
+      },
+      {
+        "url": "https://rephotoschicago.com/services/real-estate-reels/",
+        "signal": "Chicagoland reels from $125 for three cuts as shoot add-on",
+        "source": "Novo Chicago"
+      },
+      {
+        "signal": "MediaEngine/Forge automation exists but is explicitly not a v5 entrant edge",
+        "source": "RevEng edge asset"
+      }
+    ],
+    "rejection_reason": "ENTRANT_EDGE_HARD_GATE_FAILED: WTP exists, but no gate-eligible realtor distribution exists yet; editing automation alone cannot pass v5.",
+    "metadata": {
+      "fast_cash": "reject_until_distribution",
+      "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+      "conditional_edge": "EDGE-TOWNCOUSINS-LOCAL-REAL-ESTATE-01"
+    },
+    "first_seen_at": "2026-10-03 20:37:09.407505+00",
+    "last_seen_at": "2026-10-03 20:37:09.407505+00"
+  },
+  {
+    "id": "d9e4436d-352f-4931-80ff-7cfb415b5fd7",
+    "fingerprint": "4f2b903071ac47968cb5b910dba56c0bb882f4c611667cc77efd1040cb9ad75d",
+    "candidate_key": "FC2B-RAW-06",
+    "analysis_level": "niche",
+    "raw_name": "DQ-file maintenance",
+    "normalized_name": "Managed DQ-file build and maintenance",
+    "buyer_segment": "Small fleets with employed CDL drivers",
+    "core_job": "Build, remediate and maintain Part 391 driver files.",
+    "primary_outcome": "Audit-ready DQ files.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 3,
+    "evidence_hints": [
+      {
+        "signal": "$75 setup + $30/driver/month maintenance",
+        "source": "DotFleet"
+      },
+      {
+        "signal": "$39-$149/month software",
+        "source": "DQTrack"
+      },
+      {
+        "signal": "same buyer/compliance workflow",
+        "source": "V5-03 DOT"
+      }
+    ],
+    "rejection_reason": "MERGE_EXISTING_DOT: paid service is valid but duplicates the core V5-03 DOT scope.",
+    "metadata": {
+      "fast_cash": "offer_wedge",
+      "merge_niche_key": "V5-03"
+    },
+    "first_seen_at": "2026-10-04 01:52:00.328993+00",
+    "last_seen_at": "2026-10-04 01:52:00.328993+00"
+  },
+  {
+    "id": "9543a9e0-a320-4da6-ab62-422c9056eec5",
+    "fingerprint": "752237003f6380d95f377d369e8593d37efdd25eaef97327579912cb392d87d0",
+    "candidate_key": "FC2-RAW-09",
+    "analysis_level": "niche",
+    "raw_name": "Real-estate transaction coordination",
+    "normalized_name": "Per-file residential real-estate transaction coordination",
+    "buyer_segment": "Real-estate agents/brokerages with closed/pending transaction volume",
+    "core_job": "Coordinate deadlines/documents/communications from contract to close.",
+    "primary_outcome": "Reduce agent administrative load per transaction.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 2,
+    "evidence_hints": [
+      {
+        "url": "https://cloudcoordinator.io/transaction-coordinator-cost",
+        "signal": "2026 planning range $300-$500 per closed file",
+        "source": "CloudCoord"
+      },
+      {
+        "url": "https://www.virtustant.com/blog/real-estate-transaction-coordinator",
+        "signal": "US transaction coordinators commonly quoted $300-$500/file",
+        "source": "Virtustant"
+      }
+    ],
+    "rejection_reason": "ENTRANT_EDGE_HARD_GATE_FAILED: attractive per-file WTP, but no proven owned realtor/brokerage channel; Town Cousins real-estate surface remains conditional.",
+    "metadata": {
+      "fast_cash": "reject_until_distribution",
+      "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+      "conditional_edge": "EDGE-TOWNCOUSINS-LOCAL-REAL-ESTATE-01"
+    },
+    "first_seen_at": "2026-10-03 20:37:09.407505+00",
+    "last_seen_at": "2026-10-03 20:37:09.407505+00"
+  },
+  {
+    "id": "4b61728a-b951-4ce0-a175-4e69510ffc85",
+    "fingerprint": "ccadd87f9e5f2fe03abbeffb10e61ad4cff1d7deaaa063fd4c9b519b94759ac1",
+    "candidate_key": "FC2-RAW-10",
+    "analysis_level": "niche",
+    "raw_name": "Construction takeoff service",
+    "normalized_name": "Residential/small-commercial construction takeoff and estimating service",
+    "buyer_segment": "Contractors who need bids/takeoffs without a full-time estimator",
+    "core_job": "Read plans, quantify materials/trades and produce estimate/takeoff packages.",
+    "primary_outcome": "Submit more bids without adding estimator payroll.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 2,
+    "evidence_hints": [
+      {
+        "url": "https://p2cconstruction.com/construction-estimating-services-cost-2026/",
+        "signal": "2026 single-trade residential takeoff roughly $200-$400; commercial $250-$900",
+        "source": "P2C Construction"
+      },
+      {
+        "url": "https://www.takeoffmonkey.com/how-much-do-construction-takeoff-services-cost/",
+        "signal": "Outsourced takeoff market is active and project-priced",
+        "source": "Takeoff Monkey"
+      }
+    ],
+    "rejection_reason": "ENTRANT_EDGE_HARD_GATE_FAILED: no gate-eligible contractor distribution or specialist estimating capability is evidenced; generic automation/low price is not an edge.",
+    "metadata": {
+      "fast_cash": "reject",
+      "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5"
+    },
+    "first_seen_at": "2026-10-03 20:37:09.407505+00",
+    "last_seen_at": "2026-10-03 20:37:09.407505+00"
+  },
+  {
+    "id": "b796957a-5214-485e-ad24-da9bab575bb8",
+    "fingerprint": "3cb690346623ed9b36ad164657e443aa6f059d39128a4fc3413a483e91656719",
+    "candidate_key": "FC2B-RAW-01",
+    "analysis_level": "niche",
+    "raw_name": "Carrier vendor referral monetization",
+    "normalized_name": "Carrier factoring/fuel/dispatch vendor referral desk",
+    "buyer_segment": "Owner-operators and small fleets reachable through the owned trucking network",
+    "core_job": "Match carriers to vendor-run factoring, fuel-card, dispatch or authority services and earn vendor referral/partner payouts without performing the underlying service.",
+    "primary_outcome": "Very low-delivery revenue from existing relationships when a referred carrier activates/uses a vendor service.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "promoted",
+    "source_count": 6,
+    "evidence_hints": [
+      {
+        "signal": "$250 factoring, $100 fuel-card, $100 dispatch, $20 authority-service referral payouts",
+        "source": "QP Ambassador"
+      },
+      {
+        "signal": "10% recurring factoring referral commission",
+        "source": "Summar Partner Hub"
+      },
+      {
+        "signal": "monthly commission agent program",
+        "source": "RTS Referral"
+      },
+      {
+        "signal": "one-time or lifetime percentage of gross revenue",
+        "source": "Porter Freight Funding"
+      },
+      {
+        "signal": "up to $1,000 per approved fleet after 4,000 gallons",
+        "source": "RoadFlex"
+      },
+      {
+        "signal": "broad loan-broker definition requires regulatory boundary review before compensated finance referrals",
+        "source": "Illinois Loan Brokers Act"
+      }
+    ],
+    "rejection_reason": null,
+    "metadata": {
+      "edge": "EDGE-TRUCK-NETWORK-01",
+      "fast_cash": "screen",
+      "delivery_labor": "very_low",
+      "external_actions": false
+    },
+    "first_seen_at": "2026-10-04 01:52:00.328993+00",
+    "last_seen_at": "2026-10-04 01:52:00.328993+00"
+  },
+  {
+    "id": "3e24dfaf-dd14-46d3-aeac-e269b930d2ec",
+    "fingerprint": "4f0d8f63ab009d2e5cea51a7ecd4b4c30725841fcb4daead380ee8cb01708a9d",
+    "candidate_key": "FC2B-RAW-02",
+    "analysis_level": "niche",
+    "raw_name": "Truck repair invoice audit / warranty recovery",
+    "normalized_name": "Owner-operator truck repair estimate/invoice audit and recovery",
+    "buyer_segment": "Owner-operators and small fleets that outsource truck repairs",
+    "core_job": "Review repair estimates/invoices for labor/parts/warranty errors and negotiate/document savings before or after payment.",
+    "primary_outcome": "Reduce repair overpayment and recover warranty/billing leakage on a contingency or fixed-fee basis.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "promoted",
+    "source_count": 5,
+    "evidence_hints": [
+      {
+        "signal": "40% of recovered savings, no upfront cost",
+        "source": "Fleet Cost Shield"
+      },
+      {
+        "signal": "commercial fleet repair estimate/invoice audit product",
+        "source": "FleetLens"
+      },
+      {
+        "signal": "$39.99 estimate review / $99.99 advocacy",
+        "source": "Big Brother Automotive"
+      },
+      {
+        "signal": "$49/truck/month maintenance coordination with estimate review",
+        "source": "Fleet Assist"
+      },
+      {
+        "signal": "owned trucking buyer network; repair-center access not required for initial remote audit",
+        "source": "owner edge"
+      }
+    ],
+    "rejection_reason": null,
+    "metadata": {
+      "edge": "EDGE-TRUCK-NETWORK-01",
+      "fast_cash": "screen",
+      "external_actions": false,
+      "conditional_supporting_edge": "EDGE-TRUCK-SERVICE-DISTRIBUTION-01"
+    },
+    "first_seen_at": "2026-10-04 01:52:00.328993+00",
+    "last_seen_at": "2026-10-04 01:52:00.328993+00"
+  },
+  {
+    "id": "80f093e7-34f4-4d38-b0f4-8de2d0acd43c",
+    "fingerprint": "91efd15c972227e643b2176dc3b5a3afff7cd4903edb9e2c63d9bf53f6491046",
+    "candidate_key": "FC2B-RAW-03",
+    "analysis_level": "niche",
+    "raw_name": "Independent truck dispatch",
+    "normalized_name": "Owner-operator load booking and dispatch service",
+    "buyer_segment": "Owner-operators and small fleets",
+    "core_job": "Find/negotiate/book loads and coordinate trips.",
+    "primary_outcome": "Keep trucks loaded and reduce owner booking/admin time.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 3,
+    "evidence_hints": [
+      {
+        "signal": "$799/truck/month dispatch",
+        "source": "Fleet Assist"
+      },
+      {
+        "signal": "3-10% or $300/week/truck",
+        "source": "Grow Trucking"
+      },
+      {
+        "signal": "dispatch/bona fide agent vs broker boundary requires case-specific compliance",
+        "source": "FMCSA"
+      }
+    ],
+    "rejection_reason": "OWNER_TIME_AND_REGULATORY_RISK: high-touch daily operations, intense competition, and FMCSA broker/bona-fide-agent boundary make this inferior to lower-labor carrier services.",
+    "metadata": {
+      "edge": "EDGE-TRUCK-NETWORK-01",
+      "fast_cash": "reject"
+    },
+    "first_seen_at": "2026-10-04 01:52:00.328993+00",
+    "last_seen_at": "2026-10-04 01:52:00.328993+00"
+  },
+  {
+    "id": "f888c308-f135-4a4e-ba73-8f4570402c88",
+    "fingerprint": "4bd14cf18cbb90152d0a10575cdfeebfc02609464ba8eed6937427e00c3c60c0",
+    "candidate_key": "FC2B-RAW-04",
+    "analysis_level": "niche",
+    "raw_name": "Detention/accessorial recovery",
+    "normalized_name": "Carrier detention and accessorial recovery service",
+    "buyer_segment": "Small for-hire carriers with unpaid detention/layover/TONU/accessorials",
+    "core_job": "Prepare evidence, follow claims and recover documented earned accessorial revenue.",
+    "primary_outcome": "Recover otherwise abandoned small-dollar carrier revenue.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 4,
+    "evidence_hints": [
+      {
+        "signal": "20% of cash actually recovered",
+        "source": "Freight Claim Recovery"
+      },
+      {
+        "signal": "market pain/competitors already researched",
+        "source": "existing V4-11"
+      },
+      {
+        "signal": "compensated debt recovery for another can cross collection-agency boundary",
+        "source": "Illinois collection boundary"
+      },
+      {
+        "signal": "evidence packet/payment-status workflow can be an offer wedge without separate recovery niche",
+        "source": "FC2-01 billing"
+      }
+    ],
+    "rejection_reason": "MERGE_BILLING_AND_LEGAL_RISK: keep evidence-pack/accessorial documentation inside FC2-01 billing; do not create separate contingency debt-recovery business without licensing analysis.",
+    "metadata": {
+      "fast_cash": "offer_wedge",
+      "merge_niche_key": "FC2-01"
+    },
+    "first_seen_at": "2026-10-04 01:52:00.328993+00",
+    "last_seen_at": "2026-10-04 01:52:00.328993+00"
+  },
+  {
+    "id": "c0ea621f-22b9-4305-976a-a0deaf75c161",
+    "fingerprint": "85551d1c72218b43efac4bcd795b39bd87cf6d1dbbb0d6f2c5a678839c4a5dd0",
+    "candidate_key": "FC2B-RAW-05",
+    "analysis_level": "niche",
+    "raw_name": "ELD/HOS log audit",
+    "normalized_name": "Managed ELD/HOS log auditing for small fleets",
+    "buyer_segment": "Small fleets with HOS exposure",
+    "core_job": "Review logs, flag violations/trends, coach corrections and prepare audit evidence.",
+    "primary_outcome": "Reduce HOS violations and audit risk.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 4,
+    "evidence_hints": [
+      {
+        "signal": "$49/driver/month sample log review",
+        "source": "Lili Safety"
+      },
+      {
+        "signal": "$20-$50/driver/month log audit tiers",
+        "source": "DOT Doctor"
+      },
+      {
+        "signal": "$8/audit or $49 base + $0.75/log",
+        "source": "Waypoint True"
+      },
+      {
+        "signal": "same buyer/compliance workflow",
+        "source": "V5-03 DOT"
+      }
+    ],
+    "rejection_reason": "MERGE_EXISTING_DOT: good paid add-on/wedge, but not a separate niche from V5-03 managed DOT compliance.",
+    "metadata": {
+      "fast_cash": "offer_wedge",
+      "merge_niche_key": "V5-03"
+    },
+    "first_seen_at": "2026-10-04 01:52:00.328993+00",
+    "last_seen_at": "2026-10-04 01:52:00.328993+00"
+  },
+  {
+    "id": "bf430b3f-49e1-445a-b267-b925b38e6392",
+    "fingerprint": "7c07abf2660f45efa85c13adcbd0d54c641603ce4be7d69227df732050577833",
+    "candidate_key": "FC2B-RAW-07",
+    "analysis_level": "niche",
+    "raw_name": "IRP/UCR/MCS-150 filing concierge",
+    "normalized_name": "Carrier registration and recurring filing concierge",
+    "buyer_segment": "Illinois owner-operators/small fleets",
+    "core_job": "Prepare/coordinate recurring registration filings and deadlines.",
+    "primary_outcome": "Avoid missed registrations/renewals.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 4,
+    "evidence_hints": [
+      {
+        "signal": "IRP renewals online for fleets <250; licensed remitter field exists",
+        "source": "Illinois SOS"
+      },
+      {
+        "signal": "MCS-150 $110-$399, UCR $45-$310, IFTA $30-$150 public market ranges",
+        "source": "TenFour"
+      },
+      {
+        "signal": "filings already fit managed DOT compliance",
+        "source": "V5-03 DOT"
+      }
+    ],
+    "rejection_reason": "MERGE_EXISTING_DOT: recurring filing admin is a DOT offer component; IRP remitter mechanics create additional boundary and standalone differentiation is weak.",
+    "metadata": {
+      "fast_cash": "offer_wedge",
+      "merge_niche_key": "V5-03"
+    },
+    "first_seen_at": "2026-10-04 01:52:00.328993+00",
+    "last_seen_at": "2026-10-04 01:52:00.328993+00"
+  },
+  {
+    "id": "5876a050-2dea-4e6e-8b6e-e2b18238aa5d",
+    "fingerprint": "abfc127e03b634093db14a98eaddfca1509b4941e30727b872264751d6b9131e",
+    "candidate_key": "FC2B-RAW-08",
+    "analysis_level": "niche",
+    "raw_name": "Toll cost management",
+    "normalized_name": "Small-fleet toll route/cost management",
+    "buyer_segment": "Small fleets operating toll-heavy lanes",
+    "core_job": "Estimate, reconcile and optimize toll spend by route/truck.",
+    "primary_outcome": "Reduce unexpected toll cost and improve load profitability.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 2,
+    "evidence_hints": [
+      {
+        "signal": "API $49/month for 50k calls",
+        "source": "DrayToll"
+      },
+      {
+        "signal": "toll management bundled into $10-$15/truck/month fleet software",
+        "source": "HaulNex"
+      }
+    ],
+    "rejection_reason": "LOW_ARPU_SOFTWARE_COMMODITY: tooling is cheap and bundled; no strong human-service WTP or structural gap evidenced.",
+    "metadata": {
+      "fast_cash": "reject"
+    },
+    "first_seen_at": "2026-10-04 01:52:00.328993+00",
+    "last_seen_at": "2026-10-04 01:52:00.328993+00"
+  },
+  {
+    "id": "4da46890-3277-468a-815c-7a514af55d32",
+    "fingerprint": "fbbd15537895592641c41f79196c301b221bac64f57237074f55e39ca4e6e2f2",
+    "candidate_key": "FC2B-RAW-09",
+    "analysis_level": "niche",
+    "raw_name": "CSA/SMS monitoring",
+    "normalized_name": "Carrier safety-score monitoring and alerts",
+    "buyer_segment": "Small carriers monitoring FMCSA safety performance",
+    "core_job": "Monitor public SMS/authority/safety changes and surface issues.",
+    "primary_outcome": "Catch safety issues before renewals/interventions.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 4,
+    "evidence_hints": [
+      {
+        "signal": "public/current SMS data",
+        "source": "FMCSA CSA"
+      },
+      {
+        "signal": "$49/month up to 100 carriers for agency monitoring",
+        "source": "CSA Sentry"
+      },
+      {
+        "signal": "monthly SMS BASIC reporting included in managed safety plans",
+        "source": "AIST Safety"
+      },
+      {
+        "signal": "same compliance buyer/job",
+        "source": "V5-03 DOT"
+      }
+    ],
+    "rejection_reason": "MERGE_EXISTING_DOT: public-data monitoring is a feature/add-on inside managed DOT, not a separate fast-cash niche.",
+    "metadata": {
+      "fast_cash": "offer_wedge",
+      "merge_niche_key": "V5-03"
+    },
+    "first_seen_at": "2026-10-04 01:52:00.328993+00",
+    "last_seen_at": "2026-10-04 01:52:00.328993+00"
+  },
+  {
+    "id": "02d5deb6-d5fb-4fc5-a120-79e27a8a916d",
+    "fingerprint": "1f1f76972b8d0221aa50690b0a537b2ec575cf499e734d0257698dbaaa7a4621",
+    "candidate_key": "FC2B-RAW-10",
+    "analysis_level": "niche",
+    "raw_name": "Cargo/freight claims recovery",
+    "normalized_name": "Freight claims recovery administration",
+    "buyer_segment": "Shippers/importers/freight buyers with recurring loss/damage claims",
+    "core_job": "Prepare/file/follow freight claims and charge contingency on recovered dollars.",
+    "primary_outcome": "Recover cargo/freight claim leakage.",
+    "suggested_model_key": null,
+    "suggested_market_key": null,
+    "status": "rejected",
+    "source_count": 4,
+    "evidence_hints": [
+      {
+        "signal": "20% contingency on recovered funds",
+        "source": "Ladingly"
+      },
+      {
+        "signal": "10% recovery fee, $500 minimum",
+        "source": "FreightBid360"
+      },
+      {
+        "signal": "contingency-based no recovery/no fee",
+        "source": "Nasratic"
+      },
+      {
+        "signal": "our gate-ready asset reaches carriers, not recurring shipper claims buyers",
+        "source": "edge audit"
+      }
+    ],
+    "rejection_reason": "ENTRANT_EDGE_HARD_GATE_FAILED: current gate-ready distribution is small carriers/drivers, while cargo-claims recovery buyer is primarily shipper/freight buyer; no owned channel evidenced.",
+    "metadata": {
+      "fast_cash": "reject_edge_gate"
+    },
+    "first_seen_at": "2026-10-04 01:52:00.328993+00",
+    "last_seen_at": "2026-10-04 01:52:00.328993+00"
+  }
+]

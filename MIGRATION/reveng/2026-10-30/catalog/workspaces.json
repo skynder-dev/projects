@@ -1,0 +1,32 @@
+[
+  {
+    "id": "d632ae07-2200-47a1-9928-891fc6cc0833",
+    "workspace_key": "fixture-neutral-a",
+    "display_name": "Neutral Fixture A",
+    "workspace_type": "fixture",
+    "status": "active",
+    "default_market": "US",
+    "created_at": "2026-09-25 04:57:36.752261+00",
+    "updated_at": "2026-09-25 04:57:36.752261+00"
+  },
+  {
+    "id": "0d4cb938-ce63-49a9-9e01-d1378a54746c",
+    "workspace_key": "fixture-neutral-b",
+    "display_name": "Neutral Fixture B",
+    "workspace_type": "fixture",
+    "status": "active",
+    "default_market": "US",
+    "created_at": "2026-09-25 04:57:36.752261+00",
+    "updated_at": "2026-09-25 04:57:36.752261+00"
+  },
+  {
+    "id": "4d473eb7-61f3-4d66-9155-50ca30a57239",
+    "workspace_key": "alpha-clean-tenant-001",
+    "display_name": "Alpha Clean Tenant 001",
+    "workspace_type": "fixture",
+    "status": "active",
+    "default_market": "US",
+    "created_at": "2026-09-25 06:23:48.466324+00",
+    "updated_at": "2026-09-25 06:23:48.466324+00"
+  }
+]

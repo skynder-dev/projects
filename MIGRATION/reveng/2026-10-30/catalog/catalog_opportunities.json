@@ -1,0 +1,111 @@
+[
+  {
+    "id": "a442b222-c210-4a55-ac73-3719a403e737",
+    "opportunity_key": "fixture_opportunity",
+    "niche_id": "1840bcd6-319f-4a2f-91c2-388da2ce4a25",
+    "business_model_id": "1c4cc94d-48f1-4753-983e-17e8531ad01d",
+    "name": "Fixture Opportunity",
+    "thesis": "Regression-only opportunity used to test tenant isolation and exact revision acceptance.",
+    "customer_value": "fixture",
+    "acquisition_hypothesis": "fixture",
+    "scale_hypothesis": "fixture",
+    "catalog_status": "researched",
+    "source_kind": "curated",
+    "global_eligible": false,
+    "metadata": {
+      "fixture": true,
+      "exclude_from_discovery": true
+    },
+    "created_at": "2026-09-25 05:00:54.392543+00",
+    "updated_at": "2026-09-25 05:00:54.392543+00"
+  },
+  {
+    "id": "ba717581-9470-4ae1-9b0a-e39747247095",
+    "opportunity_key": "fixture_licensed_opportunity",
+    "niche_id": "1840bcd6-319f-4a2f-91c2-388da2ce4a25",
+    "business_model_id": "77ad6142-b95e-4561-9318-f6916b38ea2a",
+    "name": "Fixture Licensed Opportunity",
+    "thesis": "Regression-only licensed/high-touch comparator.",
+    "customer_value": "fixture",
+    "acquisition_hypothesis": "fixture",
+    "scale_hypothesis": "fixture",
+    "catalog_status": "researched",
+    "source_kind": "curated",
+    "global_eligible": false,
+    "metadata": {
+      "fixture": true,
+      "exclude_from_discovery": true
+    },
+    "created_at": "2026-09-25 05:03:12.762074+00",
+    "updated_at": "2026-09-25 05:03:12.762074+00"
+  },
+  {
+    "id": "777118d4-c16b-40a4-9c85-70a96ab85b77",
+    "opportunity_key": "opp-a5c1c263bf983d28a29d",
+    "niche_id": "2f728159-dc30-43c6-8f3e-42486e30f590",
+    "business_model_id": "1c4cc94d-48f1-4753-983e-17e8531ad01d",
+    "name": "Digital home inventory organizer",
+    "thesis": "A bounded digital-download business can package reusable home-inventory and move-record workflows for renters without inventory, licensing or recurring human service.",
+    "customer_value": "Faster, more structured household documentation with reusable files.",
+    "acquisition_hypothesis": "Search, marketplace and owned-site testing can measure intent without a high-touch sales process.",
+    "scale_hypothesis": "Additional packs, formats and adjacent renter workflows can expand the catalog without proportional service labor.",
+    "catalog_status": "testable",
+    "source_kind": "discovery",
+    "global_eligible": false,
+    "metadata": {
+      "fixture": true,
+      "candidate_id": "95f17bc8-8723-46db-bf7b-b24c64091acf",
+      "candidate_key": "alpha-clean-digital-inventory",
+      "discovery_fingerprint": "a5c1c263bf983d28a29dd65c5c043940"
+    },
+    "created_at": "2026-09-25 06:23:48.466324+00",
+    "updated_at": "2026-09-25 06:32:15.929214+00"
+  },
+  {
+    "id": "da06df72-129f-4139-be4a-5e2741303274",
+    "opportunity_key": "fixture_g180_thermal_label_printer_pilot",
+    "niche_id": "e4dcc31a-5aa5-474f-b137-c65807d1f054",
+    "business_model_id": "abec7b74-60be-4147-bbda-7105a969e8a4",
+    "name": "Fixture thermal-label-printer pilot",
+    "thesis": "Fixture-only opportunity for validating a thermal-label-printer package against exact permitted public evidence without production execution.",
+    "customer_value": "Shippers can evaluate a dedicated 4-inch thermal label printer with exact product facts before any commercial action.",
+    "acquisition_hypothesis": "Fixture harness only; no acquisition execution is authorized.",
+    "scale_hypothesis": "Fixture harness only; no scaling conclusion is authorized.",
+    "catalog_status": "researched",
+    "source_kind": "curated",
+    "global_eligible": false,
+    "metadata": {
+      "fixture": true,
+      "g180_harness": true,
+      "semantic_scope": "thermal-label-printer pilot / shipping-label workflow",
+      "exclude_from_discovery": true,
+      "g180_fixture_package_id": "real-evidence-package:thermal-label-printer-pilot-v1"
+    },
+    "created_at": "2026-09-30 08:30:07.338851+00",
+    "updated_at": "2026-09-30 08:30:07.338851+00"
+  },
+  {
+    "id": "976fec4d-aa9d-4f0f-9d09-69aad03744d6",
+    "opportunity_key": "fixture_g181_insufficient_evidence",
+    "niche_id": "e17a0200-e4c1-4682-b051-cfef2eb2cd50",
+    "business_model_id": "abec7b74-60be-4147-bbda-7105a969e8a4",
+    "name": "Fixture insufficient-evidence opportunity",
+    "thesis": "Fixture-only opportunity intentionally missing supporting evidence and economics to prove fail-closed decision behavior.",
+    "customer_value": "No decision-ready customer value claim is verified.",
+    "acquisition_hypothesis": "Unknown until supporting evidence exists.",
+    "scale_hypothesis": "Unknown until supporting evidence exists.",
+    "catalog_status": "researched",
+    "source_kind": "curated",
+    "global_eligible": false,
+    "metadata": {
+      "fixture": true,
+      "g181_harness": true,
+      "semantic_scope": "fail-closed decision path with missing evidence",
+      "insufficient_evidence": true,
+      "exclude_from_discovery": true,
+      "g181_fixture_package_id": "insufficient-evidence-package:g181-v1"
+    },
+    "created_at": "2026-09-30 08:57:35.188849+00",
+    "updated_at": "2026-09-30 08:57:35.188849+00"
+  }
+]

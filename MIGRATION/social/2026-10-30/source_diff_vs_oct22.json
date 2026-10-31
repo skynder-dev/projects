@@ -1,0 +1,210 @@
+{
+  "baseline": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+  "archive_date": "2026-10-28",
+  "files": [
+    {
+      "path": "social/CONCEPT_RESULT_V2.md",
+      "archive_git_blob_sha1": "37bd81820bbcec5cb3bf459ea49bd17b1cd03f14",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "social/OWNER_CONTEXT_RECOVERY.md",
+      "archive_git_blob_sha1": "e241c9cfd75ad93f45e1269492f25772bb3d03b0",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "social/CONCEPT_CORE_OFFLINE.md",
+      "archive_git_blob_sha1": "79e67f641bf387eff081008932978c408905b80d",
+      "baseline_git_blob_sha1": "34927e1bf69db00d91eda2be200888cf0ea17955",
+      "state": "changed"
+    },
+    {
+      "path": ".ci/tests/run_social_concept_core.py",
+      "archive_git_blob_sha1": "27bca34128926bd82ee72c5dcc9eb1a7e7e134d1",
+      "baseline_git_blob_sha1": "38dc1e31b48b6370501ceab6f75ad113f18e98dc",
+      "state": "changed"
+    },
+    {
+      "path": "social/socialreel/concept_store.py",
+      "archive_git_blob_sha1": "110ab962b012bd409602e1726df48c6aec1d1a6a",
+      "baseline_git_blob_sha1": "110ab962b012bd409602e1726df48c6aec1d1a6a",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/concept_core.py",
+      "archive_git_blob_sha1": "c0022d5ad57c157e2cc03166f8d447d42a51c17b",
+      "baseline_git_blob_sha1": "f27567a4f4db3401767b2e1294569c9f67fa578b",
+      "state": "changed"
+    },
+    {
+      "path": "social/socialreel/source_excerpt_model_view.py",
+      "archive_git_blob_sha1": "88d2b1560d6ce29a44c201f2ea943bcf92f55a1f",
+      "baseline_git_blob_sha1": "88d2b1560d6ce29a44c201f2ea943bcf92f55a1f",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/concept_excerpt_evidence.py",
+      "archive_git_blob_sha1": "303a70c8b0f613081d5e06cb2abd30c5bf0a245b",
+      "baseline_git_blob_sha1": "303a70c8b0f613081d5e06cb2abd30c5bf0a245b",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/voice.py",
+      "archive_git_blob_sha1": "d80c8cf618d2d9fbdee66c120ff7733e0a248044",
+      "baseline_git_blob_sha1": "d80c8cf618d2d9fbdee66c120ff7733e0a248044",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/common.py",
+      "archive_git_blob_sha1": "97b07029bae2b3a786320b777b0bebd24ad3d0f2",
+      "baseline_git_blob_sha1": "97b07029bae2b3a786320b777b0bebd24ad3d0f2",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/json_contract.py",
+      "archive_git_blob_sha1": "82b0d56addc98d3b5bee6787728c7f8874d93475",
+      "baseline_git_blob_sha1": "82b0d56addc98d3b5bee6787728c7f8874d93475",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/source_excerpt_projection.py",
+      "archive_git_blob_sha1": "a2a0dde2abb937066155cf6ef61b73e5a232c63e",
+      "baseline_git_blob_sha1": "a2a0dde2abb937066155cf6ef61b73e5a232c63e",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/__main__.py",
+      "archive_git_blob_sha1": "8bcb6ff2c502be1bbd1b227775aeb19aa16e2252",
+      "baseline_git_blob_sha1": "8bcb6ff2c502be1bbd1b227775aeb19aa16e2252",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/topic_intent.py",
+      "archive_git_blob_sha1": "5cb3fa5276dcf237c32dcdd527f2550a649d3a25",
+      "baseline_git_blob_sha1": "5cb3fa5276dcf237c32dcdd527f2550a649d3a25",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/grants.py",
+      "archive_git_blob_sha1": "d3442deb5ea6bd3ea64b70637bdcd55affe8cb59",
+      "baseline_git_blob_sha1": "6c2e040b5d29f28892b8bc83d674868d9ce5c26a",
+      "state": "changed"
+    },
+    {
+      "path": "social/socialreel/writer.py",
+      "archive_git_blob_sha1": "abf869d82423ce5c54ab4aa67787b6791ac17a71",
+      "baseline_git_blob_sha1": "abf869d82423ce5c54ab4aa67787b6791ac17a71",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/concept_locks.py",
+      "archive_git_blob_sha1": "2dc8e24ec98f9a94b1830bc59072014f52a1ae24",
+      "baseline_git_blob_sha1": "2dc8e24ec98f9a94b1830bc59072014f52a1ae24",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/concept_storage.py",
+      "archive_git_blob_sha1": "042422bb947b5453f38c245bd63fe0be6cb02423",
+      "baseline_git_blob_sha1": "042422bb947b5453f38c245bd63fe0be6cb02423",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/concept_owner_context.py",
+      "archive_git_blob_sha1": "088ca3f3e8eb009e0b9d469e4cb72417ac36b744",
+      "baseline_git_blob_sha1": "3a9aec2e407177d352b535f59c73eae18af0156f",
+      "state": "changed"
+    },
+    {
+      "path": "social/socialreel/render.py",
+      "archive_git_blob_sha1": "7ed8ab9974e466c9c5e90a546d19570b36ee95cc",
+      "baseline_git_blob_sha1": "7ed8ab9974e466c9c5e90a546d19570b36ee95cc",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/claims.py",
+      "archive_git_blob_sha1": "481aa924d5465949f94dc003a58d65df375dd8e0",
+      "baseline_git_blob_sha1": "ffbcab0dee18ecb287f7226cbfb369204efb51d2",
+      "state": "changed"
+    },
+    {
+      "path": "social/socialreel/concept_admission.py",
+      "archive_git_blob_sha1": "f85037a190cf98e3f1764fe124202746c1021d4b",
+      "baseline_git_blob_sha1": "f85037a190cf98e3f1764fe124202746c1021d4b",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/__init__.py",
+      "archive_git_blob_sha1": "89de08f8b5d5572352e283c7ce6462c3e379f57c",
+      "baseline_git_blob_sha1": "89de08f8b5d5572352e283c7ce6462c3e379f57c",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/verify.py",
+      "archive_git_blob_sha1": "11dc6c85f757e72d5913a3ed7b223a198b1538fe",
+      "baseline_git_blob_sha1": "11dc6c85f757e72d5913a3ed7b223a198b1538fe",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/concept_decision_ledger.py",
+      "archive_git_blob_sha1": "e63080d789741b26410ec13292d83f3130d53863",
+      "baseline_git_blob_sha1": "e63080d789741b26410ec13292d83f3130d53863",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/source_documents.py",
+      "archive_git_blob_sha1": "e5653be0ff3769026f7c6c23d6f5e8047488b475",
+      "baseline_git_blob_sha1": "e5653be0ff3769026f7c6c23d6f5e8047488b475",
+      "state": "identical"
+    },
+    {
+      "path": "social/socialreel/pipeline.py",
+      "archive_git_blob_sha1": "d293a2da6effd76d594a5ba4001a2f43e9ea62f3",
+      "baseline_git_blob_sha1": "6847a59253aa3ab86b2c14eb421a8fa9d9543e4a",
+      "state": "changed"
+    },
+    {
+      "path": "social/tests/test_live_source_context.py",
+      "archive_git_blob_sha1": "2aa70c25ed7b0c51b6c6dcb88c65c3cf646512bc",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "social/tests/test_concept_offline.py",
+      "archive_git_blob_sha1": "87d6d68eebe44828fa23550bf7d7ba4d0af0c5ec",
+      "baseline_git_blob_sha1": "87d6d68eebe44828fa23550bf7d7ba4d0af0c5ec",
+      "state": "identical"
+    },
+    {
+      "path": "social/tests/test_concept_source_cards.py",
+      "archive_git_blob_sha1": "59e96247b68c9149ca11fa7ca07e9cf739f9d734",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "social/tests/test_core.py",
+      "archive_git_blob_sha1": "bc1ccbe9fd0ce26e0f9c2fbf03f931d08f9aa1cc",
+      "baseline_git_blob_sha1": "bc1ccbe9fd0ce26e0f9c2fbf03f931d08f9aa1cc",
+      "state": "identical"
+    },
+    {
+      "path": "social/tests/test_concept_abstention.py",
+      "archive_git_blob_sha1": "b802fc221a478b38efbd67e43eb8bbe4bbc0a4c0",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "social/tests/test_concept_persistence.py",
+      "archive_git_blob_sha1": "6256049d84f07e642836fc03774dd0ddf25c0d61",
+      "baseline_git_blob_sha1": null,
+      "state": "new"
+    },
+    {
+      "path": "social/tests/__init__.py",
+      "archive_git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "baseline_git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "state": "identical"
+    }
+  ]
+}

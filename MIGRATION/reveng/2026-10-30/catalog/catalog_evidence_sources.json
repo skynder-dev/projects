@@ -1,0 +1,153 @@
+[
+  {
+    "id": "ceaa38e9-2089-49c3-b2d1-32f11ea08227",
+    "source_key": "g180-brother-ql1110nwb-official-product-page",
+    "source_scope": "official",
+    "source_type": "official_doc",
+    "publisher": "Brother International Corporation",
+    "title": "Brother QL-1110NWB official product page",
+    "locator": "https://www.brother-usa.com/p/desktop-label-printers/QL1110NWB",
+    "published_at": null,
+    "retrieved_at": "2026-09-29 15:56:52+00",
+    "source_quality": "0.9500",
+    "usage_notes": "REVA2-G180 isolated fixture harness: exact permitted public source; no external execution authority.",
+    "metadata": {
+      "package_id": "real-evidence-package:thermal-label-printer-pilot-v1",
+      "g180_harness": true,
+      "fact_payload_sha256": "9b863cd8020ed1ca55722e6bf8ffe5fc35dec9792e790c4dcd6b5228b52d9fb2",
+      "source_verification_mode": "live_public_web_open"
+    },
+    "created_at": "2026-09-30 08:30:07.338851+00",
+    "evidence_class": "real"
+  },
+  {
+    "id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "source_key": "fixture-official-pricing",
+    "source_scope": "official",
+    "source_type": "official_doc",
+    "publisher": "Fixture Provider",
+    "title": "Fixture pricing",
+    "locator": "fixture://official-pricing",
+    "published_at": null,
+    "retrieved_at": "2026-09-25 05:07:59.812343+00",
+    "source_quality": "0.9500",
+    "usage_notes": null,
+    "metadata": {
+      "fixture": true
+    },
+    "created_at": "2026-09-25 05:07:59.812343+00",
+    "evidence_class": "fixture"
+  },
+  {
+    "id": "8d6856a0-3cf4-4974-bbff-a34cfe73156f",
+    "source_key": "fixture-demand-support",
+    "source_scope": "public",
+    "source_type": "public_page",
+    "publisher": "Fixture Source A",
+    "title": "Fixture demand support",
+    "locator": "fixture://demand-support",
+    "published_at": null,
+    "retrieved_at": "2026-09-25 05:07:59.812343+00",
+    "source_quality": "0.7000",
+    "usage_notes": null,
+    "metadata": {
+      "fixture": true
+    },
+    "created_at": "2026-09-25 05:07:59.812343+00",
+    "evidence_class": "fixture"
+  },
+  {
+    "id": "86ea1d63-b3f3-484d-8246-ba19db587432",
+    "source_key": "fixture-demand-contradict",
+    "source_scope": "public",
+    "source_type": "public_page",
+    "publisher": "Fixture Source B",
+    "title": "Fixture demand contradiction",
+    "locator": "fixture://demand-contradict",
+    "published_at": null,
+    "retrieved_at": "2026-09-25 05:07:59.812343+00",
+    "source_quality": "0.7500",
+    "usage_notes": null,
+    "metadata": {
+      "fixture": true
+    },
+    "created_at": "2026-09-25 05:07:59.812343+00",
+    "evidence_class": "fixture"
+  },
+  {
+    "id": "fdc3be5d-887f-4a94-9e94-009d428e341c",
+    "source_key": "alpha-fixture-official-pricing",
+    "source_scope": "official",
+    "source_type": "official_doc",
+    "publisher": "Alpha Fixture Provider",
+    "title": "Alpha fixture pricing",
+    "locator": "fixture://alpha-clean-pricing",
+    "published_at": null,
+    "retrieved_at": "2026-09-25 06:24:22.712269+00",
+    "source_quality": "0.9500",
+    "usage_notes": null,
+    "metadata": {
+      "fixture": true,
+      "revsoft": "140"
+    },
+    "created_at": "2026-09-25 06:24:22.712269+00",
+    "evidence_class": "fixture"
+  },
+  {
+    "id": "60000000-0000-4000-8000-000000000001",
+    "source_key": "fixture-theme7-domestic-official",
+    "source_scope": "official",
+    "source_type": "official_fixture",
+    "publisher": "Synthetic Trade Authority Fixture",
+    "title": "Theme 7 domestic trade/compliance fixture",
+    "locator": "fixture://reveng/theme7/domestic-us",
+    "published_at": "2026-09-26 16:59:18.915175+00",
+    "retrieved_at": "2026-09-26 16:59:18.915175+00",
+    "source_quality": "0.9700",
+    "usage_notes": "Synthetic official/public evidence source used only for RevEng regression fixtures.",
+    "metadata": {
+      "fixture": true,
+      "revn10_039": true
+    },
+    "created_at": "2026-09-26 16:59:18.915175+00",
+    "evidence_class": "fixture"
+  },
+  {
+    "id": "70000000-0000-4000-8000-000000000001",
+    "source_key": "fixture-theme8-transaction-finance",
+    "source_scope": "official",
+    "source_type": "official_fixture",
+    "publisher": "Synthetic Transaction Finance Fixture",
+    "title": "Theme 8 transaction finance fixture",
+    "locator": "fixture://reveng/theme8/transaction-finance-usd",
+    "published_at": "2026-09-26 17:47:27.188716+00",
+    "retrieved_at": "2026-09-26 17:47:27.188716+00",
+    "source_quality": "0.9700",
+    "usage_notes": "Synthetic public/business evidence used only for RevEng regression fixtures.",
+    "metadata": {
+      "fixture": true,
+      "revn10_045": true
+    },
+    "created_at": "2026-09-26 17:47:27.188716+00",
+    "evidence_class": "fixture"
+  },
+  {
+    "id": "80000000-0000-4000-8000-000000000001",
+    "source_key": "fixture-theme9-deal-structure-risk",
+    "source_scope": "official",
+    "source_type": "official_fixture",
+    "publisher": "Synthetic Deal Structure Fixture",
+    "title": "Theme 9 deal structure/risk economics fixture",
+    "locator": "fixture://reveng/theme9/deal-structure-risk",
+    "published_at": "2026-09-26 18:38:33.975352+00",
+    "retrieved_at": "2026-09-26 18:38:33.975352+00",
+    "source_quality": "0.9700",
+    "usage_notes": "Synthetic business evidence used only for RevEng regression fixtures.",
+    "metadata": {
+      "fixture": true,
+      "revn10_051": true
+    },
+    "created_at": "2026-09-26 18:38:33.975352+00",
+    "evidence_class": "fixture"
+  }
+]

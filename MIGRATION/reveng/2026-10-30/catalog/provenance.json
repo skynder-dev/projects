@@ -1,0 +1,172 @@
+{
+  "source_project": "media-business-projects",
+  "snapshot_kind": "sequential read-only selected catalog export; not transaction-consistent full backup",
+  "tables": [
+    {
+      "schema": "reveng",
+      "table": "niches",
+      "rows": 37,
+      "query": "select * from reveng.niches",
+      "retrieved_at": "2026-10-30T17:23:44.675Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "opportunities",
+      "rows": 4,
+      "query": "select * from reveng.opportunities",
+      "retrieved_at": "2026-10-30T17:23:50.254Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "score_runs",
+      "rows": 86,
+      "query": "select * from reveng.score_runs",
+      "retrieved_at": "2026-10-30T17:23:54.043Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "opportunity_score_runs",
+      "rows": 7,
+      "query": "select * from reveng.opportunity_score_runs",
+      "retrieved_at": "2026-10-30T17:23:57.422Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "scoring_dimensions",
+      "rows": 14,
+      "query": "select * from reveng.scoring_dimensions",
+      "retrieved_at": "2026-10-30T17:24:00.522Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "scoring_versions",
+      "rows": 5,
+      "query": "select * from reveng.scoring_versions",
+      "retrieved_at": "2026-10-30T17:24:05.733Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "catalog_opportunities",
+      "rows": 5,
+      "query": "select * from reveng.catalog_opportunities",
+      "retrieved_at": "2026-10-30T17:24:12.143Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "catalog_candidate_inbox",
+      "rows": 23,
+      "query": "select * from reveng.catalog_candidate_inbox",
+      "retrieved_at": "2026-10-30T17:24:17.180Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "catalog_niches",
+      "rows": 4,
+      "query": "select * from reveng.catalog_niches",
+      "retrieved_at": "2026-10-30T17:24:20.913Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "catalog_claims",
+      "rows": 50,
+      "query": "select * from reveng.catalog_claims",
+      "retrieved_at": "2026-10-30T17:24:25.277Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "catalog_claim_evidence",
+      "rows": 51,
+      "query": "select * from reveng.catalog_claim_evidence",
+      "retrieved_at": "2026-10-30T17:24:28.867Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "evidence_items",
+      "rows": 359,
+      "query": "select * from reveng.evidence_items",
+      "retrieved_at": "2026-10-30T17:24:33.740Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "catalog_candidate_sources",
+      "rows": 4,
+      "query": "select * from reveng.catalog_candidate_sources",
+      "retrieved_at": "2026-10-30T17:24:39.138Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "catalog_evidence_sources",
+      "rows": 8,
+      "query": "select * from reveng.catalog_evidence_sources",
+      "retrieved_at": "2026-10-30T17:24:43.718Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "catalog_business_models",
+      "rows": 13,
+      "query": "select * from reveng.catalog_business_models",
+      "retrieved_at": "2026-10-30T17:24:47.812Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "catalog_markets",
+      "rows": 2,
+      "query": "select * from reveng.catalog_markets",
+      "retrieved_at": "2026-10-30T17:24:52.540Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "opportunity_scoring_versions",
+      "rows": 1,
+      "query": "select * from reveng.opportunity_scoring_versions",
+      "retrieved_at": "2026-10-30T17:24:57.008Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "opportunity_validation_gates",
+      "rows": 49,
+      "query": "select * from reveng.opportunity_validation_gates",
+      "retrieved_at": "2026-10-30T17:25:01.584Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "niche_dossiers",
+      "rows": 20,
+      "query": "select * from reveng.niche_dossiers",
+      "retrieved_at": "2026-10-30T17:25:04.836Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "research_queue",
+      "rows": 57,
+      "query": "select * from reveng.research_queue where project_id='c5ca88b5-a166-479a-9038-fd85d68d3ab5'",
+      "retrieved_at": "2026-10-30T17:26:32.778Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "workspace_opportunity_state",
+      "rows": 6,
+      "query": "select workspace_id,catalog_opportunity_id,lifecycle_status,saved,first_seen_at,last_touched_at,accepted_revision_id,state_version from reveng.workspace_opportunity_state",
+      "retrieved_at": "2026-10-30T17:26:36.360Z"
+    },
+    {
+      "schema": "reveng",
+      "table": "workspaces",
+      "rows": 3,
+      "query": "select id,workspace_key,display_name,workspace_type,status,default_market,created_at,updated_at from reveng.workspaces",
+      "retrieved_at": "2026-10-30T17:26:40.661Z"
+    }
+  ],
+  "public_curation": {
+    "removed_fields": [
+      "project_ref"
+    ],
+    "reason_ru": "Операционный идентификатор развёртывания исключён; происхождение, таблицы, запросы, время и идентификаторы проектных записей сохранены.",
+    "excluded_categories_ru": [
+      "Имена проверяющих и владельцев",
+      "Частные примечания и переопределения рабочей области",
+      "Конфигурация источников",
+      "Операционный идентификатор развёртывания"
+    ]
+  }
+}

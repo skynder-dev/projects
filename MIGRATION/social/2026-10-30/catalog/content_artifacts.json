@@ -1,0 +1,699 @@
+[
+  {
+    "id": "7234047b-b806-4fde-ae23-098aff0454ff",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e3dc883f-3c0e-4c3d-9c0b-b79ed90128f2",
+    "factual_core_id": "da52fde6-6189-4455-b64e-935bce9fb377",
+    "parent_artifact_id": null,
+    "artifact_key": "seed-script",
+    "artifact_type": "vertical_short_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "642b1a23643cd4baf5868b9138d34b33",
+    "content": {
+      "hook": "The camera sensor story starts with a spacecraft power problem, not a phone.",
+      "title": "A low-power image sensor developed at JPL for spacecraft became a commercial technology through a JPL-founded spinout, Photobit.",
+      "script": "The defensible story is not “NASA invented the phone camera.” It is narrower and better: JPL work produced a specific CMOS active-pixel architecture, and the inventors built a company to move that architecture into commercial markets."
+    },
+    "generation_context": {
+      "mode": "seed_import",
+      "factual_hash": "3b28037120a341c67253d9648890bfdd",
+      "research_packet_id": "f910d42e-c254-4254-b1e5-e86a69757a33",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:24:53.1981+00",
+    "updated_at": "2026-09-23 23:24:53.1981+00"
+  },
+  {
+    "id": "02bb6733-a757-4763-a05d-21b19dc61792",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "f504c2ab-bb94-470f-ae26-b789b0102575",
+    "factual_core_id": "313de383-2fb9-4de4-a4e0-72cc0d3b1264",
+    "parent_artifact_id": null,
+    "artifact_key": "seed-script",
+    "artifact_type": "vertical_short_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "e6bce2b9437b6ddabba1ab4e26084165",
+    "content": {
+      "hook": "NASA did not invent aerogel. The more interesting story is what it helped make practical.",
+      "title": "NASA SBIR work helped Aspen Systems turn fragile aerogel into practical flexible insulation and spin out Aspen Aerogels to commercialize it.",
+      "script": "The key correction is the hook itself: aerogel predates NASA. What NASA-backed work changed was the ability to package the material into durable flexible insulation that a company could actually manufacture and sell."
+    },
+    "generation_context": {
+      "mode": "seed_import",
+      "factual_hash": "c8a8ec46162088a4e9bca8f775ab08f3",
+      "research_packet_id": "61bd0f3e-9a75-40e8-ba36-d817b1105be9",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:24:53.1981+00",
+    "updated_at": "2026-09-23 23:24:53.1981+00"
+  },
+  {
+    "id": "afb0d28c-4308-4063-b56a-901a88ad47f8",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "2cd09330-7613-4800-b9a3-d89dc28c8a11",
+    "factual_core_id": "8a2b1c6d-fa71-4163-9715-dea94307aab8",
+    "parent_artifact_id": null,
+    "artifact_key": "seed-script",
+    "artifact_type": "vertical_short_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "4168117c5cbae094511689575ce1fb40",
+    "content": {
+      "hook": "A piece of the Chevy Volt battery started as DOE lab research.",
+      "title": "DOE-funded Argonne cathode research became licensed battery technology used by LG Chem in cells supplied for the Chevrolet Volt.",
+      "script": "The story is not that Argonne built the Volt battery. The traceable bridge is narrower: Argonne developed patented cathode material technology, LG Chem licensed it, and Argonne records that the licensed material was used in the battery supplied for the Volt."
+    },
+    "generation_context": {
+      "mode": "seed_import",
+      "factual_hash": "f071d044affc611f02f221fbcacbb966",
+      "research_packet_id": "410c2886-e3c5-4adc-ad3b-8682deda5e60",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:24:53.1981+00",
+    "updated_at": "2026-09-23 23:24:53.1981+00"
+  },
+  {
+    "id": "ad052a5c-ec8c-4ce8-98b2-829db73db691",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "26e127de-cdd8-4b3b-b48c-0c608163aa5b",
+    "factual_core_id": "c5c87c67-0d7f-45cd-8055-9fdf02a32b9c",
+    "parent_artifact_id": null,
+    "artifact_key": "seed-script",
+    "artifact_type": "vertical_short_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "d21f2df945ffed403c9e1d6dfd4646cc",
+    "content": {
+      "hook": "A cancer therapy can take decades to travel from a government lab to a commercial product. Here is the bridge.",
+      "title": "Decades of NCI tumor-infiltrating lymphocyte research moved through a CRADA and NIH patent licenses into Iovance development and the 2024 FDA approval of Amtagvi.",
+      "script": "This is a commercialization story, not medical advice. The verifiable bridge runs through NCI research, a 2011 cooperative R&D agreement, NIH licensing, and Iovance development before FDA approval in 2024."
+    },
+    "generation_context": {
+      "mode": "seed_import",
+      "factual_hash": "31527b118c6721e9487da4683a8bd2d7",
+      "research_packet_id": "ebb39ec5-9c73-4879-b11f-2be35bc4f39b",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:24:53.1981+00",
+    "updated_at": "2026-09-23 23:24:53.1981+00"
+  },
+  {
+    "id": "533b232e-5731-4025-adb4-8db009ee65a4",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e129a4fd-0d37-466e-8b86-89d9a4858d8f",
+    "factual_core_id": "dee464f2-f17e-4005-816a-0e36c55197cd",
+    "parent_artifact_id": null,
+    "artifact_key": "seed-script",
+    "artifact_type": "vertical_short_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "278e928a420601cf07db697807e2665e",
+    "content": {
+      "hook": "What can a laboratory license be worth once it becomes a product platform?",
+      "title": "ORNL microfluidic Lab-on-a-chip technology was licensed by Caliper Life Sciences, became part of its commercial platform, and ORNL links that success to PerkinElmer’s 2011 acquisition of Caliper.",
+      "script": "The strongest version avoids a tempting exaggeration. The ORNL license was not “worth $600 million” by itself. ORNL says the technology’s success contributed to PerkinElmer’s decision; the SEC separately verifies the acquisition and its roughly $600 million net price."
+    },
+    "generation_context": {
+      "mode": "seed_import",
+      "factual_hash": "911512e15d515910a32e83c3f59fd5a6",
+      "research_packet_id": "614d22df-af82-4bbb-9ecc-beda750ce84f",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:24:53.1981+00",
+    "updated_at": "2026-09-23 23:24:53.1981+00"
+  },
+  {
+    "id": "4e633817-6b2b-4618-a0d8-6d31cc128763",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "44debf27-f78e-4640-a0e2-916172cb039d",
+    "factual_core_id": "14d37a22-3074-434b-8299-b0e332f7742a",
+    "parent_artifact_id": null,
+    "artifact_key": "seed-script",
+    "artifact_type": "vertical_short_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "783fc0854d6956ee841699584551c329",
+    "content": {
+      "hook": "Why can a box on a utility pole become a national supply-chain problem? Start with 80,000 varieties.",
+      "title": "Distribution transformers are a grid bottleneck because limited domestic capacity, long procurement timelines, foreign dependence and extreme specification fragmentation make rapid substitution/expansion difficult.",
+      "script": "The bottleneck is partly physical and partly organizational. DOE points to limited capacity and long procurement timelines, but it also identifies tens of thousands of transformer varieties—meaning factories are not simply making one interchangeable product at scale."
+    },
+    "generation_context": {
+      "mode": "seed_import",
+      "factual_hash": "8514687138546d57815060aa773c6191",
+      "research_packet_id": "16b1381e-7cf3-4007-bf8b-f69038f38dc6",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:24:53.1981+00",
+    "updated_at": "2026-09-23 23:24:53.1981+00"
+  },
+  {
+    "id": "07d826f7-15ef-489e-aa6c-783deda03f07",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "f509144b-c01d-464b-9300-0714226bbb9a",
+    "factual_core_id": "e7449b3c-559e-43bb-a36b-3bf0f3b355c7",
+    "parent_artifact_id": null,
+    "artifact_key": "seed-script",
+    "artifact_type": "vertical_short_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "47f98096a26029c082ff9d3c1750b723",
+    "content": {
+      "hook": "The nuclear-fuel bottleneck is not where uranium comes out of the ground. It is what happens next.",
+      "title": "The chokepoint in U.S. nuclear fuel is not simply uranium ore: enrichment services remain heavily foreign-sourced while policy is trying to rebuild domestic capacity.",
+      "script": "Ore supply and enrichment are different markets. The current U.S. vulnerability appears downstream: EIA’s latest annual data show most enrichment services bought for civilian reactors in 2025 came from foreign sources."
+    },
+    "generation_context": {
+      "mode": "seed_import",
+      "factual_hash": "c2f866e6eb0f8447d29f6261cc3ebb67",
+      "research_packet_id": "32246cef-a313-4ba8-91b8-6e2b06bd772b",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:24:53.1981+00",
+    "updated_at": "2026-09-23 23:24:53.1981+00"
+  },
+  {
+    "id": "add90c14-56b4-416c-a8ae-9fb6c8b34cbc",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "d6943861-0e23-4a92-b2a4-10af15f5fa02",
+    "factual_core_id": "52b632f9-36ac-4d08-b686-38a0e96eccc2",
+    "parent_artifact_id": null,
+    "artifact_key": "seed-script",
+    "artifact_type": "vertical_short_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "13d749ad0308d952816ad34c28853763",
+    "content": {
+      "hook": "When a medicine shortage gets bad enough, the supply-chain workaround can cross a border.",
+      "title": "A 2026 U.S. cefotaxime shortage became severe enough that FDA coordinated temporary importation of a Canadian-market product, illustrating how limited approved supply can turn an injectable medicine into a supply-chain chokepoint.",
+      "script": "The safe story stops where the evidence stops. FDA’s hosted notice establishes a critical shortage and a temporary import response. It does not establish that a particular factory failure, ingredient shortage or quality event caused the shortage."
+    },
+    "generation_context": {
+      "mode": "seed_import",
+      "factual_hash": "c0f17ae7b39a59eac3e5926ad79dfe94",
+      "research_packet_id": "f355de8f-1faf-4eca-97b7-c013b4145e6e",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:24:53.1981+00",
+    "updated_at": "2026-09-23 23:24:53.1981+00"
+  },
+  {
+    "id": "23802ebc-fd97-4635-a83f-c9500cf0ace2",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "5ec9cea0-3902-4f8a-91fd-4371a907de3e",
+    "factual_core_id": "9b8c8bc2-af46-4a52-aa7b-e2b858be1dd9",
+    "parent_artifact_id": null,
+    "artifact_key": "seed-script",
+    "artifact_type": "vertical_short_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "20a279add97fe22e3a77a3eec5a5a590",
+    "content": {
+      "hook": "Mining rare earths is not the same as making the magnet inside a high-performance motor.",
+      "title": "Rare-earth permanent magnets are a downstream manufacturing chokepoint: U.S. industry has domestic mineral resources but still depends heavily on foreign processing/material and magnet supply chains.",
+      "script": "The useful distinction is between resources and industrial capability. A mine does not automatically provide separated oxides, refined metals, alloy powder and finished high-performance magnets. The bottleneck can migrate downstream as each stage is added."
+    },
+    "generation_context": {
+      "mode": "seed_import",
+      "factual_hash": "f65837e7046a47cfac5b6b2f40f5d5c1",
+      "research_packet_id": "19c8c79e-4c0d-4aaf-9ea8-76dfe0796669",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:24:53.1981+00",
+    "updated_at": "2026-09-23 23:24:53.1981+00"
+  },
+  {
+    "id": "2f0a1d02-1a29-4609-af75-9f247349bc66",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "0109348d-8097-458b-b89e-c2affaec2a8b",
+    "factual_core_id": "fa85d3b1-23b8-4ea8-b867-b282f113f5df",
+    "parent_artifact_id": null,
+    "artifact_key": "seed-script",
+    "artifact_type": "vertical_short_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "11b6b22fa890b21a61892c19d1a72700",
+    "content": {
+      "hook": "A semiconductor supply chain can depend on a metal the U.S. does not produce in primary form.",
+      "title": "Gallium is a semiconductor-material chokepoint because the United States does not produce low-purity primary gallium domestically while global primary production is overwhelmingly concentrated in China.",
+      "script": "The cleanest warning is methodological. A customs table can say a shipment came from Canada, Germany or Japan while the underlying material chain began elsewhere. USGS now explicitly models indirect provenance because supplier country and producer country are not always the same thing."
+    },
+    "generation_context": {
+      "mode": "seed_import",
+      "factual_hash": "443511304b81b5d984c5a657e1628e19",
+      "research_packet_id": "ba103bf5-e44f-4f7e-90b0-620d13b65798",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:24:53.1981+00",
+    "updated_at": "2026-09-23 23:24:53.1981+00"
+  },
+  {
+    "id": "56051bc1-c993-4dae-ab0a-25bbfc359710",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e3dc883f-3c0e-4c3d-9c0b-b79ed90128f2",
+    "factual_core_id": "da52fde6-6189-4455-b64e-935bce9fb377",
+    "parent_artifact_id": "7234047b-b806-4fde-ae23-098aff0454ff",
+    "artifact_key": "seed-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "7010d533b8e237643f33e15e5975a6a5a1fbcbfcbfe0413a9fa6fca7b627a1c7",
+    "content": {
+      "body": "The defensible story is not “NASA invented the phone camera.” It is narrower and better: JPL work produced a specific CMOS active-pixel architecture, and the inventors built a company to move that architecture into commercial markets.",
+      "hook": "The camera sensor story starts with a spacecraft power problem, not a phone.",
+      "headline": "A low-power image sensor developed at JPL for spacecraft became a commercial technology through a JPL-founded spinout, Photobit."
+    },
+    "generation_context": {
+      "mode": "medeng_seed_studio_acceptance",
+      "factual_hash": "3b28037120a341c67253d9648890bfdd",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "research_packet_id": "f910d42e-c254-4254-b1e5-e86a69757a33",
+      "source_artifact_id": "7234047b-b806-4fde-ae23-098aff0454ff",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:40:07.770724+00",
+    "updated_at": "2026-09-23 23:40:07.770724+00"
+  },
+  {
+    "id": "fb26cc08-5eab-44f1-a737-8a3d273066c7",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e3dc883f-3c0e-4c3d-9c0b-b79ed90128f2",
+    "factual_core_id": "da52fde6-6189-4455-b64e-935bce9fb377",
+    "parent_artifact_id": "7234047b-b806-4fde-ae23-098aff0454ff",
+    "artifact_key": "seed-long-video",
+    "artifact_type": "long_video_script",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "ab6e4bf9a830f9d9af56ea73b2565d93d882b76988c954253f29e89ef3976550",
+    "content": {
+      "closing": "No additional factual assertions beyond the bound factual core.",
+      "opening": "The camera sensor story starts with a spacecraft power problem, not a phone.",
+      "sections": [
+        {
+          "kind": "factual_core_summary",
+          "text": "The defensible story is not “NASA invented the phone camera.” It is narrower and better: JPL work produced a specific CMOS active-pixel architecture, and the inventors built a company to move that architecture into commercial markets."
+        }
+      ]
+    },
+    "generation_context": {
+      "mode": "medeng_seed_studio_acceptance",
+      "factual_hash": "3b28037120a341c67253d9648890bfdd",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "research_packet_id": "f910d42e-c254-4254-b1e5-e86a69757a33",
+      "source_artifact_id": "7234047b-b806-4fde-ae23-098aff0454ff",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:40:07.770724+00",
+    "updated_at": "2026-09-23 23:40:07.770724+00"
+  },
+  {
+    "id": "d93060d6-1bde-44c8-8616-6ad655b08a3f",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e3dc883f-3c0e-4c3d-9c0b-b79ed90128f2",
+    "factual_core_id": "da52fde6-6189-4455-b64e-935bce9fb377",
+    "parent_artifact_id": "7234047b-b806-4fde-ae23-098aff0454ff",
+    "artifact_key": "seed-narration",
+    "artifact_type": "narration",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "ba1ca1c55ca823f6df3d9957f105a587703c6bb9b1c1320dae9bf5901c3f449f",
+    "content": {
+      "text": "The defensible story is not “NASA invented the phone camera.” It is narrower and better: JPL work produced a specific CMOS active-pixel architecture, and the inventors built a company to move that architecture into commercial markets.",
+      "pronunciation_notes": []
+    },
+    "generation_context": {
+      "mode": "medeng_seed_studio_acceptance",
+      "factual_hash": "3b28037120a341c67253d9648890bfdd",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "research_packet_id": "f910d42e-c254-4254-b1e5-e86a69757a33",
+      "source_artifact_id": "7234047b-b806-4fde-ae23-098aff0454ff",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:40:07.770724+00",
+    "updated_at": "2026-09-23 23:40:07.770724+00"
+  },
+  {
+    "id": "a8104e0b-e7de-4dc1-98c4-0dcd464cc1c9",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e3dc883f-3c0e-4c3d-9c0b-b79ed90128f2",
+    "factual_core_id": "da52fde6-6189-4455-b64e-935bce9fb377",
+    "parent_artifact_id": "7234047b-b806-4fde-ae23-098aff0454ff",
+    "artifact_key": "seed-visual-plan",
+    "artifact_type": "visual_plan",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "801bb14a5d70399a6e9b30d88b57eaab50e7b781375e3b66cdadcfe3bb514b0e",
+    "content": {
+      "shots": [
+        {
+          "kind": "title_card",
+          "text": "A low-power image sensor developed at JPL for spacecraft became a commercial technology through a JPL-founded spinout, Photobit."
+        },
+        {
+          "kind": "rights_safe_supporting_visuals",
+          "instruction": "Use only generated, owned, public-domain, or explicitly rights-cleared visuals."
+        },
+        {
+          "kind": "source_card",
+          "instruction": "Preserve research provenance; do not add new factual claims in visuals."
+        }
+      ]
+    },
+    "generation_context": {
+      "mode": "medeng_seed_studio_acceptance",
+      "factual_hash": "3b28037120a341c67253d9648890bfdd",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "research_packet_id": "f910d42e-c254-4254-b1e5-e86a69757a33",
+      "source_artifact_id": "7234047b-b806-4fde-ae23-098aff0454ff",
+      "seed_pack_work_log_id": 963,
+      "editorial_runtime_work_log_id": 1017
+    },
+    "created_at": "2026-09-23 23:40:07.770724+00",
+    "updated_at": "2026-09-23 23:40:07.770724+00"
+  },
+  {
+    "id": "e9e1e442-5c21-4f2b-a7a2-374de6ff2c0d",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "74f95f01-33f9-4a92-a6b0-27aed5071f95",
+    "factual_core_id": "4a4de9fd-58c6-43b0-b1f0-f410c5c079ff",
+    "parent_artifact_id": null,
+    "artifact_key": "live-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "84a0fc844425d849280f24a23b837808b3e8acf9e13d57d604a229d9425ba7d8",
+    "content": {
+      "body": "NASA Spinoff 2004 reports that Marshall Space Flight Center used smart-camera technology in the DART Advanced Video Guidance Sensor. Southern Vision Systems then developed the commercial SpecterView sensor based on work done in support of that mission, with prototype development beginning in April 2003 and volume manufacturing by April 2004. This is a historical NASA-documented commercialization story; it does not imply that SpecterView is still sold today.",
+      "hook": "A camera technology built for autonomous spacecraft docking found a commercial path on Earth.",
+      "headline": "From spacecraft docking work to a commercial smart camera",
+      "source_note": "Historical facts attributed to NASA Spinoff 2004 and archived in NASA NTRS document 20050031179."
+    },
+    "generation_context": {
+      "mode": "live_verified_editorial_v1",
+      "factual_hash": "f68764c7a49ff70ba6414dd954a049aa9225259c0b5529547d049b802f0d2404",
+      "source_scope": "historical_official_nasa",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "research_packet_id": "635ccdb2-25bc-4089-8e18-e2da54526ff8",
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-09-24 00:14:25.150912+00",
+    "updated_at": "2026-09-24 00:14:25.150912+00"
+  },
+  {
+    "id": "6b6d4307-4267-4b3f-9520-a854fda1d314",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "90fc5ca2-d714-4cff-ace6-0a3e6699cbb2",
+    "factual_core_id": "a47a5a60-bcb2-4a23-bbdf-8579b9686faf",
+    "parent_artifact_id": null,
+    "artifact_key": "live-deterministic-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "b00f2665fe9262948117d91cd6d8b89c082c9e650a9405a17a5ceecccbf9eaec",
+    "content": {
+      "body": "NASA Spinoff reports Nikon specially modified F3 35mm cameras for Space Shuttle astronauts. NASA Spinoff reports nonmigratory lubricants developed for the space-camera modification were used in commercial F3 variants. NASA Spinoff identifies a coreless motor as another F3 spinoff and reports it allowed 140 rolls of film on one set of batteries.",
+      "hook": "A historical technology story documented in NASA Spinoff records.",
+      "headline": "Historical NASA Spinoff record: Space Camera",
+      "source_note": "Frozen factual-core sources: https://spinoff.nasa.gov/node/9384 | https://ntrs.nasa.gov/citations/20030001791"
+    },
+    "generation_context": {
+      "mode": "deterministic_factual_core_v1",
+      "factual_hash": "815936bf30f79ab2e44f6638fadbc73854e16264c92d8af8380a84d0e7384b33",
+      "source_scope": "frozen_factual_core_only",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "external_ai_used": false,
+      "research_packet_id": "2e54c5b6-cbf1-4b1d-ac9b-c35a65c4961c",
+      "public_side_effects": false,
+      "claim_strengthening_allowed": false,
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-09-24 01:14:47.468707+00",
+    "updated_at": "2026-09-24 01:14:47.468707+00"
+  },
+  {
+    "id": "e6437342-41e5-4241-afa8-6d5ebf5179f7",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "8b0e7955-e934-4c11-adc4-ad9553b423a0",
+    "factual_core_id": "d0862ea2-cb27-49b3-a506-2e0e6a87adfa",
+    "parent_artifact_id": null,
+    "artifact_key": "live-deterministic-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "e87ba828a6b5887b516d0e345835bc94324930647611d55ddaf3187dcd2984ce",
+    "content": {
+      "body": "NASA Spinoff reports Nikon cameras were designed for easy, accurate operation by Skylab astronauts in weightlessness. NASA Spinoff reports Nikon later incorporated the plastic-cushioned advance-lever simplification into the commercial Nikon FM compact.",
+      "hook": "A historical technology story documented in NASA Spinoff records.",
+      "headline": "Historical NASA Spinoff record: Nikon Camera",
+      "source_note": "Frozen factual-core sources: https://spinoff.nasa.gov/node/9388 | https://ntrs.nasa.gov/citations/20030004814"
+    },
+    "generation_context": {
+      "mode": "deterministic_factual_core_v1",
+      "factual_hash": "967bd10c32b3c74f6eaa00fb8055e6b9a76d4a737b11945693f8bcc1032dda9a",
+      "source_scope": "frozen_factual_core_only",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "external_ai_used": false,
+      "research_packet_id": "47d0db3b-bab3-4f27-9f0e-1a9f7b248219",
+      "public_side_effects": false,
+      "claim_strengthening_allowed": false,
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-09-24 01:14:47.468707+00",
+    "updated_at": "2026-09-24 01:14:47.468707+00"
+  },
+  {
+    "id": "29b1eb01-eed1-4a5d-bf21-719c03e6774d",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "3b775603-199b-4fe2-ab04-b73a25248a70",
+    "factual_core_id": "a76bdff5-644b-4cb2-a7d2-b97daf0c6609",
+    "parent_artifact_id": null,
+    "artifact_key": "live-deterministic-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "9c8bbbe5dfa3390848985aeeb5b09d8f40014cd8d9563026842d35f448985b63",
+    "content": {
+      "body": "NASA Spinoff reports JPL and Amber/Raytheon developed QWIP infrared detector technology together. NASA Spinoff reports a QWIP camera identified hot spots during the October 1996 Malibu fires.",
+      "hook": "A historical technology story documented in NASA Spinoff records.",
+      "headline": "Historical NASA Spinoff record: Infrared Camera",
+      "source_note": "Frozen factual-core sources: https://spinoff.nasa.gov/spinoff1997/ps2.html | https://ntrs.nasa.gov/citations/20020076146"
+    },
+    "generation_context": {
+      "mode": "deterministic_factual_core_v1",
+      "factual_hash": "d437d5df3c4ec9681d879e17a5157eaec7b09a7be1e0a128b18de544d11770c8",
+      "source_scope": "frozen_factual_core_only",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "external_ai_used": false,
+      "research_packet_id": "4a7dccb4-fe5a-4a31-8c04-36e9bb853401",
+      "public_side_effects": false,
+      "claim_strengthening_allowed": false,
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-09-24 01:14:47.468707+00",
+    "updated_at": "2026-09-24 01:14:47.468707+00"
+  },
+  {
+    "id": "f9674f8d-2140-422b-88b6-d0858fbe6414",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e6deba25-ccc8-4250-a16a-7fda70873cc7",
+    "factual_core_id": "14e72290-4dda-47ca-8d63-84e424e05647",
+    "parent_artifact_id": null,
+    "artifact_key": "live-deterministic-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "08fd026aed2a24065535b0bb37d737c9be1fb0c8bd9d439689bc2194fa4f3f75",
+    "content": {
+      "body": "NASA Spinoff reports that Omniview was developed for NASA as a viewing/receiving device for guiding space robots. NASA Spinoff reports that TeleRobotics International developed Omniview under a NASA Small Business Innovation Research contract/grant. NASA Spinoff 1994 reports that Omniview was introduced to the commercial market in 1993.",
+      "hook": "A historical technology story documented in NASA Spinoff records.",
+      "headline": "Historical NASA Spinoff record: A Motionless Camera",
+      "source_note": "Frozen factual-core sources: https://spinoff.nasa.gov/node/9755 | https://ntrs.nasa.gov/citations/20020080109"
+    },
+    "generation_context": {
+      "mode": "deterministic_factual_core_v1",
+      "factual_hash": "39648e7ba6738c3dc9ee95bf69716bf76f83e24b4f6a4665cbb836f0e8102a48",
+      "source_scope": "frozen_factual_core_only",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "external_ai_used": false,
+      "research_packet_id": "28b0656c-ec2f-4bfe-929f-78c18f775629",
+      "public_side_effects": false,
+      "claim_strengthening_allowed": false,
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-09-24 01:14:47.468707+00",
+    "updated_at": "2026-09-24 01:14:47.468707+00"
+  },
+  {
+    "id": "420cbc39-ce48-4fff-8f78-4fb5e00929eb",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "bd426f29-a549-4e72-a05f-36bb0f26005b",
+    "factual_core_id": "f32d2e1a-38ff-4019-a825-d42c4e07c142",
+    "parent_artifact_id": null,
+    "artifact_key": "live-deterministic-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "0de8b76a878b1157d82e6f81fd213d18276f7672369285d691bd2ed7d19fadfb",
+    "content": {
+      "body": "NASA Spinoff describes PixelVision’s NV652 as a commercial back-illuminated low-light CCD camera. NASA Spinoff identifies former JPL engineer James R. Janesick’s prior CCD expertise as the NASA technology input to the development.",
+      "hook": "A historical technology story documented in NASA Spinoff records.",
+      "headline": "Historical NASA Spinoff record: Night Vision Camera",
+      "source_note": "Frozen factual-core sources: https://spinoff.nasa.gov/spinoff1996/35.html | https://ntrs.nasa.gov/citations/20020079084"
+    },
+    "generation_context": {
+      "mode": "deterministic_factual_core_v1",
+      "factual_hash": "220ee36d869db6f513a9d3c24ecb8381ee1dc1eb9c12b51e92ce4929b7efc85a",
+      "source_scope": "frozen_factual_core_only",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "external_ai_used": false,
+      "research_packet_id": "d095cdc9-6b66-4460-b18d-3f5639a8ce37",
+      "public_side_effects": false,
+      "claim_strengthening_allowed": false,
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-09-24 01:14:47.468707+00",
+    "updated_at": "2026-09-24 01:14:47.468707+00"
+  },
+  {
+    "id": "17c83ada-846b-4dcd-aa04-4af8f6c02ada",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "549ac962-6c18-4aaa-9641-dedcf9e89bd2",
+    "factual_core_id": "9ffbab72-11b8-4516-91f5-5dd7c1402f4f",
+    "parent_artifact_id": null,
+    "artifact_key": "live-deterministic-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "14e5bd88c9801d57106ef993ae320155f0aa8ed87d56a95062b4ee764223ef8b",
+    "content": {
+      "body": "NASA Spinoff reports SciMeasure developed Little Joe with JPL under NASA SBIR. NASA Spinoff reports the work led to a commercial modular CCD camera sold by SciMeasure. NASA Spinoff reports Phase II was 95 percent smaller, 92 percent lighter, and used 92.5 percent less power than Phase I.",
+      "hook": "A historical technology story documented in NASA Spinoff records.",
+      "headline": "Historical NASA Spinoff record: New Modular Camera No Ordinary Joe",
+      "source_note": "Frozen factual-core sources: https://spinoff.nasa.gov/node/10328 | https://ntrs.nasa.gov/citations/20030099649"
+    },
+    "generation_context": {
+      "mode": "deterministic_factual_core_v1",
+      "factual_hash": "38cbe176cab3ce168f2014b32aef7c6f7260cf0bdef67966b3f45aa5f2fa26c6",
+      "source_scope": "frozen_factual_core_only",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "external_ai_used": false,
+      "research_packet_id": "8d23caa8-90c3-4e46-b262-f6df4d5ad900",
+      "public_side_effects": false,
+      "claim_strengthening_allowed": false,
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-09-24 01:14:47.468707+00",
+    "updated_at": "2026-09-24 01:14:47.468707+00"
+  },
+  {
+    "id": "ca9d7467-70ec-4b2e-a5d5-059d4c84e8c3",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "527fdab2-8418-4aac-b700-895ef63f2aaf",
+    "factual_core_id": "b2c76194-f2ee-40e8-bb3b-8fd6c180806c",
+    "parent_artifact_id": null,
+    "artifact_key": "live-deterministic-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "c14659c46bcc11e6110bb2a150e2c77dd53cfa9b9061a5a02981458048de9891",
+    "content": {
+      "body": null,
+      "hook": "A historical technology story documented in NASA Spinoff records.",
+      "headline": "Historical NASA Spinoff record: NIH, CDC and FDA Small Business Innovation Research Grant (Parent SBIR [R43/R44] Clinical Trial Optional)",
+      "source_note": "Sources are frozen in the factual core."
+    },
+    "generation_context": {
+      "mode": "deterministic_factual_core_v2",
+      "factual_hash": "3c18b192825c0599fbe83998c83d1476a30aab2c5ff243bc102b0961e820e39c",
+      "source_scope": "frozen_factual_core_only",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "external_ai_used": false,
+      "research_packet_id": "d5649985-dca2-4ee6-a2d7-b771211b46d8",
+      "public_side_effects": false,
+      "factual_core_version": 1,
+      "claim_strengthening_allowed": false,
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-10-03 08:27:00.142427+00",
+    "updated_at": "2026-10-03 08:27:00.142427+00"
+  },
+  {
+    "id": "8ffbc89b-0286-41dd-9092-591c471a8021",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "d13f499f-4caa-4b05-8b3b-ba2fc10e99bd",
+    "factual_core_id": "aea306d6-aced-4268-a29c-393adc2f4a7d",
+    "parent_artifact_id": null,
+    "artifact_key": "live-deterministic-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "8184465b45840b0a981e817e321f83f630e4f86a51db381dd18fec4e22dd44c3",
+    "content": {
+      "body": null,
+      "hook": "A historical technology story documented in NASA Spinoff records.",
+      "headline": "Historical NASA Spinoff record: Region 4 Small Business Transportation Technical Assistance Center (SBTTAC)",
+      "source_note": "Sources are frozen in the factual core."
+    },
+    "generation_context": {
+      "mode": "deterministic_factual_core_v2",
+      "factual_hash": "c534e23652e3be0c07e99f8428e30b2d2700ce1fb92883ab1ef4a8044c0be90a",
+      "source_scope": "frozen_factual_core_only",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "external_ai_used": false,
+      "research_packet_id": "79e30744-9923-4290-acd9-cd08575606a3",
+      "public_side_effects": false,
+      "factual_core_version": 1,
+      "claim_strengthening_allowed": false,
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-10-03 08:27:00.142427+00",
+    "updated_at": "2026-10-03 08:27:00.142427+00"
+  },
+  {
+    "id": "09948dcb-83f5-448f-ba4a-4e0c623caa71",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "deadac24-a079-4f81-bc52-9a2d63c7d63d",
+    "factual_core_id": "8bcbfda5-939d-4557-ac0a-5d230071e1f1",
+    "parent_artifact_id": null,
+    "artifact_key": "live-deterministic-social-post",
+    "artifact_type": "social_post",
+    "version": 1,
+    "state": "validated",
+    "artifact_hash": "33c5e61468ae4075aa59d8773fd0dd934b8bf50c3c574ef9cd2ac329490a408c",
+    "content": {
+      "body": null,
+      "hook": "A historical technology story documented in NASA Spinoff records.",
+      "headline": "Historical NASA Spinoff record: Small Business Innovation Research and Small Business Technology Transfer Programs Phase II",
+      "source_note": "Sources are frozen in the factual core."
+    },
+    "generation_context": {
+      "mode": "deterministic_factual_core_v2",
+      "factual_hash": "006db7e5db44421f439ac3d49690ccc52a52ad49eb827914c48c562f0d50097c",
+      "source_scope": "frozen_factual_core_only",
+      "brand_policy_id": "1f1ebaa0-9260-44a3-956f-499390ee094c",
+      "external_ai_used": false,
+      "research_packet_id": "1fa32094-813a-4c2e-b662-e8fcbc592d1f",
+      "public_side_effects": false,
+      "factual_core_version": 1,
+      "claim_strengthening_allowed": false,
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-10-03 08:27:00.142427+00",
+    "updated_at": "2026-10-03 08:27:00.142427+00"
+  }
+]

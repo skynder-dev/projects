@@ -1,0 +1,618 @@
+[
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "demand_wtp",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn230108search0",
+      "turn230108search4"
+    ],
+    "rationale": "Commercial trucking insurance is mandatory/mission-critical for many target carriers and current annual premium spend is material.",
+    "updated_at": "2026-09-24 21:41:09.500929+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "gate_key": "demand_wtp",
+    "required": true,
+    "status": "partial",
+    "evidence_refs": [],
+    "rationale": "Commercial repair/equipment/cash-flow products clearly exist, but event frequency and realized referral demand in the owned network remain unmeasured.",
+    "updated_at": "2026-09-24 21:41:09.500929+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "gate_key": "entrant_edge_strength",
+    "required": true,
+    "status": "partial",
+    "evidence_refs": [],
+    "rationale": "Existing ~40-contact trucking network is real, but refresh rate, qualified conversations and conversion are not measured.",
+    "updated_at": "2026-09-24 21:41:09.500929+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "gate_key": "supply_or_market_access",
+    "required": true,
+    "status": "partial",
+    "evidence_refs": [],
+    "rationale": "Multiple finance/referral partners exist, but no partner agreement or payout schedule is yet secured.",
+    "updated_at": "2026-09-24 21:41:09.500929+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "gate_key": "acquisition_cac",
+    "required": true,
+    "status": "partial",
+    "evidence_refs": [],
+    "rationale": "Owned network can reduce CAC, but no measured funnel exists.",
+    "updated_at": "2026-09-24 21:41:09.500929+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "gate_key": "competition_wedge",
+    "required": true,
+    "status": "partial",
+    "evidence_refs": [],
+    "rationale": "Initial access edge exists, but superiority versus local/direct alternatives is not validated through binds or partner outcomes.",
+    "updated_at": "2026-09-24 21:41:09.500929+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "gate_key": "legal_compliance",
+    "required": true,
+    "status": "partial",
+    "evidence_refs": [],
+    "rationale": "Referral model must be checked by product/state and partner terms; no external referrals authorized yet.",
+    "updated_at": "2026-09-24 21:41:09.500929+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "gate_key": "two_person_execution",
+    "required": true,
+    "status": "partial",
+    "evidence_refs": [],
+    "rationale": "Operationally plausible, but actual quote/referral/admin workload per account has not been measured.",
+    "updated_at": "2026-09-24 21:41:09.500929+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "gate_key": "repeat_ltv",
+    "required": true,
+    "status": "partial",
+    "evidence_refs": [],
+    "rationale": "Some factoring/finance programs may create residuals, but verified mix is unknown and many referrals are one-time.",
+    "updated_at": "2026-09-24 21:41:09.500929+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "gate_key": "scale_path",
+    "required": true,
+    "status": "partial",
+    "evidence_refs": [],
+    "rationale": "Replication beyond the initial network is a hypothesis; no second channel/location has been validated.",
+    "updated_at": "2026-09-24 21:41:09.500929+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "supply_or_market_access",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn986459search11",
+      "turn763454search6",
+      "turn207922search7"
+    ],
+    "rationale": "PASS for business-analysis feasibility: multiple current routes let independent agencies access commercial/trucking markets, including trucking-specific partner/MGA access. External signup, appetite confirmation and contracts are execution steps and remain owner-gated.",
+    "updated_at": "2026-09-24 21:45:55.773441+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "legal_compliance",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn488783search0",
+      "turn488783search2",
+      "turn488783search6",
+      "turn488783search7"
+    ],
+    "rationale": "PASS for legal-path feasibility: Illinois has a defined P&C producer/business-entity licensing route, renewal/CE framework, and defined bond rule for brokered placements. Actual licensure/E&O/bond/appointments remain launch prerequisites, not analysis prerequisites.",
+    "updated_at": "2026-09-24 21:45:55.773441+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "entrant_edge_strength",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "owner_context:trucking_network_and_approx_40_prospects",
+      "turn312298search1"
+    ],
+    "rationale": "PASS for research-stage beachhead strength: the project has an owner-confirmed ~40-contact trucking network. Under conservative fixed-cost/commission scenarios, only 3-6 binds (7.5%-15% of that network) are needed to cover stressed fixed infrastructure before service labor. Generic insurance benchmarks are used only as a plausibility check. Actual network response belongs to measured_channel_response market validation.",
+    "updated_at": "2026-09-24 21:58:42.938035+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "scale_path",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn350435search0",
+      "turn350435search14",
+      "turn453586search12",
+      "turn453586search8"
+    ],
+    "rationale": "PASS for structural scale path: beyond the initial ~40-contact network, current trucking-agency infrastructure offers renewal-book management and scalable lead flow, while public carrier/renewal data can support prospecting. These are not unique advantages and CAC remains unvalidated, so acquisition_cac and competition_wedge stay open.",
+    "updated_at": "2026-09-24 21:54:27.734289+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "gate_key": "unit_economics",
+    "required": true,
+    "status": "failed",
+    "evidence_refs": [
+      "turn116613search0",
+      "turn116613search8",
+      "turn116613search1",
+      "turn116613search6"
+    ],
+    "rationale": "FAIL as a standalone business at the currently evidenced channel scale: basic repair/protection referrals pay about $100-$250 per funded/sold event; factoring can create lifetime residuals, but public 2025 program economics do not establish enough revenue per owned-network contact to support a standalone company without much larger distribution.",
+    "updated_at": "2026-09-24 21:46:49.742777+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "repeat_ltv",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn453586search12",
+      "turn350435search12",
+      "turn453586search0"
+    ],
+    "rationale": "PASS for structural repeat/LTV: independent P&C compensation explicitly includes renewal commissions, a current trucking producer program pays on renewals, and trucking market-access tooling is built around renewal books. Actual retention rate remains an input to unit economics, not a question of whether recurring revenue exists.",
+    "updated_at": "2026-09-24 21:53:28.228987+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "two_person_execution",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn350435search0",
+      "turn350435search12",
+      "turn763454search4"
+    ],
+    "rationale": "PASS for launch feasibility with two people: current trucking-agency infrastructure is sold to one-user startups, current producer roles demonstrate one licensed producer can originate/service a trucking book with agency tooling, and industry service-capacity benchmarks are far above the initial ~40-contact beachhead. Exact service minutes remain in unit-economics validation.",
+    "updated_at": "2026-09-24 21:53:28.228987+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "measured_channel_response",
+    "required": true,
+    "status": "unknown",
+    "evidence_refs": [],
+    "rationale": "After owner-approved external validation, measure contacted/qualified/quoted/bound funnel in the actual owned trucking network.",
+    "updated_at": "2026-09-24 21:56:05.72065+00",
+    "gate_phase": "market_validation"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "measured_cac",
+    "required": true,
+    "status": "unknown",
+    "evidence_refs": [],
+    "rationale": "After owner-approved external validation, calculate cash + owner-time acquisition cost per quote and per bound account.",
+    "updated_at": "2026-09-24 21:56:05.72065+00",
+    "gate_phase": "market_validation"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "measured_net_contribution",
+    "required": true,
+    "status": "unknown",
+    "evidence_refs": [],
+    "rationale": "After owner-approved external validation, calculate actual commission received minus market-access fees, E&O allocation, servicing/endorsement/COI/remarketing labor and other direct costs.",
+    "updated_at": "2026-09-24 21:56:05.72065+00",
+    "gate_phase": "market_validation"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "acquisition_cac",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "owner_context:trucking_network_and_approx_40_prospects",
+      "turn312298search1",
+      "turn350435search0"
+    ],
+    "rationale": "PASS for research-stage acquisition feasibility: first-channel cash lead cost is near-zero because the network is already owned/known; modeled fixed-cost coverage requires 3-6 binds from ~40 contacts. TIS/public market channels provide expansion options. Actual response, owner-time CAC and cost per bound account remain empirical market-validation gates.",
+    "updated_at": "2026-09-24 21:58:42.938035+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "unit_economics",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn650121search1",
+      "turn350435search0",
+      "turn350435search3",
+      "turn806039search0",
+      "turn806039search5",
+      "turn376133search0",
+      "turn376133search8",
+      "turn986459search7",
+      "turn986459reddit45"
+    ],
+    "rationale": "PASS for research-stage unit-economics feasibility: account gross-commission scenarios are large relative to bounded fixed startup costs. Even a deliberately heavy ~$5.27k fixed-cost stress case requires 3-6 binds at modeled $2,250-$960 gross commission. This does NOT prove net profit; actual service labor, exact commission contract, E&O quote and net contribution are reserved for measured_net_contribution market validation.",
+    "updated_at": "2026-09-24 21:58:42.938035+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "gate_key": "competition_wedge",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "owner_context:trucking_network_and_approx_40_prospects",
+      "turn350435search0",
+      "turn207922search10",
+      "turn207922search13",
+      "turn207922search14"
+    ],
+    "rationale": "PASS narrowly for research-stage entry wedge, not product differentiation: local trucking specialists are strong and language/trucking expertise are not unique. The surviving wedge is privileged warm access to an existing ~40-contact carrier/driver network combined with broad market-access feasibility, giving the new entrant a credible reason to obtain quote opportunities without buying cold leads. Whether buyers actually choose/bind is an empirical market-validation question.",
+    "updated_at": "2026-09-24 21:58:42.938035+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "demand_wtp",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn659627search3",
+      "turn670316search5",
+      "turn670316search1"
+    ],
+    "rationale": "PASS: current Chicago-area and national providers charge recurring $149-$499+ for owner-operator/small-fleet compliance and software substitutes also command recurring spend.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "repeat_ltv",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn659627search9",
+      "turn659627search2",
+      "turn659627search3"
+    ],
+    "rationale": "PASS structurally: DOT/Clearinghouse/testing/deadline obligations recur and current providers sell monthly/annual programs. Actual retention remains empirical.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "supply_or_market_access",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn670316search3",
+      "turn926237search2"
+    ],
+    "rationale": "PASS for feasibility: FMCSA recognizes C/TPAs and current white-label/partner infrastructure can handle testing/MVR/Clearinghouse components. Exact vendor terms remain execution inputs.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "legal_compliance",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn670316search3",
+      "turn659627search9"
+    ],
+    "rationale": "PASS for defined operating path: FMCSA states no DOT qualification requirement for C/TPAs but expects regulatory competence. Launch would still require correct business/privacy/liability controls and clear scope.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "scale_path",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn926237search2",
+      "turn926237search3",
+      "turn659627search6"
+    ],
+    "rationale": "PASS structurally: current provider platforms/partner backends support multi-carrier books and FMCSA maintains a national carrier universe. This does not prove our CAC.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "acquisition_cac",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "owner_context:trucking_network_and_approx_40_prospects"
+    ],
+    "rationale": "PASS for research-stage acquisition feasibility: the first channel is an existing warm trucking network, so initial cash CAC can be low. Owner-time CAC remains a market-validation metric.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "competition_wedge",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "owner_context:trucking_network_and_approx_40_prospects",
+      "turn659627search3",
+      "turn670316search5",
+      "turn670316search1",
+      "turn670316search16"
+    ],
+    "rationale": "PASS narrowly for entry wedge only: direct substitutes are strong, so product differentiation is weak; the surviving wedge is warm access to roughly 40 carriers without buying cold leads.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "entrant_edge_strength",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "owner_context:trucking_network_and_approx_40_prospects"
+    ],
+    "rationale": "PASS for research-stage beachhead existence: the owner-confirmed trucking network is a real channel asset. Commercial strength remains unproven until measured.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "measured_channel_response",
+    "required": true,
+    "status": "unknown",
+    "evidence_refs": [],
+    "rationale": "Future owner-approved test: measure contacted/qualified/consulted/paid conversion in the existing trucking network.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "market_validation"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "measured_cac",
+    "required": true,
+    "status": "unknown",
+    "evidence_refs": [],
+    "rationale": "Future owner-approved test: measure cash plus owner-time CAC per paying compliance account.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "market_validation"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "measured_net_contribution",
+    "required": true,
+    "status": "unknown",
+    "evidence_refs": [],
+    "rationale": "Future owner-approved test: measure actual revenue minus backend/vendor fees, liability/tool allocation and service/support labor.",
+    "updated_at": "2026-09-24 22:22:17.552364+00",
+    "gate_phase": "market_validation"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "two_person_execution",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn926237search2",
+      "turn436914search1",
+      "turn436914search4",
+      "econ:reveng_v5_compliance_econ_v1"
+    ],
+    "rationale": "PASS for research-stage two-person feasibility: provider/partner infrastructure can absorb major workflow components, and conservative sensitivity bounds a 10-account starting book at <=20 routine service hours/month if standardized scope stays <=2 hours/account. A 20-account book is <=40 routine hours/month. Actual onboarding, exceptions and service minutes remain empirical inputs.",
+    "updated_at": "2026-09-24 22:28:01.40387+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "gate_key": "unit_economics",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn659627search3",
+      "turn670316search5",
+      "turn670316search16",
+      "turn436914search0",
+      "turn436914search3",
+      "econ:reveng_v5_compliance_econ_v1"
+    ],
+    "rationale": "PASS for research-stage unit economics, not realized profit: 10 accounts x $199/month with a conservative $499/month backend and $50/hour labor yields about $491/month (~24.7%) before other overhead at 2 routine service hours/account and breaks even near 3 hours/account. Current $149-$499 managed-service pricing and lower-cost backend/substitute components support a credible positive-contribution path. Actual labor, liability, vendor terms and retention remain measured_net_contribution inputs.",
+    "updated_at": "2026-09-24 22:28:01.40387+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "repeat_ltv",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn330743search0",
+      "turn330743search6"
+    ],
+    "rationale": "PASS structurally: the core service is a monthly close/reconciliation/reporting workflow sold on recurring monthly plans. Actual retention remains empirical.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "supply_or_market_access",
+    "required": true,
+    "status": "not_applicable",
+    "evidence_refs": [],
+    "rationale": "NOT APPLICABLE: this managed service does not require scarce carrier/MGA/vendor market access; standard accounting software/vendor choices are execution inputs.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "demand_wtp",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn330743search0",
+      "turn330743search1",
+      "turn330743search6"
+    ],
+    "rationale": "PASS: multiple current trucking/transportation bookkeeping providers publish recurring monthly prices from low hundreds to $500+ for owner-operators and higher for fleets.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "entrant_edge_strength",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "owner_context:trucking_network_and_approx_40_prospects"
+    ],
+    "rationale": "PASS for research-stage beachhead existence: owner-confirmed trucking network is a real acquisition asset, though its commercial strength is unmeasured.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "competition_wedge",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "owner_context:trucking_network_and_approx_40_prospects",
+      "turn330743search1",
+      "turn330743search8"
+    ],
+    "rationale": "PASS narrowly for entry wedge only: direct substitutes are abundant and generic trucking bookkeeping is not differentiated; the surviving wedge is warm access to roughly 40 carriers without buying cold leads.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "legal_compliance",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn314498search0",
+      "turn314498search7",
+      "turn693185search0"
+    ],
+    "rationale": "PASS only for a narrow launch scope: do not use CPA/public-accountant titles, do not perform attest/assurance, and do not prepare compensated federal tax returns unless PTIN/other applicable requirements are separately satisfied.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "acquisition_cac",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "owner_context:trucking_network_and_approx_40_prospects"
+    ],
+    "rationale": "PASS for research-stage acquisition feasibility: initial channel is an existing warm trucking network. Cash CAC can be low; actual owner-time CAC remains empirical.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "scale_path",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn330743search6",
+      "turn330743search0"
+    ],
+    "rationale": "PASS structurally: current providers deliver recurring bookkeeping with dedicated bookkeepers/account managers, supporting a staff-scaling path after the first book is proven.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "measured_channel_response",
+    "required": true,
+    "status": "unknown",
+    "evidence_refs": [],
+    "rationale": "Future owner-approved test: measure qualified bookkeeping pain and paid conversion in the warm trucking network.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "market_validation"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "measured_cac",
+    "required": true,
+    "status": "unknown",
+    "evidence_refs": [],
+    "rationale": "Future owner-approved test: measure cash plus owner-time acquisition cost per paid bookkeeping account.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "market_validation"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "measured_net_contribution",
+    "required": true,
+    "status": "unknown",
+    "evidence_refs": [],
+    "rationale": "Future owner-approved test: measure collected recurring revenue less software, direct bookkeeping/review labor, cleanup allocation and other direct costs.",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "gate_phase": "market_validation"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "two_person_execution",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn610375search1",
+      "turn610375search5",
+      "econ:reveng_v5_trucking_bookkeeping_econ_v1"
+    ],
+    "rationale": "PASS for research-stage two-person feasibility: current practice-capacity benchmarks put light monthly clients around 3-4 hours and standard clients around 5-8, with roughly 15-30 monthly clients per solo bookkeeper depending on depth. A 10-20 account launch book is structurally feasible for two people if recurring scope is standardized and cleanup is separately priced/scheduled. Actual trucking-specific hours remain empirical.",
+    "updated_at": "2026-09-24 22:34:01.700913+00",
+    "gate_phase": "research"
+  },
+  {
+    "opportunity_id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "gate_key": "unit_economics",
+    "required": true,
+    "status": "passed",
+    "evidence_refs": [
+      "turn330743search0",
+      "turn330743search6",
+      "turn330743search10",
+      "turn610375search1",
+      "turn610375search2",
+      "econ:reveng_v5_trucking_bookkeeping_econ_v1"
+    ],
+    "rationale": "PASS for research-stage unit-economics feasibility, not profit forecast: at $350/month, a $50/account software/admin allowance and $50/hour direct labor leave ~$100/month contribution at 4 recurring hours and ~$50 at 5 hours; break-even is about 6 hours. At $500/month, 6 hours leaves ~$150 (~30%). Current providers publish $300-$500+ owner-operator pricing, while low-price substitutes show that full-service scope must not be sold as commodity bookkeeping. Actual hours, review cost, cleanup and retention remain measured_net_contribution inputs.",
+    "updated_at": "2026-09-24 22:34:01.700913+00",
+    "gate_phase": "research"
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "candidate_id": "4eb16a33-04dc-43bc-9fbb-4ac4a1fad874",
+    "source_key": "internal_synthesis",
+    "source_ref": "fixture://synthesis-1",
+    "observed_at": "2026-09-25 05:04:46.68536+00",
+    "details": {}
+  },
+  {
+    "candidate_id": "4eb16a33-04dc-43bc-9fbb-4ac4a1fad874",
+    "source_key": "public_web_search",
+    "source_ref": "fixture://web-1",
+    "observed_at": "2026-09-25 05:04:46.68536+00",
+    "details": {}
+  },
+  {
+    "candidate_id": "9cd9a4d8-ac8e-48a9-90e5-1d91a2073292",
+    "source_key": "internal_synthesis",
+    "source_ref": "fixture://offer-1",
+    "observed_at": "2026-09-25 05:04:46.68536+00",
+    "details": {}
+  },
+  {
+    "candidate_id": "95f17bc8-8723-46db-bf7b-b24c64091acf",
+    "source_key": "internal_synthesis",
+    "source_ref": "fixture://alpha-clean-discovery",
+    "observed_at": "2026-09-25 06:23:48.466324+00",
+    "details": {}
+  }
+]

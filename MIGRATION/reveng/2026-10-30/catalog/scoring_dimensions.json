@@ -1,0 +1,114 @@
+[
+  {
+    "dimension_key": "automation",
+    "name": "Automation",
+    "description": "How much recurring execution can run without owner intervention.",
+    "category": "operations",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "owner_time_efficiency",
+    "name": "Owner-time efficiency",
+    "description": "How little recurring owner time is required relative to value produced.",
+    "category": "operations",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "launch_speed",
+    "name": "Launch speed",
+    "description": "How quickly a credible first test/offer can be launched.",
+    "category": "launch",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "capital_efficiency",
+    "name": "Capital efficiency",
+    "description": "How little upfront/working capital is required.",
+    "category": "economics",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "contribution_economics",
+    "name": "Contribution economics",
+    "description": "Expected contribution potential after direct variable costs.",
+    "category": "economics",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "demand_signal",
+    "name": "Demand signal",
+    "description": "Strength and quality of evidence that buyers want/pay for the outcome.",
+    "category": "market",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "competition_gap",
+    "name": "Competition gap",
+    "description": "Room for a differentiated entrant after substitutes/competition.",
+    "category": "market",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "acquisition_efficiency",
+    "name": "Acquisition efficiency",
+    "description": "Ability to reach buyers without excessive cost or owner effort.",
+    "category": "distribution",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "platform_resilience",
+    "name": "Platform resilience",
+    "description": "Resistance to a single marketplace/platform dependency.",
+    "category": "risk",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "regulatory_simplicity",
+    "name": "Regulatory simplicity",
+    "description": "Low licensing/compliance/legal execution burden.",
+    "category": "risk",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "fulfillment_simplicity",
+    "name": "Fulfillment simplicity",
+    "description": "Low-touch, reliable fulfillment/delivery.",
+    "category": "operations",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "defensibility",
+    "name": "Defensibility",
+    "description": "Potential for durable differentiation, data, audience, brand, workflow or other compounding advantage.",
+    "category": "strategy",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "scale_without_hiring",
+    "name": "Scale without hiring",
+    "description": "Ability to grow revenue without proportional human headcount.",
+    "category": "scale",
+    "higher_is_better": true,
+    "created_at": "2026-09-25 05:02:51.738323+00"
+  },
+  {
+    "dimension_key": "supply_demand_match_quality",
+    "name": "Supply-demand match quality",
+    "description": "Evidence-backed aggregate quality of evaluated non-self supplier-buyer requirement matches; preserves candidate coverage and disposition counts.",
+    "category": "market",
+    "higher_is_better": true,
+    "created_at": "2026-09-26 15:13:24.914292+00"
+  }
+]

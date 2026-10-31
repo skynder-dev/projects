@@ -1,0 +1,460 @@
+[
+  {
+    "id": "f910d42e-c254-4254-b1e5-e86a69757a33",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e3dc883f-3c0e-4c3d-9c0b-b79ed90128f2",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "cc525aa1a254fc15f8cc83de18c0a10b",
+    "summary": "A low-power image sensor developed at JPL for spacecraft became a commercial technology through a JPL-founded spinout, Photobit.",
+    "evaluated_at": "2026-09-23 23:24:20.889753+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "source_mode": "deterministic_seed",
+      "seed_pack_work_log_id": 963,
+      "legality_refresh_work_log_id": 968,
+      "provenance_audit_work_log_id": 966,
+      "logical_acceptance_work_log_id": 971
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "61bd0f3e-9a75-40e8-ba36-d817b1105be9",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "f504c2ab-bb94-470f-ae26-b789b0102575",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "a89c6685a070d18c609d0116b5a17cbd",
+    "summary": "NASA SBIR work helped Aspen Systems turn fragile aerogel into practical flexible insulation and spin out Aspen Aerogels to commercialize it.",
+    "evaluated_at": "2026-09-23 23:24:20.889753+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "source_mode": "deterministic_seed",
+      "seed_pack_work_log_id": 963,
+      "legality_refresh_work_log_id": 968,
+      "provenance_audit_work_log_id": 966,
+      "logical_acceptance_work_log_id": 971
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "410c2886-e3c5-4adc-ad3b-8682deda5e60",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "2cd09330-7613-4800-b9a3-d89dc28c8a11",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "b78dd048334617e54367bf72b875a8ee",
+    "summary": "DOE-funded Argonne cathode research became licensed battery technology used by LG Chem in cells supplied for the Chevrolet Volt.",
+    "evaluated_at": "2026-09-23 23:24:20.889753+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "source_mode": "deterministic_seed",
+      "seed_pack_work_log_id": 963,
+      "legality_refresh_work_log_id": 968,
+      "provenance_audit_work_log_id": 966,
+      "logical_acceptance_work_log_id": 971
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "ebb39ec5-9c73-4879-b11f-2be35bc4f39b",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "26e127de-cdd8-4b3b-b48c-0c608163aa5b",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "4cc24e42fd941c3a5ad24263066245f7",
+    "summary": "Decades of NCI tumor-infiltrating lymphocyte research moved through a CRADA and NIH patent licenses into Iovance development and the 2024 FDA approval of Amtagvi.",
+    "evaluated_at": "2026-09-23 23:24:20.889753+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "source_mode": "deterministic_seed",
+      "seed_pack_work_log_id": 963,
+      "legality_refresh_work_log_id": 968,
+      "provenance_audit_work_log_id": 966,
+      "logical_acceptance_work_log_id": 971
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "614d22df-af82-4bbb-9ecc-beda750ce84f",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e129a4fd-0d37-466e-8b86-89d9a4858d8f",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "ec26797ae22e3858b8cf3c4b76e7364e",
+    "summary": "ORNL microfluidic Lab-on-a-chip technology was licensed by Caliper Life Sciences, became part of its commercial platform, and ORNL links that success to PerkinElmer’s 2011 acquisition of Caliper.",
+    "evaluated_at": "2026-09-23 23:24:20.889753+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "source_mode": "deterministic_seed",
+      "seed_pack_work_log_id": 963,
+      "legality_refresh_work_log_id": 968,
+      "provenance_audit_work_log_id": 966,
+      "logical_acceptance_work_log_id": 971
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "16b1381e-7cf3-4007-bf8b-f69038f38dc6",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "44debf27-f78e-4640-a0e2-916172cb039d",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "6e09608e28ac3be3434ea23328bb345b",
+    "summary": "Distribution transformers are a grid bottleneck because limited domestic capacity, long procurement timelines, foreign dependence and extreme specification fragmentation make rapid substitution/expansion difficult.",
+    "evaluated_at": "2026-09-23 23:24:20.889753+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "source_mode": "deterministic_seed",
+      "seed_pack_work_log_id": 963,
+      "legality_refresh_work_log_id": 968,
+      "provenance_audit_work_log_id": 966,
+      "logical_acceptance_work_log_id": 971
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "32246cef-a313-4ba8-91b8-6e2b06bd772b",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "f509144b-c01d-464b-9300-0714226bbb9a",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "a9d1368ca74f47d94264495709cc0a7e",
+    "summary": "The chokepoint in U.S. nuclear fuel is not simply uranium ore: enrichment services remain heavily foreign-sourced while policy is trying to rebuild domestic capacity.",
+    "evaluated_at": "2026-09-23 23:24:20.889753+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "source_mode": "deterministic_seed",
+      "seed_pack_work_log_id": 963,
+      "legality_refresh_work_log_id": 968,
+      "provenance_audit_work_log_id": 966,
+      "logical_acceptance_work_log_id": 971
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "f355de8f-1faf-4eca-97b7-c013b4145e6e",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "d6943861-0e23-4a92-b2a4-10af15f5fa02",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "ecb27a73395aae8c710e91282a0b6b21",
+    "summary": "A 2026 U.S. cefotaxime shortage became severe enough that FDA coordinated temporary importation of a Canadian-market product, illustrating how limited approved supply can turn an injectable medicine into a supply-chain chokepoint.",
+    "evaluated_at": "2026-09-23 23:24:20.889753+00",
+    "next_recheck_at": "2026-09-24 23:24:20.889753+00",
+    "supersedes_id": null,
+    "metadata": {
+      "source_mode": "deterministic_seed",
+      "seed_pack_work_log_id": 963,
+      "legality_refresh_work_log_id": 968,
+      "provenance_audit_work_log_id": 966,
+      "logical_acceptance_work_log_id": 971
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "19c8c79e-4c0d-4aaf-9ea8-76dfe0796669",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "5ec9cea0-3902-4f8a-91fd-4371a907de3e",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "8d7a682eb3cf6cefa4222e88f32b5559",
+    "summary": "Rare-earth permanent magnets are a downstream manufacturing chokepoint: U.S. industry has domestic mineral resources but still depends heavily on foreign processing/material and magnet supply chains.",
+    "evaluated_at": "2026-09-23 23:24:20.889753+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "source_mode": "deterministic_seed",
+      "seed_pack_work_log_id": 963,
+      "legality_refresh_work_log_id": 968,
+      "provenance_audit_work_log_id": 966,
+      "logical_acceptance_work_log_id": 971
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "ba103bf5-e44f-4f7e-90b0-620d13b65798",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "0109348d-8097-458b-b89e-c2affaec2a8b",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "bc86a49f2fb20026f46f45564244fd49",
+    "summary": "Gallium is a semiconductor-material chokepoint because the United States does not produce low-purity primary gallium domestically while global primary production is overwhelmingly concentrated in China.",
+    "evaluated_at": "2026-09-23 23:24:20.889753+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "source_mode": "deterministic_seed",
+      "seed_pack_work_log_id": 963,
+      "legality_refresh_work_log_id": 968,
+      "provenance_audit_work_log_id": 966,
+      "logical_acceptance_work_log_id": 971
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "635ccdb2-25bc-4089-8e18-e2da54526ff8",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "74f95f01-33f9-4a92-a6b0-27aed5071f95",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "7437f218d841da886111c1e52aa713abe410730fea9660a8734aa61e0532f72c",
+    "summary": "Historical NASA commercialization chain verified against the official NASA Spinoff publication and the NTRS archival record. Scope is limited to attributed historical facts; no current product/market claim.",
+    "evaluated_at": "2026-09-24 00:13:26.389592+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "research_mode": "live_candidate_primary_official_verification",
+      "historical_scope": true,
+      "verification_date": "2026-09-23",
+      "official_ntrs_event_id": "6ad13726-e98b-4db0-ba57-fff278792c6d",
+      "discovery_source_event_id": "6fe94d57-38cc-4a18-b85b-9c703c769f41",
+      "official_spinoff_event_id": "752c3321-1e17-41e5-b55f-2cc7ea3abb10",
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-09-24 00:13:26.389592+00"
+  },
+  {
+    "id": "28b0656c-ec2f-4bfe-929f-78c18f775629",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e6deba25-ccc8-4250-a16a-7fda70873cc7",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "03af720de72ef151a90c460207aa3acdfb00219079621fec46ebcfbd1cff50bc",
+    "summary": "Historical NASA commercialization chain verified against NASA Spinoff 1994 and NTRS document 20020080109. Scope is limited to attributed historical facts; no current company/product claim.",
+    "evaluated_at": "2026-09-24 00:30:49.00272+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "queue_job_id": "15df3752-ec14-422e-89de-5d87103c57b9",
+      "research_mode": "queue_job_official_verification",
+      "historical_scope": true,
+      "verification_date": "2026-09-23",
+      "official_ntrs_event_id": "8f214f2d-a4ff-47ef-a250-f9dd38b20588",
+      "discovery_source_event_id": "a9d6659a-0c5d-4aa0-9c9e-02344ff996bf",
+      "official_spinoff_event_id": "a0750814-d8a1-40a6-9922-dfc3dde6f644",
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-09-24 00:30:49.00272+00"
+  },
+  {
+    "id": "47d0db3b-bab3-4f27-9f0e-1a9f7b248219",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "8b0e7955-e934-4c11-adc4-ad9553b423a0",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "51f6710c40726e38e028e2ea3bd8c391c9b111347f3b8a038300809322221882",
+    "summary": "Historical Nikon camera spinoff verified against NASA Spinoff 1980 and NTRS. Scope is limited to the Skylab-derived operating simplification later incorporated into the commercial Nikon FM compact.",
+    "evaluated_at": "2026-09-24 00:36:54.201722+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "queue_job_id": "4359a041-fecd-493e-8524-f24d2971a572",
+      "research_mode": "queue_job_official_verification",
+      "historical_scope": true,
+      "official_ntrs_event_id": "fbb5bf3f-0d1c-4a01-98ff-f68c1aeddc9f",
+      "official_spinoff_event_id": "bfacf50f-2bf8-484a-a4c7-9a5371c68ed2",
+      "current_product_status_claimed": false
+    },
+    "created_at": "2026-09-24 00:36:54.201722+00"
+  },
+  {
+    "id": "8d23caa8-90c3-4e46-b262-f6df4d5ad900",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "549ac962-6c18-4aaa-9641-dedcf9e89bd2",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "94bf5eda9a7e5ff2f66e41666086e33e844bad49eac66cd92debd41e55f338bc",
+    "summary": "Historical Little Joe commercialization chain verified against NASA Spinoff 2003 and NTRS. Scope is limited to the NASA SBIR/JPL development path and documented engineering changes.",
+    "evaluated_at": "2026-09-24 00:37:35.884336+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "queue_job_id": "5b253abb-82fe-406d-92ce-a1715679547d",
+      "research_mode": "queue_job_official_verification",
+      "historical_scope": true,
+      "official_ntrs_event_id": "0726abc3-f5e5-4208-9083-29ab1c4f4908",
+      "official_spinoff_event_id": "021ccdf1-d1c0-4a3a-a51a-32b7de240ee6"
+    },
+    "created_at": "2026-09-24 00:37:35.884336+00"
+  },
+  {
+    "id": "d095cdc9-6b66-4460-b18d-3f5639a8ce37",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "bd426f29-a549-4e72-a05f-36bb0f26005b",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "85a06972bfe21f0dd103f4759ebf23085816947550ce6010ee242331a9b28479",
+    "summary": "Historical personnel-expertise transfer verified against NASA Spinoff 1996 and NTRS. This is not framed as a NASA patent/license or NASA-funded commercialization chain.",
+    "evaluated_at": "2026-09-24 00:38:35.97182+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "queue_job_id": "b41c2ea3-2f43-494e-be32-2e5276cd6ca5",
+      "research_mode": "queue_job_official_verification",
+      "transfer_mode": "personnel_expertise",
+      "historical_scope": true,
+      "official_ntrs_event_id": "4a9c1ff0-8d5b-43ad-82ee-7ea8899a887b",
+      "official_spinoff_event_id": "ae0b5656-12dd-467b-ab44-1cca0c3dc262"
+    },
+    "created_at": "2026-09-24 00:38:35.97182+00"
+  },
+  {
+    "id": "4a7dccb4-fe5a-4a31-8c04-36e9bb853401",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "3b775603-199b-4fe2-ab04-b73a25248a70",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "1c428108bf496ea496ee35ac5e1ab3aca6a013961129f1dc0b0ee096c8e08cd3",
+    "summary": "Historical QWIP camera chain verified against NASA Spinoff 1997 and NTRS. Scope is limited to JPL/industry development and documented non-medical demonstrations; expected medical uses are not converted into efficacy claims.",
+    "evaluated_at": "2026-09-24 00:39:22.039251+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "queue_job_id": "c801c21f-1e8f-4add-87e0-7712f2b86f1b",
+      "research_mode": "queue_job_official_verification",
+      "historical_scope": true,
+      "medical_claims_allowed": false,
+      "official_ntrs_event_id": "cf653c83-b0b1-483c-91aa-d790766b946d",
+      "official_spinoff_event_id": "d1c2f0cd-086a-4701-85ff-edcf3ad9d2a3"
+    },
+    "created_at": "2026-09-24 00:39:22.039251+00"
+  },
+  {
+    "id": "2e54c5b6-cbf1-4b1d-ac9b-c35a65c4961c",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "90fc5ca2-d714-4cff-ace6-0a3e6699cbb2",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "4e5dcadc19e285517f7b0f82588b9ac08e2fd45ddafd6c54a17eb6290f1ea9f3",
+    "summary": "Historical Nikon F3 Shuttle modification and commercial spinoff chain verified against NASA Spinoff 1983 and NTRS.",
+    "evaluated_at": "2026-09-24 00:40:01.773541+00",
+    "next_recheck_at": null,
+    "supersedes_id": null,
+    "metadata": {
+      "queue_job_id": "daeb8dd6-aef4-4268-bed7-8be74a8c4af5",
+      "research_mode": "queue_job_official_verification",
+      "historical_scope": true,
+      "official_ntrs_event_id": "bfcfcd12-bc27-4723-a990-ec357dd8de0a",
+      "official_spinoff_event_id": "57a1459a-1c05-49f1-b0b8-ecca9c28e0cc"
+    },
+    "created_at": "2026-09-24 00:40:01.773541+00"
+  },
+  {
+    "id": "1fa32094-813a-4c2e-b662-e8fcbc592d1f",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "deadac24-a079-4f81-bc52-9a2d63c7d63d",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "89e7e564256d7849418cf59e6d15200cac4b01b305b02328d5db2a1a2e322e91",
+    "summary": "USDA NIFA SBIR/STTR Phase II is a current posted small-business R&D funding opportunity. Official sources show a Nov. 17, 2026 close date, $600k-$650k award range, $24.75M estimated program funding, and Phase II eligibility limited to prior Phase I winners.",
+    "evaluated_at": "2026-10-03 08:22:12.12851+00",
+    "next_recheck_at": "2026-10-03 14:22:12.12851+00",
+    "supersedes_id": null,
+    "metadata": {
+      "vertical": "US_GRANTS_TO_REELS_V1",
+      "corroboration": [
+        {
+          "url": "https://www.nifa.usda.gov/grants/funding-opportunities/small-business-innovation-research-small-business-technology",
+          "kind": "USDA NIFA"
+        }
+      ],
+      "research_mode": "official_primary_plus_agency_corroboration",
+      "primary_source": {
+        "url": "https://www.grants.gov/search-results-detail/364020",
+        "kind": "Grants.gov",
+        "source_event_id": "54c6ac8b-cece-43e2-bdc2-0a8d329db2c4"
+      },
+      "selection_rank": 1,
+      "important_limit": "Only previous USDA SBIR/STTR Phase I winners are eligible for this Phase II opportunity; do not frame as a grant open to every small business.",
+      "freshness_policy": {
+        "recheck_hours": 6,
+        "recheck_before_audience_use": true
+      },
+      "selection_reason": "Large current small-business Phase II program with concrete award range and deadline; strong useful Reel angle without implying universal eligibility."
+    },
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "id": "79e30744-9923-4290-acd9-cd08575606a3",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "d13f499f-4caa-4b05-8b3b-ba2fc10e99bd",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "27bf59d4283a04cc9ce862ef278da8d4880c175f1e4cbf12d767730efc05727b",
+    "summary": "USDOT Region 4 SBTTAC is a current posted cooperative-agreement opportunity closing Oct. 31, 2026. Grants.gov lists a $250,143 award. The center is intended to provide technical assistance, business development and access-to-capital support to small businesses in nine states including Illinois.",
+    "evaluated_at": "2026-10-03 08:22:12.12851+00",
+    "next_recheck_at": "2026-10-03 14:22:12.12851+00",
+    "supersedes_id": null,
+    "metadata": {
+      "vertical": "US_GRANTS_TO_REELS_V1",
+      "research_mode": "official_primary_plus_program_context",
+      "primary_source": {
+        "url": "https://www.grants.gov/search-results-detail/364004",
+        "kind": "Grants.gov",
+        "source_event_id": "8a0de8f8-db02-4baf-8415-6cc49834894f"
+      },
+      "selection_rank": 2,
+      "important_limit": "The award funds an eligible organization to operate the assistance center; it is not a $250,143 direct cash grant to individual small businesses.",
+      "program_context": [
+        {
+          "url": "https://www.transportation.gov/sites/dot.gov/files/2026-07/Region%204%20Long%20NOFO%20%20final%20.pdf",
+          "use": "program context only; current 2027 award terms come from Grants.gov",
+          "kind": "USDOT prior Region 4 NOFO"
+        }
+      ],
+      "freshness_policy": {
+        "recheck_hours": 6,
+        "recheck_before_audience_use": true
+      },
+      "selection_reason": "Current DOT opportunity with a concrete award and strong practical angle for small-business transportation support, including Illinois."
+    },
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "id": "d5649985-dca2-4ee6-a2d7-b771211b46d8",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "527fdab2-8418-4aac-b700-895ef63f2aaf",
+    "version": 1,
+    "state": "ready",
+    "packet_hash": "d23ed3865010d98089e3249a0abca34a136d934b2aa6ba3265bbeecdf4f367ee",
+    "summary": "PA-27-100 is the current NIH/CDC/FDA Parent SBIR opportunity for U.S. small businesses. It supports feasibility and later R&D aimed at bringing scientific innovations toward commercial products. Grants.gov currently lists a close date of Apr. 5, 2027; exact agency due date must be rechecked before publication.",
+    "evaluated_at": "2026-10-03 08:22:12.12851+00",
+    "next_recheck_at": "2026-10-03 14:22:12.12851+00",
+    "supersedes_id": null,
+    "metadata": {
+      "vertical": "US_GRANTS_TO_REELS_V1",
+      "corroboration": [
+        {
+          "url": "https://grants.nih.gov/funding/explore-nih-opportunities/parent-announcements",
+          "kind": "NIH Grants & Funding"
+        },
+        {
+          "url": "https://www.ninds.nih.gov/funding/find-funding-opportunities",
+          "kind": "NINDS funding listing"
+        }
+      ],
+      "research_mode": "official_primary_plus_agency_corroboration",
+      "primary_source": {
+        "url": "https://www.grants.gov/search-results-detail/359671",
+        "kind": "Grants.gov",
+        "source_event_id": "7f512146-b809-493c-8447-8b9eb079dced"
+      },
+      "selection_rank": 3,
+      "important_limit": "Keep the Reel about funding/commercialization mechanics, not medical efficacy or health claims. Grants.gov currently lists 04/05/2027; NIH pages present expiration around 04/06/2027, so audience-facing copy must say to verify the exact current due date.",
+      "freshness_policy": {
+        "recheck_hours": 6,
+        "recheck_before_audience_use": true
+      },
+      "selection_reason": "Broad active federal SBIR program explicitly for U.S. small businesses; strong explainer angle about R43/R44 innovation funding."
+    },
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  }
+]

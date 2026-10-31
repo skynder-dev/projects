@@ -1,0 +1,754 @@
+[
+  {
+    "claim_id": "a6c1b671-3f41-44c9-86bb-21481ecd162e",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9000",
+    "observed_value": {
+      "price": 20,
+      "currency": "USD"
+    },
+    "note": "Fixture evidence only.",
+    "observed_at": "2026-09-25 05:07:59.812343+00",
+    "expires_at": "2026-10-25 05:07:59.812343+00",
+    "created_at": "2026-09-25 05:07:59.812343+00"
+  },
+  {
+    "claim_id": "a2988dff-52ca-4842-ba8e-dba7845a3b28",
+    "source_id": "8d6856a0-3cf4-4974-bbff-a34cfe73156f",
+    "relation": "supports",
+    "evidence_strength": "0.7000",
+    "observed_value": {
+      "signal": "positive"
+    },
+    "note": "Fixture support.",
+    "observed_at": "2026-09-25 05:07:59.812343+00",
+    "expires_at": "2026-12-24 05:07:59.812343+00",
+    "created_at": "2026-09-25 05:07:59.812343+00"
+  },
+  {
+    "claim_id": "a2988dff-52ca-4842-ba8e-dba7845a3b28",
+    "source_id": "86ea1d63-b3f3-484d-8246-ba19db587432",
+    "relation": "contradicts",
+    "evidence_strength": "0.7500",
+    "observed_value": {
+      "signal": "negative"
+    },
+    "note": "Fixture contradiction.",
+    "observed_at": "2026-09-25 05:07:59.812343+00",
+    "expires_at": "2026-12-24 05:07:59.812343+00",
+    "created_at": "2026-09-25 05:07:59.812343+00"
+  },
+  {
+    "claim_id": "afee439b-39a7-4d21-b10d-ff96d1a465bf",
+    "source_id": "fdc3be5d-887f-4a94-9e94-009d428e341c",
+    "relation": "supports",
+    "evidence_strength": "0.9000",
+    "observed_value": {
+      "price": 19,
+      "currency": "USD"
+    },
+    "note": "Internal alpha fixture evidence only.",
+    "observed_at": "2026-09-25 06:24:22.712269+00",
+    "expires_at": "2026-10-25 06:24:22.712269+00",
+    "created_at": "2026-09-25 06:24:22.712269+00"
+  },
+  {
+    "claim_id": "4a54c6e6-689e-484a-a398-5f4364eee288",
+    "source_id": "ceaa38e9-2089-49c3-b2d1-32f11ea08227",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "model": "QL-1110NWB",
+      "connectivity": [
+        "wireless",
+        "ethernet",
+        "bluetooth"
+      ],
+      "warranty_years": 2,
+      "listed_price_usd": 334.99,
+      "max_label_width_in": 4,
+      "max_standard_address_labels_per_min": 69
+    },
+    "note": "Exact G180 verified source binding; fixture opportunity only.",
+    "observed_at": "2026-09-29 15:56:52+00",
+    "expires_at": "2026-10-29 15:56:52+00",
+    "created_at": "2026-09-30 08:30:07.338851+00"
+  },
+  {
+    "claim_id": "21000000-0000-4000-8000-000000000001",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "supplier_profile_id": "20000000-0000-4000-8000-000000000001"
+    },
+    "note": "REVN10-015 supplier qualification fixture evidence",
+    "observed_at": "2026-09-26 13:39:38.871921+00",
+    "expires_at": "2026-10-26 13:39:38.871921+00",
+    "created_at": "2026-09-26 13:39:38.871921+00"
+  },
+  {
+    "claim_id": "21000000-0000-4000-8000-000000000002",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "supplier_profile_id": "20000000-0000-4000-8000-000000000001"
+    },
+    "note": "REVN10-015 supplier qualification fixture evidence",
+    "observed_at": "2026-09-26 13:39:38.871921+00",
+    "expires_at": "2026-10-26 13:39:38.871921+00",
+    "created_at": "2026-09-26 13:39:38.871921+00"
+  },
+  {
+    "claim_id": "21000000-0000-4000-8000-000000000003",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "supplier_profile_id": "20000000-0000-4000-8000-000000000001"
+    },
+    "note": "REVN10-015 supplier qualification fixture evidence",
+    "observed_at": "2026-09-26 13:39:38.871921+00",
+    "expires_at": "2026-10-26 13:39:38.871921+00",
+    "created_at": "2026-09-26 13:39:38.871921+00"
+  },
+  {
+    "claim_id": "21000000-0000-4000-8000-000000000004",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "supplier_profile_id": "20000000-0000-4000-8000-000000000001"
+    },
+    "note": "REVN10-015 supplier qualification fixture evidence",
+    "observed_at": "2026-09-26 13:39:38.871921+00",
+    "expires_at": "2026-10-26 13:39:38.871921+00",
+    "created_at": "2026-09-26 13:39:38.871921+00"
+  },
+  {
+    "claim_id": "42000000-0000-4000-8000-000000000001",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "41000000-0000-4000-8000-000000000001"
+    },
+    "note": "REVN10-021 buyer qualification fixture evidence",
+    "observed_at": "2026-09-26 14:30:18.366768+00",
+    "expires_at": "2026-10-26 14:30:18.366768+00",
+    "created_at": "2026-09-26 14:30:18.366768+00"
+  },
+  {
+    "claim_id": "42000000-0000-4000-8000-000000000003",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "41000000-0000-4000-8000-000000000001"
+    },
+    "note": "REVN10-021 buyer qualification fixture evidence",
+    "observed_at": "2026-09-26 14:30:18.366768+00",
+    "expires_at": "2026-10-26 14:30:18.366768+00",
+    "created_at": "2026-09-26 14:30:18.366768+00"
+  },
+  {
+    "claim_id": "42000000-0000-4000-8000-000000000004",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "41000000-0000-4000-8000-000000000001"
+    },
+    "note": "REVN10-021 buyer qualification fixture evidence",
+    "observed_at": "2026-09-26 14:30:18.366768+00",
+    "expires_at": "2026-10-26 14:30:18.366768+00",
+    "created_at": "2026-09-26 14:30:18.366768+00"
+  },
+  {
+    "claim_id": "42000000-0000-4000-8000-000000000005",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "41000000-0000-4000-8000-000000000001"
+    },
+    "note": "REVN10-021 buyer qualification fixture evidence",
+    "observed_at": "2026-09-26 14:30:18.366768+00",
+    "expires_at": "2026-10-26 14:30:18.366768+00",
+    "created_at": "2026-09-26 14:30:18.366768+00"
+  },
+  {
+    "claim_id": "42000000-0000-4000-8000-000000000002",
+    "source_id": "8d6856a0-3cf4-4974-bbff-a34cfe73156f",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "41000000-0000-4000-8000-000000000001"
+    },
+    "note": "REVN10-021 buyer qualification fixture evidence",
+    "observed_at": "2026-09-26 14:30:18.366768+00",
+    "expires_at": "2026-10-26 14:30:18.366768+00",
+    "created_at": "2026-09-26 14:30:18.366768+00"
+  },
+  {
+    "claim_id": "45000000-0000-4000-8000-000000000001",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "44000000-0000-4000-8000-000000000002"
+    },
+    "note": "REVN10-027 distinct buyer fixture evidence",
+    "observed_at": "2026-09-26 15:18:36.565397+00",
+    "expires_at": "2026-10-26 15:18:36.565397+00",
+    "created_at": "2026-09-26 15:18:36.565397+00"
+  },
+  {
+    "claim_id": "45000000-0000-4000-8000-000000000002",
+    "source_id": "8d6856a0-3cf4-4974-bbff-a34cfe73156f",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "44000000-0000-4000-8000-000000000002"
+    },
+    "note": "REVN10-027 distinct buyer fixture evidence",
+    "observed_at": "2026-09-26 15:18:36.565397+00",
+    "expires_at": "2026-10-26 15:18:36.565397+00",
+    "created_at": "2026-09-26 15:18:36.565397+00"
+  },
+  {
+    "claim_id": "45000000-0000-4000-8000-000000000003",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "44000000-0000-4000-8000-000000000002"
+    },
+    "note": "REVN10-027 distinct buyer fixture evidence",
+    "observed_at": "2026-09-26 15:18:36.565397+00",
+    "expires_at": "2026-10-26 15:18:36.565397+00",
+    "created_at": "2026-09-26 15:18:36.565397+00"
+  },
+  {
+    "claim_id": "45000000-0000-4000-8000-000000000004",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "44000000-0000-4000-8000-000000000002"
+    },
+    "note": "REVN10-027 distinct buyer fixture evidence",
+    "observed_at": "2026-09-26 15:18:36.565397+00",
+    "expires_at": "2026-10-26 15:18:36.565397+00",
+    "created_at": "2026-09-26 15:18:36.565397+00"
+  },
+  {
+    "claim_id": "45000000-0000-4000-8000-000000000005",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "44000000-0000-4000-8000-000000000002"
+    },
+    "note": "REVN10-027 distinct buyer fixture evidence",
+    "observed_at": "2026-09-26 15:18:36.565397+00",
+    "expires_at": "2026-10-26 15:18:36.565397+00",
+    "created_at": "2026-09-26 15:18:36.565397+00"
+  },
+  {
+    "claim_id": "45000000-0000-4000-8000-000000000006",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "44000000-0000-4000-8000-000000000002"
+    },
+    "note": "REVN10-027 distinct buyer fixture evidence",
+    "observed_at": "2026-09-26 15:18:36.565397+00",
+    "expires_at": "2026-10-26 15:18:36.565397+00",
+    "created_at": "2026-09-26 15:18:36.565397+00"
+  },
+  {
+    "claim_id": "45000000-0000-4000-8000-000000000007",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "buyer_profile_id": "44000000-0000-4000-8000-000000000002"
+    },
+    "note": "REVN10-027 distinct buyer fixture evidence",
+    "observed_at": "2026-09-26 15:18:36.565397+00",
+    "expires_at": "2026-10-26 15:18:36.565397+00",
+    "created_at": "2026-09-26 15:18:36.565397+00"
+  },
+  {
+    "claim_id": "46000000-0000-4000-8000-000000000001",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "unit": "each",
+      "period": "month",
+      "fixture": true,
+      "capacity_max": 2000,
+      "capacity_min": 1500
+    },
+    "note": "REVN10-027 supplier capacity fixture evidence",
+    "observed_at": "2026-09-26 15:18:36.565397+00",
+    "expires_at": "2026-10-26 15:18:36.565397+00",
+    "created_at": "2026-09-26 15:18:36.565397+00"
+  },
+  {
+    "claim_id": "50000000-0000-4000-8000-000000000001",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_logistics_origin",
+      "revn10_033": true
+    },
+    "note": "REVN10-033 logistics synthetic source-backed fixture",
+    "observed_at": "2026-09-26 16:05:31.645389+00",
+    "expires_at": "2027-03-25 16:05:31.645389+00",
+    "created_at": "2026-09-26 16:05:31.645389+00"
+  },
+  {
+    "claim_id": "50000000-0000-4000-8000-000000000002",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_logistics_destination",
+      "revn10_033": true
+    },
+    "note": "REVN10-033 logistics synthetic source-backed fixture",
+    "observed_at": "2026-09-26 16:05:31.645389+00",
+    "expires_at": "2027-03-25 16:05:31.645389+00",
+    "created_at": "2026-09-26 16:05:31.645389+00"
+  },
+  {
+    "claim_id": "50000000-0000-4000-8000-000000000003",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_logistics_shipment",
+      "revn10_033": true
+    },
+    "note": "REVN10-033 logistics synthetic source-backed fixture",
+    "observed_at": "2026-09-26 16:05:31.645389+00",
+    "expires_at": "2026-12-25 16:05:31.645389+00",
+    "created_at": "2026-09-26 16:05:31.645389+00"
+  },
+  {
+    "claim_id": "50000000-0000-4000-8000-000000000005",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_logistics_leg",
+      "revn10_033": true
+    },
+    "note": "REVN10-033 logistics synthetic source-backed fixture",
+    "observed_at": "2026-09-26 16:05:31.645389+00",
+    "expires_at": "2026-10-26 16:05:31.645389+00",
+    "created_at": "2026-09-26 16:05:31.645389+00"
+  },
+  {
+    "claim_id": "50000000-0000-4000-8000-000000000006",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_logistics_truck_cost",
+      "revn10_033": true
+    },
+    "note": "REVN10-033 logistics synthetic source-backed fixture",
+    "observed_at": "2026-09-26 16:05:31.645389+00",
+    "expires_at": "2026-10-26 16:05:31.645389+00",
+    "created_at": "2026-09-26 16:05:31.645389+00"
+  },
+  {
+    "claim_id": "50000000-0000-4000-8000-000000000007",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_logistics_fuel_cost",
+      "revn10_033": true
+    },
+    "note": "REVN10-033 logistics synthetic source-backed fixture",
+    "observed_at": "2026-09-26 16:05:31.645389+00",
+    "expires_at": "2026-10-26 16:05:31.645389+00",
+    "created_at": "2026-09-26 16:05:31.645389+00"
+  },
+  {
+    "claim_id": "50000000-0000-4000-8000-000000000008",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_buyer_b_transport_sla",
+      "revn10_033": true
+    },
+    "note": "REVN10-033 logistics synthetic source-backed fixture",
+    "observed_at": "2026-09-26 16:05:31.645389+00",
+    "expires_at": "2026-12-25 16:05:31.645389+00",
+    "created_at": "2026-09-26 16:05:31.645389+00"
+  },
+  {
+    "claim_id": "71000000-0000-4000-8000-000000000001",
+    "source_id": "70000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_fin_supplier_terms",
+      "revn10_045": true
+    },
+    "note": "REVN10-045 synthetic transaction-finance evidence",
+    "observed_at": "2026-09-26 17:47:27.188716+00",
+    "expires_at": "2026-12-25 17:47:27.188716+00",
+    "created_at": "2026-09-26 17:47:27.188716+00"
+  },
+  {
+    "claim_id": "50000000-0000-4000-8000-000000000004",
+    "source_id": "9883bade-f15f-400c-bf7f-3ef117223646",
+    "relation": "supports",
+    "evidence_strength": "0.9500",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_logistics_route",
+      "revn10_033": true
+    },
+    "note": "REVN10-033 logistics synthetic source-backed fixture",
+    "observed_at": "2026-09-26 16:05:31.645389+00",
+    "expires_at": "2026-10-26 16:05:31.645389+00",
+    "created_at": "2026-09-26 16:05:31.645389+00"
+  },
+  {
+    "claim_id": "61000000-0000-4000-8000-000000000001",
+    "source_id": "60000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_trade_domestic_jurisdiction",
+      "revn10_039": true
+    },
+    "note": "REVN10-039 synthetic official/public trade evidence",
+    "observed_at": "2026-09-26 16:59:18.915175+00",
+    "expires_at": "2027-03-25 16:59:18.915175+00",
+    "created_at": "2026-09-26 16:59:18.915175+00"
+  },
+  {
+    "claim_id": "61000000-0000-4000-8000-000000000002",
+    "source_id": "60000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_trade_required_list_snapshot",
+      "revn10_039": true
+    },
+    "note": "REVN10-039 synthetic official/public trade evidence",
+    "observed_at": "2026-09-26 16:59:18.915175+00",
+    "expires_at": "2026-10-26 16:59:18.915175+00",
+    "created_at": "2026-09-26 16:59:18.915175+00"
+  },
+  {
+    "claim_id": "61000000-0000-4000-8000-000000000003",
+    "source_id": "60000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_trade_supplier_screening",
+      "revn10_039": true
+    },
+    "note": "REVN10-039 synthetic official/public trade evidence",
+    "observed_at": "2026-09-26 16:59:18.915175+00",
+    "expires_at": "2026-10-26 16:59:18.915175+00",
+    "created_at": "2026-09-26 16:59:18.915175+00"
+  },
+  {
+    "claim_id": "61000000-0000-4000-8000-000000000004",
+    "source_id": "60000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_trade_buyer_screening",
+      "revn10_039": true
+    },
+    "note": "REVN10-039 synthetic official/public trade evidence",
+    "observed_at": "2026-09-26 16:59:18.915175+00",
+    "expires_at": "2026-10-26 16:59:18.915175+00",
+    "created_at": "2026-09-26 16:59:18.915175+00"
+  },
+  {
+    "claim_id": "61000000-0000-4000-8000-000000000005",
+    "source_id": "60000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_trade_restriction_clear",
+      "revn10_039": true
+    },
+    "note": "REVN10-039 synthetic official/public trade evidence",
+    "observed_at": "2026-09-26 16:59:18.915175+00",
+    "expires_at": "2026-10-26 16:59:18.915175+00",
+    "created_at": "2026-09-26 16:59:18.915175+00"
+  },
+  {
+    "claim_id": "61000000-0000-4000-8000-000000000006",
+    "source_id": "60000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_trade_product_admissibility",
+      "revn10_039": true
+    },
+    "note": "REVN10-039 synthetic official/public trade evidence",
+    "observed_at": "2026-09-26 16:59:18.915175+00",
+    "expires_at": "2026-12-25 16:59:18.915175+00",
+    "created_at": "2026-09-26 16:59:18.915175+00"
+  },
+  {
+    "claim_id": "61000000-0000-4000-8000-000000000007",
+    "source_id": "60000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_trade_insurance_not_required",
+      "revn10_039": true
+    },
+    "note": "REVN10-039 synthetic official/public trade evidence",
+    "observed_at": "2026-09-26 16:59:18.915175+00",
+    "expires_at": "2026-10-26 16:59:18.915175+00",
+    "created_at": "2026-09-26 16:59:18.915175+00"
+  },
+  {
+    "claim_id": "61000000-0000-4000-8000-000000000008",
+    "source_id": "60000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_trade_country_risk",
+      "revn10_039": true
+    },
+    "note": "REVN10-039 synthetic official/public trade evidence",
+    "observed_at": "2026-09-26 16:59:18.915175+00",
+    "expires_at": "2026-10-26 16:59:18.915175+00",
+    "created_at": "2026-09-26 16:59:18.915175+00"
+  },
+  {
+    "claim_id": "71000000-0000-4000-8000-000000000002",
+    "source_id": "70000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_fin_buyer_terms",
+      "revn10_045": true
+    },
+    "note": "REVN10-045 synthetic transaction-finance evidence",
+    "observed_at": "2026-09-26 17:47:27.188716+00",
+    "expires_at": "2026-12-25 17:47:27.188716+00",
+    "created_at": "2026-09-26 17:47:27.188716+00"
+  },
+  {
+    "claim_id": "71000000-0000-4000-8000-000000000003",
+    "source_id": "70000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_fin_supplier_settlement",
+      "revn10_045": true
+    },
+    "note": "REVN10-045 synthetic transaction-finance evidence",
+    "observed_at": "2026-09-26 17:47:27.188716+00",
+    "expires_at": "2026-12-25 17:47:27.188716+00",
+    "created_at": "2026-09-26 17:47:27.188716+00"
+  },
+  {
+    "claim_id": "71000000-0000-4000-8000-000000000004",
+    "source_id": "70000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_fin_buyer_settlement",
+      "revn10_045": true
+    },
+    "note": "REVN10-045 synthetic transaction-finance evidence",
+    "observed_at": "2026-09-26 17:47:27.188716+00",
+    "expires_at": "2026-12-25 17:47:27.188716+00",
+    "created_at": "2026-09-26 17:47:27.188716+00"
+  },
+  {
+    "claim_id": "71000000-0000-4000-8000-000000000005",
+    "source_id": "70000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_fin_date_anchors",
+      "revn10_045": true
+    },
+    "note": "REVN10-045 synthetic transaction-finance evidence",
+    "observed_at": "2026-09-26 17:47:27.188716+00",
+    "expires_at": "2026-10-26 17:47:27.188716+00",
+    "created_at": "2026-09-26 17:47:27.188716+00"
+  },
+  {
+    "claim_id": "71000000-0000-4000-8000-000000000006",
+    "source_id": "70000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_fin_logistics_cashflow",
+      "revn10_045": true
+    },
+    "note": "REVN10-045 synthetic transaction-finance evidence",
+    "observed_at": "2026-09-26 17:47:27.188716+00",
+    "expires_at": "2026-10-26 17:47:27.188716+00",
+    "created_at": "2026-09-26 17:47:27.188716+00"
+  },
+  {
+    "claim_id": "81000000-0000-4000-8000-000000000001",
+    "source_id": "80000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_structure_applicability",
+      "revn10_051": true
+    },
+    "note": "REVN10-051 synthetic deal-structure evidence",
+    "observed_at": "2026-09-26 18:38:33.975352+00",
+    "expires_at": "2026-12-25 18:38:33.975352+00",
+    "created_at": "2026-09-26 18:38:33.975352+00"
+  },
+  {
+    "claim_id": "81000000-0000-4000-8000-000000000002",
+    "source_id": "80000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_structure_role",
+      "revn10_051": true
+    },
+    "note": "REVN10-051 synthetic deal-structure evidence",
+    "observed_at": "2026-09-26 18:38:33.975352+00",
+    "expires_at": "2027-03-25 18:38:33.975352+00",
+    "created_at": "2026-09-26 18:38:33.975352+00"
+  },
+  {
+    "claim_id": "81000000-0000-4000-8000-000000000003",
+    "source_id": "80000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_structure_revenue",
+      "revn10_051": true
+    },
+    "note": "REVN10-051 synthetic deal-structure evidence",
+    "observed_at": "2026-09-26 18:38:33.975352+00",
+    "expires_at": "2026-10-26 18:38:33.975352+00",
+    "created_at": "2026-09-26 18:38:33.975352+00"
+  },
+  {
+    "claim_id": "81000000-0000-4000-8000-000000000004",
+    "source_id": "80000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_structure_cost",
+      "revn10_051": true
+    },
+    "note": "REVN10-051 synthetic deal-structure evidence",
+    "observed_at": "2026-09-26 18:38:33.975352+00",
+    "expires_at": "2026-10-26 18:38:33.975352+00",
+    "created_at": "2026-09-26 18:38:33.975352+00"
+  },
+  {
+    "claim_id": "81000000-0000-4000-8000-000000000005",
+    "source_id": "80000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_structure_risk_event",
+      "revn10_051": true
+    },
+    "note": "REVN10-051 synthetic deal-structure evidence",
+    "observed_at": "2026-09-26 18:38:33.975352+00",
+    "expires_at": "2026-10-26 18:38:33.975352+00",
+    "created_at": "2026-09-26 18:38:33.975352+00"
+  },
+  {
+    "claim_id": "81000000-0000-4000-8000-000000000006",
+    "source_id": "80000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_structure_risk_probability",
+      "revn10_051": true
+    },
+    "note": "REVN10-051 synthetic deal-structure evidence",
+    "observed_at": "2026-09-26 18:38:33.975352+00",
+    "expires_at": "2026-10-26 18:38:33.975352+00",
+    "created_at": "2026-09-26 18:38:33.975352+00"
+  },
+  {
+    "claim_id": "81000000-0000-4000-8000-000000000007",
+    "source_id": "80000000-0000-4000-8000-000000000001",
+    "relation": "supports",
+    "evidence_strength": "0.9700",
+    "observed_value": {
+      "fixture": true,
+      "claim_key": "fixture_structure_downside",
+      "revn10_051": true
+    },
+    "note": "REVN10-051 synthetic deal-structure evidence",
+    "observed_at": "2026-09-26 18:38:33.975352+00",
+    "expires_at": "2026-10-26 18:38:33.975352+00",
+    "created_at": "2026-09-26 18:38:33.975352+00"
+  }
+]

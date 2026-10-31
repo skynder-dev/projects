@@ -1,0 +1,32 @@
+[
+  {
+    "id": "2c1d3fac-dd72-4a9b-a59c-4783bad29927",
+    "market_key": "fixture_market",
+    "name": "Fixture Market",
+    "description": "Internal regression-only market.",
+    "geography": {
+      "fixture": true
+    },
+    "buyer_context": {
+      "fixture": true
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:54.392543+00",
+    "updated_at": "2026-09-25 05:00:54.392543+00"
+  },
+  {
+    "id": "4f346af2-2739-412d-b5dd-79de70fdbe1e",
+    "market_key": "home_inventory_tools",
+    "name": "Home inventory tools",
+    "description": "Internal alpha fixture market.",
+    "geography": {
+      "fixture": true
+    },
+    "buyer_context": {
+      "buyer_segment": "Apartment renters and frequent movers"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 06:23:48.466324+00",
+    "updated_at": "2026-09-25 06:23:48.466324+00"
+  }
+]

@@ -1,0 +1,177 @@
+{
+  "source_archive_sha256": "76afccb5a55b1a7aa0c8aa29a56f8f7a256e8c1d6c2884b067719ff74f092d73",
+  "source_attachment": "libfile_91f9f32acc148191a086bc68e83b636a",
+  "project": "social",
+  "files": [
+    {
+      "path": ".ci/tests/run_social_concept_core.py",
+      "sha256": "ada87a18fe34e213e39183abe962890efd7d657d1ca3b0e4407e8e36427ee3a2",
+      "bytes": 1570
+    },
+    {
+      "path": "social/CONCEPT_CORE_OFFLINE.md",
+      "sha256": "edb4ebbfe845aff31520cd40d53208ac9803f50af07bdd3a54f09e6b2b3f4d64",
+      "bytes": 4935
+    },
+    {
+      "path": "social/CONCEPT_RESULT_V2.md",
+      "sha256": "141fd6ab6ab6f817112733304eb9d94724b87be1c4c2346356d3dbd1a7fba49e",
+      "bytes": 2691
+    },
+    {
+      "path": "social/OWNER_CONTEXT_RECOVERY.md",
+      "sha256": "0fd1fc76f6778b7d634f92c2ba325ae815317d61a16e5f57c2b01ac761b0a17d",
+      "bytes": 1030
+    },
+    {
+      "path": "social/socialreel/__init__.py",
+      "sha256": "bcedec234724ffb9d1a632d9a886a5d65b6dd8f706f2cf8e6b073e936292289c",
+      "bytes": 109
+    },
+    {
+      "path": "social/socialreel/__main__.py",
+      "sha256": "5404720bf3fdab6f3d816de94ef77f856a98377de46b3d7ed329016378813509",
+      "bytes": 3631
+    },
+    {
+      "path": "social/socialreel/claims.py",
+      "sha256": "39006920e8a9eb0c8aa11f455a8f43e7f5f3bfa1a6fba514a96f288213e90bdf",
+      "bytes": 15353
+    },
+    {
+      "path": "social/socialreel/common.py",
+      "sha256": "83bf07636def05f967c8776992a3eefa1a9db8b9e2ab2744f5680d57fc3f246f",
+      "bytes": 4141
+    },
+    {
+      "path": "social/socialreel/concept_admission.py",
+      "sha256": "ee3b2e2df15b632a54311bce0ec9c8eb641d4cd1ef9b40eb21ab6cdf8cfebe4f",
+      "bytes": 4505
+    },
+    {
+      "path": "social/socialreel/concept_core.py",
+      "sha256": "268b6cb57fbf1a641074259dccc7441ee10da24a5020f28f70c2457e65b6c62f",
+      "bytes": 24839
+    },
+    {
+      "path": "social/socialreel/concept_decision_ledger.py",
+      "sha256": "33ec7981d784ce32e76eae34b64bdc91eee2c39fc2dc48d127c8aac69ef1cd8b",
+      "bytes": 1424
+    },
+    {
+      "path": "social/socialreel/concept_excerpt_evidence.py",
+      "sha256": "b18dd34810f12af1914ab22997375dfa1750221106e2fcd8f91b507bae8670af",
+      "bytes": 3107
+    },
+    {
+      "path": "social/socialreel/concept_locks.py",
+      "sha256": "7175236ab6ac099c452147375a5e0ae8e5570e92ef72877b50efd3767dbaa12c",
+      "bytes": 1406
+    },
+    {
+      "path": "social/socialreel/concept_owner_context.py",
+      "sha256": "0e5af550fd5a2e8c12d41870bdf0e4a6be991eeac4fecad16beab17dce13f385",
+      "bytes": 4050
+    },
+    {
+      "path": "social/socialreel/concept_storage.py",
+      "sha256": "3d35e6c35119357aef049c61c5ae46395dcd82af64ca7fe528395e7608134331",
+      "bytes": 1402
+    },
+    {
+      "path": "social/socialreel/concept_store.py",
+      "sha256": "ef5397bd5cd03b9d9ff40983bdffd3bdc8555eb6e1c39c2969433f30d8598112",
+      "bytes": 2300
+    },
+    {
+      "path": "social/socialreel/grants.py",
+      "sha256": "3623460752a9a05a166a6f9b39e196c0b237994a0822862b91b07fb65e1f1d9e",
+      "bytes": 12943
+    },
+    {
+      "path": "social/socialreel/json_contract.py",
+      "sha256": "9805d1c84afb83f11b20b6059be0a304512186dd05b37e10f401eb211f588d31",
+      "bytes": 3991
+    },
+    {
+      "path": "social/socialreel/pipeline.py",
+      "sha256": "bad83d70a5c418af6a10857379273a63e9fff564c37ac197e33749d0ef8950fa",
+      "bytes": 17889
+    },
+    {
+      "path": "social/socialreel/render.py",
+      "sha256": "8b04937146ef86440b6b380c8b36c6db8bff130a8c1d9b6eb95e53104d1130e4",
+      "bytes": 11861
+    },
+    {
+      "path": "social/socialreel/source_documents.py",
+      "sha256": "346668ad6bf9a9b0c13c6f65fc12dcb1d3e17b12f67ffd592fc323d91a16da72",
+      "bytes": 2385
+    },
+    {
+      "path": "social/socialreel/source_excerpt_model_view.py",
+      "sha256": "2f02559560bce56e867a258f0dcaa3d61b76566bff9495567aed8318d84e918b",
+      "bytes": 10157
+    },
+    {
+      "path": "social/socialreel/source_excerpt_projection.py",
+      "sha256": "308daad17d0ebce37ebe7be50bb8a95ab86a33f9f699ac495f0b0cf746de25d4",
+      "bytes": 12307
+    },
+    {
+      "path": "social/socialreel/topic_intent.py",
+      "sha256": "82e36adaf7ce5bb5562e2831cb8bd1c72b98a53de4fc4baf526e6933402cbacf",
+      "bytes": 1096
+    },
+    {
+      "path": "social/socialreel/verify.py",
+      "sha256": "036ef65d96de506418b81d9e2e76b99d3acae4374b3d88346b2bb4e394679e3e",
+      "bytes": 5359
+    },
+    {
+      "path": "social/socialreel/voice.py",
+      "sha256": "8311e276d1ea46b0da2b9bf193a6f286b613c47ac1587047349156ad0f0861f2",
+      "bytes": 5632
+    },
+    {
+      "path": "social/socialreel/writer.py",
+      "sha256": "4c3001fabb28cb599a0c80a349e9dc641f10e705cc7d046f074c7eadb41b2f33",
+      "bytes": 16741
+    },
+    {
+      "path": "social/tests/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "social/tests/test_concept_abstention.py",
+      "sha256": "3633b604e36d1df923ea445bd2a7475fa98ede8c7af30eafbdf2d8472f94ac23",
+      "bytes": 7850
+    },
+    {
+      "path": "social/tests/test_concept_offline.py",
+      "sha256": "f07b47f4464465424d2538da98fdf61f29ac852329e9a02c0de939a5c8ccfe0b",
+      "bytes": 14331
+    },
+    {
+      "path": "social/tests/test_concept_persistence.py",
+      "sha256": "e7d253950555d81fe226fb39c22cef340b8e4a041c48808064912196a16e596a",
+      "bytes": 7153
+    },
+    {
+      "path": "social/tests/test_concept_source_cards.py",
+      "sha256": "41fd4b6d30c6a432654a3c5cb2fcf7a25409114d813e0c675195e306405f4e0d",
+      "bytes": 15539
+    },
+    {
+      "path": "social/tests/test_core.py",
+      "sha256": "ecadb873d38b9d143818d8a597096b3db5d10cf35d93e8e2fb8ee1910a61c291",
+      "bytes": 9514
+    },
+    {
+      "path": "social/tests/test_live_source_context.py",
+      "sha256": "4ebc5492b8c5b7c4bef3edbb975404ed7447ec48df7d99aa7c9186f68d6b4123",
+      "bytes": 22809
+    }
+  ]
+}

@@ -1,0 +1,2750 @@
+[
+  {
+    "id": 1,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "f63633f2-2e10-488f-92c4-7304994dfd06",
+    "engine_id": "33f19f48-fe61-4c6f-bce4-190f21ad2241",
+    "task_key": "gapfill:B2-01:00d83c36a9ded3bf12caeac8df972c44",
+    "task_type": "evidence_gap_fill",
+    "priority": 81,
+    "status": "cancelled",
+    "objective": "Fill missing RevEng v2 sellability evidence dimensions for Special-ed transition/vocational job-skill curriculum series without external actions.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "competition",
+      "differentiation",
+      "distribution",
+      "fulfillment",
+      "qa_quality"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "current competitor pricing",
+      "acquisition/CAC evidence where available"
+    ],
+    "result": {},
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": null,
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 19:51:59.050627+00"
+  },
+  {
+    "id": 4,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "f8fe34a4-2435-4e15-828c-14c168622289",
+    "engine_id": "57484d82-05fc-4482-a6bc-d63dac5608dd",
+    "task_key": "gapfill:B2-16:9273a100a552b6d7a3c2a279f2907b66",
+    "task_type": "evidence_gap_fill",
+    "priority": 83,
+    "status": "cancelled",
+    "objective": "Fill missing RevEng v2 sellability evidence dimensions for Personalized GPX/Strava race-route poster engine without external actions.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "differentiation",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "current competitor pricing",
+      "acquisition/CAC evidence where available"
+    ],
+    "result": {},
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": null,
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 19:51:59.050627+00"
+  },
+  {
+    "id": 6,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "e7ecd0ed-f5fb-4247-90ad-c81468618726",
+    "engine_id": "8fdc0e98-43e9-436e-89da-74a709809644",
+    "task_key": "gapfill:B2-22:a1c937cee8635e35103e07aa5930464a",
+    "task_type": "evidence_gap_fill",
+    "priority": 80,
+    "status": "cancelled",
+    "objective": "Fill missing RevEng v2 sellability evidence dimensions for Mobile-detailing quote and true-margin toolkit without external actions.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "demand",
+      "differentiation",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "current competitor pricing",
+      "acquisition/CAC evidence where available"
+    ],
+    "result": {},
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": null,
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 19:51:59.050627+00"
+  },
+  {
+    "id": 8,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "5667b708-151e-44bb-950d-772cb31d6472",
+    "engine_id": "aa394823-0eee-436e-ae27-ca45010b5a2d",
+    "task_key": "gapfill:N01:02ac2e34e4974033f12b6f1b236712f7",
+    "task_type": "evidence_gap_fill",
+    "priority": 85,
+    "status": "cancelled",
+    "objective": "Fill missing RevEng v2 sellability evidence dimensions for Personalized road-trip / destination activity books without external actions.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "competition",
+      "differentiation",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "current competitor pricing",
+      "acquisition/CAC evidence where available"
+    ],
+    "result": {},
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": null,
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 19:51:59.050627+00"
+  },
+  {
+    "id": 9,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "c98df6c8-6958-4103-bb2f-bfcd92bda56c",
+    "engine_id": "aa394823-0eee-436e-ae27-ca45010b5a2d",
+    "task_key": "gapfill:N03:1427352b2cdb04b3d4e7603dd924919b",
+    "task_type": "evidence_gap_fill",
+    "priority": 82,
+    "status": "cancelled",
+    "objective": "Fill missing RevEng v2 sellability evidence dimensions for Bilingual personalized child books without external actions.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "demand",
+      "differentiation",
+      "distribution",
+      "fulfillment",
+      "qa_quality"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "current competitor pricing",
+      "acquisition/CAC evidence where available"
+    ],
+    "result": {},
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": null,
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 19:51:59.050627+00"
+  },
+  {
+    "id": 10,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "eea3c526-ed25-41fc-9e26-5e544bbe053c",
+    "engine_id": "aa394823-0eee-436e-ae27-ca45010b5a2d",
+    "task_key": "gapfill:N05:a1c937cee8635e35103e07aa5930464a",
+    "task_type": "evidence_gap_fill",
+    "priority": 83,
+    "status": "cancelled",
+    "objective": "Fill missing RevEng v2 sellability evidence dimensions for Pet-photo coloring/adventure books without external actions.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "demand",
+      "differentiation",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "current competitor pricing",
+      "acquisition/CAC evidence where available"
+    ],
+    "result": {},
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": null,
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 19:51:59.050627+00"
+  },
+  {
+    "id": 11,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "46ad5c25-523b-4afc-943b-7f57685b91d2",
+    "engine_id": "8fdc0e98-43e9-436e-89da-74a709809644",
+    "task_key": "gapfill:N07:a1c937cee8635e35103e07aa5930464a",
+    "task_type": "evidence_gap_fill",
+    "priority": 84,
+    "status": "cancelled",
+    "objective": "Fill missing RevEng v2 sellability evidence dimensions for Realtor open-house branded kids kits without external actions.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "demand",
+      "differentiation",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "current competitor pricing",
+      "acquisition/CAC evidence where available"
+    ],
+    "result": {},
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": null,
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 19:51:59.050627+00"
+  },
+  {
+    "id": 5,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "4f325193-4577-4458-b12b-47fc2e9cb39b",
+    "engine_id": "57484d82-05fc-4482-a6bc-d63dac5608dd",
+    "task_key": "gapfill:B2-17:1ca2c029e4a94851a9ead0933305d531",
+    "task_type": "evidence_gap_fill",
+    "priority": 90,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Realtor closing house-photo puzzle; do not infer missing evidence.",
+    "target_dimensions": [
+      "demand",
+      "differentiation",
+      "distribution"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Evidence complete. Demand and POD distribution are proven, but the exact realtor-branded house-photo puzzle concept already exists; differentiation must come from workflow, B2B repeat ordering, or economics rather than product concept.",
+      "evidence_added": 3,
+      "completed_dimensions": [
+        "demand",
+        "differentiation",
+        "distribution"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 20:43:00+00",
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 20:43:00+00"
+  },
+  {
+    "id": 13,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "f63633f2-2e10-488f-92c4-7304994dfd06",
+    "engine_id": "33f19f48-fe61-4c6f-bce4-190f21ad2241",
+    "task_key": "gapfill:B2-01:832803cc419583686c649bb16e9c5dfd",
+    "task_type": "evidence_gap_fill",
+    "priority": 86,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Special-ed transition/vocational job-skill curriculum series; do not infer missing evidence.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "distribution",
+      "fulfillment",
+      "qa_quality"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Evidence complete. TPT provides proven distribution, persistent digital fulfillment and meaningful high-AOV economics, but professional special-education QA is a real launch gate. Product must remain adaptable instructional material, not an individualized IEP/transition determination.",
+      "evidence_added": 4,
+      "economics_run_added": 1,
+      "completed_dimensions": [
+        "acquisition_economics",
+        "distribution",
+        "fulfillment",
+        "qa_quality"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:00:00+00",
+    "created_at": "2026-09-24 19:51:59.050627+00",
+    "updated_at": "2026-09-24 21:00:00+00"
+  },
+  {
+    "id": 7,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "801049fa-771f-4c3d-b373-fd2b140f77b3",
+    "engine_id": "63ee8f47-8345-4506-9293-d9c8014a06c1",
+    "task_key": "gapfill:B2-26:f7be471510687e4d886b8a906fec398b",
+    "task_type": "evidence_gap_fill",
+    "priority": 79,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Screen-free family travel kit; do not infer missing evidence.",
+    "target_dimensions": [
+      "competition",
+      "demand",
+      "differentiation",
+      "distribution",
+      "price"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Evidence complete. Screen-free travel demand is real, but both low-cost printable packs and personalized physical curated busy boxes are mature, crowded formats. Shopify Collective preserves zero-inventory optionality, yet a new offer still needs a sharper audience/use-case wedge and proven acquisition path.",
+      "evidence_added": 3,
+      "completed_dimensions": [
+        "competition",
+        "demand",
+        "differentiation",
+        "distribution",
+        "price"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:34:00+00",
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 21:34:00+00"
+  },
+  {
+    "id": 21,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "c98df6c8-6958-4103-bb2f-bfcd92bda56c",
+    "engine_id": "45a39d22-f8f2-49ed-b2ca-592997caf8df",
+    "task_key": "gapfill:N03:ed2b95fa4eae96f18f058faef1c3cd89",
+    "task_type": "evidence_gap_fill",
+    "priority": 97,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Bilingual personalized child books; do not infer missing evidence.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "demand",
+      "distribution",
+      "fulfillment",
+      "qa_quality"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Evidence gate dimensions filled. Demand exists, but baseline bilingual+name differentiation is commodity; paid acquisition remains unmeasured and physical COGS/QA cost remain scale gates.",
+      "evidence_added": 7,
+      "economics_run_added": 1,
+      "completed_dimensions": [
+        "acquisition_economics",
+        "demand",
+        "distribution",
+        "fulfillment",
+        "qa_quality"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 20:10:00+00",
+    "created_at": "2026-09-24 19:51:59.050627+00",
+    "updated_at": "2026-09-24 20:10:00+00"
+  },
+  {
+    "id": 23,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "46ad5c25-523b-4afc-943b-7f57685b91d2",
+    "engine_id": "8fdc0e98-43e9-436e-89da-74a709809644",
+    "task_key": "gapfill:N07:eed8aa6e3e0ed7600ffea52d01b362a1",
+    "task_type": "evidence_gap_fill",
+    "priority": 93,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Realtor open-house branded kids kits; do not infer missing evidence.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "demand",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Category demand and Etsy fulfillment are real, but generic editable/open-house kits are crowded. Instant editable templates are automatable; bespoke branded delivery is manual on Etsy. Paid acquisition remains unmeasured and premium pricing is the key economic gate.",
+      "evidence_added": 3,
+      "economics_run_added": 1,
+      "completed_dimensions": [
+        "acquisition_economics",
+        "demand",
+        "distribution",
+        "fulfillment"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 20:18:00+00",
+    "created_at": "2026-09-24 19:51:59.050627+00",
+    "updated_at": "2026-09-24 20:18:00+00"
+  },
+  {
+    "id": 22,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "eea3c526-ed25-41fc-9e26-5e544bbe053c",
+    "engine_id": "45a39d22-f8f2-49ed-b2ca-592997caf8df",
+    "task_key": "gapfill:N05:eed8aa6e3e0ed7600ffea52d01b362a1",
+    "task_type": "evidence_gap_fill",
+    "priority": 92,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Pet-photo coloring/adventure books; do not infer missing evidence.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "demand",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Demand and fulfillment paths are proven, but pet-photo/adventure is a crowded established category. Low-ticket digital economics constrain paid CAC; physical POD needs exact COGS. Photo-likeness QA and exception handling remain the operational bottleneck.",
+      "evidence_added": 4,
+      "economics_run_added": 1,
+      "completed_dimensions": [
+        "acquisition_economics",
+        "demand",
+        "distribution",
+        "fulfillment"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 20:27:00+00",
+    "created_at": "2026-09-24 19:51:59.050627+00",
+    "updated_at": "2026-09-24 20:27:00+00"
+  },
+  {
+    "id": 3,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "2649460f-7033-4ed7-83c0-5e5de8cba066",
+    "engine_id": "f2483590-3e7f-4413-a78f-8ecfa3efcdc0",
+    "task_key": "gapfill:B2-09:a1c937cee8635e35103e07aa5930464a",
+    "task_type": "evidence_gap_fill",
+    "priority": 90,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Equipment-specific maintenance log series; do not infer missing evidence.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "demand",
+      "differentiation",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Evidence complete. The model is operationally excellent but commercially compressed: machine-specific variants already exist, low-ticket digital CAC headroom is weak, and KDP low-content restrictions reduce series/distribution leverage.",
+      "evidence_added": 6,
+      "economics_run_added": 1,
+      "completed_dimensions": [
+        "acquisition_economics",
+        "demand",
+        "differentiation",
+        "distribution",
+        "fulfillment"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 20:36:00+00",
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 20:36:00+00"
+  },
+  {
+    "id": 18,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "e7ecd0ed-f5fb-4247-90ad-c81468618726",
+    "engine_id": "8fdc0e98-43e9-436e-89da-74a709809644",
+    "task_key": "gapfill:B2-22:eed8aa6e3e0ed7600ffea52d01b362a1",
+    "task_type": "evidence_gap_fill",
+    "priority": 90,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Mobile-detailing quote and true-margin toolkit; do not infer missing evidence.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "demand",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Evidence complete. Fulfillment and gross margin are easy; distribution is the problem. Current Etsy search is densely saturated with near-identical calculators and mixed entrant traction, so a generic spreadsheet launch is not justified by economics alone.",
+      "evidence_added": 3,
+      "economics_run_added": 1,
+      "completed_dimensions": [
+        "acquisition_economics",
+        "demand",
+        "distribution",
+        "fulfillment"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 20:51:00+00",
+    "created_at": "2026-09-24 19:51:59.050627+00",
+    "updated_at": "2026-09-24 20:51:00+00"
+  },
+  {
+    "id": 12,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "ef24e875-5cb1-4a5a-9fd8-32b8491ba349",
+    "engine_id": "8fdc0e98-43e9-436e-89da-74a709809644",
+    "task_key": "gapfill:N09:a1c937cee8635e35103e07aa5930464a",
+    "task_type": "evidence_gap_fill",
+    "priority": 85,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Restaurant/hospitality branded activity packs; do not infer missing evidence.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "demand",
+      "differentiation",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Evidence complete but economics remain constrained, not positive: the category has real B2B/repeat volume and established direct/P.O. fulfillment, while logo branding and replenishment are commodity features. A verified manufacturing quote and repeat-account CAC are mandatory before this can rank as launchable.",
+      "evidence_added": 4,
+      "economics_run_added": 1,
+      "completed_dimensions": [
+        "acquisition_economics",
+        "demand",
+        "differentiation",
+        "distribution",
+        "fulfillment"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:09:00+00",
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 21:09:00+00"
+  },
+  {
+    "id": 20,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "5667b708-151e-44bb-950d-772cb31d6472",
+    "engine_id": "45a39d22-f8f2-49ed-b2ca-592997caf8df",
+    "task_key": "gapfill:N01:9e89edb18fa1490f7ea4c7a8bc543ae0",
+    "task_type": "evidence_gap_fill",
+    "priority": 85,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Personalized road-trip / destination activity books; do not infer missing evidence.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Evidence complete. Distribution and POD automation are viable, but destination personalization is already in-market and low-ticket digital CAC headroom is weak. Physical format may improve economics but needs exact POD COGS and measured conversion.",
+      "evidence_added": 3,
+      "economics_run_added": 1,
+      "completed_dimensions": [
+        "acquisition_economics",
+        "distribution",
+        "fulfillment"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:17:00+00",
+    "created_at": "2026-09-24 19:51:59.050627+00",
+    "updated_at": "2026-09-24 21:17:00+00"
+  },
+  {
+    "id": 16,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "f8fe34a4-2435-4e15-828c-14c168622289",
+    "engine_id": "45a39d22-f8f2-49ed-b2ca-592997caf8df",
+    "task_key": "gapfill:B2-16:9e89edb18fa1490f7ea4c7a8bc543ae0",
+    "task_type": "evidence_gap_fill",
+    "priority": 83,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Personalized GPX/Strava race-route poster engine; do not infer missing evidence.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "distribution",
+      "fulfillment"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Evidence complete. A deterministic GPX renderer is technically attractive and digital AOV has more CAC room than many printable niches, but core GPX/Strava features and even live self-serve design already exist. Product differentiation/distribution, not rendering, is the bottleneck.",
+      "evidence_added": 3,
+      "economics_run_added": 1,
+      "completed_dimensions": [
+        "acquisition_economics",
+        "distribution",
+        "fulfillment"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:25:00+00",
+    "created_at": "2026-09-24 19:51:59.050627+00",
+    "updated_at": "2026-09-24 21:25:00+00"
+  },
+  {
+    "id": 2,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "1d30033e-6774-4e23-835c-f39c5c3c6872",
+    "engine_id": "33f19f48-fe61-4c6f-bce4-190f21ad2241",
+    "task_key": "gapfill:B2-03:00d83c36a9ded3bf12caeac8df972c44",
+    "task_type": "evidence_gap_fill",
+    "priority": 79,
+    "status": "done",
+    "objective": "Fill current sellability evidence gaps for Occupation-specific workplace English modules; do not infer missing evidence.",
+    "target_dimensions": [
+      "acquisition_economics",
+      "competition",
+      "differentiation",
+      "distribution",
+      "fulfillment",
+      "qa_quality"
+    ],
+    "source_hints": [
+      "official platform/fulfillment sources",
+      "current marketplace/search evidence",
+      "competitor feature comparison",
+      "measured or break-even acquisition economics"
+    ],
+    "result": {
+      "conclusion": "Evidence complete. TPT distribution/fulfillment is easy, but generic occupation-specific workplace English is already supplied and current seller traction is weak. Any viable wedge needs an evidenced underserved occupation-language pair plus adult-ESL/SME QA; low AOV limits paid acquisition.",
+      "evidence_added": 5,
+      "economics_run_added": 1,
+      "completed_dimensions": [
+        "acquisition_economics",
+        "competition",
+        "differentiation",
+        "distribution",
+        "fulfillment",
+        "qa_quality"
+      ]
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:43:00+00",
+    "created_at": "2026-09-24 19:48:10.839414+00",
+    "updated_at": "2026-09-24 21:43:00+00"
+  },
+  {
+    "id": 26,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "334af3f0-184f-4d90-832b-b9ada09ea76a",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-02-small-fleet-compliance",
+    "task_type": "deep_screen",
+    "priority": 97,
+    "status": "cancelled",
+    "objective": "Deep-screen 2-25 vehicle fleet compliance: estimate target fleet count, segment WTP, competitor traction, compliance-advice boundary, support/remediation labor, insurance/broker channel economics and churn drivers.",
+    "target_dimensions": [
+      "market_depth",
+      "absolute_gross_profit_potential",
+      "defensibility",
+      "distribution_advantage",
+      "competition_adjusted_gap"
+    ],
+    "source_hints": [
+      "FMCSA",
+      "state DOT sources",
+      "small fleet communities",
+      "compliance vendors",
+      "commercial insurance/broker channel"
+    ],
+    "result": {
+      "killed_by_direct_substitute_gate": true
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:09:34.871372+00",
+    "created_at": "2026-09-24 20:50:54.039781+00",
+    "updated_at": "2026-09-24 21:09:34.871372+00"
+  },
+  {
+    "id": 27,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "c140835e-90a0-48c5-97eb-b2e0c96e6e9f",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-05-credentialing",
+    "task_type": "deep_screen",
+    "priority": 98,
+    "status": "cancelled",
+    "objective": "Deep-screen small-practice payer credentialing: measure payer workflow/manual follow-up, real cycle times, service gross margins, recurring maintenance revenue, RCM white-label channel economics, HIPAA/security burden and specialty/state segmentation.",
+    "target_dimensions": [
+      "absolute_gross_profit_potential",
+      "defensibility",
+      "distribution_advantage",
+      "owner_time_support",
+      "capital_risk"
+    ],
+    "source_hints": [
+      "CMS/CAQH",
+      "practice manager communities",
+      "credentialing service price sheets",
+      "RCM/billing firms",
+      "payer enrollment documentation"
+    ],
+    "result": {
+      "killed_by_direct_substitute_gate": true
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:09:34.871372+00",
+    "created_at": "2026-09-24 20:50:54.039781+00",
+    "updated_at": "2026-09-24 21:09:34.871372+00"
+  },
+  {
+    "id": 25,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "ef049add-66b2-4878-bc30-b8baf5a5509a",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-01-govcon-ops",
+    "task_type": "deep_screen",
+    "priority": 94,
+    "status": "cancelled",
+    "objective": "Deep-screen small government-contractor opportunity/capture operations: quantify active small-bidder segment, state/local data-source coverage, proposal labor economics, paid-tool switching, vertical wedges, incumbent data advantages and channel CAC.",
+    "target_dimensions": [
+      "market_depth",
+      "absolute_gross_profit_potential",
+      "defensibility",
+      "distribution_advantage",
+      "competition_adjusted_gap"
+    ],
+    "source_hints": [
+      "SBA/SAM/OpenGSA",
+      "state procurement portals",
+      "APEX",
+      "govcon communities",
+      "bid intelligence vendors"
+    ],
+    "result": {
+      "v5_entrant_edge_gate_failed": true
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:15:18.573295+00",
+    "created_at": "2026-09-24 20:50:54.039781+00",
+    "updated_at": "2026-09-24 21:15:18.573295+00"
+  },
+  {
+    "id": 29,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "9b1c6bd9-b470-494f-849d-41b68916b757",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-07-home-health-compliance",
+    "task_type": "deep_screen",
+    "priority": 95,
+    "status": "cancelled",
+    "objective": "Deep-screen small home-health compliance/survey readiness: quantify agency-size distribution, survey/compliance spend, expert labor, regulatory liability, EMR overlap, association/consultant channels and attainable ACV.",
+    "target_dimensions": [
+      "market_depth",
+      "absolute_gross_profit_potential",
+      "defensibility",
+      "distribution_advantage",
+      "capital_risk"
+    ],
+    "source_hints": [
+      "CMS",
+      "home health associations",
+      "accreditation bodies",
+      "agency owner communities",
+      "current vertical software"
+    ],
+    "result": {
+      "v5_entrant_edge_gate_failed": true
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:15:18.573295+00",
+    "created_at": "2026-09-24 20:50:54.039781+00",
+    "updated_at": "2026-09-24 21:15:18.573295+00"
+  },
+  {
+    "id": 33,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "16a4e673-969e-4a31-864e-810ebcc035f8",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-09-manufacturing-rfq",
+    "task_type": "deep_screen",
+    "priority": 108,
+    "status": "cancelled",
+    "objective": "Deep-screen small custom manufacturing RFQ/quoting operations: isolate the highest-pain job-shop segment, RFQ volume, estimator labor and quote-to-win economics, existing CPQ/ERP ACV, implementation burden, data moat and partner acquisition routes.",
+    "target_dimensions": [
+      "absolute_gross_profit_potential",
+      "willingness_to_pay",
+      "defensibility",
+      "distribution_advantage",
+      "competition_adjusted_gap"
+    ],
+    "source_hints": [
+      "Census manufacturing size data",
+      "CNC/fabrication communities",
+      "manufacturing associations",
+      "ERP/CAM vendors",
+      "current quoting platforms"
+    ],
+    "result": {
+      "phase": "deep_screen_started",
+      "finalist_ready": false,
+      "economics_scenario_created": true,
+      "v5_entrant_edge_gate_failed": true
+    },
+    "due_at": null,
+    "claimed_at": "2026-09-24 20:58:02.612403+00",
+    "completed_at": "2026-09-24 21:15:18.573295+00",
+    "created_at": "2026-09-24 20:55:35.21562+00",
+    "updated_at": "2026-09-24 21:15:18.573295+00"
+  },
+  {
+    "id": 34,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "d36e51b7-1543-497d-87f0-cdaa2bdf37c6",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-12-certified-payroll",
+    "task_type": "deep_screen",
+    "priority": 70,
+    "status": "cancelled",
+    "objective": "Determine whether a meaningful business remains beyond DOL free WH-347 generation: quantify multi-state rules, payroll imports, fringe/classification exceptions, subcontractor reconciliation, state portal submissions, target contractor count and attainable ACV.",
+    "target_dimensions": [
+      "competition_adjusted_gap",
+      "defensibility",
+      "absolute_gross_profit_potential",
+      "market_depth"
+    ],
+    "source_hints": [
+      "DOL",
+      "state prevailing wage agencies",
+      "construction payroll communities",
+      "payroll vendors",
+      "current certified-payroll software"
+    ],
+    "result": {
+      "reason": "commodity/free-substitute gate",
+      "killed_at_prescreen": true
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:05:06.256699+00",
+    "created_at": "2026-09-24 20:55:35.21562+00",
+    "updated_at": "2026-09-24 21:05:06.256699+00"
+  },
+  {
+    "id": 32,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "6db874b6-b4d1-4090-8153-649d71c9bb63",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-10-change-order-revenue",
+    "task_type": "deep_screen",
+    "priority": 109,
+    "status": "cancelled",
+    "objective": "Deep-screen specialty-contractor change-order/T&M revenue capture: quantify at-risk dollars and approval delays by contractor size, current software penetration, recovered-revenue ROI, GC dependency, field adoption burden, integration expectations and distribution via construction accountants/trade partners.",
+    "target_dimensions": [
+      "absolute_gross_profit_potential",
+      "willingness_to_pay",
+      "defensibility",
+      "distribution_advantage",
+      "competition_adjusted_gap"
+    ],
+    "source_hints": [
+      "Dodge/Clearstory research",
+      "specialty contractor communities",
+      "construction accountants",
+      "current T&M/change-order vendors",
+      "trade associations"
+    ],
+    "result": {
+      "phase": "deep_screen_started",
+      "reason": "direct substitutes already implement proposed wedge; commodity/direct-substitute cap applied",
+      "finalist_ready": false,
+      "killed_by_red_team": true,
+      "economics_scenario_created": true
+    },
+    "due_at": null,
+    "claimed_at": "2026-09-24 20:58:02.612403+00",
+    "completed_at": "2026-09-24 21:08:22.557586+00",
+    "created_at": "2026-09-24 20:55:35.21562+00",
+    "updated_at": "2026-09-24 21:08:22.557586+00"
+  },
+  {
+    "id": 31,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "5791b304-7281-4152-9529-b7123ae077fd",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-11-accessorial-recovery",
+    "task_type": "deep_screen",
+    "priority": 110,
+    "status": "cancelled",
+    "objective": "Deep-screen detention/accessorial revenue recovery: determine contractual collectability, claim acceptance/payment rates by broker/customer type, evidence/submission rules, recoverable dollars per 1-20 truck fleet, ELD integration coverage, contingency-service economics, legal collection boundaries and acquisition through factoring/dispatch/ELD channels.",
+    "target_dimensions": [
+      "absolute_gross_profit_potential",
+      "willingness_to_pay",
+      "defensibility",
+      "distribution_advantage",
+      "capital_risk"
+    ],
+    "source_hints": [
+      "ATRI",
+      "carrier/broker communities",
+      "rate confirmation practices",
+      "ELD vendors",
+      "factoring/dispatch companies",
+      "existing recovery/documentation tools"
+    ],
+    "result": {
+      "phase": "deep_screen_started",
+      "reason": "direct substitutes already implement proposed wedge; commodity/direct-substitute cap applied",
+      "finalist_ready": false,
+      "killed_by_red_team": true,
+      "economics_scenario_created": true
+    },
+    "due_at": null,
+    "claimed_at": "2026-09-24 20:58:02.612403+00",
+    "completed_at": "2026-09-24 21:08:22.557586+00",
+    "created_at": "2026-09-24 20:55:35.21562+00",
+    "updated_at": "2026-09-24 21:08:22.557586+00"
+  },
+  {
+    "id": 37,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "6fb1d9ab-bf51-421d-b9f4-345538c5a521",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-14-utility-recovery",
+    "task_type": "deep_screen",
+    "priority": 85,
+    "status": "cancelled",
+    "objective": "Deep-screen multi-site commercial utility recovery: find independent error-incidence/recovery evidence, tariff-analysis labor, recurring monitoring value, state representation/broker rules, buyer spend thresholds and channel economics.",
+    "target_dimensions": [
+      "absolute_gross_profit_potential",
+      "repeat_ltv_potential",
+      "defensibility",
+      "distribution_advantage",
+      "capital_risk"
+    ],
+    "source_hints": [
+      "EIA",
+      "utility commissions",
+      "facility-management communities",
+      "utility-audit vendors",
+      "energy-management software",
+      "commercial property operators"
+    ],
+    "result": {
+      "v5_entrant_edge_gate_failed": true
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:15:18.573295+00",
+    "created_at": "2026-09-24 21:03:30.182574+00",
+    "updated_at": "2026-09-24 21:15:18.573295+00"
+  },
+  {
+    "id": 54,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "5531d420-3449-4804-b471-60b9aa6fe6e9",
+    "engine_id": null,
+    "task_key": "recruiting_two_sided_liquidity_20261003",
+    "task_type": "evidence_collection",
+    "priority": 100,
+    "status": "done",
+    "objective": "Test whether the owned trucking network can plausibly supply both hiring carriers and currently available CDL candidates without paid lead dependence.",
+    "target_dimensions": [
+      "distribution_advantage",
+      "buyer",
+      "supply",
+      "market_depth"
+    ],
+    "source_hints": {
+      "kill": [
+        "candidate supply requires expensive paid leads or network contains buyers only"
+      ],
+      "accept": [
+        "repeatable employer and candidate source paths"
+      ],
+      "allowed": [
+        "owner network inventory when separately reviewed",
+        "public job-market data",
+        "carrier job pages",
+        "official labor data"
+      ],
+      "forbidden": [
+        "outreach",
+        "candidate scraping",
+        "personal-data harvesting"
+      ]
+    },
+    "result": {
+      "state": "MACRO_DEMAND_VERIFIED_OWNED_LIQUIDITY_NOT_VERIFIED",
+      "conclusion": "Macro demand is strong, but the niche-specific structural edge is not evidenced strongly enough for fast-cash deep screen. The owned network must be inventoried before recruiting can re-enter.",
+      "macro_evidence": {
+        "ATA_carriers_10_or_fewer_trucks_pct": 91.5,
+        "BLS_projected_heavy_truck_driver_openings_per_year": 214500
+      },
+      "owned_network_evidence": {
+        "network_exists": true,
+        "drivers_and_carriers_known": true,
+        "current_hiring_carrier_count": null,
+        "current_job_seeking_driver_count": null,
+        "repeatable_referral_flow_verified": false
+      }
+    },
+    "due_at": "2026-10-03 20:38:58.145484+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 23:40:02.731914+00",
+    "created_at": "2026-10-03 20:38:58.145484+00",
+    "updated_at": "2026-10-03 23:40:02.731914+00"
+  },
+  {
+    "id": 38,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "936c5602-d948-4618-9534-e4e30dde57a4",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-15-parcel-audit",
+    "task_type": "deep_screen",
+    "priority": 75,
+    "status": "cancelled",
+    "objective": "Test whether any defensible niche remains beyond commoditized parcel refund auditing: quantify addressable shipper counts, carrier API/refund policy changes, gainshare CAC, contract-negotiation analytics and embedded 3PL distribution.",
+    "target_dimensions": [
+      "competition_adjusted_gap",
+      "defensibility",
+      "distribution_advantage",
+      "absolute_gross_profit_potential"
+    ],
+    "source_hints": [
+      "Pitney Bowes",
+      "UPS/FedEx current policies",
+      "3PL/ecommerce communities",
+      "parcel audit vendors",
+      "fulfillment partners"
+    ],
+    "result": {
+      "reason": "commodity/free-substitute gate",
+      "killed_at_prescreen": true
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:05:06.256699+00",
+    "created_at": "2026-09-24 21:03:30.182574+00",
+    "updated_at": "2026-09-24 21:05:06.256699+00"
+  },
+  {
+    "id": 36,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "ab66685e-a6d9-4403-8d80-88f3dae16881",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-13-construction-payment-rights",
+    "task_type": "deep_screen",
+    "priority": 106,
+    "status": "cancelled",
+    "objective": "Deep-screen specialty contractor/supplier payment-rights operations: quantify missed lien/notice deadline economics, state-law complexity, UPL/legal boundaries, incumbent ACV, workflow overlap with pay-app/AR software, implementation/support burden and partner acquisition through construction accountants/ERP channels.",
+    "target_dimensions": [
+      "absolute_gross_profit_potential",
+      "willingness_to_pay",
+      "defensibility",
+      "distribution_advantage",
+      "competition_adjusted_gap",
+      "capital_risk"
+    ],
+    "source_hints": [
+      "state lien statutes",
+      "construction finance surveys",
+      "Levelset/Siteline/GCPay competitors",
+      "construction accountants",
+      "trade associations"
+    ],
+    "result": {
+      "phase": "red_team_deep_screen",
+      "reason": "direct integrated incumbents already occupy proposed wedge",
+      "finalist_ready": false,
+      "killed_by_red_team": true,
+      "economics_scenario_created": true
+    },
+    "due_at": null,
+    "claimed_at": "2026-09-24 21:05:06.256699+00",
+    "completed_at": "2026-09-24 21:08:22.557586+00",
+    "created_at": "2026-09-24 21:03:30.182574+00",
+    "updated_at": "2026-09-24 21:08:22.557586+00"
+  },
+  {
+    "id": 28,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "b535be1b-4255-4ea3-be1f-8cd3932fb53b",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-06-dental-verification",
+    "task_type": "deep_screen",
+    "priority": 100,
+    "status": "cancelled",
+    "objective": "Deep-screen independent dental insurance verification: quantify payer-portal/API coverage, manual exception rate and labor cost, achievable gross profit per practice, buyer switching behavior, integrations, HIPAA/security scope, and realistic acquisition channels.",
+    "target_dimensions": [
+      "absolute_gross_profit_potential",
+      "defensibility",
+      "distribution_advantage",
+      "competition_adjusted_gap",
+      "owner_time_support"
+    ],
+    "source_hints": [
+      "ADA/CAQH",
+      "dental practice owner communities",
+      "current verification vendors",
+      "practice-management integration docs",
+      "HIPAA/security requirements"
+    ],
+    "result": {
+      "killed_by_direct_substitute_gate": true
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:09:34.871372+00",
+    "created_at": "2026-09-24 20:50:54.039781+00",
+    "updated_at": "2026-09-24 21:09:34.871372+00"
+  },
+  {
+    "id": 30,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "0f298acf-316d-43ac-a7b1-6dbd89d3fc1a",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-08-sales-tax",
+    "task_type": "deep_screen",
+    "priority": 99,
+    "status": "cancelled",
+    "objective": "Deep-screen multistate ecommerce sales-tax operations: define the underserved merchant band, legal/filing-authority requirements, state-by-state labor cost, incumbent pricing gaps, CPA partner economics, churn/LTV and liability exposure.",
+    "target_dimensions": [
+      "absolute_gross_profit_potential",
+      "defensibility",
+      "distribution_advantage",
+      "competition_adjusted_gap",
+      "capital_risk"
+    ],
+    "source_hints": [
+      "state revenue departments",
+      "Streamlined Sales Tax",
+      "ecommerce CPA communities",
+      "current tax-platform pricing",
+      "Shopify ecosystem"
+    ],
+    "result": {
+      "killed_by_direct_substitute_gate": true
+    },
+    "due_at": null,
+    "claimed_at": null,
+    "completed_at": "2026-09-24 21:09:34.871372+00",
+    "created_at": "2026-09-24 20:50:54.039781+00",
+    "updated_at": "2026-09-24 21:09:34.871372+00"
+  },
+  {
+    "id": 35,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "a64e06fc-c979-4388-80d8-c2563c3b1dcf",
+    "engine_id": null,
+    "task_key": "v4-deep-V4-16-healthcare-underpayment",
+    "task_type": "deep_screen",
+    "priority": 107,
+    "status": "cancelled",
+    "objective": "Deep-screen independent specialty-practice commercial payer underpayment recovery: quantify true recoverable underpayment by practice size/specialty, contract-model onboarding hours, 835/data access, appeal/follow-up labor, HIPAA/BAA/security cost, current RCM incumbent economics and white-label distribution/CAC.",
+    "target_dimensions": [
+      "absolute_gross_profit_potential",
+      "willingness_to_pay",
+      "defensibility",
+      "distribution_advantage",
+      "owner_time_support",
+      "capital_risk"
+    ],
+    "source_hints": [
+      "AMA/MGMA",
+      "payer contracts/835 workflows",
+      "independent practice communities",
+      "current underpayment vendors",
+      "RCM/billing partners",
+      "HIPAA/security sources"
+    ],
+    "result": {
+      "phase": "red_team_deep_screen",
+      "finalist_ready": false,
+      "economics_scenario_created": true,
+      "v5_entrant_edge_gate_failed": true
+    },
+    "due_at": null,
+    "claimed_at": "2026-09-24 21:05:06.256699+00",
+    "completed_at": "2026-09-24 21:15:18.573295+00",
+    "created_at": "2026-09-24 21:03:30.182574+00",
+    "updated_at": "2026-09-24 21:15:18.573295+00"
+  },
+  {
+    "id": 39,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "7dd5fa33-63a9-4f9f-a711-8e4bd78f1ddc",
+    "engine_id": null,
+    "task_key": "bookkeeping_wtp_pricing_20261003",
+    "task_type": "evidence_collection",
+    "priority": 95,
+    "status": "done",
+    "objective": "Verify current trucking bookkeeping and cleanup prices, scope boundaries, setup fees, and whether pricing is per truck/company/transaction volume.",
+    "target_dimensions": [
+      "pricing",
+      "willingness_to_pay",
+      "offer_scope"
+    ],
+    "source_hints": {
+      "kill": [
+        "only stale/undated prices",
+        "all observed offers materially below viable labor economics"
+      ],
+      "accept": [
+        "at least 3 independent current price anchors",
+        "scope captured with price"
+      ],
+      "allowed": [
+        "official vendor pricing pages",
+        "provider-published pricing pages",
+        "public marketplace listings when terms permit"
+      ],
+      "forbidden": [
+        "login-wall scraping",
+        "robots-disallowed automation",
+        "invented averages"
+      ],
+      "preferred": [
+        "first-party price page",
+        "dated provider page"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED",
+      "conclusion": "WTP for trucking-specific bookkeeping is verified, but $299/month premium is not. A $249-$299 test offer is inside observed service pricing, while ATBS creates strong bundled-price pressure and DIY software creates a low-cost substitute.",
+      "evidence_ids": [
+        276,
+        277,
+        291,
+        292,
+        293,
+        294,
+        295
+      ],
+      "remaining_unknowns": [
+        "actual warm-network willingness to pay",
+        "actual scope/hours per account",
+        "whether $299 clears against ATBS bundled alternatives"
+      ],
+      "observed_diy_substitutes": [
+        {
+          "provider": "Rigbooks",
+          "monthly_usd": 19
+        },
+        {
+          "provider": "TruckingOffice",
+          "monthly_usd": 25
+        },
+        {
+          "provider": "TruckLogics",
+          "monthly_usd": 39.95
+        }
+      ],
+      "observed_done_for_you_prices": [
+        {
+          "scope": "bookkeeping + year-end tax + tax consulting; not apples-to-apples with books-only",
+          "provider": "ATBS Essentials",
+          "price_basis": "$21.49/week",
+          "annualized_monthly_usd": 93.12
+        },
+        {
+          "scope": "bookkeeping + monthly P&L + tax/business consulting",
+          "provider": "ATBS Professional",
+          "price_basis": "$34.99/week",
+          "annualized_monthly_usd": 151.62
+        },
+        {
+          "scope": "solo owner-operator bookkeeping/monthly close",
+          "provider": "TradeBookkeepingPro Truck",
+          "monthly_usd": 249
+        },
+        {
+          "scope": "trucking bookkeeping, cost-per-mile, IFTA-ready records",
+          "provider": "Mispar",
+          "starting_monthly_usd": 229
+        },
+        {
+          "scope": "owner-operator trucking bookkeeping",
+          "provider": "KDP Ledger",
+          "monthly_range_usd": [
+            350,
+            500
+          ]
+        }
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 18:42:21.547572+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 18:42:21.547572+00"
+  },
+  {
+    "id": 44,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "f5ebd322-a409-4433-85fe-22d27321b4e3",
+    "engine_id": null,
+    "task_key": "dot_buyer_channel_20261003",
+    "task_type": "evidence_collection",
+    "priority": 98,
+    "status": "done",
+    "objective": "Verify size and reachability of 1-10 truck carriers plus concrete warm/referral/embedded channels.",
+    "target_dimensions": [
+      "buyer",
+      "distribution_advantage",
+      "market_depth"
+    ],
+    "source_hints": {
+      "kill": [
+        "only broad cold outreach or paid leads"
+      ],
+      "accept": [
+        "repeatable low-CAC channel tied to target carriers"
+      ],
+      "allowed": [
+        "FMCSA public data/documentation",
+        "Census public data",
+        "industry association public pages"
+      ],
+      "forbidden": [
+        "prospect outreach",
+        "personal-data harvesting"
+      ],
+      "preferred": [
+        "official carrier counts",
+        "existing trucking-network evidence"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED",
+      "evidence_ids": [
+        251,
+        250,
+        282,
+        285
+      ],
+      "initial_channel": {
+        "type": "owner-controlled warm trucking network",
+        "paid_ads_required": false,
+        "conversion_verified": false,
+        "direct_prospects_approx": 40
+      },
+      "expansion_source": {
+        "cost_usd": 0,
+        "provider": "FMCSA Open Data Program",
+        "company_census_update": "daily"
+      },
+      "remaining_unknowns": [
+        "conversion rate",
+        "exact Chicagoland 1-10 truck count",
+        "which carriers have highest compliance urgency"
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 18:38:29.492372+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 18:38:29.492372+00"
+  },
+  {
+    "id": 42,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "7dd5fa33-63a9-4f9f-a711-8e4bd78f1ddc",
+    "engine_id": null,
+    "task_key": "bookkeeping_delivery_risk_20261003",
+    "task_type": "evidence_collection",
+    "priority": 92,
+    "status": "done",
+    "objective": "Verify delivery stack, client/accountant access, data-security obligations, QA burden, and which activities require CPA/EA/licensing versus ordinary bookkeeping.",
+    "target_dimensions": [
+      "delivery_model",
+      "capital_risk",
+      "owner_time_support",
+      "regulatory_need"
+    ],
+    "source_hints": {
+      "kill": [
+        "required credential unavailable for core scope",
+        "software/data-security cost destroys economics"
+      ],
+      "accept": [
+        "bounded lawful service scope and minimum viable tool stack"
+      ],
+      "allowed": [
+        "Intuit official docs",
+        "IRS/state official guidance",
+        "professional-board official pages",
+        "first-party software docs"
+      ],
+      "forbidden": [
+        "legal conclusions from blogs"
+      ],
+      "preferred": [
+        "government/regulator",
+        "official platform documentation"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_BOUNDED_SCOPE",
+      "conclusion": "No CPA license barrier was found for a bounded bookkeeping-only service in Illinois. The launch can remain bookkeeping-only and hand CPA/tax-return work to a separately qualified preparer. Security/QA remains a real operating burden, not a blocker.",
+      "new_evidence_ids": [
+        296,
+        297,
+        298,
+        299
+      ],
+      "remaining_unknowns": [
+        "actual monthly delivery hours",
+        "E&O/cyber insurance cost",
+        "client document lateness",
+        "QA/review error rate"
+      ],
+      "allowed_initial_scope": [
+        "transaction categorization",
+        "bank/credit/fuel-card reconciliation",
+        "settlement and factoring reconciliation",
+        "monthly management P&L and balance-sheet preparation from client records",
+        "trucking-specific chart-of-accounts maintenance",
+        "cost-per-mile and truck-level management reporting",
+        "CPA-ready record package"
+      ],
+      "excluded_initial_scope": [
+        "holding out as CPA/public accountant",
+        "audit/review/attestation or assurance",
+        "federal/state tax-return preparation for compensation without required preparer compliance",
+        "substantive tax-law advice",
+        "IRS representation"
+      ],
+      "minimum_delivery_controls": [
+        "client-owned QuickBooks file with accountant invitation",
+        "MFA on all financial-data systems",
+        "least-privilege access",
+        "encrypted storage/transit",
+        "document-retention/deletion policy",
+        "separate cleanup scope from recurring monthly work"
+      ],
+      "existing_tooling_evidence_ids": [
+        278,
+        279
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 18:43:29.959069+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 18:43:29.959069+00"
+  },
+  {
+    "id": 46,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "f5ebd322-a409-4433-85fe-22d27321b4e3",
+    "engine_id": null,
+    "task_key": "dot_delivery_labor_20261003",
+    "task_type": "evidence_collection",
+    "priority": 90,
+    "status": "done",
+    "objective": "Estimate recurring service workload per account from concrete compliance tasks and identify backend tools/partners that legally reduce owner time.",
+    "target_dimensions": [
+      "owner_time_support",
+      "end_to_end_automation",
+      "supplier",
+      "delivery_model"
+    ],
+    "source_hints": {
+      "kill": [
+        "routine workload exceeds viable economics at market price"
+      ],
+      "accept": [
+        "task inventory with measurable frequency and tool support"
+      ],
+      "allowed": [
+        "official platform/vendor docs",
+        "first-party pricing",
+        "government workflow requirements"
+      ],
+      "forbidden": [
+        "unverified labor estimates presented as facts"
+      ],
+      "preferred": [
+        "task-frequency evidence",
+        "backend provider scope"
+      ]
+    },
+    "result": {
+      "state": "ASSUMPTION_BOUNDED_BY_VERIFIED_TASK_CADENCE",
+      "conclusion": "Regulated backend outsourcing can plausibly keep owner work focused on client relationship, document exceptions and audit-readiness. Owner-time is not yet empirically measured; 1.5h/account/month is a planning target, not a fact.",
+      "evidence_ids": [
+        287,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        311
+      ],
+      "backend_option": {
+        "claimed_scope": [
+          "consortium management",
+          "random pool",
+          "Clearinghouse queries",
+          "MVR",
+          "testing",
+          "end-user support"
+        ],
+        "provider_example": "Lab Testing Solutions",
+        "contract_verified": false,
+        "public_platform_cost_usd": 0
+      },
+      "planning_owner_time": {
+        "status": "assumption_to_measure",
+        "target_hours_per_account_month": 1.5,
+        "kill_threshold_hours_per_account_month": 3,
+        "review_threshold_hours_per_account_month": 2
+      },
+      "verified_task_cadence": [
+        "DQ files and expirations: ongoing",
+        "driving-record review: annual",
+        "Clearinghouse query: pre-employment and at least annual",
+        "random testing pool: 2026 minimum 50% drug / 10% alcohol",
+        "MCS-150: every two years",
+        "UCR: annual",
+        "Form 2290: tax-period/first-use deadline; excluded from initial self-delivered scope"
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 18:48:29.709393+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 18:48:29.709393+00"
+  },
+  {
+    "id": 48,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "0eaecc25-13a0-428d-957e-b06d604d7bd9",
+    "engine_id": null,
+    "task_key": "insurance_market_access_20261003",
+    "task_type": "evidence_collection",
+    "priority": 96,
+    "status": "done",
+    "objective": "Verify carrier/MGA/subproducer access paths for a newly licensed producer serving small trucking risks, including appointments, fees/splits, minimums, and new-venture appetite.",
+    "target_dimensions": [
+      "supplier",
+      "distribution_advantage",
+      "capital_risk",
+      "entrant_edge"
+    ],
+    "source_hints": {
+      "kill": [
+        "no accessible market without significant production commitments/capital"
+      ],
+      "accept": [
+        "at least one credible post-license market-access path with economics"
+      ],
+      "allowed": [
+        "carrier/MGA/network first-party pages",
+        "official licensing/appointment information"
+      ],
+      "forbidden": [
+        "impersonating a licensed producer",
+        "quote submissions",
+        "applications",
+        "outreach"
+      ],
+      "preferred": [
+        "published market-access terms"
+      ]
+    },
+    "result": {
+      "paths": [
+        {
+          "provider": "Smart Choice",
+          "carrier_access": "100+ personal/commercial claimed",
+          "signup_fee_usd": 0,
+          "commission_model": "split on program business; can reach 100% after cap/leadership threshold",
+          "volume_commitment": "low/minimal depending program",
+          "fixed_monthly_fee_usd": 0,
+          "trucking_specific_access": "not guaranteed; carrier approval/appetite must be verified"
+        },
+        {
+          "provider": "Truck Insurance Solutions",
+          "pro_monthly_usd": 349,
+          "starter_setup_usd": 99,
+          "starter_monthly_usd": 149,
+          "commission_split_pct": 0,
+          "enterprise_monthly_usd": 499,
+          "trucking_specific_access": true,
+          "new_venture_support_claim": true,
+          "starter_first_month_fixed_usd": 248
+        }
+      ],
+      "state": "VERIFIED_ACCESS_PATHS",
+      "conclusion": "At least two credible post-license access paths exist. Smart Choice minimizes fixed cash cost but takes a program commission split. TIS is trucking-specific and keeps commission intact but imposes fixed monthly/setup cost.",
+      "evidence_ids": [
+        217,
+        218,
+        219,
+        320,
+        323,
+        324
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 20:21:13.335378+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 20:21:13.335378+00"
+  },
+  {
+    "id": 40,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "7dd5fa33-63a9-4f9f-a711-8e4bd78f1ddc",
+    "engine_id": null,
+    "task_key": "bookkeeping_buyer_channel_20261003",
+    "task_type": "evidence_collection",
+    "priority": 100,
+    "status": "done",
+    "objective": "Verify reachable buyer pool and low-cost acquisition paths for 1-10 truck owner-operators/small fleets, prioritizing channels already adjacent to trucking operations.",
+    "target_dimensions": [
+      "buyer",
+      "distribution_advantage",
+      "market_depth"
+    ],
+    "source_hints": {
+      "kill": [
+        "no credible reachable channel",
+        "only generic paid lead sources"
+      ],
+      "accept": [
+        "quantified reachable buyer population or concrete repeatable channel",
+        "channel can be used without paid ads"
+      ],
+      "allowed": [
+        "FMCSA public data/documentation",
+        "Census public API/data",
+        "public business directories with permitted access",
+        "industry association public pages"
+      ],
+      "forbidden": [
+        "bulk harvesting personal emails",
+        "contacting prospects",
+        "scraping prohibited directories"
+      ],
+      "preferred": [
+        "government data",
+        "owned/warm channel evidence"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED",
+      "evidence_ids": [
+        259,
+        258,
+        281,
+        284
+      ],
+      "initial_channel": {
+        "type": "owner-controlled warm trucking network",
+        "paid_ads_required": false,
+        "conversion_verified": false,
+        "direct_prospects_approx": 40
+      },
+      "expansion_source": {
+        "cost_usd": 0,
+        "provider": "FMCSA Open Data Program",
+        "usable_fields": [
+          "USDOT",
+          "company",
+          "business operations",
+          "equipment/power units",
+          "drivers",
+          "business address"
+        ],
+        "privacy_policy": "Do not bulk harvest personal contacts; use public entity/business attributes for market sizing and targeting only unless separately authorized.",
+        "company_census_update": "daily"
+      },
+      "remaining_unknowns": [
+        "warm-network conversion rate",
+        "exact 1-10 truck Chicagoland count",
+        "sales-cycle length"
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 18:38:14.718832+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 18:38:14.718832+00"
+  },
+  {
+    "id": 41,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "7dd5fa33-63a9-4f9f-a711-8e4bd78f1ddc",
+    "engine_id": null,
+    "task_key": "bookkeeping_competition_gap_20261003",
+    "task_type": "evidence_collection",
+    "priority": 90,
+    "status": "done",
+    "objective": "Map direct trucking-bookkeeping substitutes and identify whether a narrow entrant edge exists beyond generic bookkeeping.",
+    "target_dimensions": [
+      "competition",
+      "competition_adjusted_gap",
+      "entrant_edge"
+    ],
+    "source_hints": {
+      "kill": [
+        "same offer already commoditized and no controlled distribution/data/workflow edge"
+      ],
+      "accept": [
+        "direct substitute map plus one evidenced non-generic wedge"
+      ],
+      "allowed": [
+        "competitor first-party sites",
+        "public reviews/community discussion",
+        "official app/accounting ecosystem pages"
+      ],
+      "forbidden": [
+        "fake review aggregation",
+        "unverifiable claims"
+      ],
+      "preferred": [
+        "direct competitor feature/pricing pages"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_DEEP_SCREEN_ONLY",
+      "conclusion": "The service itself is commoditized and trucking specialization is not a defensible wedge. The only qualifying v5 entrant edge is the owner-controlled warm trucking network. Keep in deep screen only; do not promote to finalist/test-ready until warm-channel conversion and service hours are measured.",
+      "evidence_ids": [
+        259,
+        276,
+        277,
+        291,
+        292,
+        293,
+        294,
+        295
+      ],
+      "diy_substitutes": [
+        "Rigbooks",
+        "TruckingOffice",
+        "TruckLogics"
+      ],
+      "kill_conditions": [
+        "Warm channel does not produce credible buying interest at a viable price",
+        "Routine recurring delivery exceeds 4-5 owner hours/account/month at observed market prices",
+        "Customer acquisition requires generic paid leads rather than the controlled trucking channel"
+      ],
+      "structural_edge": {
+        "type": "existing owned/warm trucking distribution",
+        "evidenced": true,
+        "direct_prospects_approx": 40,
+        "product_differentiation_evidenced": false
+      },
+      "direct_service_substitutes": [
+        "ATBS",
+        "Mispar",
+        "KDP Ledger",
+        "TradeBookkeepingPro"
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 18:42:21.547572+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 18:42:21.547572+00"
+  },
+  {
+    "id": 45,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "f5ebd322-a409-4433-85fe-22d27321b4e3",
+    "engine_id": null,
+    "task_key": "dot_scope_regulatory_20261003",
+    "task_type": "evidence_collection",
+    "priority": 100,
+    "status": "done",
+    "objective": "Separate ordinary administrative compliance work from C/TPA, testing, legal representation, filing authority, or other regulated/credentialed functions.",
+    "target_dimensions": [
+      "regulatory_need",
+      "service_scope",
+      "capital_risk"
+    ],
+    "source_hints": {
+      "kill": [
+        "core offer requires unavailable credential/appointment"
+      ],
+      "accept": [
+        "explicit allowed/required role map with citations"
+      ],
+      "allowed": [
+        "FMCSA",
+        "DOT",
+        "Clearinghouse official documentation",
+        "state/federal official sources"
+      ],
+      "forbidden": [
+        "blog-only legal interpretations"
+      ],
+      "preferred": [
+        "primary government source"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_BOUNDED_SCOPE",
+      "conclusion": "Formal licensing is not the launch blocker. The real risks are correct execution, data/security, regulated testing workflow and owner-time. Lowest-risk launch uses a partner backend for C/TPA/testing rather than recreating that stack.",
+      "evidence_ids": [
+        287,
+        288,
+        289,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306
+      ],
+      "initial_scope": {
+        "self_managed": [
+          "DQ-file organization/tracking",
+          "deadline calendar",
+          "audit-readiness file review",
+          "MCS-150/UCR preparation and coordination",
+          "safety-record/document monitoring"
+        ],
+        "partner_or_registered_role": [
+          "Clearinghouse query/reporting execution",
+          "random-pool administration",
+          "drug/alcohol testing/MRO workflow"
+        ],
+        "excluded_without_separate_tax_preparer_compliance": [
+          "Form 2290 tax-return preparation"
+        ]
+      },
+      "verified_boundaries": [
+        "No separate DOT professional qualification is required merely to be a C/TPA, but competent Part 40/382/383/391/392 execution is expected.",
+        "C/TPA must register in Clearinghouse before designation; owner-operator must designate one and employer retains compliance responsibility.",
+        "Pre-employment and at least annual Clearinghouse queries create recurring work.",
+        "FMCSA random testing minimums for 2026 are 50% drug and 10% alcohol at the pool level.",
+        "MCS-150 is biennial; UCR is annual; DQ/MVR/medical/driver records create recurring deadlines."
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 18:48:29.709393+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 18:48:29.709393+00"
+  },
+  {
+    "id": 50,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "0eaecc25-13a0-428d-957e-b06d604d7bd9",
+    "engine_id": null,
+    "task_key": "insurance_buyer_channel_20261003",
+    "task_type": "evidence_collection",
+    "priority": 86,
+    "status": "done",
+    "objective": "Verify the size and frequency of trucking insurance purchase/renewal triggers reachable through the warm trucking/repair ecosystem.",
+    "target_dimensions": [
+      "buyer",
+      "distribution_advantage",
+      "purchase_trigger"
+    ],
+    "source_hints": {
+      "kill": [
+        "channel not legally/operationally usable"
+      ],
+      "accept": [
+        "concrete trigger frequency and controlled/repeatable channel"
+      ],
+      "allowed": [
+        "FMCSA/public carrier data",
+        "government insurance filing requirements",
+        "public industry sources"
+      ],
+      "forbidden": [
+        "outreach",
+        "personal contact harvesting"
+      ],
+      "preferred": [
+        "official requirement + owned-channel evidence"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_CHANNEL_WITH_UNVALIDATED_CONVERSION",
+      "verified": [
+        "Owner-controlled trucking network is roughly 40 direct driver/carrier prospects.",
+        "Owner-confirmed repair/service environment creates recurring trucking traffic, but use/solicitation permission is not assumed.",
+        "FMCSA open data provides a free business-entity universe for market sizing and targeting.",
+        "Required insurance is a gating condition for operating authority and proof must remain on file to avoid revocation."
+      ],
+      "remaining": [
+        "verify actual renewal cadence/purchase frequency",
+        "verify legal/operational use of repair-location channel",
+        "verify warm-channel quote and bind conversion"
+      ],
+      "conclusion": "The project has a controlled warm trucking channel (~40 direct prospects), an official FMCSA carrier universe and a mandatory insurance/financial-responsibility trigger. Conversion and renewal cadence remain empirical, but the channel requirement for research is satisfied.",
+      "channel_evidence_ids": [
+        212,
+        211,
+        283,
+        286
+      ],
+      "purchase_trigger_evidence_ids": [
+        290
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 20:21:13.335378+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 20:21:13.335378+00"
+  },
+  {
+    "id": 43,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "f5ebd322-a409-4433-85fe-22d27321b4e3",
+    "engine_id": null,
+    "task_key": "dot_wtp_pricing_20261003",
+    "task_type": "evidence_collection",
+    "priority": 94,
+    "status": "done",
+    "objective": "Verify current monthly/annual pricing for managed DOT compliance, DQ files, Clearinghouse support, audit readiness, and setup/remediation fees.",
+    "target_dimensions": [
+      "pricing",
+      "willingness_to_pay",
+      "offer_scope"
+    ],
+    "source_hints": {
+      "kill": [
+        "observed price ceiling cannot support required labor"
+      ],
+      "accept": [
+        "3 current competitor price/scope anchors"
+      ],
+      "allowed": [
+        "provider first-party pricing",
+        "official service pages"
+      ],
+      "forbidden": [
+        "lead-form-only guessed pricing"
+      ],
+      "preferred": [
+        "published recurring price"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_CROWDED",
+      "conclusion": "WTP is clearly verified, but pricing spans $25 low-cost managed service through $149-$199 high-touch/local offers. A $149-$199 plan is plausible only if the warm/local human-service channel produces value beyond cheap software/managed substitutes.",
+      "evidence_ids": [
+        273,
+        245,
+        246,
+        247,
+        248,
+        307,
+        308,
+        309,
+        310
+      ],
+      "price_anchors": [
+        {
+          "price": "$25/unit/month for 1-3",
+          "scope": "broad managed compliance, consortium/query workflow; usage/tests separate",
+          "provider": "Trucking Comply"
+        },
+        {
+          "price": "$149/month owner-operator",
+          "scope": "continuous/high-touch compliance",
+          "provider": "AR Safety Support"
+        },
+        {
+          "price": "$149.99/month for 1-9 trucks",
+          "scope": "software + DQ/vehicle files/monitoring/audit prep",
+          "provider": "Dotra"
+        },
+        {
+          "price": "$199/month + $199 setup",
+          "scope": "owner-operator managed compliance",
+          "provider": "Lili Safety"
+        }
+      ],
+      "kill_conditions": [
+        "buyers prefer $25-$40 managed/software options",
+        "no measurable willingness to pay for human/local service",
+        "service scope drifts into uncompensated regulated/tax work"
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 18:48:29.709393+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 18:48:29.709393+00"
+  },
+  {
+    "id": 47,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "0eaecc25-13a0-428d-957e-b06d604d7bd9",
+    "engine_id": null,
+    "task_key": "insurance_license_timeline_20261003",
+    "task_type": "evidence_collection",
+    "priority": 88,
+    "status": "done",
+    "objective": "Verify current Illinois resident producer licensing sequence, fees, exam/prelicensing requirements, and realistic minimum administrative lead time.",
+    "target_dimensions": [
+      "launch_barrier",
+      "licensing",
+      "capital_risk",
+      "time_to_cash"
+    ],
+    "source_hints": {
+      "kill": [
+        "launch delay makes this unsuitable for fast-cash lane"
+      ],
+      "accept": [
+        "current required steps and direct fees"
+      ],
+      "allowed": [
+        "Illinois Department of Insurance",
+        "Pearson/official exam vendor if linked by regulator"
+      ],
+      "forbidden": [
+        "training-school estimates as authority"
+      ],
+      "preferred": [
+        "government primary source"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_LAUNCH_BARRIER",
+      "verified": [
+        "20 hours prelicensing per required line of authority, including classroom component",
+        "General + State exams required per line; current exam price $92 with same-line paired-order discount",
+        "5-day wait after passing before NIPR application",
+        "resident producer license fee $215/2 years",
+        "bond requirement applies when placing with an insurer without an agent contract"
+      ],
+      "conclusion": "Insurance cannot be treated as immediate fast-cash before producer licensing. Exact total hours/exams depend on the coverage lines selected for the intended trucking offer.",
+      "evidence_ids": [
+        271,
+        272,
+        317,
+        318,
+        319,
+        325
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 20:21:13.335378+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 20:21:13.335378+00"
+  },
+  {
+    "id": 49,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "0eaecc25-13a0-428d-957e-b06d604d7bd9",
+    "engine_id": null,
+    "task_key": "insurance_commission_renewal_20261003",
+    "task_type": "evidence_collection",
+    "priority": 90,
+    "status": "done",
+    "objective": "Verify commission/renewal economics using published carrier/MGA/network terms where available; separate gross commission from network splits and service cost.",
+    "target_dimensions": [
+      "absolute_gross_profit_potential",
+      "repeat_ltv_potential",
+      "pricing"
+    ],
+    "source_hints": {
+      "kill": [
+        "net economics after splits/service burden are weak"
+      ],
+      "accept": [
+        "credible commission range or exact schedule tied to access path"
+      ],
+      "allowed": [
+        "carrier/MGA/network first-party public terms",
+        "regulatory filings if applicable"
+      ],
+      "forbidden": [
+        "invented commission assumptions presented as verified"
+      ],
+      "preferred": [
+        "contract/commission schedule publicly published"
+      ]
+    },
+    "result": {
+      "state": "PARTIAL_VERIFIED_BASE_CARRIER_RATE_UNKNOWN",
+      "verified": [
+        "Smart Start pays the agency 70% of carrier commission with no premium-volume requirement.",
+        "Smart Choice standard program starts with a 70/30 split and can reach 100% after its cap/leadership threshold.",
+        "TIS states it takes no commission split; fixed plan fees apply.",
+        "Markel confirms base commissions are paid on both new and renewal admitted policies, but exact contract rates are carrier-specific."
+      ],
+      "conclusion": "Commission structure is real, but the project must not use the old 8%-12.5% trucking commission scenarios as verified facts. Exact gross commission remains contract-specific and unknown.",
+      "evidence_ids": [
+        321,
+        322,
+        323,
+        326
+      ],
+      "not_verified": [
+        "exact trucking commercial-auto base commission by accessible Illinois carrier",
+        "exact renewal commission by accessible trucking carrier",
+        "net service labor per account",
+        "realized premium and bind rate"
+      ]
+    },
+    "due_at": "2026-10-03 18:35:58.983918+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 20:21:13.335378+00",
+    "created_at": "2026-10-03 18:35:58.983918+00",
+    "updated_at": "2026-10-03 20:21:13.335378+00"
+  },
+  {
+    "id": 51,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "3f8f5d40-23c5-4a61-b922-1caabeaeafd9",
+    "engine_id": null,
+    "task_key": "billing_unit_economics_20261003",
+    "task_type": "evidence_collection",
+    "priority": 100,
+    "status": "done",
+    "objective": "Quantify monthly load/document volume, minutes per billing packet, exception/rework rate, software/direct cost, and contribution at current $149-$199 monthly anchors.",
+    "target_dimensions": [
+      "owner_time_support",
+      "absolute_gross_profit_potential",
+      "pricing",
+      "delivery_model"
+    ],
+    "source_hints": {
+      "kill": [
+        "routine labor destroys contribution",
+        "scope requires collection licensing to create value"
+      ],
+      "accept": [
+        "bounded packet workflow and labor sensitivity",
+        "price supports positive contribution at realistic load volume"
+      ],
+      "allowed": [
+        "first-party back-office provider pages",
+        "carrier/TMS/factoring public workflow docs",
+        "owner-provided workload samples later if authorized"
+      ]
+    },
+    "result": {
+      "state": "ASSUMPTION_BOUNDED_BY_VERIFIED_PRICING",
+      "conclusion": "Economics are plausible at $199 if packet workflow stays efficient and workload is bounded/measured. $149 unlimited is not supported.",
+      "owner_time": {
+        "review_hours": 4,
+        "target_hours": 3,
+        "hard_kill_hours": 5
+      },
+      "planning_price_usd": 199,
+      "volume_sensitivity": "Competitor explicitly varies price with loads invoiced; unlimited flat-price work is rejected.",
+      "market_price_evidence": "$199/truck/month and $50-$100/week/truck current first-party anchors",
+      "unit_economics_examples": {
+        "16_loads_6min_plus60": {
+          "hours": 2.6,
+          "contribution_usd": 106
+        },
+        "24_loads_6min_plus75": {
+          "hours": 3.65,
+          "contribution_usd": 74.5
+        },
+        "24_loads_10min_plus75": {
+          "hours": 5.25,
+          "contribution_usd": 26.5
+        }
+      }
+    },
+    "due_at": "2026-10-03 20:38:58.145484+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 23:39:11.713334+00",
+    "created_at": "2026-10-03 20:38:58.145484+00",
+    "updated_at": "2026-10-03 23:39:11.713334+00"
+  },
+  {
+    "id": 53,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "3f8f5d40-23c5-4a61-b922-1caabeaeafd9",
+    "engine_id": null,
+    "task_key": "billing_collection_boundary_20261003",
+    "task_type": "evidence_collection",
+    "priority": 98,
+    "status": "done",
+    "objective": "Define the launch boundary between invoice/payment-status administration and activity regulated as debt collection in Illinois.",
+    "target_dimensions": [
+      "regulatory_need",
+      "service_scope",
+      "capital_risk"
+    ],
+    "source_hints": {
+      "kill": [
+        "core buyer value depends on licensed collection activity"
+      ],
+      "accept": [
+        "written allowed/excluded launch scope"
+      ],
+      "allowed": [
+        "Illinois General Assembly",
+        "Illinois IDFPR official Collection Agency Act guidance"
+      ],
+      "preferred": [
+        "primary law/regulator"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_BOUNDED_SCOPE",
+      "verified": [
+        "Illinois broadly licenses collecting debt for others.",
+        "205 ILCS 740/2.03 includes an exemption for a contractor that only notifies debtors using the creditor name.",
+        "Initial RevEng offer must stay on billing packet/document/invoice/payment-status administration; broader third-party collections is excluded."
+      ],
+      "operational_scope": {
+        "excluded": [
+          "independent debt collection",
+          "settlement demands",
+          "holding/receiving debtor funds",
+          "acting or branding as collection agency"
+        ],
+        "included": [
+          "POD/BOL/rate-con packet completeness",
+          "invoice creation/submission",
+          "factoring packet handoff",
+          "billing status dashboard",
+          "creditor-name payment-status reminders where compliant"
+        ]
+      }
+    },
+    "due_at": "2026-10-03 20:38:58.145484+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 20:39:53.311696+00",
+    "created_at": "2026-10-03 20:38:58.145484+00",
+    "updated_at": "2026-10-03 20:39:53.311696+00"
+  },
+  {
+    "id": 52,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "3f8f5d40-23c5-4a61-b922-1caabeaeafd9",
+    "engine_id": null,
+    "task_key": "billing_competition_scope_20261003",
+    "task_type": "evidence_collection",
+    "priority": 92,
+    "status": "done",
+    "objective": "Map direct post-dispatch billing/POD/invoice substitutes and identify whether a billing-only desk has a useful gap beyond broad back-office suites.",
+    "target_dimensions": [
+      "competition",
+      "competition_adjusted_gap",
+      "offer_scope"
+    ],
+    "source_hints": {
+      "kill": [
+        "billing-only function is fully commoditized at prices below viable labor"
+      ],
+      "accept": [
+        "direct substitute map plus a bounded wedge"
+      ],
+      "allowed": [
+        "first-party provider pricing/scope",
+        "public TMS/factoring workflow docs"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_CROWDED",
+      "conclusion": "WTP for the function is real, but the category is directly served. The entry thesis must rely on owned-channel CAC plus measured delivery efficiency, not unique features.",
+      "price_signals": [
+        "Fleet Assist $199/truck/month",
+        "Adwa $149/month owner-operator tier",
+        "Forward Dispatch $50-$100/week/truck"
+      ],
+      "service_structure": "ClearLane and others sell billing/POD as an independent desk."
+    },
+    "due_at": "2026-10-03 20:38:58.145484+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 20:39:53.311696+00",
+    "created_at": "2026-10-03 20:38:58.145484+00",
+    "updated_at": "2026-10-03 20:39:53.311696+00"
+  },
+  {
+    "id": 56,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "5531d420-3449-4804-b471-60b9aa6fe6e9",
+    "engine_id": null,
+    "task_key": "recruiting_illinois_scope_20261003",
+    "task_type": "evidence_collection",
+    "priority": 98,
+    "status": "done",
+    "objective": "Define exact employer-paid recruiting scope that remains within Illinois consulting/recruiting exclusion and identify contract/advertising/candidate-fee boundaries.",
+    "target_dimensions": [
+      "regulatory_need",
+      "service_scope",
+      "capital_risk"
+    ],
+    "source_hints": {
+      "kill": [
+        "intended model requires employment-agency/counselor licensing before launch"
+      ],
+      "accept": [
+        "bounded employer-paid model with no candidate fees"
+      ],
+      "allowed": [
+        "Illinois General Assembly",
+        "Illinois Department of Labor"
+      ],
+      "preferred": [
+        "primary law/regulator"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_BOUNDED_SCOPE",
+      "verified": [
+        "Illinois statute provides an exclusion for qualifying employer-only paid consulting/recruiting.",
+        "Candidate may not be charged directly or indirectly.",
+        "Employer remains employer of record in the contemplated model."
+      ],
+      "launch_boundary": {
+        "excluded": [
+          "candidate fees",
+          "temporary staffing/employer-of-record role",
+          "model drift outside the statutory consulting/recruiting exclusion"
+        ],
+        "included": [
+          "employer-paid role intake",
+          "candidate identification",
+          "screening/appraisal",
+          "recommendation/referral"
+        ]
+      }
+    },
+    "due_at": "2026-10-03 20:38:58.145484+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 20:39:53.311696+00",
+    "created_at": "2026-10-03 20:38:58.145484+00",
+    "updated_at": "2026-10-03 20:39:53.311696+00"
+  },
+  {
+    "id": 55,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "5531d420-3449-4804-b471-60b9aa6fe6e9",
+    "engine_id": null,
+    "task_key": "recruiting_fee_retention_econ_20261003",
+    "task_type": "evidence_collection",
+    "priority": 96,
+    "status": "done",
+    "objective": "Verify current employer-paid placement fees, guarantees/replacement terms, screening costs, and contribution after replacement/retention risk.",
+    "target_dimensions": [
+      "pricing",
+      "willingness_to_pay",
+      "owner_time_support",
+      "absolute_gross_profit_potential",
+      "repeat_ltv_potential"
+    ],
+    "source_hints": {
+      "kill": [
+        "fee cannot cover sourcing/screening/replacement workload",
+        "employers only buy paid-ad applicant generation rather than placement"
+      ],
+      "accept": [
+        "fee range plus replacement-risk model"
+      ],
+      "allowed": [
+        "first-party recruiting provider terms",
+        "public employer recruiting benchmarks"
+      ]
+    },
+    "result": {
+      "state": "ECONOMICS_PLAUSIBLE_BUT_CHANNEL_GATE_FAILED",
+      "conclusion": "Placement economics can be positive if candidate sourcing is effectively free/owned and replacement rates are controlled. That assumption is not verified, so economics do not rescue the failed channel gate.",
+      "verified_fee": {
+        "retainer_usd": 349,
+        "placement_usd": 650,
+        "replacement_guarantee_days": 60
+      },
+      "planning_sensitivity": {
+        "30_per_hour_25pct_replacement_contribution_usd": 300,
+        "50_per_hour_25pct_replacement_contribution_usd": 100,
+        "50_per_hour_50pct_replacement_contribution_usd": 0
+      }
+    },
+    "due_at": "2026-10-03 20:38:58.145484+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-03 23:40:02.731914+00",
+    "created_at": "2026-10-03 20:38:58.145484+00",
+    "updated_at": "2026-10-03 23:40:02.731914+00"
+  },
+  {
+    "id": 58,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "49954272-6103-4e91-b681-c614092d3177",
+    "engine_id": null,
+    "task_key": "referral_partner_economics_20261003",
+    "task_type": "evidence_collection",
+    "priority": 98,
+    "status": "done",
+    "objective": "Verify exact publicly stated payouts, activation conditions, recurring-vs-one-time structure, and fixed costs of accessible trucking vendor partner programs.",
+    "target_dimensions": [
+      "pricing",
+      "partner_payout",
+      "repeat_ltv_potential",
+      "owner_time_support"
+    ],
+    "source_hints": {
+      "kill": [
+        "all payouts too delayed/small to justify relationship risk"
+      ],
+      "accept": [
+        "at least 3 exact or structurally clear payout paths"
+      ],
+      "allowed": [
+        "first-party partner/referral pages"
+      ]
+    },
+    "result": {
+      "paths": [
+        {
+          "vendor": "QP",
+          "fuel_usd": 100,
+          "dispatch_usd": 100,
+          "factoring_usd": 250,
+          "authority_service_usd": 20
+        },
+        {
+          "vendor": "Summar",
+          "factoring_recurring_commission_pct": 10
+        },
+        {
+          "vendor": "RoadFlex",
+          "activation_gallons": 4000,
+          "max_fuel_referral_usd": 1000
+        },
+        {
+          "vendor": "RTS",
+          "monthly_commission": true,
+          "exact_public_amount": null
+        }
+      ],
+      "state": "VERIFIED_MULTI_PATH",
+      "warning": "Factoring legal scope remains conditional; RoadFlex max payout is not typical payout."
+    },
+    "due_at": "2026-10-04 01:53:54.912547+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-04 01:53:54.912547+00",
+    "created_at": "2026-10-04 01:53:54.912547+00",
+    "updated_at": "2026-10-04 01:53:54.912547+00"
+  },
+  {
+    "id": 62,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "450bdfbf-7555-4542-afbf-9543597fd760",
+    "engine_id": null,
+    "task_key": "repair_audit_scope_pricing_20261003",
+    "task_type": "evidence_collection",
+    "priority": 92,
+    "status": "done",
+    "objective": "Verify current fixed-fee/contingency alternatives and define a non-mechanical-advice audit/advocacy scope.",
+    "target_dimensions": [
+      "pricing",
+      "willingness_to_pay",
+      "competition",
+      "service_scope"
+    ],
+    "source_hints": {
+      "kill": [
+        "category price too low for human review"
+      ],
+      "accept": [
+        "multiple current price models and bounded scope"
+      ],
+      "allowed": [
+        "first-party provider pages"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_MULTIPLE_MODELS",
+      "pricing": [
+        {
+          "fee": "40% of recovered savings",
+          "model": "contingency",
+          "provider": "Fleet Cost Shield",
+          "upfront_usd": 0
+        },
+        {
+          "model": "fixed",
+          "provider": "Big Brother Automotive",
+          "advocacy_usd": 99.99,
+          "estimate_review_usd": 39.99
+        }
+      ],
+      "competition": "FleetLens validates commercial-fleet estimate/invoice audit job",
+      "launch_scope": "cost/document/warranty flagging and negotiation support; no mechanical safety guarantee"
+    },
+    "due_at": "2026-10-04 01:53:54.912547+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-04 01:53:54.912547+00",
+    "created_at": "2026-10-04 01:53:54.912547+00",
+    "updated_at": "2026-10-04 01:53:54.912547+00"
+  },
+  {
+    "id": 61,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "450bdfbf-7555-4542-afbf-9543597fd760",
+    "engine_id": null,
+    "task_key": "repair_audit_capability_20261003",
+    "task_type": "evidence_collection",
+    "priority": 99,
+    "status": "done",
+    "objective": "Verify what data/tools/expertise are required to reliably flag labor, parts, duplicate-charge and warranty issues in heavy-truck repair estimates/invoices.",
+    "target_dimensions": [
+      "delivery_model",
+      "capital_risk",
+      "customer_problem_or_value"
+    ],
+    "source_hints": {
+      "kill": [
+        "accurate review depends on expensive/proprietary data or specialist expertise unavailable at launch"
+      ],
+      "accept": [
+        "bounded audit method with sources and uncertainty labels"
+      ],
+      "allowed": [
+        "first-party fleet audit tools/services",
+        "OEM/warranty/public service information",
+        "commercial labor-guide vendor information"
+      ]
+    },
+    "result": {
+      "state": "VERIFIED_TOOL_PATH",
+      "limits": [
+        "no mechanical safety guarantee",
+        "no diagnosis of whether repair is mechanically necessary without qualified source evidence",
+        "parts-market pricing and warranty coverage may require additional source/owner records"
+      ],
+      "verified": [
+        "Mitchell 1 TruckLabor Plus is publicly priced at $99/month with Class 4-8 standardized labor times.",
+        "FleetLens shows a commercial audit method using rate cards, repair history and warranty status.",
+        "Big Brother Automotive demonstrates fixed-fee written review/advocacy as a separate service model."
+      ],
+      "conclusion": "A bounded evidence-based cost audit is technically feasible with a low-cost commercial labor-time source. The service must stay on pricing/document/warranty flags rather than acting as a diesel mechanic.",
+      "launch_method": [
+        "verify billed labor against published heavy-truck labor guide",
+        "flag duplicate/extra fees and arithmetic discrepancies",
+        "compare against customer-provided prior rate card/history where available",
+        "flag potential warranty issue for customer/shop/OEM confirmation",
+        "label uncertain mechanical/diagnostic items rather than asserting they are unnecessary"
+      ]
+    },
+    "due_at": "2026-10-04 01:53:54.912547+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-04 01:54:51.417488+00",
+    "created_at": "2026-10-04 01:53:54.912547+00",
+    "updated_at": "2026-10-04 01:54:51.417488+00"
+  },
+  {
+    "id": 60,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "450bdfbf-7555-4542-afbf-9543597fd760",
+    "engine_id": null,
+    "task_key": "repair_audit_unit_economics_20261003",
+    "task_type": "evidence_collection",
+    "priority": 100,
+    "status": "done",
+    "objective": "Model fixed-fee and contingency repair-audit economics including no-savings cases, review minutes, negotiation minutes and realized savings distribution.",
+    "target_dimensions": [
+      "owner_time_support",
+      "absolute_gross_profit_potential",
+      "pricing",
+      "delivery_model"
+    ],
+    "source_hints": {
+      "kill": [
+        "no-savings review time or negotiation time destroys economics"
+      ],
+      "accept": [
+        "positive expected contribution with explicit no-savings labor"
+      ],
+      "allowed": [
+        "first-party audit/advocacy pricing",
+        "owner-provided anonymized repair invoices later if authorized"
+      ]
+    },
+    "result": {
+      "state": "ECONOMICS_PLAUSIBLE_FIXED_OR_HYBRID",
+      "warning": "Pure contingency is fragile because no-savings reviews consume labor.",
+      "examples": {
+        "10_fixed_reviews_49_contribution_usd": 166,
+        "300_savings_contingency_contribution_usd": 50.1,
+        "500_savings_contingency_contribution_usd": 130.1
+      },
+      "planning": {
+        "contingency_pct": 40,
+        "fixed_review_usd": 49,
+        "tool_monthly_usd": 99,
+        "savings_case_minutes": 120,
+        "no_savings_review_minutes": 45
+      },
+      "conclusion": "Promote only as a bounded fixed/hybrid audit test; do not assume vendor-claimed hit rates."
+    },
+    "due_at": "2026-10-04 01:53:54.912547+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-04 01:54:51.417488+00",
+    "created_at": "2026-10-04 01:53:54.912547+00",
+    "updated_at": "2026-10-04 01:54:51.417488+00"
+  },
+  {
+    "id": 59,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "49954272-6103-4e91-b681-c614092d3177",
+    "engine_id": null,
+    "task_key": "referral_network_demand_20261003",
+    "task_type": "evidence_collection",
+    "priority": 95,
+    "status": "done",
+    "objective": "Determine which partner products are actually needed by the owned carrier network without contacting prospects: factoring use, fuel-card gaps, dispatch needs, authority/startup services.",
+    "target_dimensions": [
+      "buyer",
+      "distribution_advantage",
+      "purchase_trigger"
+    ],
+    "source_hints": {
+      "kill": [
+        "revenue requires generic paid lead acquisition"
+      ],
+      "accept": [
+        "at least one product category with repeated existing-network fit"
+      ],
+      "allowed": [
+        "existing owner-provided network knowledge if already durable",
+        "public small-carrier product-use data"
+      ],
+      "forbidden": [
+        "outreach"
+      ]
+    },
+    "result": {
+      "state": "DONE_MACRO_DEMAND_VERIFIED_NETWORK_FIT_UNVERIFIED",
+      "reason": "Durable owner evidence proves access to about 40 trucking prospects, and current public evidence proves strong category demand, but no durable product-specific need among those contacts exists and outreach is forbidden.",
+      "decision": "Do not promote FC2-03 to deep_screen without owner-authorized network validation or pre-existing product-specific evidence.",
+      "outreach": false,
+      "spend_usd": 0,
+      "macro_evidence": {
+        "factoring_use_pct": 79,
+        "cash_runway_lt_30_days_if_payments_stop_pct": 44,
+        "owned_direct_driver_carrier_prospects_approx": 40
+      },
+      "accept_criterion": "At least one product category with repeated existing-network fit.",
+      "accept_criterion_met": false,
+      "paid_acquisition_required": false
+    },
+    "due_at": "2026-10-04 01:53:54.912547+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-04 09:24:51.714983+00",
+    "created_at": "2026-10-04 01:53:54.912547+00",
+    "updated_at": "2026-10-04 09:24:51.714983+00"
+  },
+  {
+    "id": 57,
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "niche_id": "49954272-6103-4e91-b681-c614092d3177",
+    "engine_id": null,
+    "task_key": "referral_legal_scope_20261003",
+    "task_type": "evidence_collection",
+    "priority": 100,
+    "status": "done",
+    "objective": "Separate permitted contract-based vendor referrals from activities that could constitute loan brokering, insurance production, or other licensed intermediation in Illinois.",
+    "target_dimensions": [
+      "regulatory_need",
+      "service_scope",
+      "capital_risk"
+    ],
+    "source_hints": {
+      "kill": [
+        "core high-value referral revenue requires unheld license/registration"
+      ],
+      "accept": [
+        "written launch scope by product category"
+      ],
+      "allowed": [
+        "Illinois General Assembly",
+        "Illinois Secretary of State/IDFPR official materials",
+        "vendor partner contracts when obtained"
+      ]
+    },
+    "result": {
+      "state": "DONE_CONSERVATIVE_SCOPE",
+      "decision": "LEGAL_RESEARCH_COMPLETE_FOR_SCANNER; factoring remains conditional rather than launch-ready",
+      "outreach": false,
+      "verified": [
+        "Illinois loan-broker definition is broad for compensated assistance procuring a loan.",
+        "Illinois UCC separately recognizes sales of accounts; true receivables purchases can be sale transactions.",
+        "Current Illinois Small Business Financing Transparency proposals located in the 104th GA are bills, not enacted law; HB3477 was re-referred to Rules on 2025-04-11 and SB0260 remained in Assignments.",
+        "Vendor referral programs can route prospects directly to the vendor, with vendor handling application/onboarding/service."
+      ],
+      "spend_usd": 0,
+      "launch_scope": {
+        "dispatch": "RESEARCHABLE_PASSIVE_VENDOR_REFERRAL_ONLY",
+        "factoring": "CONDITIONAL_CONTRACT_AND_LEGAL_BOUNDARY_REQUIRED; no launch or claim of exemption",
+        "fuel_card": "RESEARCHABLE_PASSIVE_VENDOR_REFERRAL_ONLY",
+        "insurance": "EXCLUDED_UNLESS_SEPARATELY_LICENSED_OR_AUTHORIZED",
+        "authority_services": "RESEARCHABLE_REFERRAL_ONLY; no self-delivered tax/legal work outside approved scope"
+      }
+    },
+    "due_at": "2026-10-04 01:53:54.912547+00",
+    "claimed_at": null,
+    "completed_at": "2026-10-04 09:24:51.714983+00",
+    "created_at": "2026-10-04 01:53:54.912547+00",
+    "updated_at": "2026-10-04 09:24:51.714983+00"
+  }
+]

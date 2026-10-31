@@ -1,0 +1,886 @@
+{
+  "project": "RevEng",
+  "snapshot_date": "2026-10-30",
+  "public_repository_path": "MIGRATION/reveng/2026-10-30/",
+  "package_kind": "Полная передача проекта с точным поднабором исходников и историческим каталогом; не установщик",
+  "main_document": "01_RevEng_Передача_Claude.docx",
+  "full_text": "02_RevEng_Полный_контекст.md",
+  "source_archive": {
+    "name": "CORE_SOURCE_FIXES_001_20261028.zip",
+    "bytes": 1288003,
+    "sha256": "76afccb5a55b1a7aa0c8aa29a56f8f7a256e8c1d6c2884b067719ff74f092d73",
+    "included_original_entries": 127,
+    "included_original_bytes": 1325937,
+    "exact_subset_manifest": "source_material/latest_20261028/FILES_SHA256.json"
+  },
+  "curation_ru": [
+    "Точные исходные файлы сохранены без изменений; metadata и пояснения добавлены отдельно.",
+    "Каталоги содержат отобранные проектные поля; приватные имена, контакты, внутренние примечания и операционный project_ref исключены.",
+    "Social score history агрегирована; объём и ограничения указаны в каталоге.",
+    "Сырые repo_evidence не включены; сохранены публичные ссылки и подробные проектные разборы.",
+    "Первичные private chat links в analysis сохраняют происхождение, но могут требовать аккаунт владельца."
+  ],
+  "validation_scope_ru": "Подготовка передачи: чтение, редактура, сравнение хешей и визуальная проверка DOCX. Программа, её тесты, модели, установки и внешние публикации не запускались.",
+  "excluded": [
+    "QA PNG/PDF",
+    "builders and temporary scripts",
+    "raw unrelated repository notes",
+    "credentials and account configuration",
+    "full multi-project source ZIP",
+    "models and installers"
+  ],
+  "file_count_excluding_this_manifest": 170,
+  "total_bytes_excluding_this_manifest": 3215451,
+  "files": [
+    {
+      "path": "00_НАЧАТЬ_ЗДЕСЬ.txt",
+      "bytes": 733,
+      "sha256": "0a32cee431d0c9cbe020131dc4148458e7deb1f2cbaab7e32b10fc43879e91c0"
+    },
+    {
+      "path": "01_RevEng_Передача_Claude.docx",
+      "bytes": 79107,
+      "sha256": "ba234419cfe62dd7253203a0e69d1e2fab36056eab7eeacd89fbfdeb306cbc68"
+    },
+    {
+      "path": "02_RevEng_Полный_контекст.md",
+      "bytes": 108361,
+      "sha256": "433f7ddbda2013789a3f8c0399c5e645c3390a766e95f99bb518a01f8a272076"
+    },
+    {
+      "path": "03_Стартовый_запрос_Claude.txt",
+      "bytes": 9836,
+      "sha256": "3e04a8cbc1bcc50b8566794f16034fa6edc0c6166d3572d8bd7a6f0e916ce40b"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4644,
+      "sha256": "31135d7737d0c2649615cbd3c083753d1bb22a9696b1990d1480008416e63be5"
+    },
+    {
+      "path": "analysis/artifacts.md",
+      "bytes": 6082,
+      "sha256": "9b5f5b6c72956c82edc7306cebffdd31d4db04c944fcb868201063648f39b0ce"
+    },
+    {
+      "path": "analysis/history.md",
+      "bytes": 62529,
+      "sha256": "f1e22cb8f9c1f56d8b15763d6171bb0feac98a1a1d37dd831dbb4cfa89a2cda4"
+    },
+    {
+      "path": "analysis/repository.md",
+      "bytes": 27976,
+      "sha256": "e368626f810b88f563a331c689611317f7b4454c49770c890a73f3dcba6b28db"
+    },
+    {
+      "path": "catalog/CATALOG_RU.md",
+      "bytes": 310214,
+      "sha256": "75affe156c466abfead8f08b6d0cb5bfcaa4ec51c6c97b7882da4d74a49dbd13"
+    },
+    {
+      "path": "catalog/SHA256SUMS",
+      "bytes": 2398,
+      "sha256": "ab4718b220678dc3e7dad07cfb99abbf9453be4695e369d25ce343cc76dcc0fe"
+    },
+    {
+      "path": "catalog/SHA256SUMS.json",
+      "bytes": 3981,
+      "sha256": "0a266e1a7e6118debf86bdcc6ac2e66c9c2a48c421627299fc6285d68718bec3"
+    },
+    {
+      "path": "catalog/catalog_business_models.json",
+      "bytes": 10247,
+      "sha256": "6c1355c53e00d34ecaed036810cad70eea57d9a42ce0c6b6d286715ef4574c22"
+    },
+    {
+      "path": "catalog/catalog_candidate_inbox.json",
+      "bytes": 35997,
+      "sha256": "b0a8cac99039822df397630437305fc7c8aa17c31ecf17d01dc63d1f4ee7ab1e"
+    },
+    {
+      "path": "catalog/catalog_candidate_sources.json",
+      "bytes": 887,
+      "sha256": "d94fe93cdd0f0851c31b9fd33f0be24d597dd55816d37d5c58faca2707351325"
+    },
+    {
+      "path": "catalog/catalog_claim_evidence.json",
+      "bytes": 26808,
+      "sha256": "f7d7e8d17804479dc23e8782bc674dfe4a595137bca737fccb45e0dc38b7a41a"
+    },
+    {
+      "path": "catalog/catalog_claims.json",
+      "bytes": 28796,
+      "sha256": "1c029dfc1ab848cd57fd98268755fc435e42aad6349e1522cebe1b9c8528b780"
+    },
+    {
+      "path": "catalog/catalog_evidence_sources.json",
+      "bytes": 5496,
+      "sha256": "9c113ee9c9d0f1ab242f8f809c48fa5d5b089c3f32ba175e841b538b33f0c625"
+    },
+    {
+      "path": "catalog/catalog_markets.json",
+      "bytes": 864,
+      "sha256": "0c61f5780eb7acbb21f2c1bb365403169698369427ec6a0330c7cace1a70f00c"
+    },
+    {
+      "path": "catalog/catalog_niches.json",
+      "bytes": 2510,
+      "sha256": "411023e88797cebb0b4464de5284a125230240f55a6a7e3fcb1baa10b7fd9cc8"
+    },
+    {
+      "path": "catalog/catalog_opportunities.json",
+      "bytes": 5169,
+      "sha256": "7e7fe8b10dcdc7b5357e02f7d35f637998328c3b0bdfecb0dfe37dd740178408"
+    },
+    {
+      "path": "catalog/evidence_items.json",
+      "bytes": 430694,
+      "sha256": "ef527fb4ecdac5a6fb848646caf07242671dda866d154407ab791067f1c6ce9f"
+    },
+    {
+      "path": "catalog/ideas_102.csv",
+      "bytes": 42369,
+      "sha256": "98bfa16d3938006bb50013d339add4f9301bdf581024a4c70cfdcf51b6d793b9"
+    },
+    {
+      "path": "catalog/ideas_102.json",
+      "bytes": 62752,
+      "sha256": "f164db5721e7cb7ed8633822fee6c3e9cf59d82fd7530cc83a8c3b920294170e"
+    },
+    {
+      "path": "catalog/niche_dossiers.json",
+      "bytes": 77919,
+      "sha256": "10f00f3023dce685a2ea4b39d346cff9808e9214c4108a5753d816c624cb6648"
+    },
+    {
+      "path": "catalog/niches.json",
+      "bytes": 88977,
+      "sha256": "3b6a8a9bd537a51fdf04e462360009f094d6a6b3dc1b639ae9047ea5d77a49a2"
+    },
+    {
+      "path": "catalog/opportunities.json",
+      "bytes": 25553,
+      "sha256": "5f7e59c60cb7b5c6c475301406b32ce14721d79395258d6bb38403a7eb491dbc"
+    },
+    {
+      "path": "catalog/opportunity_score_runs.json",
+      "bytes": 13108,
+      "sha256": "b4ea1fc7573a4cc4127c46ffc5a192be6c7955c389cf5a8d70ed17d09af9f80a"
+    },
+    {
+      "path": "catalog/opportunity_scoring_versions.json",
+      "bytes": 1093,
+      "sha256": "61d7084c5d0f53e39e0ba07a687d64fe4243779dda33014a26b527bf876842e8"
+    },
+    {
+      "path": "catalog/opportunity_validation_gates.json",
+      "bytes": 27517,
+      "sha256": "845480a2a040d596df0d0778b369fbbf08da9463586002a84acec4c29db636bc"
+    },
+    {
+      "path": "catalog/privacy_redactions.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "catalog/provenance.json",
+      "bytes": 5571,
+      "sha256": "c5c052d01183a35a420958e08643efcfe95e00f52f710d93db91599752f1c5cb"
+    },
+    {
+      "path": "catalog/research_queue.json",
+      "bytes": 100290,
+      "sha256": "30691ca07e27b7f1b113d69321eb733e7e01aecb36e936a7aa887632e161a593"
+    },
+    {
+      "path": "catalog/score_runs.json",
+      "bytes": 129915,
+      "sha256": "a349a075ef1a9b5f07b1aaf897d263c078bdd8dd4a10219bfdbf81103f6bda95"
+    },
+    {
+      "path": "catalog/scoring_dimensions.json",
+      "bytes": 3986,
+      "sha256": "2a974da2c1633bc46ad2f3f18e05d486ed59f086f9f7f0b6bda6b4f76cc23b1a"
+    },
+    {
+      "path": "catalog/scoring_versions.json",
+      "bytes": 11825,
+      "sha256": "07eaa682770a44d460b5d0db0a321539d036e2a8f383cadd1ec08afa6a723e6f"
+    },
+    {
+      "path": "catalog/workspace_opportunity_state.json",
+      "bytes": 2232,
+      "sha256": "d0504043688efa8c316a3128fac0a55f691592abe380a09ea15566580bbf4bce"
+    },
+    {
+      "path": "catalog/workspaces.json",
+      "bytes": 997,
+      "sha256": "1161b3ae676238db082bccf95b2c9819a8e361d82a3e2c1056db0fa527d8e6f3"
+    },
+    {
+      "path": "module_inventory.md",
+      "bytes": 16733,
+      "sha256": "5bcb2f3792e5a2db22f8d087e10aceac5ffb8b9adb147cf9d7f15f5530e964f0"
+    },
+    {
+      "path": "repo_manifest.json",
+      "bytes": 60656,
+      "sha256": "43f92316ce0e6e8519883ccdfcce320a82b58f8f26ab53adbb0854581f7479c1"
+    },
+    {
+      "path": "source_diff_vs_oct22.json",
+      "bytes": 30958,
+      "sha256": "38d2ba300d4912957f401ab29d9b47bfea0902d2fd09bdb582e407f4c776df51"
+    },
+    {
+      "path": "source_material/latest_20261028/.ci/test-only/harness/canonical_source.py",
+      "bytes": 1155,
+      "sha256": "aef1372e9355ae1ea050cbfd4b69c954d15d3eed513073ce47c9381ae3f28ad4"
+    },
+    {
+      "path": "source_material/latest_20261028/.ci/test-only/harness/guard.py",
+      "bytes": 427,
+      "sha256": "f13a814deee48afc1718289eb582fdf50a9d5c68f1da94267cc56722aafafa36"
+    },
+    {
+      "path": "source_material/latest_20261028/.ci/test-only/harness/reveng_followon.py",
+      "bytes": 7123,
+      "sha256": "781a0df503620e7df770691e8423a190dd45bafc40b02081382dfb6aa3ca1f87"
+    },
+    {
+      "path": "source_material/latest_20261028/.ci/test-only/harness/run.py",
+      "bytes": 5083,
+      "sha256": "6ed358c78ffff174af32bc5d224d84bfe1b1b86b53379976aa06521747b58b86"
+    },
+    {
+      "path": "source_material/latest_20261028/FILES_SHA256.json",
+      "bytes": 22586,
+      "sha256": "9ebcd3ad487926588923f36dbc01c322afae15f29dc2b6a3d0339ab91d5541d5"
+    },
+    {
+      "path": "source_material/latest_20261028/READ_FIRST_RU.txt",
+      "bytes": 556,
+      "sha256": "d729e50f0c139c2825749b9577962353675997a58aa8ecbcb91e71be552bd38b"
+    },
+    {
+      "path": "source_material/latest_20261028/VALIDATION_SUMMARY.json",
+      "bytes": 590,
+      "sha256": "224898ee9f9c35f40881d32a4e651022111df01221c85a7ba9bb68c99af326ef"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json",
+      "bytes": 79061,
+      "sha256": "7b4da80a333b781dd5111e25b57570e3f7602e29e625cc16ae359d0523b9eccb"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/.gitignore",
+      "bytes": 205,
+      "sha256": "9ccd26f2332c639c0231d9f40ca78a921846f360fdaab91144ff0e1fa5020f98"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/AnalysisOutcomePresentation.cs",
+      "bytes": 15129,
+      "sha256": "a2bb68e77e971c939ca7f059b4aebc5a9517350a463377b6c535cebd240eb03f"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/AnalysisReadiness.cs",
+      "bytes": 8727,
+      "sha256": "ac8dcbbe10e9de475be3bb4f7763297dc17fd29384ea25b226b1faee0da6f99b"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/ArchivePreview.cs",
+      "bytes": 5822,
+      "sha256": "875e56c5f2b85ad3a8ca291a810ee5465be0e2f2a3f1143492f9ad8d054410d3"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/AttemptPublication.cs",
+      "bytes": 8627,
+      "sha256": "2da980b18f340a54a0107a7cb85196e9fb72cf2d0f046c02a6ecb278027eeb53"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/BuyerSourcePresentation.cs",
+      "bytes": 1255,
+      "sha256": "ce20f0cf01c5b28a51e64e8744633bd58d708aba6e2fb1c3322615504dc7f024"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/CorroborationPresentation.cs",
+      "bytes": 2871,
+      "sha256": "db3f4f7b33b192b27047eaa5f836f624aede1bbada8133fc06491e62d37fd76c"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/DecisionStore.cs",
+      "bytes": 10499,
+      "sha256": "476360b7c5e4ec1c124ae9d059b6f23e41d81d516d989c4dba68848e86cbd3b2"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/EvidenceBindings.cs",
+      "bytes": 5837,
+      "sha256": "3a2d4f7129505753bc75ef68c2866d9ae35413333e903856cf4adace800ab5af"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/EvidenceComparison.cs",
+      "bytes": 32180,
+      "sha256": "f4a344ebde5958ce76a8b5409f1dbc407eac3e9bf31c2ae9965da853ed570824"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/EvidenceDates.cs",
+      "bytes": 1295,
+      "sha256": "584b79fc27e48869e3e9615b9a55ccf6f6bf371f2236b67bc5c915abcc7c340e"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/EvidenceWorkbench.cs",
+      "bytes": 22025,
+      "sha256": "581b2c61baca7b6f55dfc6262b7581541d1a4f837801c8c1224a1b6c0cf31ced"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/FactualObservationPresentation.cs",
+      "bytes": 8087,
+      "sha256": "da6b7bf357a7867bb6e02c53193caa39b94082baeb1c8068ee7b340e6e643819"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/LegacyCandidateReviews.cs",
+      "bytes": 10909,
+      "sha256": "4f7bf66747007240c2ad5cc72a04cffcee24f07aa1640d21db74e20be956ade7"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/LocalJson.cs",
+      "bytes": 6603,
+      "sha256": "c462297b1d27375903ef27ecb8ec4242ae405ce5fe5b6d4fe506ec386b326999"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/ManualDraftRecovery.cs",
+      "bytes": 5400,
+      "sha256": "c623b312eb44e7668ec31637360e99511049cb432f75ba93af5b5dc7215f7a05"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/ManualHypotheses.cs",
+      "bytes": 11987,
+      "sha256": "f0803008d3e659c79ecc7a3c01f8847fa5e01b11f40127de36887b93f6d12a7c"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/ManualHypothesisEditor.cs",
+      "bytes": 10130,
+      "sha256": "410344327c15ae244231e7859c5926ee8d857589c49d580539719f4ec5a2761a"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/OfficialObservationPresentation.cs",
+      "bytes": 3168,
+      "sha256": "e0e3e388d09da8a1a54f502fe595483b5f8ba8564cec221c5b238c239bfbe707"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/PortableRuntime.cs",
+      "bytes": 14543,
+      "sha256": "79e24e553d9be207bd6146ebeb58ea926c95f3fefb71fcdb56c853344c5a7fa8"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/PriceExperimentPresentation.cs",
+      "bytes": 2468,
+      "sha256": "1286913e67d989734789796ab658a723993bcc63e638b6cea27c51ca8ba1ee18"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/PriorityExplanation.cs",
+      "bytes": 8561,
+      "sha256": "26f058631641c734bab51eeb863e3f335c718caa6e8ff224669ad68251f3c41a"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/ProductLayout.cs",
+      "bytes": 3029,
+      "sha256": "d76c6999e4b965cb00144bc3b5ee60a43b6a2d34db17cf10344e1e80a40245d1"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/ProvenanceAudit.cs",
+      "bytes": 17446,
+      "sha256": "75e0c4108056a3f2d2dbbcb6053189648e833585459b7cf9ec4df24527da3433"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/PublicResearchAudit.cs",
+      "bytes": 4838,
+      "sha256": "f8a7b6b1b4322b0904b03201b1f409b27d6d460f15819047b25a4b72528ec3a8"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/README.md",
+      "bytes": 42982,
+      "sha256": "70618f0a9d0a944e44db363912c257e91ef755fbfda3cb5b424d0f96d46dd01f"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/ResearchRunPresentation.cs",
+      "bytes": 6028,
+      "sha256": "70a46024b2e660e953c9de72b683cd9c64fd9007b21cfd59a5a52aa5d1dafe07"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/RevEngLocalResearch.cs",
+      "bytes": 80802,
+      "sha256": "f37bbf063facfb7784ac50b5d6763d6c2ceb8827bd58a8fedf22227efedbb94e"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/ScenarioIdentity.cs",
+      "bytes": 987,
+      "sha256": "1c4e347c7ae9e3e13a02cdc4acaf6e0cfc36d2ea0b48c5270bea9cfed1813659"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/SourceLedgerComparison.cs",
+      "bytes": 23746,
+      "sha256": "45202257ab9bf761bf7bca16b41b1f07a6346027b30d3b81f65246c65de10739"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/SourceProposalPresentation.cs",
+      "bytes": 1640,
+      "sha256": "0837b16daf2f98b4c13b1cfd97afd50abdf2d0ef9b1b7ad62781bdc4dc076750"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/SourceTaskPresentation.cs",
+      "bytes": 2322,
+      "sha256": "c391a4035b69f637203a65561dce46f7be96ef183f8a95172b7ae36f2d791926"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/analysis_jobs.py",
+      "bytes": 8001,
+      "sha256": "b170e535c2e4f0ce58e691cbdc54e493c68dc849d624690227443626ab03af72"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/analysis_lineage.py",
+      "bytes": 4805,
+      "sha256": "ef1aa384e6594498eb50e33aea3b93476e9b1ea03cdbd03b878012435611f259"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/analysis_quality.py",
+      "bytes": 2704,
+      "sha256": "eefbe92e1552d1bc61a1f7743223b239d4b5ff9b87d4aa37e2b9454a7eb3101f"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/analysis_readiness.py",
+      "bytes": 3541,
+      "sha256": "dbf4aceb09ebcf8a80b94741b32776c4d0912e0c8930f678414c4154ef97bff4"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/answer_context.py",
+      "bytes": 7799,
+      "sha256": "110f3aa17e2e2c02fc2c252369c66135467a6d98a26a487f05ba8a1b2af38cf9"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/api_capability.py",
+      "bytes": 7452,
+      "sha256": "dc1f39cdb5524293a94042ed9ecad147630037087d14e9ee42e61785e7a806c6"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/archive_preview.py",
+      "bytes": 4925,
+      "sha256": "cbe354e346b45b0c1c3a36704c1471ea74537ff504cdcf5abb68ecf6ca1ecb61"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/buyer_evidence.py",
+      "bytes": 22844,
+      "sha256": "3b3e844f0ad8afa3f8e2f564f3c836b1e10b8ccc91d7327fa44187fb42585767"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/candidate_publication.py",
+      "bytes": 4435,
+      "sha256": "1d9887d7dd4fa4e645611b78efc182ee6b29f9e5d55d2e4c29275cdfb1c33657"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/candidate_queue.py",
+      "bytes": 9532,
+      "sha256": "29680515fe4ea5bd3fa31d143d0a2153cfd47ea6d0dd83b6d207d1319873a511"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/capture_dates.py",
+      "bytes": 757,
+      "sha256": "d9af4577073fc61c9be593a13df15d12bb1d7c8e69826341ee364a3b91efc6b9"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/collection_attempts.py",
+      "bytes": 4975,
+      "sha256": "d5bc544536b4e86dec9bd1f6b7b9d71c1568c007a0bdde8cbfb2d39a31ef8f33"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/collection_versions.py",
+      "bytes": 8203,
+      "sha256": "57abda422b4cfcf03609e26099a0e9590a9b85c7b4670fc2a63f2009a878f708"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/collector_capabilities.py",
+      "bytes": 868,
+      "sha256": "72cbd16d8278662ed9c4fc621105041be599ecb94513833de88bfa9d7a13dde8"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/commercial_review.py",
+      "bytes": 25140,
+      "sha256": "2f0f0e9b89c4287f31d8aac81807ec132450dd4c01296f0f2ef9fec3e851a1ec"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/comparison_data.py",
+      "bytes": 12725,
+      "sha256": "d10e0540b91827303b6f41f77b694658cea85313cf81b5507ae04dc4200f85c9"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/competitor_match.py",
+      "bytes": 12453,
+      "sha256": "28a559ce705ed670c5c9b031b224da88ea2cc4ca54b46e28222d6dfb7bcf9274"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/contract_v2.py",
+      "bytes": 8998,
+      "sha256": "334a2ab96276d86fa42b50dbcedcee2bdf4b2bc51297af68c838ca3045ae89b3"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/contract_v3.py",
+      "bytes": 13565,
+      "sha256": "ef927617ee511605ea5eddc505352580cd7774f44c4494f21a7170e5f06c822f"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/contract_v3_legacy.py",
+      "bytes": 10537,
+      "sha256": "c1d74881f6ffa30798d1ff37651e0884621f7b8ca38edbc29bd71ef4af7033ac"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/contract_v3_legacy32.py",
+      "bytes": 12378,
+      "sha256": "f6c321a2c5c739b2185a2b6911aa3780e9e5220208308c4106b62ec8c046d6f6"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/contract_v3_legacy33.py",
+      "bytes": 12743,
+      "sha256": "51f4f9a8a2f347ad9050b4d90149c5b55c58c49ae955ce75472ee9104d5e0d80"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/contract_v4.py",
+      "bytes": 7510,
+      "sha256": "02a2bc32e9be50767ee5124da9758858e25907de988d0050a8718045869d0c97"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/decision_recovery.py",
+      "bytes": 4654,
+      "sha256": "e9f535d788f82f432653e856d97a7bc43437442b06f7455d8547bfe88dd8b79f"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/diagnostic_route.py",
+      "bytes": 16695,
+      "sha256": "4823576069dab234e4a5a057c9154bb78bb6565e8c6ed861d603bd4086251686"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/direct_alternatives.py",
+      "bytes": 11523,
+      "sha256": "819eed4aaa3c5600c70bafe64d3e35c01612e1c3c3126f4c60ae85b75bf371b7"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/discovery_plan.py",
+      "bytes": 1695,
+      "sha256": "d95af13d32ca2bd02532cd3e4882891994500ff8764373acbbfefd6c3326ea66"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/editor_recovery.py",
+      "bytes": 2081,
+      "sha256": "6d1240e9711d22721497383725b2c394070167864822a61a011aaa78c043b08b"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/evidence_workspace.py",
+      "bytes": 24938,
+      "sha256": "fc439452d2902e36c884db9d1bab4104d75174b3e10df581f21ba79fc1640c6c"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/executor_exchange.py",
+      "bytes": 5127,
+      "sha256": "6bab2760f0bd3a3d1a46c7a55cf572017875de194aa89338e498d5555579c57e"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/field_references.py",
+      "bytes": 3736,
+      "sha256": "ab1807c3618c6c4703ffc2473c593d4ca229fb10a4edccb54a1727441e222405"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/html_document_identity.py",
+      "bytes": 3265,
+      "sha256": "89b6a42cbea00174a558cbdafeba3e1a4c8984d75dfc638d9aa2442105341305"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/html_references.py",
+      "bytes": 1730,
+      "sha256": "2acf0196687e955f094024a9fa34137b2c6438685be1670bd00090e1feb3477b"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/json_contract.py",
+      "bytes": 3991,
+      "sha256": "9805d1c84afb83f11b20b6059be0a304512186dd05b37e10f401eb211f588d31"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/legacy_candidate_reviews.py",
+      "bytes": 4489,
+      "sha256": "db047c0baf13457656a768f5d5eae2e3b3b5ff0b872a35377c891f8c7f7eb856"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/manual_hypotheses.py",
+      "bytes": 6141,
+      "sha256": "f5810fb5a315d7c09f071b911a54f85d21bd96434917efdc706bc42da9f1e307"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/model_contract.py",
+      "bytes": 7000,
+      "sha256": "cf5623a3838ce80256aa6bfc9cbed77a5323714cb05351a9284ab85e6d78a15c"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/model_packet.py",
+      "bytes": 2154,
+      "sha256": "a64287d7c4aab754b2ab0e07edf7683a372392e01e42bedf7fa950b89894fea5"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/monetary_utterances.py",
+      "bytes": 5084,
+      "sha256": "84c0da497aab2b77490dc198177587b85b3b3e06c143ad17fc675b274f331be3"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/observation_history.py",
+      "bytes": 7312,
+      "sha256": "fb005209f2665b4fc27fc049b0c7b3cbf41acf2a3a77ca3b38f754838729215f"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/official_html.py",
+      "bytes": 3418,
+      "sha256": "efae3b7e1c4bc69534fc7ec5912e090fb6fa15672e6953669b474040a4bb1562"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/official_observations.py",
+      "bytes": 7435,
+      "sha256": "ccd610f247d8f0238948026db9b6b5d727f4b0929422d4fb9a4962c44f62b52d"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/offline_entry.py",
+      "bytes": 2882,
+      "sha256": "1f7a8d29b72bd6774d8d71f075ba0d610cea7e0d2c73b54b8092b7f3c0bfd25e"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/plan_mapping.py",
+      "bytes": 8912,
+      "sha256": "6334ca96c0606cf85fe4bbec7d8c687bd04f954232b83bc54f785c7af0198774"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/portable_paths.py",
+      "bytes": 901,
+      "sha256": "bf39c3f09e6f36208497518115e4600a502828f4386f33542ddfc62435392694"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/price_experiments.py",
+      "bytes": 2461,
+      "sha256": "56ae9089d2036d5e91f7915c073407a2c516b6918d4b49c4dc2b52f848a43a56"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/proposal_quality.py",
+      "bytes": 3743,
+      "sha256": "86004391adc4bcf54d277cf73c0c11709dc5d42ed71ce29a67fe8c7e65a59d89"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/proposal_replay.py",
+      "bytes": 5553,
+      "sha256": "bbc3f5efd865ea081a4c9a810e8309719b8869f96a181a764ca73d5f5d6aab36"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/quote_contract.py",
+      "bytes": 5329,
+      "sha256": "bc92e03071878a7be8a03b7704d7ba8a51dabd5cc0ee7bc5bc7465b0da3df682"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/research_candidate_review.py",
+      "bytes": 15182,
+      "sha256": "100627b662b41d97f89395042ddbd24d27ae48d252a2f214065a8267e0560845"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/research_chain.py",
+      "bytes": 7613,
+      "sha256": "8301db3285c4949a8db16b5c222ff32964f0fa17586c37f885f7dfd36a24a78e"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/research_export.py",
+      "bytes": 33837,
+      "sha256": "7286219a64fb0de6626220035f660c4d9021c35f1d568b5475983b5d46dad464"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/research_review.py",
+      "bytes": 10284,
+      "sha256": "4d074017da075c16c4d0ed8415da2ece2bf29dae08e2410fa0e4710752238c08"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/research_reviews.py",
+      "bytes": 11797,
+      "sha256": "e6951591e441060b9f1d2ca2dbc012b135d11c47c7b9a816f904dad0756062ec"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/research_tasks.py",
+      "bytes": 4627,
+      "sha256": "e3caedfb3571606127d77a349b416e006944188a8f67507714e580d16ce689fb"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/response_diagnostics.py",
+      "bytes": 9018,
+      "sha256": "2a6c49f85f95cff94d8aaca73b3321e5336ec85e0bb6d4dea421b3a54859da2e"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/restore_difference.py",
+      "bytes": 3167,
+      "sha256": "62b2096ca98e4f665694ae694437b8a23bf7dcf2ce9ce5731675d62715c160ce"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/reveng_buyer_worker.py",
+      "bytes": 5414,
+      "sha256": "0a687196f4ffab47f16ca1e50ceefdc46dcb69e8daa530f5a46009a8ce398e22"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/reveng_competitor_worker.py",
+      "bytes": 10303,
+      "sha256": "03eecc864a1e0dae51a886cbbae8f4c218f41a7baf20011a2aaa730b6d04c710"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/reveng_local_research.py",
+      "bytes": 41029,
+      "sha256": "423773b42181e0eecdbaabe97c3d6a798c1cd2de7dd4d3e8eaa58bd598bbb91a"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/runtime_diagnostics.py",
+      "bytes": 5104,
+      "sha256": "f721bc74cc320a8d30c469bc6e771e7c7f1af79e6cc048c9164676ea7b2f5c18"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/saved_analysis_context.py",
+      "bytes": 13628,
+      "sha256": "61a23797db4035654f65f98d70b17f67a660c120b1fc6f3ef1e3f05f4ba35cca"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/social_idea_preview.py",
+      "bytes": 7137,
+      "sha256": "cd6192da3013288cf33ca86bf47258b9d8476e03f45f8e77e61caec95fa47cda"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/source_context.py",
+      "bytes": 16472,
+      "sha256": "43d961cba0f45868c5f7e74e7f1638cd9b91f08915dbe87b6aa29291da552db8"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/source_ledger.py",
+      "bytes": 13576,
+      "sha256": "60695e744edbc1b20c6e71d13eb8d61450691b9bafd47daaacaa52523a5c4957"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/source_proposals.py",
+      "bytes": 16459,
+      "sha256": "7e9f1361e9477fb63b048726cf2fedfbe53238b4c294f013021dbb1d0d270ae0"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/source_rules.py",
+      "bytes": 15762,
+      "sha256": "8cd3e4ac835188343334f408da44dd958516ed28b6c0ac511281f061c19ef9cd"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/test_commercial.py",
+      "bytes": 4710,
+      "sha256": "f6f8ddc76225b77376dbdb0edf9471f316022683d6aca1af88a329327928d9f6"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/test_local_research.py",
+      "bytes": 5507,
+      "sha256": "539c7ab5732f611c8a772a17b6ddf43bed6c73862ddbbe17ab26e09f020672ae"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/wordpress_identity.py",
+      "bytes": 1473,
+      "sha256": "a85fba46e5145f23292d9fb1ef08d40cfec22ffc4304baeb8bb586341d760664"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/ResearchLocal/wp_context_checkpoint.py",
+      "bytes": 1680,
+      "sha256": "96dea9070ceae4ea985272a8bf4671c23a161f9856509272d07a203a33f3e1e2"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/TestOperationOutcome.cs",
+      "bytes": 6771,
+      "sha256": "d781e1af0545deb05867b401b75e6cd690362a9dd105f48793b349b3a4ec51a4"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/TestOutcome.cs",
+      "bytes": 12894,
+      "sha256": "f25901c4707350649df6e3cf73f0376eafe667d8cc52653a7d699f89eb324d5f"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/TestOwnerPreferencePresentation.cs",
+      "bytes": 3092,
+      "sha256": "bca4467aeb8a2e4d0308e4328402cd5134f0700e09905db5f73b6c3d5740149f"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/TestPortableRuntimeDrain.cs",
+      "bytes": 8489,
+      "sha256": "2c762ca45e0573e9729e8818e7dc1f099ad0138eb7f2f1cfa3e3ca5f374305bb"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/TestPriceExperimentPresentation.cs",
+      "bytes": 5280,
+      "sha256": "265b24f227a946423793520e9e4198942dbee604b2830b795e2ed590b4c81943"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/price_ui_vectors.json",
+      "bytes": 7059,
+      "sha256": "c155f2636f36b57d5a22f42bb34d88b6b3dc15423e3a42e5e27d6dde6f37d570"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_answer_cache_integrity.py",
+      "bytes": 13825,
+      "sha256": "f91066ac824f0bfde4623906d2f4bea5feb08931437c613efb079983622b1c13"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_capability_portable.py",
+      "bytes": 11547,
+      "sha256": "9fba4cb6b268dc58627ef1d1ed227bb4be22e4bcd5dccd6c0d797ac9f964eb4a"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_collection_integrity.py",
+      "bytes": 56966,
+      "sha256": "03e5ab70b585e8cf151679c9c391e8d1bc4683a38c05cad6690129531c06ef7b"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_hypothesis_contract.py",
+      "bytes": 20620,
+      "sha256": "56a16e1d3a02fc5d4104187c7a908fde357d85d00a949df6c955c3c79d8567a7"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_identity_portable.py",
+      "bytes": 5478,
+      "sha256": "d86b9e236394b8fccbbbff2ad21f7a736cc040c9b7db5c487d1c2c05dae6bcc7"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_integrated_ci_contract.py",
+      "bytes": 10717,
+      "sha256": "9fbe7e845413f7f7c9f9f5b0a5f0192a5e16229a656fbdcba1ba648af6041665"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_owner_preference_overlay.py",
+      "bytes": 14003,
+      "sha256": "77f7335129fc20b78f9f9606ebc8e020d571aa6c37f21c21af0c81e9274118b0"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_price_cache_integrity.py",
+      "bytes": 13917,
+      "sha256": "29913ce138a4bee7ba5cec5ab47f7e473eebf2195cbc5ddf6e1d058808406f92"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_price_experiment_projection.py",
+      "bytes": 8540,
+      "sha256": "8e2635c3c64f45d78a2465067190b3541fa0a6f935079dbeb61814207ef29890"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_price_ui_contract.py",
+      "bytes": 2216,
+      "sha256": "f721e7b5816cf944d3bb1b8cd352545e25e10637284e2b7de9a33a00117174d8"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_researchlocal_offline.py",
+      "bytes": 13201,
+      "sha256": "895df7c543d573fe5e50dbe1005bf0153e902ddbec8cd89e4469ab6b26937b40"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_saved_analysis_context.py",
+      "bytes": 16604,
+      "sha256": "231c7035295663e60d907114d229e055df26a334522596f2f1e252e23cb7989a"
+    },
+    {
+      "path": "source_material/latest_20261028/reveng/tests/test_task_routing.py",
+      "bytes": 8803,
+      "sha256": "73f3c7d3bc779d8280f2f2b27645e309341b25576bf05efb67bfe9786d5b03e1"
+    }
+  ]
+}

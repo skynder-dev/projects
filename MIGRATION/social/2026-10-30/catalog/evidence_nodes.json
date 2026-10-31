@@ -1,0 +1,467 @@
+[
+  {
+    "id": "117caa68-2a7e-489a-baf3-54c915c20f59",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "f910d42e-c254-4254-b1e5-e86a69757a33",
+    "source_event_id": "1a701762-d30d-4e81-b4c6-699f72eccf58",
+    "evidence_type": "seed_fixture_packet",
+    "support_direction": "support",
+    "fact_summary": "A low-power image sensor developed at JPL for spacecraft became a commercial technology through a JPL-founded spinout, Photobit.",
+    "locator": {
+      "source_event_id": "1a701762-d30d-4e81-b4c6-699f72eccf58",
+      "seed_pack_work_log_id": 963,
+      "public_content_item_id": "5b6a7a53-6766-4c43-b9fe-1b8d3784a714"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "de1798e0-35d7-4c47-8dac-aeee11e1ac85",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "61bd0f3e-9a75-40e8-ba36-d817b1105be9",
+    "source_event_id": "e1cfa25b-07f9-4a09-a1d7-b4208fa8f007",
+    "evidence_type": "seed_fixture_packet",
+    "support_direction": "support",
+    "fact_summary": "NASA SBIR work helped Aspen Systems turn fragile aerogel into practical flexible insulation and spin out Aspen Aerogels to commercialize it.",
+    "locator": {
+      "source_event_id": "e1cfa25b-07f9-4a09-a1d7-b4208fa8f007",
+      "seed_pack_work_log_id": 963,
+      "public_content_item_id": "b3bb8c4f-ac8f-42a5-8dd2-0fe061d104f1"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "209e0c68-b7bb-4b22-8369-2a86f37a6457",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "410c2886-e3c5-4adc-ad3b-8682deda5e60",
+    "source_event_id": "e331b179-c7d5-4152-ae33-88b97795077e",
+    "evidence_type": "seed_fixture_packet",
+    "support_direction": "support",
+    "fact_summary": "DOE-funded Argonne cathode research became licensed battery technology used by LG Chem in cells supplied for the Chevrolet Volt.",
+    "locator": {
+      "source_event_id": "e331b179-c7d5-4152-ae33-88b97795077e",
+      "seed_pack_work_log_id": 963,
+      "public_content_item_id": "ba2ba500-e55b-43f5-a4ad-b71d902a4be6"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "4deb0f8a-6cbb-4c39-be4f-318597919fc8",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "ebb39ec5-9c73-4879-b11f-2be35bc4f39b",
+    "source_event_id": "874c528a-c4c7-4773-9e06-84c1751a2d84",
+    "evidence_type": "seed_fixture_packet",
+    "support_direction": "support",
+    "fact_summary": "Decades of NCI tumor-infiltrating lymphocyte research moved through a CRADA and NIH patent licenses into Iovance development and the 2024 FDA approval of Amtagvi.",
+    "locator": {
+      "source_event_id": "874c528a-c4c7-4773-9e06-84c1751a2d84",
+      "seed_pack_work_log_id": 963,
+      "public_content_item_id": "18f2217a-6501-4c05-b7ff-5c138a74a8be"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "587b142d-1377-41d4-ba82-cd8ac220a533",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "614d22df-af82-4bbb-9ecc-beda750ce84f",
+    "source_event_id": "143c850b-8625-4e42-a736-1558381ec1c3",
+    "evidence_type": "seed_fixture_packet",
+    "support_direction": "support",
+    "fact_summary": "ORNL microfluidic Lab-on-a-chip technology was licensed by Caliper Life Sciences, became part of its commercial platform, and ORNL links that success to PerkinElmer’s 2011 acquisition of Caliper.",
+    "locator": {
+      "source_event_id": "143c850b-8625-4e42-a736-1558381ec1c3",
+      "seed_pack_work_log_id": 963,
+      "public_content_item_id": "c66d732b-9b4b-4545-b209-63295588d545"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "73547699-6075-48a2-aa23-762e5fcb3a75",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "16b1381e-7cf3-4007-bf8b-f69038f38dc6",
+    "source_event_id": "e7a12e26-9c82-4e27-9dd6-56da95a9385a",
+    "evidence_type": "seed_fixture_packet",
+    "support_direction": "support",
+    "fact_summary": "Distribution transformers are a grid bottleneck because limited domestic capacity, long procurement timelines, foreign dependence and extreme specification fragmentation make rapid substitution/expansion difficult.",
+    "locator": {
+      "source_event_id": "e7a12e26-9c82-4e27-9dd6-56da95a9385a",
+      "seed_pack_work_log_id": 963,
+      "public_content_item_id": "8ef4cd9e-2c62-4b94-84ff-25f33c0d3dc5"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "3c7c41b5-fa9c-4b9f-bc98-e4fb56581ad5",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "32246cef-a313-4ba8-91b8-6e2b06bd772b",
+    "source_event_id": "357f4d72-3f5d-4ca2-9192-154a7823bfba",
+    "evidence_type": "seed_fixture_packet",
+    "support_direction": "support",
+    "fact_summary": "The chokepoint in U.S. nuclear fuel is not simply uranium ore: enrichment services remain heavily foreign-sourced while policy is trying to rebuild domestic capacity.",
+    "locator": {
+      "source_event_id": "357f4d72-3f5d-4ca2-9192-154a7823bfba",
+      "seed_pack_work_log_id": 963,
+      "public_content_item_id": "f82f5d08-afa7-426a-9e22-11acd3b54d0d"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "b308dd8d-0fd2-4524-a109-a41bec343df2",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "f355de8f-1faf-4eca-97b7-c013b4145e6e",
+    "source_event_id": "03b3f550-c864-4d0f-8048-246de7628ede",
+    "evidence_type": "seed_fixture_packet",
+    "support_direction": "support",
+    "fact_summary": "A 2026 U.S. cefotaxime shortage became severe enough that FDA coordinated temporary importation of a Canadian-market product, illustrating how limited approved supply can turn an injectable medicine into a supply-chain chokepoint.",
+    "locator": {
+      "source_event_id": "03b3f550-c864-4d0f-8048-246de7628ede",
+      "seed_pack_work_log_id": 963,
+      "public_content_item_id": "335c4d4b-9cc8-4913-a6f7-659377b384c0"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "c2418c60-8ffc-4c15-9b71-5a429f30983b",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "19c8c79e-4c0d-4aaf-9ea8-76dfe0796669",
+    "source_event_id": "88ea7dbd-25d4-4281-bfe3-6d504d8b2a72",
+    "evidence_type": "seed_fixture_packet",
+    "support_direction": "support",
+    "fact_summary": "Rare-earth permanent magnets are a downstream manufacturing chokepoint: U.S. industry has domestic mineral resources but still depends heavily on foreign processing/material and magnet supply chains.",
+    "locator": {
+      "source_event_id": "88ea7dbd-25d4-4281-bfe3-6d504d8b2a72",
+      "seed_pack_work_log_id": 963,
+      "public_content_item_id": "daebdfa7-db80-4bdd-9f84-4454f311cba8"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "86337d1d-f01e-400b-b1ad-a498bb871611",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "ba103bf5-e44f-4f7e-90b0-620d13b65798",
+    "source_event_id": "27239931-dfbe-46d4-83f0-8aa7ffd3657e",
+    "evidence_type": "seed_fixture_packet",
+    "support_direction": "support",
+    "fact_summary": "Gallium is a semiconductor-material chokepoint because the United States does not produce low-purity primary gallium domestically while global primary production is overwhelmingly concentrated in China.",
+    "locator": {
+      "source_event_id": "27239931-dfbe-46d4-83f0-8aa7ffd3657e",
+      "seed_pack_work_log_id": 963,
+      "public_content_item_id": "ef388746-4933-4885-8246-feef3978238b"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "40ffbf68-3274-4435-a1be-2ed7d5830995",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "635ccdb2-25bc-4089-8e18-e2da54526ff8",
+    "source_event_id": "752c3321-1e17-41e5-b55f-2cc7ea3abb10",
+    "evidence_type": "official_primary_publication",
+    "support_direction": "support",
+    "fact_summary": "NASA Spinoff 2004 states that Marshall used smart-camera technology for the DART Advanced Video Guidance Sensor and that Southern Vision Systems developed the commercial SpecterView sensor from work done in support of that mission.",
+    "locator": {
+      "url": "https://spinoff.nasa.gov/Spinoff2004/ip_6.html",
+      "section": "Originating Technology / Partnership / Product Outcome",
+      "publication_year": 2004
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:13:26.389592+00"
+  },
+  {
+    "id": "798bc757-ed2e-473a-a5d8-d4771bd38c29",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "635ccdb2-25bc-4089-8e18-e2da54526ff8",
+    "source_event_id": "6ad13726-e98b-4db0-ba57-fff278792c6d",
+    "evidence_type": "official_archival_record",
+    "support_direction": "support",
+    "fact_summary": "NASA NTRS document 20050031179 archives the Smart Camera Technology Increases Quality Spinoff 2004 record as a public NASA technical record.",
+    "locator": {
+      "url": "https://ntrs.nasa.gov/citations/20050031179",
+      "document_id": "20050031179",
+      "publication": "Spinoff",
+      "publication_date": "2004-01-01"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:13:26.389592+00"
+  },
+  {
+    "id": "ecc7711e-ada2-4289-a898-79324c58395d",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "28b0656c-ec2f-4bfe-929f-78c18f775629",
+    "source_event_id": "a0750814-d8a1-40a6-9922-dfc3dde6f644",
+    "evidence_type": "official_primary_publication",
+    "support_direction": "support",
+    "fact_summary": "NASA Spinoff 1994 describes Omniview as a motionless camera developed under NASA SBIR for guiding space robots and reports its commercial-market introduction in 1993.",
+    "locator": {
+      "url": "https://spinoff.nasa.gov/node/9755",
+      "publication_year": 1994
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:30:49.00272+00"
+  },
+  {
+    "id": "2e47e60e-c792-4dea-ad42-eba75acd2918",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "28b0656c-ec2f-4bfe-929f-78c18f775629",
+    "source_event_id": "8f214f2d-a4ff-47ef-a250-f9dd38b20588",
+    "evidence_type": "official_archival_record",
+    "support_direction": "support",
+    "fact_summary": "NASA NTRS document 20020080109 archives the A Motionless Camera Spinoff 1994 record as a public U.S. Government work.",
+    "locator": {
+      "url": "https://ntrs.nasa.gov/citations/20020080109",
+      "document_id": "20020080109",
+      "publication_date": "1994-01-01"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:30:49.00272+00"
+  },
+  {
+    "id": "55612641-9872-444a-ba67-2724e03687c5",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "47d0db3b-bab3-4f27-9f0e-1a9f7b248219",
+    "source_event_id": "fbb5bf3f-0d1c-4a01-98ff-f68c1aeddc9f",
+    "evidence_type": "official_archival_record",
+    "support_direction": "support",
+    "fact_summary": "NASA NTRS document 20030004814 archives the Spinoff 1980 Nikon Camera record.",
+    "locator": {
+      "url": "https://ntrs.nasa.gov/citations/20030004814",
+      "document_id": "20030004814"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:36:54.201722+00"
+  },
+  {
+    "id": "7af27c1c-e923-495d-a1cd-e7576ee2502d",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "47d0db3b-bab3-4f27-9f0e-1a9f7b248219",
+    "source_event_id": "bfacf50f-2bf8-484a-a4c7-9a5371c68ed2",
+    "evidence_type": "official_primary_publication",
+    "support_direction": "support",
+    "fact_summary": "NASA Spinoff 1980 says Nikon cameras were developed for easy, accurate use by Skylab astronauts in weightlessness and that Nikon later incorporated the advance-lever simplification into its FM compact.",
+    "locator": {
+      "url": "https://spinoff.nasa.gov/node/9388",
+      "publication_year": 1980
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:36:54.201722+00"
+  },
+  {
+    "id": "6a40f3c8-7682-4039-82be-c756ba3fe365",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "8d23caa8-90c3-4e46-b262-f6df4d5ad900",
+    "source_event_id": "021ccdf1-d1c0-4a3a-a51a-32b7de240ee6",
+    "evidence_type": "official_primary_publication",
+    "support_direction": "support",
+    "fact_summary": "NASA Spinoff 2003 documents SciMeasure and JPL developing Little Joe under NASA SBIR and its transformation into a compact commercial modular CCD camera.",
+    "locator": {
+      "url": "https://spinoff.nasa.gov/node/10328",
+      "publication_year": 2003
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:37:35.884336+00"
+  },
+  {
+    "id": "25ad9e6a-7bc3-4d80-86fd-7ae12340d241",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "8d23caa8-90c3-4e46-b262-f6df4d5ad900",
+    "source_event_id": "0726abc3-f5e5-4208-9083-29ab1c4f4908",
+    "evidence_type": "official_archival_record",
+    "support_direction": "support",
+    "fact_summary": "NASA NTRS document 20030099649 archives the Spinoff 2003 Little Joe record.",
+    "locator": {
+      "url": "https://ntrs.nasa.gov/citations/20030099649",
+      "document_id": "20030099649"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:37:35.884336+00"
+  },
+  {
+    "id": "0a42face-638a-40a1-8a0e-6615a5ddd812",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "d095cdc9-6b66-4460-b18d-3f5639a8ce37",
+    "source_event_id": "ae0b5656-12dd-467b-ab44-1cca0c3dc262",
+    "evidence_type": "official_primary_publication",
+    "support_direction": "support",
+    "fact_summary": "NASA Spinoff 1996 describes PixelVision’s NV652 and identifies the NASA technology input as James R. Janesick’s prior JPL CCD experience.",
+    "locator": {
+      "url": "https://spinoff.nasa.gov/spinoff1996/35.html",
+      "publication_year": 1996
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:38:35.97182+00"
+  },
+  {
+    "id": "366438c7-f593-448d-bc8c-c66648e19dbc",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "d095cdc9-6b66-4460-b18d-3f5639a8ce37",
+    "source_event_id": "4a9c1ff0-8d5b-43ad-82ee-7ea8899a887b",
+    "evidence_type": "official_archival_record",
+    "support_direction": "support",
+    "fact_summary": "NASA NTRS document 20020079084 archives the Spinoff 1996 Night Vision Camera record.",
+    "locator": {
+      "url": "https://ntrs.nasa.gov/citations/20020079084",
+      "document_id": "20020079084"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:38:35.97182+00"
+  },
+  {
+    "id": "cbe93822-4b7c-40d8-9cc6-2260b124e76e",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "4a7dccb4-fe5a-4a31-8c04-36e9bb853401",
+    "source_event_id": "d1c2f0cd-086a-4701-85ff-edcf3ad9d2a3",
+    "evidence_type": "official_primary_publication",
+    "support_direction": "support",
+    "fact_summary": "NASA Spinoff 1997 documents JPL and Amber/Raytheon developing QWIP infrared-camera technology and reports its use to identify hot spots during the 1996 Malibu fires.",
+    "locator": {
+      "url": "https://spinoff.nasa.gov/spinoff1997/ps2.html",
+      "publication_year": 1997
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:39:22.039251+00"
+  },
+  {
+    "id": "59508838-f402-498c-9d0d-8a6b1fffd8b3",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "4a7dccb4-fe5a-4a31-8c04-36e9bb853401",
+    "source_event_id": "cf653c83-b0b1-483c-91aa-d790766b946d",
+    "evidence_type": "official_archival_record",
+    "support_direction": "support",
+    "fact_summary": "NASA NTRS document 20020076146 archives the Spinoff 1997 Infrared Camera record.",
+    "locator": {
+      "url": "https://ntrs.nasa.gov/citations/20020076146",
+      "document_id": "20020076146"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:39:22.039251+00"
+  },
+  {
+    "id": "f0988475-f0ae-4668-8e69-991f1f54f9c3",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "2e54c5b6-cbf1-4b1d-ac9b-c35a65c4961c",
+    "source_event_id": "57a1459a-1c05-49f1-b0b8-ecca9c28e0cc",
+    "evidence_type": "official_primary_publication",
+    "support_direction": "support",
+    "fact_summary": "NASA Spinoff 1983 documents Nikon F3 modifications for Space Shuttle use and reports commercial transfer of nonmigratory lubricant variations plus a coreless motor.",
+    "locator": {
+      "url": "https://spinoff.nasa.gov/node/9384",
+      "publication_year": 1983
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:40:01.773541+00"
+  },
+  {
+    "id": "ea0ca711-c730-4e71-b319-74db1cfe2a6c",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "2e54c5b6-cbf1-4b1d-ac9b-c35a65c4961c",
+    "source_event_id": "bfcfcd12-bc27-4723-a990-ec357dd8de0a",
+    "evidence_type": "official_archival_record",
+    "support_direction": "support",
+    "fact_summary": "NASA NTRS document 20030001791 archives the Spinoff 1983 Space Camera record.",
+    "locator": {
+      "url": "https://ntrs.nasa.gov/citations/20030001791",
+      "document_id": "20030001791"
+    },
+    "rights_status": "green",
+    "created_at": "2026-09-24 00:40:01.773541+00"
+  },
+  {
+    "id": "0cf449df-3df0-42b6-b974-001bee4316b3",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "1fa32094-813a-4c2e-b662-e8fcbc592d1f",
+    "source_event_id": "54c6ac8b-cece-43e2-bdc2-0a8d329db2c4",
+    "evidence_type": "official_api_snapshot",
+    "support_direction": "support",
+    "fact_summary": "Grants.gov live detail snapshot for opportunity 364020 / USDA-NIFA-SBIR-012221.",
+    "locator": {
+      "url": "https://www.grants.gov/search-results-detail/364020",
+      "fetched_at": "2026-10-03T08:18:13Z"
+    },
+    "rights_status": "green",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "id": "03adf106-2972-4ded-a2a3-948b156e35ce",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "1fa32094-813a-4c2e-b662-e8fcbc592d1f",
+    "source_event_id": null,
+    "evidence_type": "official_agency_web",
+    "support_direction": "support",
+    "fact_summary": "USDA NIFA current funding page corroborates eligibility, posted/closing dates, program funding, award range and no-match requirement.",
+    "locator": {
+      "url": "https://www.nifa.usda.gov/grants/funding-opportunities/small-business-innovation-research-small-business-technology",
+      "checked_at": "2026-10-03T08:22:12.12851+00:00"
+    },
+    "rights_status": "yellow",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "id": "48321c3f-8212-4557-9488-0caa82767c34",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "79e30744-9923-4290-acd9-cd08575606a3",
+    "source_event_id": "8a0de8f8-db02-4baf-8415-6cc49834894f",
+    "evidence_type": "official_api_snapshot",
+    "support_direction": "support",
+    "fact_summary": "Grants.gov live detail snapshot for Region 4 SBTTAC opportunity 364004.",
+    "locator": {
+      "url": "https://www.grants.gov/search-results-detail/364004",
+      "fetched_at": "2026-10-03T08:18:13Z"
+    },
+    "rights_status": "green",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "id": "0fae0556-7385-42c9-862f-874e0a539a8f",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "79e30744-9923-4290-acd9-cd08575606a3",
+    "source_event_id": null,
+    "evidence_type": "official_agency_program_context",
+    "support_direction": "context",
+    "fact_summary": "USDOT prior Region 4 NOFO confirms the SBTTAC program purpose: strengthening small-business capacity to compete for transportation contracts.",
+    "locator": {
+      "url": "https://www.transportation.gov/sites/dot.gov/files/2026-07/Region%204%20Long%20NOFO%20%20final%20.pdf",
+      "checked_at": "2026-10-03T08:22:12.12851+00:00",
+      "current_terms_source": "Grants.gov opportunity 364004"
+    },
+    "rights_status": "yellow",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "id": "2d65edce-b3c6-4700-a7c8-b8650d994710",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "d5649985-dca2-4ee6-a2d7-b771211b46d8",
+    "source_event_id": "7f512146-b809-493c-8447-8b9eb079dced",
+    "evidence_type": "official_api_snapshot",
+    "support_direction": "support",
+    "fact_summary": "Grants.gov live detail snapshot for PA-27-100 / opportunity 359671.",
+    "locator": {
+      "url": "https://www.grants.gov/search-results-detail/359671",
+      "fetched_at": "2026-10-03T08:18:13Z"
+    },
+    "rights_status": "green",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "id": "3752b313-c8b7-4e9a-8496-11857d808777",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "research_packet_id": "d5649985-dca2-4ee6-a2d7-b771211b46d8",
+    "source_event_id": null,
+    "evidence_type": "official_agency_web",
+    "support_direction": "support",
+    "fact_summary": "NIH current parent-announcement listings corroborate PA-27-100 as the active R43/R44 Parent SBIR opportunity.",
+    "locator": {
+      "url": "https://grants.nih.gov/funding/explore-nih-opportunities/parent-announcements",
+      "checked_at": "2026-10-03T08:22:12.12851+00:00"
+    },
+    "rights_status": "yellow",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  }
+]

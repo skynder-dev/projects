@@ -1,0 +1,610 @@
+[
+  {
+    "id": "27871e15-c603-4274-adfb-79e1371c4f99",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "opportunity_key": "OPP-V5-01-A",
+    "niche_id": "0eaecc25-13a0-428d-957e-b06d604d7bd9",
+    "primary_engine_id": "b1552ab6-0809-4566-9d68-40b1d2747e5f",
+    "name": "Small-carrier trucking insurance brokerage through an existing carrier/driver network",
+    "thesis": "Build a focused commercial P&C brokerage for Chicago-area 1-10 truck operators, using the owner’s existing small-carrier/driver network as the qualifying initial distribution edge. The business earns commissions on large recurring insurance spend and compounds only if renewals/retention and market access are strong.",
+    "status": "finalist_ready",
+    "confidence_grade": "B",
+    "current_adjusted_score": "67.14",
+    "entrant_edge": {
+      "status": "evidenced",
+      "not_edge": [
+        "Russian/Romanian language",
+        "trucking experience alone",
+        "better service",
+        "cheaper quotes"
+      ],
+      "edge_type": "existing_owned_audience_customer_base_or_partner_channel",
+      "evidence_refs": [
+        212
+      ],
+      "edge_asset_key": "EDGE-TRUCK-NETWORK-01",
+      "strength_status": "commercial_strength_unproven",
+      "conditional_supporting_asset": "EDGE-TRUCK-SERVICE-DISTRIBUTION-01"
+    },
+    "business_model": {
+      "primary": "commission brokerage / agency",
+      "secondary": "adjacent licensed/compliant referral rev-share",
+      "revenue_units": [
+        "new-business commission",
+        "renewal commission",
+        "optional adjacent commercial-line commission"
+      ],
+      "explicit_non_thesis": [
+        "generic insurance website",
+        "language-only positioning",
+        "cheapest quote positioning"
+      ]
+    },
+    "economics_summary": {
+      "status": "scenario, not forecast",
+      "must_verify": [
+        "actual trucking commission",
+        "renewal commission",
+        "market-access fees/splits",
+        "service cost/account",
+        "retention"
+      ],
+      "producer_path": {
+        "use": "lower-capital future validation path after licensing; not evidence of our own contract",
+        "evidence": "current trucking producer program pays 50% new and 50% renewal agency commission while agency supplies software/x-dates"
+      },
+      "known_low_cost_path": {
+        "WebCE_PC_course_usd": 174.95,
+        "known_cost_exclusions": [
+          "E&O",
+          "bond if required by placement model",
+          "NIPR transaction fees",
+          "entity formation if needed",
+          "exam fees beyond ordering assumptions"
+        ],
+        "TIS_starter_first_year_usd": 1887,
+        "IL_resident_producer_fee_usd": 215,
+        "IL_business_entity_fee_usd_if_used": 150
+      },
+      "acquisition_time_sensitivity": {
+        "purpose": "owner-time sensitivity; not measured",
+        "network_contacts": 40,
+        "total_initial_outreach_hours": [
+          20,
+          40
+        ],
+        "if_outreach_followup_hours_per_contact": [
+          0.5,
+          1
+        ],
+        "owner_hours_per_bound_account_if_3_to_6_binds": "approximately 3.3 to 13.3 before quote/servicing time"
+      },
+      "known_first_year_fixed_floor": {
+        "excludes": [
+          "E&O premium",
+          "bond premium if required",
+          "NIPR transaction fees",
+          "entity formation/registered-agent costs",
+          "phone/software outside TIS",
+          "service labor",
+          "taxes"
+        ],
+        "includes": [
+          "TIS Starter 12 months + setup",
+          "current WebCE P&C prelicense package",
+          "two P&C line exam-order assumptions",
+          "Illinois resident producer fee",
+          "business-entity fee only in entity scenario"
+        ],
+        "interpretation": "fixed-cost coverage arithmetic only; not profit forecast",
+        "individual_path_usd": 2460.95,
+        "with_business_entity_fee_usd": 2610.95,
+        "gross_bound_accounts_to_cover_known_floor": {
+          "at_960_commission": 3,
+          "at_1500_commission": 2,
+          "at_2250_commission": 2
+        }
+      },
+      "stress_case_research_feasibility": {
+        "purpose": "research feasibility stress-test only; empirical net contribution remains a market-validation gate",
+        "excludes": [
+          "direct servicing labor",
+          "taxes",
+          "unexpected licensing/tech costs"
+        ],
+        "stress_components": [
+          "known entity-path floor 2610.95",
+          "modeled E&O stress allowance 2000",
+          "optional Big I membership 630",
+          "member bond program 25"
+        ],
+        "fixed_cost_stress_usd": 5265.95,
+        "network_size_reference": 40,
+        "gross_commission_scenarios_usd": [
+          960,
+          1500,
+          2250
+        ],
+        "binds_to_cover_stress_fixed_cost": [
+          6,
+          4,
+          3
+        ],
+        "overall_contact_to_bind_thresholds": [
+          0.15,
+          0.1,
+          0.075
+        ]
+      },
+      "verified_premium_reference_usd_year": {
+        "low": 12000,
+        "high": 21000
+      },
+      "modeled_first_year_gross_commission_examples_usd": [
+        960,
+        1500,
+        2250
+      ],
+      "illustrative_accounts_for_150k_gross_commission_at_1500_each": 100
+    },
+    "acquisition_strategy": {
+      "primary": "existing owner-confirmed network of roughly 40 driver/carrier prospects",
+      "not_assumed": [
+        "paid lead generation",
+        "exclusive local access",
+        "organic SEO volume"
+      ],
+      "conditional_future": "repair/service-center embedded placement only after access is revalidated/formalized"
+    },
+    "two_person_plan": {
+      "phase_1": "one licensed producer plus founder-operated intake/quoting/admin",
+      "constraint": "no sales before licensing/market access; owner time must be measured per quote and renewal"
+    },
+    "scale_path": {
+      "phase_2": "CSR/account manager when renewal book supports payroll",
+      "phase_3": "additional producer or replicated trucking-service/referral channels only after one channel’s economics are proven"
+    },
+    "risks": [
+      "local trucking-insurance competition is strong",
+      "carrier/MGA access can determine whether quotes are competitive",
+      "one major Great West referral route excludes the seven Chicagoland counties",
+      "licensing/E&O/bond/agency compliance add fixed and operating cost",
+      "the 40-prospect network may not convert or may decay",
+      "truck accounts can be service-intensive and cancellation-sensitive"
+    ],
+    "evidence_refs": [
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212
+    ],
+    "unknowns": [
+      "Exact weekly qualified traffic and current-policy renewal calendar are unknown.",
+      "Bind rate from repair/service referrals is unknown.",
+      "Carrier/MGA access for new trucking risks and new ventures must be verified contractually.",
+      "Net commission after aggregator/MGA splits and service workload must be modeled.",
+      "Illinois producer/entity licensing and any agency registration requirements must be completed before selling.",
+      "Retention and remarketing workload for small trucking accounts is unknown."
+    ],
+    "kill_conditions": [
+      "If embedded channel produces fewer than 5 qualified trucking insurance conversations per month after launch.",
+      "If market-access partners cannot place the dominant local risk profiles competitively.",
+      "If net first-year commission after splits/service cost is too low to support the sales and servicing workload.",
+      "If annual retention is weak enough that renewal economics do not compound.",
+      "If repair-shop access cannot be formalized or becomes non-exclusive/low-quality traffic."
+    ],
+    "feedback_state": {
+      "finalist": false,
+      "interpretation": "Passed all research gates; requires separate owner-approved market validation before winner status.",
+      "v5_opportunity_layer": true,
+      "empirically_validated": false,
+      "research_finalist_20260924": true
+    },
+    "created_at": "2026-09-24 21:37:10.152863+00",
+    "updated_at": "2026-09-24 21:59:05.74998+00"
+  },
+  {
+    "id": "9942c38f-afe7-4db9-a0f9-31ee6e9b377a",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "opportunity_key": "OPP-V5-01-B",
+    "niche_id": "88328b74-e704-4810-8234-d5f5123d14ac",
+    "primary_engine_id": "99b58e03-a6b8-4af7-9ca8-fae57396aa74",
+    "name": "Small-carrier repair/equipment/working-capital referral desk through an existing carrier network",
+    "thesis": "Use the owner-confirmed small-carrier/driver network to route qualified repair, equipment, factoring and working-capital needs to vetted third-party providers. Revenue comes from referral/rev-share economics; the business is attractive only if annual revenue per network contact materially exceeds relationship/admin cost.",
+    "status": "rejected",
+    "confidence_grade": "B",
+    "current_adjusted_score": "38.00",
+    "entrant_edge": {
+      "status": "evidenced",
+      "not_edge": [
+        "Russian/Romanian language",
+        "trucking experience alone",
+        "better service",
+        "cheaper quotes"
+      ],
+      "edge_type": "existing_owned_audience_customer_base_or_partner_channel",
+      "evidence_refs": [
+        212
+      ],
+      "edge_asset_key": "EDGE-TRUCK-NETWORK-01",
+      "strength_status": "commercial_strength_unproven",
+      "conditional_supporting_asset": "EDGE-TRUCK-SERVICE-DISTRIBUTION-01"
+    },
+    "business_model": {
+      "primary": "referral / revenue-share distribution",
+      "delivery": "qualified handoff to third-party licensed/finance providers",
+      "revenue_units": [
+        "fixed funded-deal fee",
+        "percentage/referral commission",
+        "possible residual/rev share depending on partner"
+      ],
+      "explicit_non_thesis": [
+        "becoming a lender",
+        "generic lead resale",
+        "building a loan marketplace before proving channel economics"
+      ]
+    },
+    "economics_summary": {
+      "status": "partner-specific, not forecast",
+      "interpretation": "economics can be very low-touch but are materially smaller per customer than insurance brokerage unless residual factoring or higher-value finance compensation is secured",
+      "verified_examples": [
+        {
+          "program": "Big Rig Lending",
+          "funded_referral_fee_usd": 100
+        },
+        {
+          "program": "Total360",
+          "agreement_referral_fee_usd": 250
+        },
+        {
+          "split": "50/50",
+          "program": "Factor Finders",
+          "reported_active_deals": 657,
+          "trucking_active_deals": 383,
+          "reported_partner_commissions_2025_usd": 214566.84
+        }
+      ]
+    },
+    "acquisition_strategy": {
+      "primary": "same owner-confirmed trucking network used by OPP-V5-01-A",
+      "trigger": "major repair, equipment need, working-capital/factoring pain",
+      "conditional_future": "repair-shop placement if revalidated"
+    },
+    "two_person_plan": {
+      "phase_1": "one person can qualify and route leads using partner portals",
+      "compliance": "referral compensation and disclosures must follow applicable law/partner terms",
+      "service_burden": "low after handoff if partner owns underwriting/servicing"
+    },
+    "scale_path": {
+      "phase_2": "add more vetted finance/protection partners only where buyer need and compensation are measured",
+      "phase_3": "replicate through additional repair/service partners if referral attribution and economics remain positive"
+    },
+    "risks": [
+      "low per-deal referral fees can cap revenue",
+      "partner owns underwriting and often the customer economics",
+      "attribution and payout terms vary",
+      "financial-product referral rules can vary by product/state",
+      "buyer trust can be damaged by poor partner outcomes",
+      "not all repair events create finance demand"
+    ],
+    "evidence_refs": [
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216
+    ],
+    "unknowns": [
+      "qualified finance/referral conversations per month",
+      "funding/close rate by partner",
+      "average payout and payout timing",
+      "residual vs one-time compensation",
+      "customer consent/compliance requirements",
+      "partner quality/default/complaint risk"
+    ],
+    "kill_conditions": [
+      "If realized revenue per qualified lead is too small to justify attention.",
+      "If fewer than 10% of qualified network contacts create a finance/protection referral opportunity over 12 months.",
+      "If partner complaints/default outcomes damage the core trucking network relationship."
+    ],
+    "feedback_state": {
+      "role": "compare against brokerage model",
+      "reason": "At the evidenced ~40-contact channel scale, verified referral payouts are too small/irregular for a standalone business. Keep as possible ancillary monetization only if another trucking business already owns the customer relationship.",
+      "finalist": false,
+      "v5_redteam_rejected": true,
+      "v5_opportunity_layer": true
+    },
+    "created_at": "2026-09-24 21:38:13.122329+00",
+    "updated_at": "2026-09-24 21:46:49.742777+00"
+  },
+  {
+    "id": "c00b91c0-5358-4ee2-8c89-bad490bd9972",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "opportunity_key": "OPP-V5-03-A",
+    "niche_id": "f5ebd322-a409-4433-85fe-22d27321b4e3",
+    "primary_engine_id": "60f7899e-19e9-44d1-bb8c-4b079f10140e",
+    "name": "Managed DOT compliance subscription for small trucking fleets through the existing carrier/driver network",
+    "thesis": "Operate a focused recurring compliance desk for 1–10 truck carriers, combining DQ/renewal/deadline/audit-readiness administration with third-party testing/MVR/Clearinghouse infrastructure where appropriate. Initial acquisition comes from the owner-confirmed trucking network, not from paid leads.",
+    "status": "finalist_ready",
+    "confidence_grade": "B",
+    "current_adjusted_score": "67.41",
+    "entrant_edge": {
+      "status": "evidenced",
+      "not_edge": [
+        "trucking experience alone",
+        "Russian/Romanian language",
+        "automation",
+        "generic managed service"
+      ],
+      "edge_type": "existing_owned_audience_customer_base_or_partner_channel",
+      "edge_asset_key": "EDGE-TRUCK-NETWORK-01",
+      "strength_status": "commercial_strength_unproven",
+      "conditional_supporting_asset": "EDGE-TRUCK-SERVICE-DISTRIBUTION-01"
+    },
+    "business_model": {
+      "primary": "recurring managed compliance subscription",
+      "secondary": [
+        "setup/remediation fees",
+        "pass-through third-party testing/MVR costs",
+        "ancillary partner referrals only if compliant"
+      ],
+      "explicit_non_thesis": [
+        "generic reminder software",
+        "one-time filing shop",
+        "affiliate-only compliance referrals"
+      ]
+    },
+    "economics_summary": {
+      "status": "scenario, not forecast",
+      "must_verify": [
+        "service minutes/account",
+        "backend software/partner cost",
+        "testing/MVR/Clearinghouse pass-through economics",
+        "professional-liability insurance",
+        "retention",
+        "support burden"
+      ],
+      "interpretation": "Revenue arithmetic only; no labor-adjusted profit forecast until service workload is measured.",
+      "research_gate_status": "unit economics structurally feasible; actual net contribution remains empirical",
+      "research_sensitivity": {
+        "not_forecast": true,
+        "modeled_accounts": 10,
+        "monthly_price_usd": 199,
+        "labor_value_usd_hour": 50,
+        "contribution_margin_at_2h": 0.247,
+        "fixed_backend_stress_usd_month": 499,
+        "break_even_near_hours_per_account_month": 3,
+        "routine_service_target_hours_per_account_month": "<=2",
+        "contribution_at_2h_before_other_overhead_usd_month": 491
+      },
+      "published_price_anchors": {
+        "owner_operator_monthly_usd": [
+          149,
+          199
+        ],
+        "small_fleet_up_to_5_monthly_usd": 499,
+        "low_price_managed_substitute_per_unit_monthly_usd": 25
+      },
+      "illustrative_revenue_only": {
+        "blended_10_account_arr_usd": 30000,
+        "10_accounts_at_blended_250_mrr_usd": 2500,
+        "5_small_fleet_accounts_at_499_mrr_usd": 2495,
+        "10_owner_operator_accounts_at_199_mrr_usd": 1990
+      }
+    },
+    "acquisition_strategy": {
+      "primary": "existing owner-confirmed network of roughly 40 driver/carrier prospects",
+      "not_assumed": [
+        "paid leads",
+        "repair-center exclusivity",
+        "organic SEO volume"
+      ],
+      "conditional_future": "repair/service-center distribution only after access is refreshed/formalized"
+    },
+    "two_person_plan": {
+      "phase_1": "one founder handles sales/account intake while the second person/admin stack handles recurring document/deadline workflow; testing/MVR backend may be partnered",
+      "constraint": "Do not claim two-person feasibility until monthly service minutes and exception workload are bounded"
+    },
+    "scale_path": {
+      "phase_2": "standardized SOPs and compliance-management platform for a larger book",
+      "phase_3": "dedicated compliance account manager/CSR when recurring MRR supports payroll; expand through partner/referral channels only after retention and CAC evidence"
+    },
+    "risks": [
+      "strong Chicago/national compliance competition",
+      "low-price software and managed substitutes compress pricing",
+      "regulatory mistakes can create customer harm and liability",
+      "service labor may scale poorly",
+      "customer documents contain sensitive business/driver data and require strong security",
+      "warm network may not convert"
+    ],
+    "evidence_refs": [
+      242,
+      243,
+      244,
+      245,
+      246,
+      247,
+      248,
+      249,
+      250,
+      251
+    ],
+    "unknowns": [
+      "Actual service minutes per account and monthly workload are unmeasured.",
+      "Professional-liability/general-liability needs and exact scope disclaimers must be verified before launch.",
+      "Current network willingness to outsource compliance administration is unmeasured.",
+      "Retention/churn and support intensity are unknown.",
+      "Economics of testing/MVR/Clearinghouse/vendor pass-through must be modeled precisely.",
+      "Scale beyond the initial network must not depend on paid leads until CAC is measured."
+    ],
+    "kill_conditions": [
+      "Reject if routine recurring service cannot be standardized to roughly <=2 owner-hours/account/month at realistic realized pricing.",
+      "Reject if onboarding/exception labor or liability/security cost removes positive labor-adjusted contribution.",
+      "Reject if low-cost substitutes force realized price below a sustainable level.",
+      "Reject if the warm network fails to produce qualified compliance conversations in a future approved test.",
+      "Reject if liability exposure cannot be bounded with SOPs, insurance and clear scope.",
+      "Reject if founder labor cannot transition to repeatable account-management workflows."
+    ],
+    "feedback_state": {
+      "finalist": false,
+      "interpretation": "All research gates passed; winner status requires owner-approved measured channel response, CAC and net contribution.",
+      "research_stage": "finalist_ready",
+      "v5_opportunity_layer": true,
+      "empirically_validated": false,
+      "research_finalist_20260924": true
+    },
+    "created_at": "2026-09-24 22:22:17.552364+00",
+    "updated_at": "2026-09-24 22:28:01.40387+00"
+  },
+  {
+    "id": "e40e49ba-3c3f-4b05-a0f1-3b656ddca1d7",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "opportunity_key": "OPP-V5-04-A",
+    "niche_id": "7dd5fa33-63a9-4f9f-a711-8e4bd78f1ddc",
+    "primary_engine_id": "60f7899e-19e9-44d1-bb8c-4b079f10140e",
+    "name": "Trucking bookkeeping subscription through the existing carrier/driver network",
+    "thesis": "Provide a bounded monthly bookkeeping/financial back-office service for 1-10 truck carriers: reconciliations, trucking-specific categorization, settlement/factoring review, truck-level P&L and CPA-ready books. Tax-return preparation, CPA titles and assurance work are excluded from launch scope.",
+    "status": "finalist_ready",
+    "confidence_grade": "B",
+    "current_adjusted_score": "68.49",
+    "entrant_edge": {
+      "status": "evidenced",
+      "not_edge": [
+        "generic bookkeeping",
+        "trucking knowledge alone",
+        "automation",
+        "low price"
+      ],
+      "edge_type": "existing_owned_audience_customer_base_or_partner_channel",
+      "evidence_refs": [
+        259
+      ],
+      "edge_asset_key": "EDGE-TRUCK-NETWORK-01",
+      "strength_status": "commercial_strength_unproven"
+    },
+    "business_model": {
+      "primary": "recurring managed bookkeeping subscription",
+      "secondary": [
+        "separately priced catch-up/cleanup",
+        "fleet reporting add-ons"
+      ],
+      "explicit_non_thesis": [
+        "tax-return preparation at launch",
+        "CPA/assurance services",
+        "generic SMB bookkeeping without trucking-specific workflow"
+      ]
+    },
+    "economics_summary": {
+      "status": "pricing evidence, unit economics open",
+      "must_verify": [
+        "service hours/account",
+        "software/file cost",
+        "review/QA labor",
+        "cleanup frequency",
+        "retention"
+      ],
+      "not_forecast": true,
+      "research_gate_status": "unit economics and two-person capacity structurally feasible; actual net contribution remains empirical",
+      "research_sensitivity": {
+        "cleanup": "separately priced/scheduled",
+        "not_forecast": true,
+        "contribution_at_350_4h_usd": 100,
+        "contribution_at_350_5h_usd": 50,
+        "contribution_at_500_6h_usd": 150,
+        "routine_target_hours_per_account_month": "<=4-5",
+        "full_service_target_price_floor_usd_month": 350,
+        "break_even_hours_at_350_price_50_software_50_labor": 6
+      },
+      "low_price_substitute_usd_per_truck_month": 125,
+      "published_small_fleet_price_range_usd_month": [
+        199,
+        1200
+      ],
+      "published_owner_operator_price_range_usd_month": [
+        129,
+        500
+      ]
+    },
+    "acquisition_strategy": {
+      "future": "referrals and public carrier prospecting only after measured CAC/retention",
+      "primary": "existing owner-confirmed ~40-contact trucking network",
+      "not_assumed": [
+        "paid leads",
+        "SEO volume",
+        "repair-center exclusivity"
+      ]
+    },
+    "two_person_plan": {
+      "phase_1": "founder intake plus standardized monthly-close workflow",
+      "constraint": "do not pass two-person gate until recurring and cleanup hours/account are bounded"
+    },
+    "scale_path": {
+      "phase_2": "dedicated bookkeeper when book supports payroll",
+      "phase_3": "review lead/controller and compliant tax/CPA partner channel if customer demand supports it"
+    },
+    "risks": [
+      "crowded category with low-price substitutes",
+      "bookkeeping errors can damage customer decisions/tax handoff",
+      "catch-up cleanup can create large one-time labor",
+      "financial data security/privacy",
+      "customers may expect tax advice outside scope",
+      "warm network may not convert"
+    ],
+    "evidence_refs": [
+      252,
+      253,
+      254,
+      255,
+      256,
+      257,
+      258,
+      259
+    ],
+    "unknowns": [
+      "Actual monthly transaction volume and service hours by 1-truck vs 2-10-truck account are unknown.",
+      "Software/client-file cost per account is unmodeled.",
+      "Catch-up/cleanup labor can be much larger than recurring monthly close.",
+      "Actual network willingness to outsource bookkeeping is unmeasured.",
+      "Bookkeeping quality-control/review process must be defined.",
+      "Tax-return preparation, tax advice, attest/assurance and CPA-title use must remain out of launch scope unless proper credentials/requirements are satisfied.",
+      "Retention/churn is unknown."
+    ],
+    "kill_conditions": [
+      "Reject if full managed recurring price is materially below ~$350/account without a correspondingly lighter scope.",
+      "Reject if routine recurring service exceeds roughly 5 hours/account/month at ~$350 realized price after workflow stabilization.",
+      "Reject if cleanup/catch-up cannot be separately priced and scheduled.",
+      "Reject if the warm network produces no qualified bookkeeping demand in a future approved test.",
+      "Reject if QA/review requires founder-only accounting expertise that cannot be standardized or hired.",
+      "Reject if customers primarily demand regulated tax/CPA/assurance services outside the bounded launch scope."
+    ],
+    "feedback_state": {
+      "finalist": false,
+      "interpretation": "All research gates passed/not-applicable; winner status requires owner-approved measured response, CAC and net contribution.",
+      "research_stage": "finalist_ready",
+      "v5_opportunity_layer": true,
+      "empirically_validated": false,
+      "research_finalist_20260924": true
+    },
+    "created_at": "2026-09-24 22:32:53.675481+00",
+    "updated_at": "2026-09-24 22:34:01.700913+00"
+  }
+]

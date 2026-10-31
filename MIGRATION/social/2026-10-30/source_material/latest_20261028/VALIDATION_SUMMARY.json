@@ -1,0 +1,15 @@
+{
+  "project": "social",
+  "reported_prior_validation": {
+    "offline_tests_normal": 88,
+    "offline_tests_optimized": 88,
+    "runtime_ui": "NOT_VERIFIED"
+  },
+  "shared_limits": [
+    "No installation",
+    "No publication",
+    "No Windows native or GUI verification",
+    "No live data or model qualification"
+  ],
+  "new_tests_this_handoff": false
+}

@@ -1,0 +1,127 @@
+{
+  "source_project": "media-business-projects",
+  "snapshot_kind": "sequential read-only selected catalog export; not transaction-consistent full backup",
+  "tables": [
+    {
+      "schema": "social",
+      "table": "story_candidates",
+      "rows": 783,
+      "query": "select * from social.story_candidates",
+      "retrieved_at": "2026-10-30T17:23:12.214Z"
+    },
+    {
+      "schema": "social",
+      "table": "research_packets",
+      "rows": 20,
+      "query": "select * from social.research_packets",
+      "retrieved_at": "2026-10-30T17:23:15.547Z"
+    },
+    {
+      "schema": "social",
+      "table": "factual_cores",
+      "rows": 20,
+      "query": "select * from social.factual_cores",
+      "retrieved_at": "2026-10-30T17:23:19.884Z"
+    },
+    {
+      "schema": "social",
+      "table": "claims",
+      "rows": 40,
+      "query": "select * from social.claims",
+      "retrieved_at": "2026-10-30T17:23:23.041Z"
+    },
+    {
+      "schema": "social",
+      "table": "claim_evidence",
+      "rows": 60,
+      "query": "select * from social.claim_evidence",
+      "retrieved_at": "2026-10-30T17:23:26.945Z"
+    },
+    {
+      "schema": "social",
+      "table": "content_artifacts",
+      "rows": 24,
+      "query": "select * from social.content_artifacts",
+      "retrieved_at": "2026-10-30T17:23:30.887Z"
+    },
+    {
+      "schema": "social",
+      "table": "evidence_nodes",
+      "rows": 30,
+      "query": "select * from social.evidence_nodes",
+      "retrieved_at": "2026-10-30T17:23:35.401Z"
+    },
+    {
+      "schema": "social",
+      "table": "candidate_source_events",
+      "rows": 1322,
+      "query": "select * from social.candidate_source_events",
+      "retrieved_at": "2026-10-30T17:23:39.433Z"
+    },
+    {
+      "schema": "social",
+      "table": "source_events",
+      "rows": 1328,
+      "query": "select * from social.source_events",
+      "retrieved_at": "2026-10-30T17:25:23.934Z"
+    },
+    {
+      "schema": "social",
+      "table": "source_definitions",
+      "rows": 7,
+      "query": "select id,workspace_id,source_key,name,source_type,access_method,legal_status,factual_use_status,media_use_status,machine_access_allowed,terms_ref,last_reviewed_at,review_due_at,connector_enabled,connector_state,rate_limit_policy,freshness_policy,created_at,updated_at from social.source_definitions",
+      "retrieved_at": "2026-10-30T17:25:28.133Z"
+    },
+    {
+      "schema": "social",
+      "table": "review_decisions",
+      "rows": 89,
+      "query": "select id,workspace_id,channel_account_id,content_artifact_id,package_variant_id,factual_core_id,decision,artifact_hash,package_hash,factual_hash,reason,decided_at,invalidated_at,created_at from social.review_decisions",
+      "retrieved_at": "2026-10-30T17:25:35.187Z"
+    },
+    {
+      "schema": "social",
+      "table": "workspaces",
+      "rows": 2,
+      "query": "select id,slug,name,status,created_at,updated_at from social.workspaces",
+      "retrieved_at": "2026-10-30T17:25:38.142Z"
+    },
+    {
+      "schema": "social",
+      "table": "latest_candidate_scores",
+      "rows": 773,
+      "query": "select distinct on (s.story_candidate_id) s.*,r.scorer_version from social.candidate_score_results s left join social.candidate_score_runs r on r.id=s.run_id order by s.story_candidate_id,s.created_at desc,s.id desc",
+      "retrieved_at": "2026-10-30T17:26:08.353Z"
+    },
+    {
+      "schema": "social",
+      "table": "candidate_score_history_summary",
+      "rows": 776,
+      "query": "select s.story_candidate_id,r.scorer_version,s.gate,count(*) as historical_rows,min(s.created_at) as first_scored_at,max(s.created_at) as last_scored_at,min(s.score) as min_score,max(s.score) as max_score from social.candidate_score_results s left join social.candidate_score_runs r on r.id=s.run_id group by s.story_candidate_id,r.scorer_version,s.gate order by s.story_candidate_id,r.scorer_version,s.gate",
+      "retrieved_at": "2026-10-30T17:26:14.401Z"
+    },
+    {
+      "schema": "social",
+      "table": "scoring_policy_distribution",
+      "rows": 5,
+      "query": "select r.scorer_version,s.gate,count(*) as result_count,min(s.created_at) as first_scored_at,max(s.created_at) as last_scored_at from social.candidate_score_results s left join social.candidate_score_runs r on r.id=s.run_id group by r.scorer_version,s.gate order by r.scorer_version,s.gate",
+      "retrieved_at": "2026-10-30T17:26:18.242Z"
+    }
+  ],
+  "public_curation": {
+    "removed_fields": [
+      "project_ref"
+    ],
+    "reason_ru": "Операционный идентификатор развёртывания исключён; происхождение, таблицы, запросы, время и идентификаторы проектных записей сохранены.",
+    "excluded_categories_ru": [
+      "Имена проверяющих и владельцев",
+      "Частные примечания и переопределения рабочей области",
+      "Конфигурация источников",
+      "Операционный идентификатор развёртывания"
+    ],
+    "additional_limits_ru": [
+      "Удалены 6 вхождений публичной контактной электронной почты",
+      "История оценок представлена агрегатами, не всеми повторяющимися исходными строками"
+    ]
+  }
+}

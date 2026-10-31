@@ -1,0 +1,362 @@
+[
+  {
+    "claim_id": "d37d0206-b5be-4777-9038-11d5f7e5612a",
+    "evidence_node_id": "117caa68-2a7e-489a-baf3-54c915c20f59",
+    "relation": "supports",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "claim_id": "469df804-4d4f-4489-b787-93bc1257e63e",
+    "evidence_node_id": "de1798e0-35d7-4c47-8dac-aeee11e1ac85",
+    "relation": "supports",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "claim_id": "2196c7cf-8b21-41ed-be3a-9351aaba8a6b",
+    "evidence_node_id": "209e0c68-b7bb-4b22-8369-2a86f37a6457",
+    "relation": "supports",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "claim_id": "be96a3ce-a309-4c87-99d7-2da722e8e0cf",
+    "evidence_node_id": "4deb0f8a-6cbb-4c39-be4f-318597919fc8",
+    "relation": "supports",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "claim_id": "5970805f-b167-45c9-814e-5cd442acc696",
+    "evidence_node_id": "587b142d-1377-41d4-ba82-cd8ac220a533",
+    "relation": "supports",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "claim_id": "56953ed7-478e-41f3-a6ab-cb703d4e54f1",
+    "evidence_node_id": "73547699-6075-48a2-aa23-762e5fcb3a75",
+    "relation": "supports",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "claim_id": "79087c44-589d-4182-8b35-9a2e0ba34acb",
+    "evidence_node_id": "3c7c41b5-fa9c-4b9f-bc98-e4fb56581ad5",
+    "relation": "supports",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "claim_id": "b7bd6298-9fcd-44ec-ab1c-59a09ad74ffc",
+    "evidence_node_id": "b308dd8d-0fd2-4524-a109-a41bec343df2",
+    "relation": "supports",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "claim_id": "d6c1bd7b-d098-4f8d-b2d3-6a021f96754d",
+    "evidence_node_id": "c2418c60-8ffc-4c15-9b71-5a429f30983b",
+    "relation": "supports",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "claim_id": "9137dde0-dfa7-45e8-aff6-05ff41985496",
+    "evidence_node_id": "86337d1d-f01e-400b-b1ad-a498bb871611",
+    "relation": "supports",
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "claim_id": "fc108b19-7280-4744-8806-749ff642ffd7",
+    "evidence_node_id": "40ffbf68-3274-4435-a1be-2ed7d5830995",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:13:26.389592+00"
+  },
+  {
+    "claim_id": "136b13a8-63fc-4778-96d4-8cc9f86430e5",
+    "evidence_node_id": "40ffbf68-3274-4435-a1be-2ed7d5830995",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:13:26.389592+00"
+  },
+  {
+    "claim_id": "66555099-b468-4cb9-a637-fa7dd1f1a9a1",
+    "evidence_node_id": "40ffbf68-3274-4435-a1be-2ed7d5830995",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:13:26.389592+00"
+  },
+  {
+    "claim_id": "fc108b19-7280-4744-8806-749ff642ffd7",
+    "evidence_node_id": "798bc757-ed2e-473a-a5d8-d4771bd38c29",
+    "relation": "context",
+    "created_at": "2026-09-24 00:13:26.389592+00"
+  },
+  {
+    "claim_id": "136b13a8-63fc-4778-96d4-8cc9f86430e5",
+    "evidence_node_id": "798bc757-ed2e-473a-a5d8-d4771bd38c29",
+    "relation": "context",
+    "created_at": "2026-09-24 00:13:26.389592+00"
+  },
+  {
+    "claim_id": "dbcd46d5-4640-4b93-978a-302f94664392",
+    "evidence_node_id": "ecc7711e-ada2-4289-a898-79324c58395d",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:30:49.00272+00"
+  },
+  {
+    "claim_id": "d7febc6b-edb9-4aee-995c-c3269d879e09",
+    "evidence_node_id": "ecc7711e-ada2-4289-a898-79324c58395d",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:30:49.00272+00"
+  },
+  {
+    "claim_id": "82014453-c836-4d10-9554-33058ad61843",
+    "evidence_node_id": "ecc7711e-ada2-4289-a898-79324c58395d",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:30:49.00272+00"
+  },
+  {
+    "claim_id": "dbcd46d5-4640-4b93-978a-302f94664392",
+    "evidence_node_id": "2e47e60e-c792-4dea-ad42-eba75acd2918",
+    "relation": "context",
+    "created_at": "2026-09-24 00:30:49.00272+00"
+  },
+  {
+    "claim_id": "d7febc6b-edb9-4aee-995c-c3269d879e09",
+    "evidence_node_id": "2e47e60e-c792-4dea-ad42-eba75acd2918",
+    "relation": "context",
+    "created_at": "2026-09-24 00:30:49.00272+00"
+  },
+  {
+    "claim_id": "e7dc7520-06af-4ee7-89cb-5a8f266fd735",
+    "evidence_node_id": "55612641-9872-444a-ba67-2724e03687c5",
+    "relation": "context",
+    "created_at": "2026-09-24 00:36:54.201722+00"
+  },
+  {
+    "claim_id": "73c88f83-6120-4aa0-b989-02eeebabd11b",
+    "evidence_node_id": "55612641-9872-444a-ba67-2724e03687c5",
+    "relation": "context",
+    "created_at": "2026-09-24 00:36:54.201722+00"
+  },
+  {
+    "claim_id": "e7dc7520-06af-4ee7-89cb-5a8f266fd735",
+    "evidence_node_id": "7af27c1c-e923-495d-a1cd-e7576ee2502d",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:36:54.201722+00"
+  },
+  {
+    "claim_id": "73c88f83-6120-4aa0-b989-02eeebabd11b",
+    "evidence_node_id": "7af27c1c-e923-495d-a1cd-e7576ee2502d",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:36:54.201722+00"
+  },
+  {
+    "claim_id": "82c7876a-3e85-49fc-adc5-a36ecebb10de",
+    "evidence_node_id": "6a40f3c8-7682-4039-82be-c756ba3fe365",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:37:35.884336+00"
+  },
+  {
+    "claim_id": "55b0abd5-3416-4f92-897c-db6df1a1aae5",
+    "evidence_node_id": "6a40f3c8-7682-4039-82be-c756ba3fe365",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:37:35.884336+00"
+  },
+  {
+    "claim_id": "5c4f3fc8-5a86-449a-8a10-c47f508e253e",
+    "evidence_node_id": "6a40f3c8-7682-4039-82be-c756ba3fe365",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:37:35.884336+00"
+  },
+  {
+    "claim_id": "82c7876a-3e85-49fc-adc5-a36ecebb10de",
+    "evidence_node_id": "25ad9e6a-7bc3-4d80-86fd-7ae12340d241",
+    "relation": "context",
+    "created_at": "2026-09-24 00:37:35.884336+00"
+  },
+  {
+    "claim_id": "55b0abd5-3416-4f92-897c-db6df1a1aae5",
+    "evidence_node_id": "25ad9e6a-7bc3-4d80-86fd-7ae12340d241",
+    "relation": "context",
+    "created_at": "2026-09-24 00:37:35.884336+00"
+  },
+  {
+    "claim_id": "d3bfce55-8eb6-4660-93db-6218f7067ef5",
+    "evidence_node_id": "0a42face-638a-40a1-8a0e-6615a5ddd812",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:38:35.97182+00"
+  },
+  {
+    "claim_id": "aa4d424f-bd11-4008-b0d6-b16ea55c148a",
+    "evidence_node_id": "0a42face-638a-40a1-8a0e-6615a5ddd812",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:38:35.97182+00"
+  },
+  {
+    "claim_id": "d3bfce55-8eb6-4660-93db-6218f7067ef5",
+    "evidence_node_id": "366438c7-f593-448d-bc8c-c66648e19dbc",
+    "relation": "context",
+    "created_at": "2026-09-24 00:38:35.97182+00"
+  },
+  {
+    "claim_id": "aa4d424f-bd11-4008-b0d6-b16ea55c148a",
+    "evidence_node_id": "366438c7-f593-448d-bc8c-c66648e19dbc",
+    "relation": "context",
+    "created_at": "2026-09-24 00:38:35.97182+00"
+  },
+  {
+    "claim_id": "3a83ab37-50ba-45be-9858-39a2d5504f97",
+    "evidence_node_id": "cbe93822-4b7c-40d8-9cc6-2260b124e76e",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:39:22.039251+00"
+  },
+  {
+    "claim_id": "bb62cbb0-0178-4daa-9013-9ec05e626261",
+    "evidence_node_id": "cbe93822-4b7c-40d8-9cc6-2260b124e76e",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:39:22.039251+00"
+  },
+  {
+    "claim_id": "3a83ab37-50ba-45be-9858-39a2d5504f97",
+    "evidence_node_id": "59508838-f402-498c-9d0d-8a6b1fffd8b3",
+    "relation": "context",
+    "created_at": "2026-09-24 00:39:22.039251+00"
+  },
+  {
+    "claim_id": "bb62cbb0-0178-4daa-9013-9ec05e626261",
+    "evidence_node_id": "59508838-f402-498c-9d0d-8a6b1fffd8b3",
+    "relation": "context",
+    "created_at": "2026-09-24 00:39:22.039251+00"
+  },
+  {
+    "claim_id": "6ac307e8-7129-4651-a50e-23eddc56dc49",
+    "evidence_node_id": "f0988475-f0ae-4668-8e69-991f1f54f9c3",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:40:01.773541+00"
+  },
+  {
+    "claim_id": "6d9b0856-234d-4b46-8104-ecbf6a1f8809",
+    "evidence_node_id": "f0988475-f0ae-4668-8e69-991f1f54f9c3",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:40:01.773541+00"
+  },
+  {
+    "claim_id": "a6aa449c-2542-4807-869f-e4aa401bf1c8",
+    "evidence_node_id": "f0988475-f0ae-4668-8e69-991f1f54f9c3",
+    "relation": "supports",
+    "created_at": "2026-09-24 00:40:01.773541+00"
+  },
+  {
+    "claim_id": "6ac307e8-7129-4651-a50e-23eddc56dc49",
+    "evidence_node_id": "ea0ca711-c730-4e71-b319-74db1cfe2a6c",
+    "relation": "context",
+    "created_at": "2026-09-24 00:40:01.773541+00"
+  },
+  {
+    "claim_id": "6d9b0856-234d-4b46-8104-ecbf6a1f8809",
+    "evidence_node_id": "ea0ca711-c730-4e71-b319-74db1cfe2a6c",
+    "relation": "context",
+    "created_at": "2026-09-24 00:40:01.773541+00"
+  },
+  {
+    "claim_id": "3dc8ce06-ffaf-4be0-a982-459420cc032b",
+    "evidence_node_id": "0cf449df-3df0-42b6-b974-001bee4316b3",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "6480a41b-46e4-4859-b4cd-c14618863b4c",
+    "evidence_node_id": "0cf449df-3df0-42b6-b974-001bee4316b3",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "6480a41b-46e4-4859-b4cd-c14618863b4c",
+    "evidence_node_id": "03adf106-2972-4ded-a2a3-948b156e35ce",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "8aa2a2b6-d3ad-4d73-a6bc-9ebbcd16dd84",
+    "evidence_node_id": "03adf106-2972-4ded-a2a3-948b156e35ce",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "ebc2fcf8-8130-4665-99fe-03a1ecc926ba",
+    "evidence_node_id": "0cf449df-3df0-42b6-b974-001bee4316b3",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "ebc2fcf8-8130-4665-99fe-03a1ecc926ba",
+    "evidence_node_id": "03adf106-2972-4ded-a2a3-948b156e35ce",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "f90e9ee0-f07d-4ada-94b2-c0f22d3b429b",
+    "evidence_node_id": "48321c3f-8212-4557-9488-0caa82767c34",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "98ab59d9-efab-469d-8361-eaab8718e769",
+    "evidence_node_id": "48321c3f-8212-4557-9488-0caa82767c34",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "03aa26ea-22ec-44ee-85c1-65760fc1596e",
+    "evidence_node_id": "48321c3f-8212-4557-9488-0caa82767c34",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "540cee1a-d11a-48da-bd51-0bdb7e128481",
+    "evidence_node_id": "48321c3f-8212-4557-9488-0caa82767c34",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "540cee1a-d11a-48da-bd51-0bdb7e128481",
+    "evidence_node_id": "0fae0556-7385-42c9-862f-874e0a539a8f",
+    "relation": "context",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "bdbea099-4ded-45a7-80a8-9410676f201c",
+    "evidence_node_id": "2d65edce-b3c6-4700-a7c8-b8650d994710",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "bdbea099-4ded-45a7-80a8-9410676f201c",
+    "evidence_node_id": "3752b313-c8b7-4e9a-8496-11857d808777",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "98180ba8-cc7c-4005-9fcb-c4e3ebe76fdf",
+    "evidence_node_id": "2d65edce-b3c6-4700-a7c8-b8650d994710",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "ab72183f-f4dc-43a2-8376-126c12d9aec9",
+    "evidence_node_id": "2d65edce-b3c6-4700-a7c8-b8650d994710",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "ab72183f-f4dc-43a2-8376-126c12d9aec9",
+    "evidence_node_id": "3752b313-c8b7-4e9a-8496-11857d808777",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "a31a35ab-2f1b-4f8f-8097-f87f1b2656fe",
+    "evidence_node_id": "2d65edce-b3c6-4700-a7c8-b8650d994710",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "claim_id": "a31a35ab-2f1b-4f8f-8097-f87f1b2656fe",
+    "evidence_node_id": "3752b313-c8b7-4e9a-8496-11857d808777",
+    "relation": "supports",
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  }
+]

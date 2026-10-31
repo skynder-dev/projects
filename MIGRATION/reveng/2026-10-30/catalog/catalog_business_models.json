@@ -1,0 +1,321 @@
+[
+  {
+    "id": "1c4cc94d-48f1-4753-983e-17e8531ad01d",
+    "model_key": "digital_download",
+    "name": "Digital downloads",
+    "model_family": "digital_products",
+    "execution_class": "near_autonomous",
+    "description": "Create once; automated delivery of digital files or generated digital output.",
+    "default_automation_profile": {
+      "support": "low",
+      "creation": "automatable",
+      "delivery": "automated"
+    },
+    "default_cost_profile": {
+      "inventory": "none",
+      "fulfillment": "near_zero_marginal"
+    },
+    "default_risk_profile": {
+      "ip_quality": "material",
+      "platform_dependency": "medium"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "c132371e-7a6e-4897-93d5-5608706a610b",
+    "model_key": "pod_merch",
+    "name": "Print-on-demand merchandise",
+    "model_family": "commerce",
+    "execution_class": "near_autonomous",
+    "description": "Design-led physical products produced and fulfilled on demand by a third party.",
+    "default_automation_profile": {
+      "creation": "automatable_with_review",
+      "fulfillment": "third_party",
+      "owner_touch": "low"
+    },
+    "default_cost_profile": {
+      "cogs": "per_order",
+      "inventory": "none"
+    },
+    "default_risk_profile": {
+      "returns": "possible",
+      "ip_quality": "material",
+      "platform_dependency": "medium_high"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "74cac2d2-27f1-432d-b1b7-1887a583476b",
+    "model_key": "pod_publishing",
+    "name": "Print-on-demand publishing",
+    "model_family": "publishing",
+    "execution_class": "near_autonomous",
+    "description": "Books/activity products produced on demand after content and layout approval.",
+    "default_automation_profile": {
+      "creation": "automatable_with_review",
+      "fulfillment": "third_party",
+      "owner_touch": "low"
+    },
+    "default_cost_profile": {
+      "cogs": "per_copy",
+      "inventory": "none"
+    },
+    "default_risk_profile": {
+      "ip_quality": "material",
+      "content_quality": "material",
+      "platform_dependency": "medium_high"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "1d1c0055-8ff7-41a4-9e96-20a73b746a7f",
+    "model_key": "dropshipping",
+    "name": "Compliant dropshipping",
+    "model_family": "commerce",
+    "execution_class": "low_touch",
+    "description": "Supplier fulfills customer orders without owned inventory, with merchant responsibility for customer experience.",
+    "default_automation_profile": {
+      "support": "variable",
+      "fulfillment": "supplier",
+      "order_routing": "automatable"
+    },
+    "default_cost_profile": {
+      "cogs": "per_order",
+      "inventory": "none_or_low"
+    },
+    "default_risk_profile": {
+      "returns": "material",
+      "platform_policy": "material",
+      "supplier_dependency": "high"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "28ea9479-1dce-4e72-a882-86c7b33fd371",
+    "model_key": "affiliate_content",
+    "name": "Affiliate/content commerce",
+    "model_family": "media_commerce",
+    "execution_class": "near_autonomous",
+    "description": "Content or utility assets acquire traffic and monetize referrals/affiliate actions.",
+    "default_automation_profile": {
+      "content": "automatable_with_review",
+      "delivery": "automated",
+      "owner_touch": "low_after_build"
+    },
+    "default_cost_profile": {
+      "cogs": "low",
+      "inventory": "none"
+    },
+    "default_risk_profile": {
+      "program_dependency": "medium_high",
+      "traffic_dependency": "high"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "1a24d5c6-3f2d-4fca-9ed4-a5c4d333e97d",
+    "model_key": "subscription_content",
+    "name": "Subscription digital content",
+    "model_family": "digital_products",
+    "execution_class": "low_touch",
+    "description": "Recurring paid access to useful content, alerts, libraries or tools.",
+    "default_automation_profile": {
+      "refresh": "recurring",
+      "support": "low_to_medium",
+      "delivery": "automated"
+    },
+    "default_cost_profile": {
+      "inventory": "none",
+      "recurring_software": "possible"
+    },
+    "default_risk_profile": {
+      "churn": "material",
+      "content_refresh": "material"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "7275cbba-ebeb-4338-95ca-d1e76eee0cef",
+    "model_key": "micro_saas",
+    "name": "Micro SaaS",
+    "model_family": "software",
+    "execution_class": "low_touch",
+    "description": "Focused software solving a narrow recurring problem with self-service onboarding.",
+    "default_automation_profile": {
+      "billing": "automated",
+      "support": "low_to_medium",
+      "delivery": "automated"
+    },
+    "default_cost_profile": {
+      "hosting": "recurring",
+      "marginal_cost": "low"
+    },
+    "default_risk_profile": {
+      "support": "material",
+      "competition": "variable",
+      "build_complexity": "medium"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "7f727af4-8fee-4f55-b03d-5bfc21eb8d43",
+    "model_key": "data_product",
+    "name": "Data product",
+    "model_family": "data",
+    "execution_class": "low_touch",
+    "description": "Curated, transformed or continuously updated data sold as files, feeds, dashboards or subscriptions.",
+    "default_automation_profile": {
+      "refresh": "automatable",
+      "support": "low",
+      "delivery": "automated"
+    },
+    "default_cost_profile": {
+      "hosting": "low_to_medium",
+      "data_acquisition": "variable"
+    },
+    "default_risk_profile": {
+      "freshness": "material",
+      "data_rights": "material"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "1512541e-337a-4ad1-b600-c876d7890d7d",
+    "model_key": "api_service",
+    "name": "API service",
+    "model_family": "software",
+    "execution_class": "low_touch",
+    "description": "Programmatic paid capability delivered through an API.",
+    "default_automation_profile": {
+      "billing": "automated",
+      "support": "medium",
+      "delivery": "automated"
+    },
+    "default_cost_profile": {
+      "compute": "usage_based",
+      "hosting": "recurring"
+    },
+    "default_risk_profile": {
+      "abuse": "material",
+      "support": "medium",
+      "reliability": "material"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "d9625e06-fed0-46ad-9fc0-c804134b8b81",
+    "model_key": "marketplace_service",
+    "name": "Marketplace-mediated service",
+    "model_family": "services",
+    "execution_class": "operational",
+    "description": "Productized service sold through a marketplace with bounded scope.",
+    "default_automation_profile": {
+      "intake": "automatable",
+      "delivery": "partially_automatable",
+      "owner_touch": "medium"
+    },
+    "default_cost_profile": {
+      "labor": "material",
+      "platform_fee": "material"
+    },
+    "default_risk_profile": {
+      "capacity": "material",
+      "platform_dependency": "high"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "229ccab6-48a2-40b3-a1a4-76ed14441220",
+    "model_key": "managed_service",
+    "name": "Managed service",
+    "model_family": "services",
+    "execution_class": "human_service",
+    "description": "Recurring service requiring meaningful ongoing human delivery.",
+    "default_automation_profile": {
+      "intake": "automatable",
+      "delivery": "human_heavy",
+      "owner_touch": "high"
+    },
+    "default_cost_profile": {
+      "labor": "high",
+      "software": "variable"
+    },
+    "default_risk_profile": {
+      "capacity": "high",
+      "quality_liability": "material"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "77ad6142-b95e-4561-9318-f6916b38ea2a",
+    "model_key": "licensed_brokerage",
+    "name": "Licensed brokerage",
+    "model_family": "regulated_services",
+    "execution_class": "licensed_regulated",
+    "description": "Brokerage/intermediation requiring licensing, sales and ongoing servicing.",
+    "default_automation_profile": {
+      "sales": "human",
+      "lead_ops": "partially_automatable",
+      "servicing": "human"
+    },
+    "default_cost_profile": {
+      "labor": "material",
+      "licensing": "material"
+    },
+    "default_risk_profile": {
+      "liability": "high",
+      "regulatory": "high",
+      "owner_touch": "high"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  },
+  {
+    "id": "abec7b74-60be-4147-bbda-7105a969e8a4",
+    "model_key": "inventory_brand",
+    "name": "Inventory-backed ecommerce brand",
+    "model_family": "commerce",
+    "execution_class": "operational",
+    "description": "Owned inventory, warehousing or replenishment with direct ecommerce economics.",
+    "default_automation_profile": {
+      "planning": "human",
+      "marketing": "automatable",
+      "fulfillment": "third_party_or_internal"
+    },
+    "default_cost_profile": {
+      "inventory": "high",
+      "working_capital": "material"
+    },
+    "default_risk_profile": {
+      "returns": "material",
+      "cash_cycle": "material",
+      "inventory_risk": "high"
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:21.922785+00",
+    "updated_at": "2026-09-25 05:00:21.922785+00"
+  }
+]

@@ -1,0 +1,1791 @@
+[
+  {
+    "niche_id": "ef049add-66b2-4878-bc30-b8baf5a5509a",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US small government contractors, roughly 2–50 employees, especially founder-led service/construction/IT firms without a full capture/proposal department.",
+    "painful_job": "Need to find qualified public-sector opportunities early enough, decide bid/no-bid quickly, and submit compliant proposals without consuming founder/SME capacity.",
+    "economic_importance": "Public-sector contracts are high-value; missed qualified opportunities and founder/SME proposal hours can materially affect revenue.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "GovBidWire Premium $39/mo; Team $149/mo"
+      },
+      {
+        "signal": "Enterprise bid-intelligence alternatives reportedly reach five-figure annual contracts"
+      },
+      {
+        "signal": "Small contractors report substantial proposal-management labor"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "FY2025 federal small-business prime awards were about $179B; prime+subcontract total nearly $273B"
+      },
+      {
+        "signal": "SAM.gov exposes current opportunities and public data/API access"
+      }
+    ],
+    "acquisition_paths": [
+      "SEO around bid/RFP discovery",
+      "APEX/consultant partnerships",
+      "industry associations",
+      "govcon communities",
+      "vertical outbound"
+    ],
+    "competitors_substitutes": [
+      "SAM.gov/free public portals",
+      "GovBidWire",
+      "GovWin/Deltek",
+      "consultants/proposal shops",
+      "manual portal monitoring"
+    ],
+    "defensibility_paths": [
+      "vertical-specific award/history dataset",
+      "buyer-specific relevance models",
+      "accumulated proposal evidence library",
+      "partner distribution",
+      "workflow data improving bid/no-bid"
+    ],
+    "business_model_options": [
+      "subscription intelligence/workflow",
+      "managed capture/proposal operations",
+      "data/API licensing",
+      "performance-linked advisory where lawful"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "needs segment-specific CAC and contribution modeling"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only if launch scope is narrow; deep screen must identify which tasks can be automated and which require specialist labor",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist contractor/ops support after repeatable demand",
+      "phase_3": "channel partnerships and dedicated sales/support if ACV supports it"
+    },
+    "risks": [
+      "Need quantified SMB count by active bidding frequency",
+      "Need win-rate/CAC benchmarks by vertical",
+      "Need validate willingness to switch from free SAM/state portals",
+      "Need determine which state/local feeds can be obtained legally/reliably"
+    ],
+    "offer_hypotheses": [
+      "matched opportunity intelligence",
+      "bid/no-bid decision workspace",
+      "proposal evidence/content library",
+      "managed proposal compliance review"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:15:18.573295+00",
+    "entrant_edge": {
+      "status": "not_evidenced",
+      "evidence_refs": [
+        "turn230108search3",
+        "turn230108search0"
+      ],
+      "rejection_reason": "HigherGov + free SAM already cover the proposed core workflow."
+    }
+  },
+  {
+    "niche_id": "9b1c6bd9-b470-494f-849d-41b68916b757",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US Medicare-certified home health agencies, especially small/midsize operators with roughly <=75 staff or a few locations.",
+    "painful_job": "Continuous regulatory compliance, staff credential expirations, documentation and survey readiness create recurring owner/compliance-director workload with material reimbursement/licensure risk.",
+    "economic_importance": "Survey/compliance failures can threaten reimbursement, accreditation and operations; requirements and credential expirations are recurring.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Current vertical tools publish approximately $149-$399/month for small/mid agencies"
+      },
+      {
+        "signal": "Compliance is ongoing rather than one-time"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "CMS current Home Health Care Agencies dataset contains 12,460 registered Medicare agencies"
+      },
+      {
+        "signal": "CMS maintains continuous home-health quality reporting requirements"
+      }
+    ],
+    "acquisition_paths": [
+      "home-health associations",
+      "accreditation consultants",
+      "billing/EMR partners",
+      "compliance SEO",
+      "targeted outbound"
+    ],
+    "competitors_substitutes": [
+      "manual binders/spreadsheets",
+      "consultants",
+      "Ordo-class compliance software",
+      "home-health EMR compliance modules"
+    ],
+    "defensibility_paths": [
+      "regulatory control map",
+      "agency evidence history",
+      "survey-readiness benchmarks",
+      "accreditation consultant channel",
+      "EMR integrations"
+    ],
+    "business_model_options": [
+      "compliance SaaS",
+      "managed survey-readiness service",
+      "credential/training monitoring",
+      "policy/evidence operations subscription"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "needs segment-specific CAC and contribution modeling"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only if launch scope is narrow; deep screen must identify which tasks can be automated and which require specialist labor",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist contractor/ops support after repeatable demand",
+      "phase_3": "channel partnerships and dedicated sales/support if ACV supports it"
+    },
+    "risks": [
+      "Need buyer interviews on current survey-prep spend",
+      "Need map exact compliance liability and advisory boundaries",
+      "Need compare integrations with common home-health EMRs",
+      "Need quantify target agencies by staff/location size"
+    ],
+    "offer_hypotheses": [
+      "survey-readiness dashboard",
+      "staff credential/training tracker",
+      "managed monthly compliance review",
+      "audit/evidence packet service"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:15:18.573295+00",
+    "entrant_edge": {
+      "status": "not_evidenced",
+      "evidence_refs": [
+        "turn551661search0",
+        "turn551661search10"
+      ],
+      "rejection_reason": "Ordo/SurveyReady already implement the exact home-health compliance OS wedge."
+    }
+  },
+  {
+    "niche_id": "d36e51b7-1543-497d-87f0-cdaa2bdf37c6",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US small contractors/subcontractors performing Davis-Bacon or similar prevailing-wage public work, particularly firms without dedicated payroll-compliance staff.",
+    "painful_job": "Covered work creates weekly payroll/compliance obligations; classification, fringe and multi-jurisdiction complexity can consume back-office time and create underpayment/audit risk.",
+    "economic_importance": "Weekly prevailing-wage reporting is mandatory on covered work and errors can create back-pay, audit and contract risk, but basic form generation now has a free federal substitute.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "CertifiedPayrollPro publishes $49/$99/$249 monthly tiers plus per-report charges"
+      },
+      {
+        "signal": "Certiwage publishes $29-$59/month positioning for small subcontractors"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "BLS Q1 2026: 597,918 private specialty-trade establishments is a broad upper bound; only a subset performs covered public work"
+      },
+      {
+        "signal": "DOL confirms weekly certified payroll is required on DBRA-covered work"
+      }
+    ],
+    "acquisition_paths": [
+      "public-works contractor associations",
+      "payroll/accounting partners",
+      "APEX ecosystem",
+      "construction CPAs",
+      "search"
+    ],
+    "competitors_substitutes": [
+      "DOL free WH-347 web generator",
+      "payroll-provider exports",
+      "CertifiedPayrollPro",
+      "Certiwage",
+      "legacy certified-payroll vendors",
+      "manual spreadsheets"
+    ],
+    "defensibility_paths": [
+      "multi-jurisdiction rule library",
+      "payroll integrations",
+      "historical classification/fringe exception data",
+      "subcontractor network workflow",
+      "audit evidence history"
+    ],
+    "business_model_options": [
+      "prevailing-wage compliance SaaS",
+      "managed certified-payroll review",
+      "payroll integration/add-on",
+      "subcontractor compliance service"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "needs segment-specific CAC, onboarding and contribution modeling"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only with a sharply bounded first workflow; deep screen must isolate high-value automation from specialist/manual exceptions",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + software/automation",
+      "phase_2": "specialist ops or implementation contractor after repeatable demand",
+      "phase_3": "channel partnerships and dedicated support/sales if ACV supports it"
+    },
+    "risks": [
+      "Need target count of small contractors actually doing covered work",
+      "Need measure multi-state/state-specific complexity beyond federal WH-347",
+      "Need validate willingness to pay after DOL free generator",
+      "Need assess payroll integration and compliance-liability requirements"
+    ],
+    "offer_hypotheses": [
+      "multi-project certified payroll workspace",
+      "fringe/classification anomaly review",
+      "payroll-import compliance workflow",
+      "managed weekly certified-payroll desk"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:05:06.256699+00",
+    "entrant_edge": {}
+  },
+  {
+    "niche_id": "16a4e673-969e-4a31-864e-810ebcc035f8",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US small custom manufacturers/job shops, especially CNC, fabrication and mixed-process shops with roughly 5–50 employees and meaningful RFQ volume.",
+    "painful_job": "Quote turnaround and accuracy determine whether work is won profitably; estimators spend scarce senior labor pricing jobs that may never convert.",
+    "economic_importance": "Slow quoting loses time-sensitive RFQs while inaccurate quoting destroys margin; senior estimator time is scarce and every RFQ has uncertain conversion.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "ManufactureQuote Starter NZ$149/mo, Professional NZ$269, Business NZ$399"
+      },
+      {
+        "signal": "ManufacturingBase paid RFQ access starts at $200/month annual-billed equivalent and scales much higher"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "Census 2023: 284,452 US manufacturing employer establishments"
+      },
+      {
+        "signal": "237,060 manufacturing establishments had fewer than 50 employees, broad upper-bound proxy for small/mid shops"
+      }
+    ],
+    "acquisition_paths": [
+      "manufacturing associations",
+      "ERP/CAM/accounting partners",
+      "machine-tool/service partners",
+      "SEO around quoting/estimating",
+      "vertical outbound"
+    ],
+    "competitors_substitutes": [
+      "Excel/homegrown sheets",
+      "ERP estimating modules",
+      "Paperless Parts",
+      "ProShop",
+      "ManufactureQuote",
+      "manual senior-estimator workflow"
+    ],
+    "defensibility_paths": [
+      "shop-specific historical quote/job dataset",
+      "costing-logic configuration",
+      "ERP/CAM integrations",
+      "win/loss feedback loop",
+      "supplier/material-price data"
+    ],
+    "business_model_options": [
+      "quoting/estimating SaaS",
+      "implementation + workflow configuration",
+      "RFQ triage copilot",
+      "benchmark/data module"
+    ],
+    "customer_economics": {
+      "model_status": "scenario only",
+      "must_measure": "RFQ volume, estimator value, onboarding/integration cost and CAC",
+      "software_anchor": "low hundreds/month through custom enterprise pricing"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only with a sharply bounded first workflow; deep screen must isolate high-value automation from specialist/manual exceptions",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + software/automation",
+      "phase_2": "specialist ops or implementation contractor after repeatable demand",
+      "phase_3": "channel partnerships and dedicated support/sales if ACV supports it"
+    },
+    "risks": [
+      "Need segment count for custom/job-shop subset within manufacturing",
+      "Need typical RFQ volume and estimator labor cost by shop type",
+      "Need actual incumbent ACV and switching friction",
+      "Need determine how much quoting accuracy can improve without deep CAM/ERP integration"
+    ],
+    "offer_hypotheses": [
+      "RFQ inbox + triage workspace",
+      "historical-similar-job quoting assistant",
+      "configurable estimator workbench",
+      "quote-to-job learning loop"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:15:18.573295+00",
+    "entrant_edge": {
+      "status": "not_evidenced",
+      "evidence_refs": [
+        "turn623117search12"
+      ],
+      "rejection_reason": "Paperless Parts already implements machine-shop RFQ/estimating with integrations; hypothetical data moat is not evidence."
+    }
+  },
+  {
+    "niche_id": "ab66685e-a6d9-4403-8d80-88f3dae16881",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US commercial specialty contractors and material suppliers with recurring receivables across multiple projects and enough project volume that lien/notice/waiver tracking no longer fits in spreadsheets.",
+    "painful_job": "Payment delays, retainage and paperwork errors can strand working capital; missed preliminary-notice or lien deadlines can destroy leverage that helps secure payment.",
+    "economic_importance": "Late payment and retainage tie up subcontractor working capital; missing statutory notice/lien deadlines can eliminate a powerful payment remedy and weaken collections leverage.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Levelset currently charges $349 for a lien and $59/recipient for certain notices/warnings while waiver exchange can be free"
+      },
+      {
+        "signal": "LienDone publishes $49/month for unlimited waiver workflows"
+      },
+      {
+        "signal": "Current category products extend into AR/payment workflow and lien-rights management"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "BLS reports 597,918 private specialty-trade contractor establishments in Q1 2026 as a broad upper-bound buyer universe"
+      },
+      {
+        "signal": "2026 Siteline survey of 492 construction finance/ops professionals found 56% of subcontractors missed a critical lien deadline in the prior two years"
+      }
+    ],
+    "acquisition_paths": [
+      "construction accountants",
+      "trade associations",
+      "ERP/accounting partners",
+      "bonding/insurance partners",
+      "construction finance communities",
+      "vertical outbound"
+    ],
+    "competitors_substitutes": [
+      "spreadsheets/calendar reminders",
+      "construction attorneys",
+      "Levelset",
+      "LienDone",
+      "GCPay/Siteline-class platforms",
+      "manual waiver/notice services"
+    ],
+    "defensibility_paths": [
+      "state/project payment-rights rules engine",
+      "project/notice/lien deadline history",
+      "AR/pay-app integrations",
+      "payment-risk intelligence",
+      "construction accountant/ERP distribution"
+    ],
+    "business_model_options": [
+      "payment-rights/AR SaaS",
+      "managed notice/lien/waiver operations",
+      "collections-escalation workflow",
+      "accounting/ERP embedded add-on"
+    ],
+    "customer_economics": {
+      "status": "scenario only",
+      "key_issue": "current integrated incumbents + state/legal complexity; must prove narrower wedge and labor economics"
+    },
+    "two_person_feasibility": {
+      "assessment": "possible only with narrow initial segment and bounded exception workflow; deep screen required before finalist status",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist ops/compliance staff where recovery exceptions require humans",
+      "phase_3": "partner distribution and dedicated account operations if ACV/LTV supports it"
+    },
+    "risks": [
+      "Need state-by-state legal/compliance scope and unauthorized-practice-of-law boundaries",
+      "Need segment annual receivables/retainage and missed-rights incidence by contractor size",
+      "Need quantify current incumbent ACV and partner CAC",
+      "Need determine whether payment-rights workflow can be productized without attorney-heavy exceptions"
+    ],
+    "offer_hypotheses": [
+      "deadline/payment-rights portfolio dashboard",
+      "managed preliminary-notice and waiver desk",
+      "AR-to-lien escalation workflow",
+      "retainage/payment-risk monitoring"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:08:22.557586+00",
+    "entrant_edge": {}
+  },
+  {
+    "niche_id": "6fb1d9ab-bf51-421d-b9f4-345538c5a521",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US commercial and light-industrial organizations spending materially on utilities, especially multi-site portfolios and facilities with complex meters, tariffs, demand charges or tax treatment.",
+    "painful_job": "Utility billing errors and misapplied tariffs create direct recoverable leakage; rising utility spend also raises the value of continuous validation and rate optimization.",
+    "economic_importance": "Utility spend is a large recurring operating expense; billing/tariff errors can create direct cash recoveries and ongoing avoidable cost.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Current contingency utility-audit market commonly advertises zero upfront and roughly 25%-50% of verified recoveries/savings"
+      },
+      {
+        "signal": "EnergyCAP utility-management software pricing starts around $4,000/year according to current G2 pricing"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "EIA reports $200.316B of 2025 U.S. commercial-sector electricity revenue alone, before commercial gas/water spend"
+      },
+      {
+        "signal": "Target is the much smaller multi-site/complex-billing subset"
+      }
+    ],
+    "acquisition_paths": [
+      "facility-management partners",
+      "commercial property managers",
+      "CPAs",
+      "energy consultants/brokers where permitted",
+      "multi-site operator outbound"
+    ],
+    "competitors_substitutes": [
+      "manual facility/accounting review",
+      "utility audit consultants",
+      "energy brokers",
+      "EnergyCAP-class utility management",
+      "do nothing"
+    ],
+    "defensibility_paths": [
+      "multi-utility tariff/rate library",
+      "historical bill/meter anomaly data",
+      "verified recovery playbooks",
+      "multi-site benchmark dataset",
+      "partner distribution"
+    ],
+    "business_model_options": [
+      "contingency recovery audit",
+      "recurring utility-monitoring subscription",
+      "managed tariff/rate optimization",
+      "partner/consulting white-label"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "requires segment-specific contribution/CAC and labor model"
+    },
+    "two_person_feasibility": {
+      "assessment": "possible only with narrow initial segment and bounded exception workflow; deep screen required before finalist status",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist ops/compliance staff where recovery exceptions require humans",
+      "phase_3": "partner distribution and dedicated account operations if ACV/LTV supports it"
+    },
+    "risks": [
+      "Need independent incidence data on commercial billing errors/recoveries",
+      "Need state/utility restrictions on representing customers and sharing savings",
+      "Need quantify acquisition path to businesses spending >$50k utilities/year",
+      "Need separate repeatable software monitoring from bespoke tariff consulting"
+    ],
+    "offer_hypotheses": [
+      "no-upfront commercial bill audit",
+      "continuous invoice/tariff validator",
+      "multi-site utility anomaly dashboard",
+      "managed recovery + monitoring program"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:15:18.573295+00",
+    "entrant_edge": {
+      "status": "not_evidenced",
+      "evidence_refs": [
+        "turn179082search3",
+        "turn179082search0",
+        "turn179082search12"
+      ],
+      "rejection_reason": "TrueMeter/Utility Audit/MeterID already cover the proposed multi-site utility recovery/monitoring wedge."
+    }
+  },
+  {
+    "niche_id": "936c5602-d948-4618-9534-e4e30dde57a4",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US ecommerce brands, 3PLs and other mid-market shippers with enough parcel volume that manual carrier invoice review is uneconomic.",
+    "painful_job": "Carrier billing/service errors and missed guarantees create direct recoverable dollars, while surcharge/rate analytics can affect future shipping cost.",
+    "economic_importance": "Carrier invoice/service errors create direct leakage that can be recovered with little operational disruption, but the base audit function is mature and price-competitive.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "AuditShipment publishes 50% of recovered refunds up to $500k annual shipping spend and 40% for $500k-$1M"
+      },
+      {
+        "signal": "Shipware offers gainshare/no-upfront recovery and claims 1%-9% of invoice value may be recoverable"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "Pitney Bowes reports 23.1B U.S. parcels in 2025, up 3.3% YoY"
+      },
+      {
+        "signal": "Target is the much smaller subset of mid/high-volume commercial shippers"
+      }
+    ],
+    "acquisition_paths": [
+      "3PL/fulfillment partners",
+      "ecommerce agencies",
+      "accounting/CFO partners",
+      "Shopify ecosystem",
+      "direct shipper outreach"
+    ],
+    "competitors_substitutes": [
+      "carrier self-service claims",
+      "Parcel Recovery",
+      "AuditShipment",
+      "Shipware",
+      "parcel consultants",
+      "3PL/TMS analytics"
+    ],
+    "defensibility_paths": [
+      "multi-carrier contract/rate dataset",
+      "shipper spend benchmarks",
+      "claims outcome history",
+      "embedded 3PL/fulfillment integrations",
+      "contract negotiation intelligence"
+    ],
+    "business_model_options": [
+      "contingency refund audit",
+      "flat-fee spend analytics",
+      "carrier contract optimization",
+      "3PL/fulfillment embedded audit"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "requires segment-specific contribution/CAC and labor model"
+    },
+    "two_person_feasibility": {
+      "assessment": "possible only with narrow initial segment and bounded exception workflow; deep screen required before finalist status",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist ops/compliance staff where recovery exceptions require humans",
+      "phase_3": "partner distribution and dedicated account operations if ACV/LTV supports it"
+    },
+    "risks": [
+      "Need count of addressable shippers by annual parcel spend",
+      "Need validate carrier guarantee/refund policy stability and API/data access",
+      "Need CAC/channel economics in a mature contingency market",
+      "Need identify non-commodity layer strong enough to create retention and defensibility"
+    ],
+    "offer_hypotheses": [
+      "carrier invoice audit/gainshare",
+      "refund + surcharge leakage dashboard",
+      "contract-rate compliance monitor",
+      "carrier-negotiation analytics"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:05:06.256699+00",
+    "entrant_edge": {}
+  },
+  {
+    "niche_id": "6db874b6-b4d1-4090-8153-649d71c9bb63",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US specialty contractors/subcontractors, especially 5–50 employee commercial electrical, mechanical, plumbing, concrete, civil and similar trades.",
+    "painful_job": "Extra work must be documented, priced, approved and billed; weak field evidence or late processing turns performed work into disputed/uncollected revenue.",
+    "economic_importance": "Performed extra work can become disputed or unpaid revenue; change-order delay directly affects subcontractor cash flow and margin.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Scope Snap PRO publishes $49/month"
+      },
+      {
+        "signal": "REQ Suite publishes $150/month for commercial subcontractors around $1M-$20M revenue"
+      },
+      {
+        "signal": "SubTrack publishes from $45/user/month for T&M/LEM subcontractor workflow"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "BLS Q1 2026: 597,918 private specialty-trade contractor establishments"
+      },
+      {
+        "signal": "Census 2023 employer-establishment count for NAICS 238 was 521,315"
+      }
+    ],
+    "acquisition_paths": [
+      "trade associations",
+      "construction accounting partners",
+      "field-service ecosystems",
+      "GC/sub networks",
+      "SEO and outbound"
+    ],
+    "competitors_substitutes": [
+      "paper/PDF/T&M tickets",
+      "Excel logs",
+      "Procore/GC suites",
+      "Clearstory",
+      "Scope Snap",
+      "REQ Suite",
+      "SubTrack",
+      "TrakSlip"
+    ],
+    "defensibility_paths": [
+      "field-to-office event/evidence history",
+      "customer/GC approval behavior data",
+      "rate-sheet and scope knowledge",
+      "accounting/pay-app integrations",
+      "recovered-revenue analytics"
+    ],
+    "business_model_options": [
+      "revenue-capture SaaS",
+      "managed change-order/T&M documentation desk",
+      "recovery/aging service",
+      "accounting/ERP add-on"
+    ],
+    "customer_economics": {
+      "model_status": "scenario only",
+      "must_measure": "annual at-risk dollars/account, recovered-revenue lift, onboarding/support and CAC",
+      "software_anchor": "$45-$150/mo current point tools"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only with a sharply bounded first workflow; deep screen must isolate high-value automation from specialist/manual exceptions",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + software/automation",
+      "phase_2": "specialist ops or implementation contractor after repeatable demand",
+      "phase_3": "channel partnerships and dedicated support/sales if ACV supports it"
+    },
+    "risks": [
+      "Need quantify average annual at-risk change-order dollars by target contractor size",
+      "Need determine incumbent penetration and integration expectations",
+      "Need measure field adoption/support burden",
+      "Need separate actual recovered-revenue effect from vendor marketing claims"
+    ],
+    "offer_hypotheses": [
+      "mobile T&M/extra-work evidence capture",
+      "change-order aging and recovery dashboard",
+      "field-to-pay-app workflow",
+      "managed documentation/recovery desk"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:08:22.557586+00",
+    "entrant_edge": {}
+  },
+  {
+    "niche_id": "5791b304-7281-4152-9529-b7123ae077fd",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US owner-operators and small for-hire truckload fleets, especially 1–20 trucks using brokers/spot freight and lacking a dedicated billing/recovery team.",
+    "painful_job": "Waiting and other accessorial events create earned but frequently uncollected revenue; each claim is small enough that manual chasing often loses economically.",
+    "economic_importance": "Detention creates direct fleet cost and lost productivity; much earned detention/accessorial revenue is not collected because documentation and chasing are uneconomic at small claim sizes.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "ATRI found 94.5% of fleets charge detention but fewer than half of invoices are paid"
+      },
+      {
+        "signal": "Hauliner publishes $15.99/mo solo and $49-$349/mo fleet plans"
+      },
+      {
+        "signal": "Current owner-operator discussion describes 10% contingency to a dispatcher for recovered detention"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "Census 2023: 60,137 long-distance truckload employer establishments; 55,035 had fewer than 20 employees"
+      },
+      {
+        "signal": "ATRI estimated $3.6B direct expenses and $11.5B lost productivity from detention industry-wide in 2023"
+      }
+    ],
+    "acquisition_paths": [
+      "ELD partners",
+      "factoring companies",
+      "dispatch services",
+      "carrier communities",
+      "truck service/insurance ecosystems"
+    ],
+    "competitors_substitutes": [
+      "manual dispatch/billing follow-up",
+      "ELD timestamps + email",
+      "Hauliner",
+      "factoring/dispatch admin",
+      "do nothing/eat the claim"
+    ],
+    "defensibility_paths": [
+      "broker-specific submission-rule knowledge",
+      "ELD/GPS evidence integrations",
+      "claim outcome history",
+      "factoring/dispatch distribution",
+      "recovery operations playbooks"
+    ],
+    "business_model_options": [
+      "detention/accessorial SaaS",
+      "contingency recovery service",
+      "dispatch/factoring white-label tool",
+      "facility/broker performance intelligence"
+    ],
+    "customer_economics": {
+      "model_status": "scenario only",
+      "must_measure": "recoverable dollars/fleet and labor/paid claim",
+      "hybrid_recovery": "10%-20% of recovered cash hypothesis",
+      "software_anchor": "$15.99-$349/mo current competitor"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only with a sharply bounded first workflow; deep screen must isolate high-value automation from specialist/manual exceptions",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + software/automation",
+      "phase_2": "specialist ops or implementation contractor after repeatable demand",
+      "phase_3": "channel partnerships and dedicated support/sales if ACV supports it"
+    },
+    "risks": [
+      "Need validate what share of unpaid detention is contractually recoverable",
+      "Need broker-by-broker submission rule data and legal collection boundaries",
+      "Need quantify recoverable dollars for 1–20 truck fleets specifically",
+      "Need model ELD integration coverage and contingency-service labor"
+    ],
+    "offer_hypotheses": [
+      "automatic detention evidence packet",
+      "broker-rule claim submitter/follow-up queue",
+      "contingency detention recovery service",
+      "fleet accessorial leakage dashboard"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:08:22.557586+00",
+    "entrant_edge": {}
+  },
+  {
+    "niche_id": "334af3f0-184f-4d90-832b-b9ada09ea76a",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US motor carriers and DOT-regulated service fleets with about 2–25 vehicles and no dedicated compliance department.",
+    "painful_job": "Recurring expirations, driver qualification records, audit readiness, insurance/compliance requirements and the cost of missed deadlines or out-of-service events.",
+    "economic_importance": "Missed compliance deadlines can create fines, out-of-service time, audit exposure and insurance problems; workload recurs continuously.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Dotra publishes $149.99/mo for 1-9 vehicles and $249.99/mo for 10-24"
+      },
+      {
+        "signal": "DotFleet publishes $30/driver/month managed DQ maintenance plus setup"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "FMCSA 2025 traffic-enforcement activity includes >202k inspections/enforcements for 1-6 power-unit carriers and >87k for 7-20 power-unit carriers"
+      },
+      {
+        "signal": "Direct competitors explicitly price 1-24 vehicle fleets"
+      }
+    ],
+    "acquisition_paths": [
+      "insurance and compliance partners",
+      "truck repair/service ecosystems",
+      "owner-operator communities",
+      "SEO",
+      "targeted fleet outreach"
+    ],
+    "competitors_substitutes": [
+      "spreadsheets/calendar reminders",
+      "Dotra",
+      "DotFleet",
+      "compliance consultants",
+      "larger fleet-management suites"
+    ],
+    "defensibility_paths": [
+      "fleet-specific compliance history",
+      "document completeness graph",
+      "partner distribution through brokers/service centers",
+      "human exception playbooks"
+    ],
+    "business_model_options": [
+      "compliance SaaS subscription",
+      "managed compliance desk",
+      "one-time audit/remediation",
+      "broker/insurance referral partnerships"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "needs segment-specific CAC and contribution modeling"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only if launch scope is narrow; deep screen must identify which tasks can be automated and which require specialist labor",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist contractor/ops support after repeatable demand",
+      "phase_3": "channel partnerships and dedicated sales/support if ACV supports it"
+    },
+    "risks": [
+      "Need exact count of active 2–25 vehicle target fleets",
+      "Need churn and willingness-to-pay by 2–6 vs 7–25 fleets",
+      "Need map legal boundary between software reminders and regulated compliance advice",
+      "Need quantify support burden for managed remediation"
+    ],
+    "offer_hypotheses": [
+      "deadline/document compliance workspace",
+      "managed DQ-file maintenance",
+      "new-entrant/audit readiness package",
+      "renewal/remediation concierge"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:09:34.871372+00",
+    "entrant_edge": {}
+  },
+  {
+    "niche_id": "c140835e-90a0-48c5-97eb-b2e0c96e6e9f",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US solo and small-group healthcare practices adding providers, opening locations or expanding payer panels.",
+    "painful_job": "A provider cannot reliably bill in-network until payer credentialing/enrollment closes; applications, CAQH upkeep, revalidation and payer follow-up are recurring administrative work tied directly to revenue.",
+    "economic_importance": "Credentialing delay can prevent or delay in-network billing, directly tying administrative throughput to clinician revenue.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Current services commonly publish/quote roughly $100-$300+ per provider-payer application"
+      },
+      {
+        "signal": "Full initial panels commonly cluster around roughly $1,500-$3,500 per provider, with recurring maintenance"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "CMS shows ~1.52M Medicare providers by specialty as a broad provider universe"
+      },
+      {
+        "signal": "Credentialing software category has dozens of active products/services, indicating established spend"
+      }
+    ],
+    "acquisition_paths": [
+      "medical billing/RCM firms",
+      "practice-launch consultants",
+      "specialty associations",
+      "SEO",
+      "accountant/legal partners"
+    ],
+    "competitors_substitutes": [
+      "DIY CAQH/payer portals",
+      "credentialing freelancers/services",
+      "billing companies",
+      "credentialing platforms such as symplr/Medallion-class tools"
+    ],
+    "defensibility_paths": [
+      "payer workflow knowledge base",
+      "provider reusable data layer",
+      "status/history data",
+      "RCM white-label channel",
+      "specialist exception operations"
+    ],
+    "business_model_options": [
+      "managed credentialing",
+      "hybrid workflow software + specialist exceptions",
+      "recurring maintenance subscription",
+      "white-label service for RCM/billing firms"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "needs segment-specific CAC and contribution modeling"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only if launch scope is narrow; deep screen must identify which tasks can be automated and which require specialist labor",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist contractor/ops support after repeatable demand",
+      "phase_3": "channel partnerships and dedicated sales/support if ACV supports it"
+    },
+    "risks": [
+      "Need validate cycle-time improvement we can realistically influence",
+      "Need specialty/state segmentation for payer complexity",
+      "Need HIPAA/security/legal review for stored provider data",
+      "Need quantify acquisition cost through RCM/billing partners"
+    ],
+    "offer_hypotheses": [
+      "practice-launch credentialing package",
+      "ongoing CAQH/recredentialing maintenance",
+      "payer-expansion project",
+      "white-label credentialing operations for RCM firms"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:09:34.871372+00",
+    "entrant_edge": {}
+  },
+  {
+    "niche_id": "b535be1b-4255-4ea3-be1f-8cd3932fb53b",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US independent dental practices and small dental groups with meaningful insurance volume but without centralized enterprise revenue-cycle operations.",
+    "painful_job": "Before visits and treatment plans, staff repeatedly verify eligibility and benefit details across inconsistent payer portals; the work is high-frequency, labor-intensive and directly affects collections and patient experience.",
+    "economic_importance": "Benefit verification is high-frequency front-office labor tied to patient estimates, collections and scheduling; industry spend is measured in billions.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Published full-benefit verification pricing commonly clusters around $5-$9.95 per patient, often with monthly minimums"
+      },
+      {
+        "signal": "ADA/CAQH reported $2.1B in dental eligibility/benefit verification spending"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "ADA reports 135,665 US dental-practice establishments"
+      },
+      {
+        "signal": "Only 16% of dentists were DSO-affiliated as of 2024, leaving a large independent/small-group base"
+      }
+    ],
+    "acquisition_paths": [
+      "dental consultants",
+      "practice-management integrations",
+      "RCM partners",
+      "dental associations",
+      "SEO"
+    ],
+    "competitors_substitutes": [
+      "front-desk manual portals/calls",
+      "outsourced verification services",
+      "RCM firms",
+      "dental automation vendors"
+    ],
+    "defensibility_paths": [
+      "payer-specific verification knowledge",
+      "practice integrations",
+      "exception-quality data",
+      "RCM/dental consultant distribution",
+      "hybrid QA operations"
+    ],
+    "business_model_options": [
+      "per-verification managed service",
+      "monthly verification subscription",
+      "workflow/API software",
+      "broader dental revenue-ops service"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "needs segment-specific CAC and contribution modeling"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only if launch scope is narrow; deep screen must identify which tasks can be automated and which require specialist labor",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist contractor/ops support after repeatable demand",
+      "phase_3": "channel partnerships and dedicated sales/support if ACV supports it"
+    },
+    "risks": [
+      "Need payer-by-payer automation coverage and failure rates",
+      "Need HIPAA/data security scope",
+      "Need determine labor economics for exception handling",
+      "Need measure willingness to switch from existing outsourced verification vendors"
+    ],
+    "offer_hypotheses": [
+      "next-day full-benefit verification service",
+      "daily verification queue subscription",
+      "practice-management-integrated eligibility workflow",
+      "managed front-office insurance ops"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:09:34.871372+00",
+    "entrant_edge": {}
+  },
+  {
+    "niche_id": "0f298acf-316d-43ac-a7b1-6dbd89d3fc1a",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US ecommerce merchants with economic/physical nexus in several states, typically beyond DIY spreadsheets but below enterprise tax-department scale.",
+    "painful_job": "Multi-state nexus, registration, filing cadence and changing state rules create recurring compliance work; mistakes create penalties while existing platforms can become expensive as states/transactions grow.",
+    "economic_importance": "Nexus/filing mistakes create penalties and cleanup costs while multi-state compliance is recurring and grows with merchant scale.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "2026 comparison data puts representative SMB multi-state sales-tax compliance in the low-thousands to >$20k/year depending on provider/profile"
+      },
+      {
+        "signal": "Merchants report paying recurring software/filing fees once nexus expands"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "US retail ecommerce sales were $340.2B in Q2 2026, 17.1% of retail sales"
+      },
+      {
+        "signal": "Target is the smaller subset crossing multi-state nexus"
+      }
+    ],
+    "acquisition_paths": [
+      "ecommerce CPAs/bookkeepers",
+      "Shopify agencies/ecosystem",
+      "tax communities",
+      "SEO",
+      "commerce-platform partners"
+    ],
+    "competitors_substitutes": [
+      "DIY spreadsheets/state portals",
+      "TaxJar",
+      "Avalara",
+      "TaxCloud",
+      "Kintsugi/Numeral/Zamp-class platforms",
+      "CPA-managed filing"
+    ],
+    "defensibility_paths": [
+      "merchant transaction/nexus history",
+      "accountant partner distribution",
+      "state workflow playbooks",
+      "exception-service layer",
+      "verticalized merchant segmentation"
+    ],
+    "business_model_options": [
+      "nexus/filing workflow SaaS",
+      "managed registration/filing service",
+      "CPA white-label platform",
+      "subscription + per-filing hybrid"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "needs segment-specific CAC and contribution modeling"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only if launch scope is narrow; deep screen must identify which tasks can be automated and which require specialist labor",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist contractor/ops support after repeatable demand",
+      "phase_3": "channel partnerships and dedicated sales/support if ACV supports it"
+    },
+    "risks": [
+      "Need define precise merchant revenue/state-count band with unmet need",
+      "Need tax-practice/legal boundary and filing licenses/authorization requirements",
+      "Need model filing labor and state fees",
+      "Need determine whether partner distribution can beat incumbent CAC"
+    ],
+    "offer_hypotheses": [
+      "nexus exposure monitor",
+      "managed registrations",
+      "filing calendar + evidence workspace",
+      "CPA white-label multistate compliance operations"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:09:34.871372+00",
+    "entrant_edge": {}
+  },
+  {
+    "niche_id": "6446431d-ac46-41d7-9601-8ef19ae8f5e5",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US general contractors, property managers and facility operators managing roughly 25–500 active subcontractors/vendors without an enterprise compliance team.",
+    "painful_job": "Vendor onboarding and continuous proof-of-insurance/license/tax-document compliance; missing or expired documents create audit, insurance and project risk.",
+    "economic_importance": "Expired/missing vendor documents create insurance, audit and project-delay risk; compliance chasing recurs with every vendor and renewal.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Multiple current SMB COI tools publish roughly $49-$499/month"
+      },
+      {
+        "signal": "Managed COI programs can cost thousands/year depending on vendor count"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "BLS reports ~953,703 private construction establishments in Q1 2026"
+      },
+      {
+        "signal": "Multiple COI vendors target small businesses and small GCs/property managers"
+      }
+    ],
+    "acquisition_paths": [
+      "insurance brokers",
+      "construction/property associations",
+      "accounting partners",
+      "SEO",
+      "vertical outbound"
+    ],
+    "competitors_substitutes": [
+      "spreadsheets/email",
+      "VendorCover",
+      "COI Dash",
+      "Certificial/myCOI-style platforms",
+      "managed compliance services"
+    ],
+    "defensibility_paths": [
+      "vertical compliance templates",
+      "vendor network/history",
+      "broker partnerships",
+      "managed exception review",
+      "workflow integrations"
+    ],
+    "business_model_options": [
+      "vendor-compliance SaaS",
+      "managed certificate/license review",
+      "vendor onboarding service",
+      "broker/insurer embedded offering"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "needs segment-specific CAC and contribution modeling"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only if launch scope is narrow; deep screen must identify which tasks can be automated and which require specialist labor",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist contractor/ops support after repeatable demand",
+      "phase_3": "channel partnerships and dedicated sales/support if ACV supports it"
+    },
+    "risks": [
+      "Need segment-specific willingness to pay by vendor count",
+      "Need measure vendor response/chase workload",
+      "Need compare liability of automated COI interpretation vs human review",
+      "Need identify underserved verticals rather than generic COI market"
+    ],
+    "offer_hypotheses": [
+      "vendor self-service compliance portal",
+      "managed COI/license review desk",
+      "vendor onboarding packet workflow",
+      "broker-embedded compliance dashboard"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:15:18.573295+00",
+    "entrant_edge": {
+      "status": "not_evidenced",
+      "evidence_refs": [
+        "turn540334search1",
+        "turn540334search3",
+        "turn540334search2"
+      ],
+      "rejection_reason": "Current COI platforms already cover the proposed workflow; no structural edge."
+    }
+  },
+  {
+    "niche_id": "e9576b7c-a5bd-495a-8926-74dd314bb7e3",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US nonprofits managing multiple restricted grants/government contracts, especially organizations too complex for spreadsheets but too small for enterprise grant-management systems.",
+    "painful_job": "After award, staff must track restricted spending, reporting deadlines, supporting documentation, budget changes and cross-team handoffs; failures risk audit findings, clawbacks or renewal problems.",
+    "economic_importance": "Restricted-fund mistakes, missed reports and weak audit trails consume staff time and can threaten grant renewals or create audit/clawback risk.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Instrumentl Full Lifecycle publishes $999/month for post-award spend tracking/reporting"
+      },
+      {
+        "signal": "Organizations still report Excel-based grant tracking"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "IRS recognized nearly 2.1M tax-exempt organizations in FY2025; target is the grant-funded subset"
+      },
+      {
+        "signal": "Instrumentl says it serves 5,500+ nonprofits"
+      }
+    ],
+    "acquisition_paths": [
+      "nonprofit CPAs/bookkeepers",
+      "QuickBooks ecosystem",
+      "nonprofit associations",
+      "grants/finance communities",
+      "SEO"
+    ],
+    "competitors_substitutes": [
+      "Excel/Google Sheets",
+      "Instrumentl",
+      "Airtable/monday.com",
+      "grant-management suites",
+      "accounting-system workarounds"
+    ],
+    "defensibility_paths": [
+      "accounting/grant obligation data model",
+      "funder-report mappings",
+      "embedded finance/grant workflows",
+      "CPA partner network"
+    ],
+    "business_model_options": [
+      "post-award SaaS",
+      "managed grant-reporting service",
+      "accounting connector/add-on",
+      "fractional grant-finance operations"
+    ],
+    "customer_economics": {
+      "stage": "prescreen",
+      "economics_status": "needs segment-specific CAC and contribution modeling"
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible only if launch scope is narrow; deep screen must identify which tasks can be automated and which require specialist labor",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist contractor/ops support after repeatable demand",
+      "phase_3": "channel partnerships and dedicated sales/support if ACV supports it"
+    },
+    "risks": [
+      "Need size target by annual grant volume and active-grant count",
+      "Need test integration complexity with QuickBooks and common nonprofit accounting stacks",
+      "Need quantify compliance/reporting hours saved",
+      "Need determine whether $300–$1000 MRR buyer segment is reachable without long enterprise sales"
+    ],
+    "offer_hypotheses": [
+      "restricted-grant spenddown dashboard",
+      "funder reporting packet workflow",
+      "finance-program reconciliation service",
+      "monthly managed grant-close process"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:15:18.573295+00",
+    "entrant_edge": {
+      "status": "not_evidenced",
+      "evidence_refs": [
+        "turn419596search0",
+        "turn419596search3",
+        "turn419596search2"
+      ],
+      "rejection_reason": "Instrumentl/Actually already cover post-award finance/spenddown workflow."
+    }
+  },
+  {
+    "niche_id": "a64e06fc-c979-4388-80d8-c2563c3b1dcf",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "US independent specialty physician practices and small groups with meaningful commercial payer volume and enough claim complexity that manual expected-vs-paid contract reconciliation is impractical.",
+    "painful_job": "Underpayments hide inside apparently paid/closed claims; reimbursement pressure is already material, so recovering contractually earned dollars can have direct bottom-line value.",
+    "economic_importance": "Commercial-payer underpayments are earned revenue leakage. For independent practices facing stagnant rates and rising costs, recovering correct contracted payment can directly improve margin.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Attergo publishes $1,299/location/month for a platform tier including payer contract engine and underpayment recovery workflow"
+      },
+      {
+        "signal": "Aspirion and Vareo both advertise contingency-based underpayment recovery"
+      },
+      {
+        "signal": "One current specialist service publishes $1,900/seat/month fixed-fee recovery operations"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "AMA reports 42.2% of physicians worked in private practice in 2024"
+      },
+      {
+        "signal": "47.4% of physicians worked in practices of 10 or fewer physicians in 2024; exact overlap with target private specialty groups remains to be quantified"
+      }
+    ],
+    "acquisition_paths": [
+      "RCM/billing-company white-label",
+      "specialty associations",
+      "healthcare CPAs/consultants",
+      "clearinghouse/835 integrations",
+      "direct specialty-practice outreach"
+    ],
+    "competitors_substitutes": [
+      "manual billing/RCM review",
+      "payer portals",
+      "Aspirion",
+      "Revecore",
+      "Attergo",
+      "Vareo",
+      "contract-management/RCM platforms"
+    ],
+    "defensibility_paths": [
+      "payer-contract normalization library",
+      "specialty-specific expected reimbursement models",
+      "variance/appeal outcome history",
+      "RCM white-label distribution",
+      "contract-renewal benchmarking"
+    ],
+    "business_model_options": [
+      "contingency underpayment recovery",
+      "hybrid platform + recovery specialists",
+      "fixed subscription contract-variance monitoring",
+      "white-label service for billing/RCM firms"
+    ],
+    "customer_economics": {
+      "status": "scenario only",
+      "key_issue": "underpayment leakage and recovery labor for target small practices not independently verified; HIPAA/BAA/security required"
+    },
+    "two_person_feasibility": {
+      "assessment": "possible only with narrow initial segment and bounded exception workflow; deep screen required before finalist status",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founders + automation",
+      "phase_2": "specialist ops/compliance staff where recovery exceptions require humans",
+      "phase_3": "partner distribution and dedicated account operations if ACV/LTV supports it"
+    },
+    "risks": [
+      "Need independent estimate of underpayment incidence/recoverable dollars in 2-20 physician specialty practices",
+      "Need payer-contract normalization/onboarding effort",
+      "Need HIPAA/BAA/security architecture and appeal/legal boundaries",
+      "Need compare contingency economics against incumbent RCM vendors and human recovery labor",
+      "Need determine which specialties have enough commercial volume/contract complexity"
+    ],
+    "offer_hypotheses": [
+      "835 expected-vs-paid variance audit",
+      "contingency recovery desk",
+      "specialty payer contract monitor",
+      "RCM white-label underpayment module"
+    ],
+    "evidence_confidence": "C",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:15:18.573295+00",
+    "entrant_edge": {
+      "status": "not_evidenced",
+      "evidence_refs": [
+        "turn701666search13",
+        "turn514064search1",
+        "turn701666search9"
+      ],
+      "rejection_reason": "Existing 835 underpayment/recovery platforms plus no independent target leakage proof; no entrant edge."
+    }
+  },
+  {
+    "niche_id": "0eaecc25-13a0-428d-957e-b06d604d7bd9",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "Chicago-area owner-operators and small trucking fleets, initially roughly 1–10 power units, especially businesses interacting with a trusted repair/service ecosystem.",
+    "painful_job": "New authority, annual renewal, adding/replacing equipment, premium shock, cancellation/non-renewal, claim-history change, new lanes/cargo, or need for required insurance filings.",
+    "economic_importance": "Commercial trucking insurance is mandatory/mission-critical for many for-hire carriers; the premium is a large recurring annual expense and loss of acceptable coverage can stop operations or authority use.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Chicago/Naperville owner-operator market quote guidance currently places typical own-authority stacks around $1,000-$1,750/month, depending on risk."
+      },
+      {
+        "signal": "Independent commercial-line commissions commonly sit in double-digit percentage ranges, but actual trucking commission/splits must be confirmed with the chosen market-access partner."
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "FMCSA publishes monthly all-active motor-carrier census data including power units, drivers, operation/classification and contacts, allowing the target 1-10-unit carrier universe to be measured rather than guessed."
+      }
+    ],
+    "acquisition_paths": [
+      "Existing owner-confirmed driver/carrier network (~40 direct prospects)",
+      "Referral loops from bound clients if service/placement quality earns referrals",
+      "Repair/service embedded presence only if separately revalidated and formalized",
+      "Paid lead generation is not assumed"
+    ],
+    "competitors_substitutes": [
+      "Progressive direct/commercial",
+      "Reliance Partners",
+      "Chicago-area independent trucking agencies and brokers",
+      "specialty trucking MGAs/wholesalers",
+      "direct-to-carrier online quoting"
+    ],
+    "defensibility_paths": [
+      "physical distribution embedded at truck-service trigger",
+      "renewal book compounds if retention is strong",
+      "customer/policy history and remarketing workflow may improve over time",
+      "carrier-market access can become an operational capability but is not assumed proprietary"
+    ],
+    "business_model_options": [
+      "independent commercial P&C brokerage",
+      "subproducer/market-access network model",
+      "agency plus renewal/remarketing service",
+      "cross-sell adjacent commercial coverages where licensed and suitable"
+    ],
+    "customer_economics": {
+      "stage": "deep_screen_required",
+      "must_model": "premium x commission x split x retention x service cost x bind rate",
+      "not_forecast": true
+    },
+    "two_person_feasibility": {
+      "assessment": "possible only after licensing and market access; one licensed producer can sell while admin/quoting workflow is increasingly systematized",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "licensed producer + founder-operated intake/quoting",
+      "phase_2": "CSR/account-management help once renewal book is meaningful",
+      "phase_3": "additional producers or repair/service locations if channel economics repeat"
+    },
+    "risks": [
+      "Exact weekly qualified traffic and current-policy renewal calendar are unknown.",
+      "Bind rate from repair/service referrals is unknown.",
+      "Carrier/MGA access for new trucking risks and new ventures must be verified contractually.",
+      "Net commission after aggregator/MGA splits and service workload must be modeled.",
+      "Illinois producer/entity licensing and any agency registration requirements must be completed before selling.",
+      "Retention and remarketing workload for small trucking accounts is unknown."
+    ],
+    "offer_hypotheses": [
+      "annual renewal/remarketing brokerage",
+      "new-venture authority insurance placement",
+      "add/replace truck endorsement and remarketing workflow",
+      "fleet insurance review bundled with service-shop referral intake"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "deep_screen",
+    "updated_at": "2026-09-24 21:33:10.446174+00",
+    "entrant_edge": {
+      "status": "evidenced",
+      "not_edge": [
+        "Russian/Romanian language",
+        "trucking experience alone",
+        "better service",
+        "cheaper quotes"
+      ],
+      "edge_type": "existing_owned_audience_customer_base_or_partner_channel",
+      "evidence_refs": [
+        212
+      ],
+      "edge_asset_key": "EDGE-TRUCK-NETWORK-01",
+      "strength_status": "commercial_strength_unproven",
+      "conditional_supporting_asset": "EDGE-TRUCK-SERVICE-DISTRIBUTION-01"
+    }
+  },
+  {
+    "niche_id": "88328b74-e704-4810-8234-d5f5123d14ac",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "Chicago-area and broader US owner-operators/small fleets, initially 1–10 trucks, with real repair/equipment/cash-flow needs and limited internal treasury capacity.",
+    "painful_job": "Major breakdown/repair invoice, equipment purchase/replacement, slow broker/shipper payment cycle, insurance/fuel/payroll squeeze, or need to replace/change factoring/working-capital provider.",
+    "economic_importance": "A broken or underfunded truck is a revenue interruption. Repair/equipment/cash-flow capital can restore earning capacity, but the opportunity’s own economics depend on partner referral/rev-share terms rather than the loan amount itself.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Truck repair finance products currently advertise limits up to $10,000 or specialize in repairs $15,000+."
+      },
+      {
+        "signal": "Big Rig Lending pays $100 per funded referral; Total360 advertises $250 per sold repair-program agreement."
+      },
+      {
+        "signal": "Factor Finders reported 383 active trucking referral commission deals in 2025 and a 50/50 commission split program."
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "The existing owner trucking network is the reachable initial market; broad national TAM is not used as justification before local conversion is measured."
+      }
+    ],
+    "acquisition_paths": [
+      "Existing owner-confirmed small-carrier/driver network",
+      "Repair/service-center presence only after separate revalidation",
+      "Referrals from insurance clients only if the insurance business is independently viable"
+    ],
+    "competitors_substitutes": [
+      "Big Rig Lending and other truck repair/equipment finance brokers",
+      "CFX Solutions partner/referral programs",
+      "Factor Finders and trucking factoring brokers",
+      "direct lender/fintech products targeting owner-operators"
+    ],
+    "defensibility_paths": [
+      "trust/access to real small-carrier buyers",
+      "partner selection and referral workflow quality",
+      "possible future multi-location repair/service distribution if separately secured"
+    ],
+    "business_model_options": [
+      "fixed referral-fee distribution",
+      "commission/revenue-share factoring or finance referrals",
+      "embedded repair-finance partner program",
+      "future marketplace/broker model only if volume justifies compliance and technology"
+    ],
+    "customer_economics": {
+      "stage": "deep_screen",
+      "key_metric": "revenue per qualified capital event and per network contact/year",
+      "not_forecast": true
+    },
+    "two_person_feasibility": {
+      "assessment": "very easy operationally as referral model; primary risk is weak dollar economics, not execution capacity",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "manual qualified referral + partner tracking",
+      "phase_2": "automated routing/CRM after repeatable volume",
+      "phase_3": "additional repair/service partner locations only if one-location economics prove attractive"
+    },
+    "risks": [
+      "Qualified finance/capital need frequency across the existing network is unknown.",
+      "Average payout and residual economics vary materially by partner.",
+      "Referral/finance compliance and disclosure requirements must be checked by product/state.",
+      "Partner underwriting/approval quality and customer complaints can damage the core relationship.",
+      "Repair-center physical access remains conditional, not gate evidence."
+    ],
+    "offer_hypotheses": [
+      "repair financing referral",
+      "equipment-finance referral",
+      "factoring/working-capital referral",
+      "commercial equipment repair-protection referral"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "rejected",
+    "updated_at": "2026-09-24 21:46:49.742777+00",
+    "entrant_edge": {
+      "status": "evidenced",
+      "edge_type": "existing_owned_audience_customer_base_or_partner_channel",
+      "evidence_refs": [
+        "owner_context:trucking_network_and_approx_40_prospects"
+      ],
+      "edge_asset_key": "EDGE-TRUCK-NETWORK-01",
+      "strength_status": "commercial_strength_unproven",
+      "conditional_supporting_asset": "EDGE-REPAIR-HUB-01"
+    }
+  },
+  {
+    "niche_id": "7dd5fa33-63a9-4f9f-a711-8e4bd78f1ddc",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "Chicago-area owner-operators and small trucking fleets, initially 1–10 power units, reachable through the existing owner-confirmed trucking network.",
+    "painful_job": "Books are behind or unclear, tax/CPA handoff is painful, factoring/settlement reconciliation is messy, fleet grows beyond one truck, lender/insurance/management needs clean P&L, or owner wants monthly truck-level profitability.",
+    "economic_importance": "Clean monthly books affect tax handoff, cash visibility, lender readiness, truck-level profitability and owner decision-making. Current trucking-specialist providers charge recurring monthly fees.",
+    "spend_wtp_evidence": [
+      {
+        "signal": "Published owner-operator prices span roughly $129 to $500/month across current providers."
+      },
+      {
+        "signal": "Published small-fleet prices include roughly $199 to $1,200/month depending on scope."
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "FMCSA active carrier data makes the small-carrier target universe measurable beyond the initial network."
+      }
+    ],
+    "acquisition_paths": [
+      "Existing owner-confirmed ~40-contact trucking network",
+      "referrals from satisfied accounts",
+      "public carrier prospecting only after CAC evidence",
+      "paid leads not assumed"
+    ],
+    "competitors_substitutes": [
+      "QuickStart",
+      "KDP Ledger",
+      "Accountlet",
+      "Trip Sheet Central",
+      "general bookkeepers/QuickBooks ProAdvisors",
+      "DIY software"
+    ],
+    "defensibility_paths": [
+      "warm-network acquisition",
+      "trucking-specific monthly close/checklists",
+      "repeat transaction mappings and truck-level reporting can improve efficiency",
+      "no proprietary moat assumed"
+    ],
+    "business_model_options": [
+      "monthly bookkeeping subscription",
+      "catch-up/cleanup separately priced",
+      "fleet-level financial back-office",
+      "CPA/tax-preparer partnership later if separately compliant"
+    ],
+    "customer_economics": {
+      "stage": "deep_screen_required",
+      "must_model": "monthly fee - software - review labor - bookkeeping labor - exception/catch-up allocation",
+      "not_forecast": true
+    },
+    "two_person_feasibility": {
+      "assessment": "plausible but unproven; recurring monthly close is batchable, while transaction volume and cleanup exceptions can overwhelm a two-person team",
+      "initial_team": 2
+    },
+    "scale_hiring_path": {
+      "phase_1": "founder intake + standardized bookkeeping/review workflow",
+      "phase_2": "dedicated bookkeeper once MRR supports payroll",
+      "phase_3": "review lead/controller and partner tax/CPA channel only if economics support it"
+    },
+    "risks": [
+      "Actual monthly transaction volume and service hours by 1-truck vs 2-10-truck account are unknown.",
+      "Software/client-file cost per account is unmodeled.",
+      "Catch-up/cleanup labor can be much larger than recurring monthly close.",
+      "Actual network willingness to outsource bookkeeping is unmeasured.",
+      "Bookkeeping quality-control/review process must be defined.",
+      "Tax-return preparation, tax advice, attest/assurance and CPA-title use must remain out of launch scope unless proper credentials/requirements are satisfied.",
+      "Retention/churn is unknown."
+    ],
+    "offer_hypotheses": [
+      "trucking monthly bookkeeping",
+      "fleet P&L and reconciliation",
+      "separately priced catch-up cleanup"
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "deep_screen",
+    "updated_at": "2026-09-24 22:32:53.675481+00",
+    "entrant_edge": {
+      "status": "evidenced",
+      "not_edge": [
+        "trucking experience alone",
+        "automation",
+        "generic bookkeeping",
+        "cheaper service"
+      ],
+      "edge_type": "existing_owned_audience_customer_base_or_partner_channel",
+      "evidence_refs": [
+        259
+      ],
+      "edge_asset_key": "EDGE-TRUCK-NETWORK-01",
+      "strength_status": "commercial_strength_unproven"
+    }
+  },
+  {
+    "niche_id": "f5ebd322-a409-4433-85fe-22d27321b4e3",
+    "project_id": "c5ca88b5-a166-479a-9038-fd85d68d3ab5",
+    "buyer_segment": "Chicago-area owner-operators and small trucking fleets, initially 1–10 power units, reachable through the existing owner-confirmed trucking network.",
+    "painful_job": "New authority, hiring a driver, annual/quarterly compliance cycle, MCS-150/UCR/IFTA deadlines, Clearinghouse requirements, medical-card expiration, roadside/enforcement issues, or new-entrant/audit preparation.",
+    "economic_importance": "DOT compliance is recurring and operationally consequential; current providers sell these workflows on recurring monthly plans.",
+    "spend_wtp_evidence": [
+      {
+        "type": "low_cost_benchmark",
+        "price": "$25/unit/month for 1-3",
+        "meaning": "very strong managed-service price pressure; premium cannot be justified by DQ/Clearinghouse/filings alone",
+        "provider": "Trucking Comply"
+      },
+      {
+        "type": "software_plus_setup",
+        "price": "$149.99/month for 1-9",
+        "meaning": "alerts/files/audit prep plus one-business-day setup already exist at target price",
+        "provider": "Dotra"
+      },
+      {
+        "type": "human_managed",
+        "price": "$199/month + $199 setup",
+        "meaning": "market evidence for human follow-through, summaries and corrective-action tracking",
+        "provider": "Lili Safety"
+      },
+      {
+        "type": "local_human",
+        "price": "$149/month owner-operator",
+        "meaning": "local high-touch service is sold at the planned base price",
+        "provider": "AR Safety Support"
+      }
+    ],
+    "market_depth_evidence": [
+      {
+        "signal": "FMCSA maintains a continuously refreshed active motor-carrier universe; exact target segmentation is measurable."
+      }
+    ],
+    "acquisition_paths": [
+      "Existing owner-confirmed trucking network (~40 direct prospects)",
+      "Referrals after proven service/retention",
+      "Repair/service-center distribution only if separately revalidated",
+      "Paid leads not assumed"
+    ],
+    "competitors_substitutes": [
+      {
+        "name": "Trucking Comply",
+        "type": "managed low-cost",
+        "price": "from $25/unit/month",
+        "threat": "covers most baseline features plus filings/audit support"
+      },
+      {
+        "name": "Dotra",
+        "type": "software + onboarding",
+        "price": "$149.99/month for 1-9",
+        "threat": "strong automation, alerts, DQ/vehicle files, audit prep, rapid setup"
+      },
+      {
+        "name": "Lili Safety",
+        "type": "human managed",
+        "price": "from $199/month",
+        "threat": "direct substitute for premium human-management thesis"
+      },
+      {
+        "name": "AR Safety Support",
+        "type": "local human managed",
+        "price": "$149/month owner-operator",
+        "threat": "direct local/high-touch substitute"
+      }
+    ],
+    "defensibility_paths": [
+      "Owner-controlled warm trucking distribution is the only evidenced structural edge.",
+      "Do not claim software, automation, language or trucking knowledge as moat.",
+      "Potential service wedge: founder-accountable exception handling + audit-readiness + monthly management summary, but this is a value hypothesis, not an evidenced moat.",
+      "Partner backend may reduce regulated execution burden and owner time; partner economics are not yet contracted."
+    ],
+    "business_model_options": [
+      {
+        "model": "bounded managed compliance desk",
+        "scope": "human exception/accountability layer plus audit-readiness; partner-backed regulated testing/Clearinghouse",
+        "status": "validation_offer",
+        "setup_usd": 199,
+        "monthly_usd": 149
+      },
+      {
+        "model": "high-touch managed compliance",
+        "scope": "only if buyers value management summary/corrective action enough to clear low-cost substitutes",
+        "status": "secondary_test",
+        "monthly_usd": 199
+      },
+      {
+        "model": "backend/referral layer",
+        "scope": "if premium service WTP fails, monetize partner/referral relationship rather than carrying high-touch service",
+        "status": "fallback"
+      }
+    ],
+    "customer_economics": {
+      "not_forecast": true,
+      "setup_test_usd": 199,
+      "direct_backend_costs": "not fully contracted; excluded/pass-through where unknown",
+      "price_test_usd_month": [
+        149,
+        199
+      ],
+      "owner_time_hard_kill_hours": 3,
+      "base_contribution_at_149_2h_usd": 74,
+      "base_contribution_at_199_2h_usd": 124,
+      "base_contribution_at_149_1_5h_usd": 89,
+      "owner_time_review_threshold_hours": 2,
+      "owner_time_target_hours_account_month": 1.5
+    },
+    "two_person_feasibility": {
+      "status": "unproven until measured",
+      "initial_team": 2,
+      "pilot_capacity": "5-10 accounts if routine work stays <=2h/account/month",
+      "regulated_backend": "partner/registered C-TPA preferred for testing/Clearinghouse execution",
+      "review_10_accounts_hours_month": 20,
+      "target_10_accounts_hours_month": 15
+    },
+    "scale_hiring_path": {
+      "phase_1": "founder sales/intake + standardized admin + partner backend",
+      "phase_2": "dedicated compliance account manager when MRR supports payroll",
+      "phase_3": "replicate channels only after retention/CAC evidence"
+    },
+    "risks": [
+      "A $25/unit managed competitor covers most baseline compliance features, so generic compliance administration has no pricing power.",
+      "Human/accountability premium is not validated with the warm channel.",
+      "Actual exception/support minutes per account are unmeasured.",
+      "Partner/backend contract economics are not verified.",
+      "Clearinghouse/testing must remain within registered/designated C/TPA/partner scope.",
+      "Form 2290 tax-return preparation is excluded from self-delivered pilot scope.",
+      "Security, liability and document-handling controls must be ready before paid operations."
+    ],
+    "offer_hypotheses": [
+      {
+        "buyer": "1-3 truck owner-operator / small carrier",
+        "offer": "DOT Managed Exceptions Desk",
+        "promise": "You keep driving; one accountable person keeps the compliance exception list, deadlines and audit-readiness moving.",
+        "excluded": [
+          "legal representation or guarantee of compliance",
+          "Form 2290 tax-return preparation",
+          "direct drug/alcohol/MRO functions outside partner/registered C-TPA role",
+          "fines/fees/tests/third-party query balances unless separately quoted"
+        ],
+        "included": [
+          "initial carrier/profile and document-gap review",
+          "prioritized open-items list",
+          "DQ file checklist and expiration tracking",
+          "MCS-150/UCR deadline coordination",
+          "monthly compliance status summary",
+          "exception follow-up and missing-document chase list",
+          "audit-readiness document index/checklist",
+          "partner coordination for regulated testing/Clearinghouse"
+        ],
+        "setup_usd": 199,
+        "monthly_usd": 149,
+        "premium_reason_hypothesis": "accountability, exceptions and human follow-through rather than software feature count"
+      }
+    ],
+    "evidence_confidence": "B",
+    "dossier_status": "deep_screen",
+    "updated_at": "2026-10-03 18:52:58.334875+00",
+    "entrant_edge": {
+      "status": "evidenced",
+      "not_edge": [
+        "trucking experience alone",
+        "language",
+        "automation",
+        "generic managed service"
+      ],
+      "edge_type": "existing_owned_audience_customer_base_or_partner_channel",
+      "evidence_refs": [
+        251
+      ],
+      "edge_asset_key": "EDGE-TRUCK-NETWORK-01",
+      "strength_status": "commercial_strength_unproven",
+      "conditional_supporting_asset": "EDGE-TRUCK-SERVICE-DISTRIBUTION-01"
+    }
+  }
+]

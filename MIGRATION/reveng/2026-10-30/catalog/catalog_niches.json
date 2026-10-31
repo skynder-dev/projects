@@ -1,0 +1,65 @@
+[
+  {
+    "id": "1840bcd6-319f-4a2f-91c2-388da2ce4a25",
+    "market_id": "2c1d3fac-dd72-4a9b-a59c-4783bad29927",
+    "niche_key": "fixture_niche",
+    "name": "Fixture Niche",
+    "buyer_segment": "Regression fixture buyer",
+    "core_job": "Exercise tenant-private revision isolation",
+    "problem_or_value": "Not a commercial candidate.",
+    "demand_context": {
+      "fixture": true
+    },
+    "status": "active",
+    "created_at": "2026-09-25 05:00:54.392543+00",
+    "updated_at": "2026-09-25 05:00:54.392543+00"
+  },
+  {
+    "id": "2f728159-dc30-43c6-8f3e-42486e30f590",
+    "market_id": "4f346af2-2739-412d-b5dd-79de70fdbe1e",
+    "niche_key": "niche-a5c1c263bf983d28a29d",
+    "name": "Renter home inventory organization",
+    "buyer_segment": "Apartment renters and frequent movers",
+    "core_job": "Document possessions and move-related details quickly",
+    "problem_or_value": "Reusable structured inventory, move and claim-ready records",
+    "demand_context": {
+      "fixture": true
+    },
+    "status": "active",
+    "created_at": "2026-09-25 06:23:48.466324+00",
+    "updated_at": "2026-09-25 06:23:48.466324+00"
+  },
+  {
+    "id": "e4dcc31a-5aa5-474f-b137-c65807d1f054",
+    "market_id": "2c1d3fac-dd72-4a9b-a59c-4783bad29927",
+    "niche_key": "fixture_g180_thermal_label_shipping",
+    "name": "Fixture thermal-label shipping workflow",
+    "buyer_segment": "Small business and residential shippers",
+    "core_job": "Print shipping labels reliably from a dedicated thermal label device",
+    "problem_or_value": "Evaluate a bounded thermal-label-printer pilot from permitted public evidence.",
+    "demand_context": {
+      "fixture": true,
+      "g180_harness": true
+    },
+    "status": "active",
+    "created_at": "2026-09-30 08:30:07.338851+00",
+    "updated_at": "2026-09-30 08:30:07.338851+00"
+  },
+  {
+    "id": "e17a0200-e4c1-4682-b051-cfef2eb2cd50",
+    "market_id": "2c1d3fac-dd72-4a9b-a59c-4783bad29927",
+    "niche_key": "fixture_g181_insufficient_evidence",
+    "name": "Fixture insufficient-evidence business",
+    "buyer_segment": "Synthetic fixture buyer",
+    "core_job": "Evaluate whether an opportunity is decision-ready",
+    "problem_or_value": "No supporting catalog claims, evidence, or economics are available.",
+    "demand_context": {
+      "fixture": true,
+      "g181_harness": true,
+      "insufficient_evidence": true
+    },
+    "status": "active",
+    "created_at": "2026-09-30 08:57:35.188849+00",
+    "updated_at": "2026-09-30 08:57:35.188849+00"
+  }
+]

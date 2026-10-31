@@ -1,0 +1,1297 @@
+[
+  {
+    "id": "da52fde6-6189-4455-b64e-935bce9fb377",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e3dc883f-3c0e-4c3d-9c0b-b79ed90128f2",
+    "research_packet_id": "f910d42e-c254-4254-b1e5-e86a69757a33",
+    "version": 1,
+    "factual_hash": "3b28037120a341c67253d9648890bfdd",
+    "state": "frozen",
+    "facts": {
+      "raw_facts": {
+        "claims": [
+          {
+            "id": "C049-F01-C1",
+            "text": "In the early 1990s Eric Fossum and a JPL team developed the CMOS active-pixel sensor while trying to reduce spacecraft camera size and power needs.",
+            "evidence": "NASA/JPL primary pages"
+          },
+          {
+            "id": "C049-F01-C2",
+            "text": "Fossum and JPL colleagues founded Photobit in 1995 to commercialize the technology.",
+            "evidence": "NASA Spinoff + JPL"
+          },
+          {
+            "id": "C049-F01-C3",
+            "text": "The commercial bridge is a documented technology transfer/spinout path, not a similarity inference.",
+            "evidence": "NASA/JPL historical record"
+          }
+        ],
+        "rights": "Factual paraphrase path GREEN; source prose/media are not reused; diagram-first.",
+        "sources": [
+          {
+            "url": "https://spinoff.nasa.gov/node/10622",
+            "use": "facts/paraphrase GREEN; page expression/media separately YELLOW",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "NASA Spinoff: Image Sensors Enhance Camera Technologies",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://www.jpl.nasa.gov/news/queen-elizabeth-prize-honors-digital-imaging-pioneers/",
+            "use": "facts/paraphrase GREEN; media separate",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "JPL: Queen Elizabeth Prize Honors Digital Imaging Pioneers",
+            "retrieved": "2026-09-23"
+          }
+        ],
+        "freshness": "HISTORICAL; retrieved 2026-09-23; dates must remain explicit",
+        "seed_only": true,
+        "fixture_id": "C049-F01",
+        "live_connector": false
+      },
+      "factual_status": "verified",
+      "derived_analysis": {
+        "candidate": {
+          "thesis": "A low-power image sensor developed at JPL for spacecraft became a commercial technology through a JPL-founded spinout, Photobit.",
+          "why_now": "Evergreen research-to-business archetype with an explicit inventor/spinout bridge.",
+          "decision": "RESEARCH"
+        },
+        "narration": {
+          "risk": "do not imply all CMOS imaging descends solely from this patent line",
+          "dictionary": {
+            "JPL": "J-P-L",
+            "CMOS": "see-moss or C-M-O-S; choose one and stay consistent",
+            "Photobit": "PHOTO-bit"
+          }
+        },
+        "seed_only": true,
+        "story_key": "jpl-cmos-photobit",
+        "reel_beats": [
+          "spacecraft size/power constraint",
+          "JPL CMOS-APS invention",
+          "1995 Photobit spinout",
+          "commercialization bridge/payoff",
+          "caveat: NASA/JPL did not invent every CMOS sensor"
+        ],
+        "reel_hooks": [
+          "The camera sensor story starts with a spacecraft power problem, not a phone.",
+          "Before CMOS cameras were everywhere, a JPL team was trying to shrink a spacecraft camera.",
+          "How does a NASA lab invention become a company? Photobit is a clean example."
+        ],
+        "visual_plan": [
+          "original diagram: spacecraft camera constraint -> CMOS-APS pixel -> Photobit",
+          "timeline 1990s -> 1995",
+          "no NASA/JPL/Photobit photos unless asset rights separately GREEN"
+        ],
+        "factual_core": "Spacecraft camera constraints pushed JPL toward a CMOS active-pixel sensor; the inventors then formed Photobit to commercialize it.",
+        "long_excerpt": "The defensible story is not “NASA invented the phone camera.” It is narrower and better: JPL work produced a specific CMOS active-pixel architecture, and the inventors built a company to move that architecture into commercial markets.",
+        "long_outline": [
+          "why spacecraft cameras needed lower power",
+          "what active pixels changed",
+          "prototype/transfer path",
+          "why founders formed Photobit",
+          "how to describe downstream ubiquity without overclaiming"
+        ],
+        "authoritative_fixture_work_log_id": 942
+      },
+      "seed_pack_work_log_id": 963,
+      "source_content_item_id": "5b6a7a53-6766-4c43-b9fe-1b8d3784a714"
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "313de383-2fb9-4de4-a4e0-72cc0d3b1264",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "f504c2ab-bb94-470f-ae26-b789b0102575",
+    "research_packet_id": "61bd0f3e-9a75-40e8-ba36-d817b1105be9",
+    "version": 1,
+    "factual_hash": "c8a8ec46162088a4e9bca8f775ab08f3",
+    "state": "frozen",
+    "facts": {
+      "raw_facts": {
+        "claims": [
+          {
+            "id": "C049-F02-C1",
+            "text": "Aspen Systems received NASA Kennedy SBIR support in the 1990s to develop flexible, practical aerogel insulation.",
+            "evidence": "NASA Spinoff"
+          },
+          {
+            "id": "C049-F02-C2",
+            "text": "Aspen Aerogels spun out from Aspen Systems in 2001 to market the insulation technology.",
+            "evidence": "NASA Spinoff"
+          },
+          {
+            "id": "C049-F02-C3",
+            "text": "The company used the manufacturing process developed under NASA-supported work in commercial insulation products.",
+            "evidence": "NASA Spinoff"
+          }
+        ],
+        "rights": "Manual factual paraphrase GREEN; expressive text and imagery not reused.",
+        "sources": [
+          {
+            "url": "https://spinoff.nasa.gov/node/11358",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "NASA Spinoff: Small Businesses Partner with NASA",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://spinoff.nasa.gov/node/11062",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "NASA Spinoff: Aerogel Insulations Save Millions in Industrial Applications",
+            "retrieved": "2026-09-23"
+          }
+        ],
+        "freshness": "HISTORICAL/evergreen; dates explicit; retrieved 2026-09-23",
+        "seed_only": true,
+        "fixture_id": "C049-F02",
+        "live_connector": false
+      },
+      "factual_status": "verified",
+      "derived_analysis": {
+        "candidate": {
+          "thesis": "NASA SBIR work helped Aspen Systems turn fragile aerogel into practical flexible insulation and spin out Aspen Aerogels to commercialize it.",
+          "why_now": "Evergreen example where public R&D support changed manufacturability rather than inventing the base material.",
+          "decision": "RESEARCH"
+        },
+        "narration": {
+          "risk": "never say NASA invented aerogel",
+          "dictionary": {
+            "aerogel": "AIR-oh-jel",
+            "cryogenic": "cry-oh-JEN-ik",
+            "Aspen Aerogels": "AS-pen AIR-oh-jels"
+          }
+        },
+        "seed_only": true,
+        "story_key": "nasa-sbir-aspen-aerogel",
+        "reel_beats": [
+          "fragile aerogel problem",
+          "NASA cryogenic insulation need",
+          "SBIR/manufacturing process",
+          "2001 spinout",
+          "commercial industrial uses + wording caveat"
+        ],
+        "reel_hooks": [
+          "NASA did not invent aerogel. The more interesting story is what it helped make practical.",
+          "This material was famous for being almost impossibly fragile—until a space-program insulation problem created a business opportunity.",
+          "One of the cleanest research-to-business stories is not an invention. It is a manufacturing breakthrough."
+        ],
+        "visual_plan": [
+          "original diagram: fragile porous solid -> fiber-reinforced blanket -> industrial pipe insulation",
+          "timeline: SBIR 1990s -> spinout 2001",
+          "no NASA photos reused without GREEN asset review"
+        ],
+        "factual_core": "NASA did not invent aerogel; NASA-backed SBIR work helped make it flexible, practical and manufacturable, and Aspen Aerogels commercialized that process.",
+        "long_excerpt": "The key correction is the hook itself: aerogel predates NASA. What NASA-backed work changed was the ability to package the material into durable flexible insulation that a company could actually manufacture and sell.",
+        "long_outline": [
+          "aerogel prehistory",
+          "NASA application constraint",
+          "Aspen SBIR development",
+          "spinout/commercialization",
+          "why manufacturing process matters more than “who invented aerogel”"
+        ],
+        "authoritative_fixture_work_log_id": 943
+      },
+      "seed_pack_work_log_id": 963,
+      "source_content_item_id": "b3bb8c4f-ac8f-42a5-8dd2-0fe061d104f1"
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "8a2b1c6d-fa71-4163-9715-dea94307aab8",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "2cd09330-7613-4800-b9a3-d89dc28c8a11",
+    "research_packet_id": "410c2886-e3c5-4adc-ad3b-8682deda5e60",
+    "version": 1,
+    "factual_hash": "f071d044affc611f02f221fbcacbb966",
+    "state": "frozen",
+    "facts": {
+      "raw_facts": {
+        "claims": [
+          {
+            "id": "C049-F03-C1",
+            "text": "Argonne developed and patented lithium-ion cathode material technology after DOE-funded battery research.",
+            "evidence": "Argonne fact sheet"
+          },
+          {
+            "id": "C049-F03-C2",
+            "text": "LG Chem licensed the technology from Argonne in 2011.",
+            "evidence": "Argonne fact sheet"
+          },
+          {
+            "id": "C049-F03-C3",
+            "text": "Argonne states LG Chem used the materials in the battery supplied for the Chevrolet Volt.",
+            "evidence": "Argonne fact sheet"
+          }
+        ],
+        "rights": "Official factual evidence GREEN for paraphrase; PDF photo/expressive layout excluded.",
+        "sources": [
+          {
+            "url": "https://www.aps.anl.gov/files/APS-Uploads/Media-Center/fact-sheets/APS-CHEVY-VOLT.pdf",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "Argonne Battery Technology Helps Power Chevy Volt",
+            "retrieved": "2026-09-23",
+            "pdf_review": "page 1 visually inspected"
+          },
+          {
+            "url": "https://www.aps.anl.gov/APS-Science-Highlight/2011/building-better-battery",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "Argonne APS: Building a Better Battery",
+            "retrieved": "2026-09-23"
+          }
+        ],
+        "freshness": "HISTORICAL; explicit 2011 license; retrieved 2026-09-23",
+        "seed_only": true,
+        "fixture_id": "C049-F03",
+        "live_connector": false
+      },
+      "factual_status": "verified",
+      "derived_analysis": {
+        "candidate": {
+          "thesis": "DOE-funded Argonne cathode research became licensed battery technology used by LG Chem in cells supplied for the Chevrolet Volt.",
+          "why_now": "Explicit national-lab patent/license/product chain.",
+          "decision": "RESEARCH"
+        },
+        "narration": {
+          "risk": "do not attribute the complete battery pack or vehicle to Argonne",
+          "dictionary": {
+            "Argonne": "ar-GON",
+            "LG Chem": "L-G kem",
+            "cathode": "KATH-ohd"
+          }
+        },
+        "seed_only": true,
+        "story_key": "argonne-lgchem-volt",
+        "reel_beats": [
+          "DOE battery research",
+          "Argonne patented cathode",
+          "LG Chem 2011 license",
+          "Volt battery application",
+          "limit claim to Argonne-documented material contribution"
+        ],
+        "reel_hooks": [
+          "A piece of the Chevy Volt battery started as DOE lab research.",
+          "Here is what “technology transfer” looks like when it ends up inside a mass-market car.",
+          "The hidden business step between a national lab and the Chevy Volt was a 2011 license."
+        ],
+        "visual_plan": [
+          "original battery diagram highlighting cathode",
+          "research -> patent -> license -> cell -> vehicle flow",
+          "do not reuse GM/Argonne photo from fact sheet without separate asset clearance"
+        ],
+        "factual_core": "A DOE lab developed and patented cathode chemistry; LG Chem licensed it; Argonne documents its use in battery material for the Volt.",
+        "long_excerpt": "The story is not that Argonne built the Volt battery. The traceable bridge is narrower: Argonne developed patented cathode material technology, LG Chem licensed it, and Argonne records that the licensed material was used in the battery supplied for the Volt.",
+        "long_outline": [
+          "late-1990s research context",
+          "cathode mechanism at high level",
+          "patent/licensing path",
+          "LG Chem/Volt application",
+          "what can and cannot be credited to Argonne"
+        ],
+        "authoritative_fixture_work_log_id": 945
+      },
+      "seed_pack_work_log_id": 963,
+      "source_content_item_id": "ba2ba500-e55b-43f5-a4ad-b71d902a4be6"
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "c5c87c67-0d7f-45cd-8055-9fdf02a32b9c",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "26e127de-cdd8-4b3b-b48c-0c608163aa5b",
+    "research_packet_id": "ebb39ec5-9c73-4879-b11f-2be35bc4f39b",
+    "version": 1,
+    "factual_hash": "31527b118c6721e9487da4683a8bd2d7",
+    "state": "frozen",
+    "facts": {
+      "raw_facts": {
+        "claims": [
+          {
+            "id": "C049-F04-C1",
+            "text": "NCI investigators developed the clinical foundation for tumor-infiltrating lymphocyte therapy over decades.",
+            "evidence": "NIH featured product history"
+          },
+          {
+            "id": "C049-F04-C2",
+            "text": "NCI entered a CRADA with Lion Biotechnologies, later Iovance, in 2011 and NIH granted an exclusive patent license in 2015, with later amendments.",
+            "evidence": "NIH featured product history"
+          },
+          {
+            "id": "C049-F04-C3",
+            "text": "NIH records Amtagvi/lifileucel as an Iovance-licensed NIH technology with FDA approval on February 16, 2024; current DailyMed labeling identifies BLA 125773 and initial U.S. approval 2024.",
+            "evidence": "NIH license table + DailyMed"
+          }
+        ],
+        "rights": "Factual official-source paraphrase GREEN; source imagery/prose not reused; health claims remain stronger-verification path.",
+        "sources": [
+          {
+            "url": "https://www.techtransfer.nih.gov/featured-products",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "NIH Technology Transfer: Featured Products – Amtagvi",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://www.techtransfer.nih.gov/reports/hhs-license-based-vaccines-therapeutics",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "NIH HHS License-Based Vaccines & Therapeutics",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=91b0c63a-9a7e-46d0-a562-dc0d7d7867f3&type=display",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "DailyMed AMTAGVI label",
+            "retrieved": "2026-09-23"
+          }
+        ],
+        "freshness": "HIGH_STAKES CURRENT/HISTORICAL mix; approval/label status rechecked 2026-09-23; recheck before publication",
+        "seed_only": true,
+        "fixture_id": "C049-F04",
+        "live_connector": false
+      },
+      "factual_status": "verified",
+      "derived_analysis": {
+        "candidate": {
+          "thesis": "Decades of NCI tumor-infiltrating lymphocyte research moved through a CRADA and NIH patent licenses into Iovance development and the 2024 FDA approval of Amtagvi.",
+          "why_now": "Documented public-research to licensed commercial therapy chain; requires careful health framing.",
+          "decision": "RESEARCH",
+          "risk_flags": [
+            "medical_health"
+          ]
+        },
+        "narration": {
+          "risk": "No treatment recommendation, response-rate claim, or causal efficacy interpretation is needed for this story.",
+          "dictionary": {
+            "TIL": "T-I-L",
+            "Amtagvi": "am-TAG-vee",
+            "Iovance": "eye-OH-vance",
+            "lifileucel": "lye-FIL-you-sel"
+          }
+        },
+        "seed_only": true,
+        "story_key": "nci-iovance-amtagvi",
+        "reel_beats": [
+          "NCI TIL research",
+          "2011 CRADA",
+          "2015 license + later amendments",
+          "Iovance development",
+          "2024 FDA approval",
+          "health caveat: no efficacy/advice claims beyond official label"
+        ],
+        "reel_hooks": [
+          "A cancer therapy can take decades to travel from a government lab to a commercial product. Here is the bridge.",
+          "The hidden middle of this biotech story is not a breakthrough headline—it is a CRADA and a patent license.",
+          "How did NCI research become an FDA-approved commercial therapy? Follow the transfer chain, not the hype."
+        ],
+        "visual_plan": [
+          "original timeline research -> CRADA -> license -> development -> approval",
+          "generic original cell-therapy process diagram",
+          "no patient imagery or NIH/Iovance media without rights review"
+        ],
+        "factual_core": "NCI research did not jump directly to a product: a CRADA and patent-license pathway transferred TIL technology to Iovance, which developed lifileucel into the FDA-approved product Amtagvi.",
+        "long_excerpt": "This is a commercialization story, not medical advice. The verifiable bridge runs through NCI research, a 2011 cooperative R&D agreement, NIH licensing, and Iovance development before FDA approval in 2024.",
+        "long_outline": [
+          "TIL research background",
+          "why translational manufacturing matters",
+          "CRADA and patent-license chronology",
+          "Iovance development path",
+          "FDA approval fact and limits of what the fixture claims"
+        ],
+        "authoritative_fixture_work_log_id": 947
+      },
+      "seed_pack_work_log_id": 963,
+      "source_content_item_id": "18f2217a-6501-4c05-b7ff-5c138a74a8be"
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "dee464f2-f17e-4005-816a-0e36c55197cd",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e129a4fd-0d37-466e-8b86-89d9a4858d8f",
+    "research_packet_id": "614d22df-af82-4bbb-9ecc-beda750ce84f",
+    "version": 1,
+    "factual_hash": "911512e15d515910a32e83c3f59fd5a6",
+    "state": "frozen",
+    "facts": {
+      "raw_facts": {
+        "claims": [
+          {
+            "id": "C049-F05-C1",
+            "text": "Caliper Life Sciences licensed ORNL Microfluidic Lab-on-a-chip technology in 2002.",
+            "evidence": "ORNL"
+          },
+          {
+            "id": "C049-F05-C2",
+            "text": "ORNL says Caliper commercialized miniaturized chips used to analyze RNA, DNA, proteins and other compounds.",
+            "evidence": "ORNL"
+          },
+          {
+            "id": "C049-F05-C3",
+            "text": "PerkinElmer acquired Caliper in 2011 for an approximately $600 million net purchase price; ORNL says the technology’s success contributed to the acquisition decision.",
+            "evidence": "SEC 8-K for price/completion + ORNL for attributed contribution"
+          }
+        ],
+        "rights": "ORNL/SEC factual paraphrase GREEN; no expressive source media reused.",
+        "sources": [
+          {
+            "url": "https://www.ornl.gov/blog/ornl-tech-successes",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "ORNL tech successes",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://www.sec.gov/Archives/edgar/data/1014672/000110465911061668/a11-29318_18k.htm",
+            "role": "PRIMARY_FILING",
+            "title": "PerkinElmer/Caliper SEC 8-K acquisition completion",
+            "retrieved": "2026-09-23"
+          }
+        ],
+        "freshness": "HISTORICAL; acquisition date/value and license date explicit; retrieved 2026-09-23",
+        "seed_only": true,
+        "fixture_id": "C049-F05",
+        "live_connector": false
+      },
+      "factual_status": "verified",
+      "derived_analysis": {
+        "candidate": {
+          "thesis": "ORNL microfluidic Lab-on-a-chip technology was licensed by Caliper Life Sciences, became part of its commercial platform, and ORNL links that success to PerkinElmer’s 2011 acquisition of Caliper.",
+          "why_now": "Distinct license-to-product-platform-to-acquisition transfer path.",
+          "decision": "RESEARCH"
+        },
+        "narration": {
+          "risk": "Do not state the ORNL license caused or equaled the full acquisition value.",
+          "dictionary": {
+            "ORNL": "O-R-N-L",
+            "Caliper": "CAL-uh-per",
+            "PerkinElmer": "PER-kin ELL-mer",
+            "microfluidic": "my-kroh-floo-ID-ik"
+          }
+        },
+        "seed_only": true,
+        "story_key": "ornl-caliper-perkinelmer",
+        "reel_beats": [
+          "ORNL microfluidics",
+          "2002 Caliper license",
+          "commercial miniaturized analysis systems",
+          "2011 PerkinElmer acquisition",
+          "attribute contribution rather than claiming the license alone caused the deal"
+        ],
+        "reel_hooks": [
+          "What can a laboratory license be worth once it becomes a product platform?",
+          "This acquisition story starts with tiny fluid channels at Oak Ridge National Laboratory.",
+          "Follow one technology-transfer chain: ORNL -> Caliper -> a $600 million acquisition."
+        ],
+        "visual_plan": [
+          "original microfluidic channel diagram",
+          "timeline ORNL -> 2002 license -> products -> 2011 acquisition",
+          "acquisition-value card based on SEC filing; no corporate logos unless editorial-use basis documented"
+        ],
+        "factual_core": "ORNL licensed microfluidic lab-on-a-chip technology to Caliper; Caliper commercialized miniaturized analysis systems; PerkinElmer later acquired Caliper, with the acquisition terms verified in SEC filings.",
+        "long_excerpt": "The strongest version avoids a tempting exaggeration. The ORNL license was not “worth $600 million” by itself. ORNL says the technology’s success contributed to PerkinElmer’s decision; the SEC separately verifies the acquisition and its roughly $600 million net price.",
+        "long_outline": [
+          "what lab-on-a-chip means",
+          "ORNL research/license",
+          "Caliper productization",
+          "SEC-confirmed acquisition",
+          "causality caveat and broader transfer lesson"
+        ],
+        "authoritative_fixture_work_log_id": 948
+      },
+      "seed_pack_work_log_id": 963,
+      "source_content_item_id": "c66d732b-9b4b-4545-b209-63295588d545"
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "14d37a22-3074-434b-8299-b0e332f7742a",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "44debf27-f78e-4640-a0e2-916172cb039d",
+    "research_packet_id": "16b1381e-7cf3-4007-bf8b-f69038f38dc6",
+    "version": 1,
+    "factual_hash": "8514687138546d57815060aa773c6191",
+    "state": "frozen",
+    "facts": {
+      "raw_facts": {
+        "claims": [
+          {
+            "id": "C084-F01-C1",
+            "text": "DOE said in June 2026 that U.S. grid infrastructure supply chains, including distribution transformers and electrical core steel, face constraints from limited domestic product capacity, extended procurement timelines and foreign supply dependence.",
+            "evidence": "DOE 2026 RFI"
+          },
+          {
+            "id": "C084-F01-C2",
+            "text": "DOE reports more than 80,000 distribution-transformer varieties nationwide and says inconsistent utility specifications contribute to longer production times.",
+            "evidence": "DOE Supply Chain and Market Analysis"
+          },
+          {
+            "id": "C084-F01-C3",
+            "text": "Standardization is one identified relief lever, but it does not by itself eliminate material/capacity constraints.",
+            "evidence": "DOE working-group description + careful inference"
+          }
+        ],
+        "rights": "Official factual paraphrase GREEN; original diagrams only.",
+        "sources": [
+          {
+            "url": "https://www.energy.gov/cmei/articles/doe-issues-request-information-rfi-energy-conservation-standards-distribution",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "DOE Distribution Transformer 2026 RFI",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://www.energy.gov/oe/supply-chain-and-market-analysis",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "DOE Supply Chain and Market Analysis",
+            "retrieved": "2026-09-23"
+          }
+        ],
+        "freshness": "CURRENT; DOE sources retrieved 2026-09-23; recheck before publication",
+        "seed_only": true,
+        "fixture_id": "C084-F01",
+        "live_connector": false
+      },
+      "factual_status": "verified",
+      "derived_analysis": {
+        "candidate": {
+          "thesis": "Distribution transformers are a grid bottleneck because limited domestic capacity, long procurement timelines, foreign dependence and extreme specification fragmentation make rapid substitution/expansion difficult.",
+          "why_now": "DOE reopened the issue in a June 2026 RFI after an April 2026 national-security determination.",
+          "decision": "RESEARCH"
+        },
+        "narration": {
+          "risk": "Do not claim all lead time is caused by specifications.",
+          "dictionary": {
+            "GOES": "goes, then explain grain-oriented electrical steel",
+            "distribution transformer": "dis-trih-BYOO-shun transformer"
+          }
+        },
+        "seed_only": true,
+        "story_key": "us-distribution-transformer-capacity",
+        "reel_beats": [
+          "what distribution transformers do",
+          "DOE 2026 constraint statement",
+          "80,000 varieties/specification fragmentation",
+          "why standardization could shorten production",
+          "capacity/material caveat"
+        ],
+        "reel_hooks": [
+          "Why can a box on a utility pole become a national supply-chain problem? Start with 80,000 varieties.",
+          "The transformer bottleneck has a surprising ingredient: too many specifications.",
+          "Grid expansion needs more than copper and steel. It also needs utilities to stop treating every transformer like a custom order."
+        ],
+        "visual_plan": [
+          "original grid flow diagram substation -> distribution transformer -> customer",
+          "80,000-varieties card with DOE source label",
+          "diagram of standardized vs custom SKU production; no source images needed"
+        ],
+        "factual_core": "A grid component can be constrained not only by factories and materials but by product fragmentation: DOE identifies capacity, lead-time, foreign-dependence and specification issues around distribution transformers.",
+        "long_excerpt": "The bottleneck is partly physical and partly organizational. DOE points to limited capacity and long procurement timelines, but it also identifies tens of thousands of transformer varieties—meaning factories are not simply making one interchangeable product at scale.",
+        "long_outline": [
+          "grid role",
+          "capacity/lead-time evidence",
+          "specification fragmentation mechanism",
+          "working-group standardization response",
+          "what standardization cannot solve"
+        ],
+        "authoritative_fixture_work_log_id": 952
+      },
+      "seed_pack_work_log_id": 963,
+      "source_content_item_id": "8ef4cd9e-2c62-4b94-84ff-25f33c0d3dc5"
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "e7449b3c-559e-43bb-a36b-3bf0f3b355c7",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "f509144b-c01d-464b-9300-0714226bbb9a",
+    "research_packet_id": "32246cef-a313-4ba8-91b8-6e2b06bd772b",
+    "version": 1,
+    "factual_hash": "c2f866e6eb0f8447d29f6261cc3ebb67",
+    "state": "frozen",
+    "facts": {
+      "raw_facts": {
+        "claims": [
+          {
+            "id": "C084-F02-C1",
+            "text": "EIA reports that 77% of enrichment services purchased by U.S. civilian nuclear reactor owners/operators in 2025 were foreign-origin; 23% were U.S.-origin.",
+            "evidence": "EIA 2025 Uranium Marketing Annual Report"
+          },
+          {
+            "id": "C084-F02-C2",
+            "text": "EIA reports Russian-origin enrichment accounted for 26% of purchased SWU in 2025.",
+            "evidence": "EIA 2025 Uranium Marketing Annual Report"
+          },
+          {
+            "id": "C084-F02-C3",
+            "text": "DOE says the United States historically imported roughly 20–25% of enriched uranium from Russia and is allocating $2.7 billion to expand domestic LEU/HALEU infrastructure after the 2024 Russian LEU import ban.",
+            "evidence": "DOE LEU supply-chain page"
+          }
+        ],
+        "rights": "EIA/DOE factual data paraphrase GREEN; original charts/diagrams generated from cited values.",
+        "sources": [
+          {
+            "url": "https://www.eia.gov/uranium/marketing/",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "EIA Uranium Marketing Annual Report 2025 data",
+            "vintage": "released 2026-07-29, revised 2026-08-13",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://www.energy.gov/ne/domestic-low-enriched-uranium-supply-chain",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "DOE Domestic Low Enriched Uranium Supply Chain",
+            "retrieved": "2026-09-23"
+          }
+        ],
+        "freshness": "CURRENT statistical vintage 2025, release/revision 2026; recheck EIA/DOE before publication",
+        "seed_only": true,
+        "fixture_id": "C084-F02",
+        "live_connector": false
+      },
+      "factual_status": "verified",
+      "derived_analysis": {
+        "candidate": {
+          "thesis": "The chokepoint in U.S. nuclear fuel is not simply uranium ore: enrichment services remain heavily foreign-sourced while policy is trying to rebuild domestic capacity.",
+          "why_now": "EIA released revised 2025 enrichment data in August 2026; DOE is funding domestic LEU/HALEU capacity.",
+          "decision": "RESEARCH"
+        },
+        "narration": {
+          "risk": "Do not call 77% a shortage; it is sourcing dependence/capacity exposure.",
+          "dictionary": {
+            "LEU": "L-E-U",
+            "SWU": "S-W-U, separative work unit",
+            "HALEU": "HAY-loo or H-A-L-E-U; choose project standard"
+          }
+        },
+        "seed_only": true,
+        "story_key": "us-nuclear-enrichment-dependence",
+        "reel_beats": [
+          "uranium mining vs conversion/enrichment distinction",
+          "EIA 2025 foreign-origin SWU share",
+          "Russian-origin share",
+          "2024 import restriction",
+          "domestic LEU/HALEU expansion as relief path"
+        ],
+        "reel_hooks": [
+          "The nuclear-fuel bottleneck is not where uranium comes out of the ground. It is what happens next.",
+          "The U.S. can buy uranium from allies and still have an enrichment bottleneck.",
+          "One number explains why nuclear fuel policy is focused on enrichment: 77% foreign-origin services in 2025."
+        ],
+        "visual_plan": [
+          "original nuclear fuel-cycle diagram mine -> conversion -> enrichment -> fabrication -> reactor",
+          "stacked bar 23% U.S.-origin vs 77% foreign-origin enrichment",
+          "policy timeline 2024 ban -> 2026 investment"
+        ],
+        "factual_core": "U.S. reactors can source uranium ore from several countries, but enrichment is a separate processing chokepoint: EIA’s 2025 data show most purchased enrichment services were foreign-origin while DOE is investing to expand domestic capacity.",
+        "long_excerpt": "Ore supply and enrichment are different markets. The current U.S. vulnerability appears downstream: EIA’s latest annual data show most enrichment services bought for civilian reactors in 2025 came from foreign sources.",
+        "long_outline": [
+          "fuel-cycle stages",
+          "2025 EIA sourcing data",
+          "why enrichment capacity takes time",
+          "Russian import-policy transition",
+          "domestic capacity investment and uncertainty"
+        ],
+        "authoritative_fixture_work_log_id": 954
+      },
+      "seed_pack_work_log_id": 963,
+      "source_content_item_id": "f82f5d08-afa7-426a-9e22-11acd3b54d0d"
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "52b632f9-36ac-4d08-b686-38a0e96eccc2",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "d6943861-0e23-4a92-b2a4-10af15f5fa02",
+    "research_packet_id": "f355de8f-1faf-4eca-97b7-c013b4145e6e",
+    "version": 1,
+    "factual_hash": "c0f17ae7b39a59eac3e5926ad79dfe94",
+    "state": "frozen",
+    "facts": {
+      "raw_facts": {
+        "claims": [
+          {
+            "id": "C084-F03-C1",
+            "text": "A June 11, 2026 FDA-hosted notice described a critical U.S. shortage of cefotaxime for injection.",
+            "evidence": "FDA-hosted temporary-import letter"
+          },
+          {
+            "id": "C084-F03-C2",
+            "text": "The notice says SteriMax coordinated with FDA to temporarily import Canadian-market cefotaxime to increase U.S. availability.",
+            "evidence": "FDA-hosted temporary-import letter"
+          },
+          {
+            "id": "C084-F03-C3",
+            "text": "FDA defines a drug shortage nationally as demand or projected demand exceeding supply or projected supply; the fixture does not infer the specific root cause of cefotaxime shortage because the cited notice does not state it.",
+            "evidence": "FDA Drug Shortages overview + explicit uncertainty"
+          }
+        ],
+        "rights": "FDA-hosted factual content used by paraphrase; PDF visually verified; source page/image not reused.",
+        "sources": [
+          {
+            "url": "https://www.fda.gov/media/193116/download",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "FDA-hosted SteriMax temporary importation letter",
+            "retrieved": "2026-09-23",
+            "pdf_review": "page 1 visually inspected",
+            "effective_date": "2026-06-11"
+          },
+          {
+            "url": "https://www.fda.gov/drugs/drug-safety-and-availability/drug-shortages",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "FDA Drug Shortages overview",
+            "retrieved": "2026-09-23"
+          }
+        ],
+        "freshness": "DATED EVENT: current as of 2026-06-11 notice; current-status language requires FDA database recheck immediately before publication",
+        "seed_only": true,
+        "fixture_id": "C084-F03",
+        "live_connector": false
+      },
+      "factual_status": "verified",
+      "derived_analysis": {
+        "candidate": {
+          "thesis": "A 2026 U.S. cefotaxime shortage became severe enough that FDA coordinated temporary importation of a Canadian-market product, illustrating how limited approved supply can turn an injectable medicine into a supply-chain chokepoint.",
+          "why_now": "Official June 2026 shortage mitigation document; frame as dated event unless current database is rechecked.",
+          "decision": "RESEARCH",
+          "risk_flags": [
+            "medical_health"
+          ]
+        },
+        "narration": {
+          "risk": "No prescribing advice; do not imply the shortage is still current on publication day without database recheck.",
+          "dictionary": {
+            "DSCSA": "D-S-C-S-A",
+            "SteriMax": "STAIR-ee-max",
+            "cefotaxime": "SEF-oh-TAK-seem"
+          }
+        },
+        "seed_only": true,
+        "story_key": "cefotaxime-shortage-temporary-import",
+        "reel_beats": [
+          "what cefotaxime is at a non-clinical level",
+          "June 2026 critical-shortage notice",
+          "temporary Canadian import mechanism",
+          "label/barcode/DSCSA differences as operational friction",
+          "root-cause/current-status caveat"
+        ],
+        "reel_hooks": [
+          "When a medicine shortage gets bad enough, the supply-chain workaround can cross a border.",
+          "This FDA document shows what a pharmaceutical chokepoint looks like in practice: temporary importation.",
+          "The most important fact in this shortage story is also the limit: we know how FDA mitigated it, not the root cause."
+        ],
+        "visual_plan": [
+          "original supply diagram U.S. shortage -> FDA coordination -> temporary Canadian import",
+          "date card June 11 2026",
+          "no drug-vial/source-document screenshot in audience output unless asset/legal review says GREEN"
+        ],
+        "factual_core": "In June 2026 FDA supported temporary importation to mitigate a critical cefotaxime injection shortage; the official notice proves the supply disruption and mitigation path but not a specific manufacturing root cause.",
+        "long_excerpt": "The safe story stops where the evidence stops. FDA’s hosted notice establishes a critical shortage and a temporary import response. It does not establish that a particular factory failure, ingredient shortage or quality event caused the shortage.",
+        "long_outline": [
+          "FDA national shortage definition",
+          "dated cefotaxime event",
+          "temporary import response",
+          "operational differences in imported product",
+          "what is unknown and how to recheck status"
+        ],
+        "authoritative_fixture_work_log_id": 956
+      },
+      "seed_pack_work_log_id": 963,
+      "source_content_item_id": "335c4d4b-9cc8-4913-a6f7-659377b384c0"
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "9b8c8bc2-af46-4a52-aa7b-e2b858be1dd9",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "5ec9cea0-3902-4f8a-91fd-4371a907de3e",
+    "research_packet_id": "19c8c79e-4c0d-4aaf-9ea8-76dfe0796669",
+    "version": 1,
+    "factual_hash": "f65837e7046a47cfac5b6b2f40f5d5c1",
+    "state": "frozen",
+    "facts": {
+      "raw_facts": {
+        "claims": [
+          {
+            "id": "C084-F04-C1",
+            "text": "DOE identifies rare-earth permanent magnets as critical components in wind turbines, electric vehicles and advanced motors and says the U.S. relies primarily on foreign supply chains for these magnets.",
+            "evidence": "DOE supply-chain assessment page"
+          },
+          {
+            "id": "C084-F04-C2",
+            "text": "In June 2026 DOE ARPA-E announced $72 million for critical-mineral and ultra-powerful-magnet R&D including domestic magnet manufacturing.",
+            "evidence": "DOE ARPA-E announcement"
+          },
+          {
+            "id": "C084-F04-C3",
+            "text": "USGS’s 2026 China study estimates that China-origin rare-earth compounds/metals accounted for 67% of U.S. apparent consumption in the study’s 2023 trade base; this is upstream context, not a magnet-market-share claim.",
+            "evidence": "USGS OFR 2026-1018"
+          }
+        ],
+        "rights": "Official factual paraphrase GREEN; original diagrams/charts only.",
+        "sources": [
+          {
+            "url": "https://arpa-e.energy.gov/news-and-events/news-and-insights/department-energy-announces-72-million-domestic-critical-minerals-and-ultra-powerful-magnet-production",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "DOE ARPA-E MAGNITO funding announcement",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://www.energy.gov/cmei/ammto/articles/americas-supply-chains-and-our-energy-story",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "DOE America’s Supply Chains: Rare Earth Magnets",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://pubs.usgs.gov/publication/ofr20261018/full",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "USGS 2026 China mineral-industry study",
+            "retrieved": "2026-09-23"
+          }
+        ],
+        "freshness": "CURRENT policy/R&D trigger 2026; quantitative USGS context uses clearly labeled 2023 trade base",
+        "seed_only": true,
+        "fixture_id": "C084-F04",
+        "live_connector": false
+      },
+      "factual_status": "verified",
+      "derived_analysis": {
+        "candidate": {
+          "thesis": "Rare-earth permanent magnets are a downstream manufacturing chokepoint: U.S. industry has domestic mineral resources but still depends heavily on foreign processing/material and magnet supply chains.",
+          "why_now": "DOE launched new domestic magnet/critical-mineral R&D funding in June 2026 while USGS continues to document high upstream concentration.",
+          "decision": "RESEARCH"
+        },
+        "narration": {
+          "risk": "Do not turn upstream rare-earth consumption shares into a finished-magnet market-share statistic.",
+          "dictionary": {
+            "NdFeB": "N-D-F-E-B, then neodymium-iron-boron",
+            "MAGNITO": "mag-NEE-toh",
+            "neodymium": "nee-oh-DIM-ee-um"
+          }
+        },
+        "seed_only": true,
+        "story_key": "rare-earth-magnet-manufacturing",
+        "reel_beats": [
+          "why permanent magnets matter",
+          "mine vs separation/refining vs magnet manufacturing",
+          "DOE foreign-supply assessment",
+          "2026 MAGNITO funding",
+          "USGS upstream concentration context + scope caveat"
+        ],
+        "reel_hooks": [
+          "Mining rare earths is not the same as making the magnet inside a high-performance motor.",
+          "The rare-earth bottleneck happens after the mine.",
+          "A country can have rare-earth ore and still depend on someone else for the finished magnet."
+        ],
+        "visual_plan": [
+          "original value-chain diagram mine -> separation -> metal/alloy -> magnet -> motor",
+          "application icons EV/wind/industrial motor",
+          "data card explicitly labeled 2023 trade base for USGS 67% figure"
+        ],
+        "factual_core": "The chokepoint sits downstream of mining too: high-performance magnets require separated/refined rare-earth materials and specialized magnet manufacturing, and DOE is still funding domestic capacity/R&D to reduce foreign-chain exposure.",
+        "long_excerpt": "The useful distinction is between resources and industrial capability. A mine does not automatically provide separated oxides, refined metals, alloy powder and finished high-performance magnets. The bottleneck can migrate downstream as each stage is added.",
+        "long_outline": [
+          "magnet applications",
+          "value-chain stages",
+          "where U.S. exposure sits",
+          "current capacity/R&D response",
+          "substitution and technology alternatives"
+        ],
+        "authoritative_fixture_work_log_id": 957
+      },
+      "seed_pack_work_log_id": 963,
+      "source_content_item_id": "daebdfa7-db80-4bdd-9f84-4454f311cba8"
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "fa85d3b1-23b8-4ea8-b867-b282f113f5df",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "0109348d-8097-458b-b89e-c2affaec2a8b",
+    "research_packet_id": "ba103bf5-e44f-4f7e-90b0-620d13b65798",
+    "version": 1,
+    "factual_hash": "443511304b81b5d984c5a657e1628e19",
+    "state": "frozen",
+    "facts": {
+      "raw_facts": {
+        "claims": [
+          {
+            "id": "C084-F05-C1",
+            "text": "USGS says low-purity unrefined gallium is not produced in the United States and U.S. demand is satisfied by imports.",
+            "evidence": "USGS Gallium Statistics and Information"
+          },
+          {
+            "id": "C084-F05-C2",
+            "text": "USGS reports China produced 99% of world primary gallium in 2024.",
+            "evidence": "USGS China page"
+          },
+          {
+            "id": "C084-F05-C3",
+            "text": "USGS says roughly 79% of gallium consumed in the U.S. is in GaAs/GaN/GaP wafers and 74% of consumption is associated with analog/digital integrated circuits.",
+            "evidence": "USGS Gallium Statistics and Information"
+          },
+          {
+            "id": "C084-F05-C4",
+            "text": "Direct import-country shares can understate original producer exposure because materials may move through intermediary countries; USGS published a 2026 methodology specifically addressing indirect provenance.",
+            "evidence": "USGS 2026 provenance study"
+          }
+        ],
+        "rights": "USGS factual paraphrase GREEN; original diagrams/charts; no PDF/media reuse required.",
+        "sources": [
+          {
+            "url": "https://www.usgs.gov/centers/national-minerals-information-center/gallium-statistics-and-information",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "USGS Gallium Statistics and Information",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://www.usgs.gov/centers/national-minerals-information-center/china",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "USGS China mineral-industry page",
+            "retrieved": "2026-09-23"
+          },
+          {
+            "url": "https://www.usgs.gov/publications/indirect-mineral-import-reliance-and-provenance",
+            "role": "PRIMARY_AUTHORITATIVE",
+            "title": "USGS Indirect mineral import reliance and provenance",
+            "retrieved": "2026-09-23"
+          }
+        ],
+        "freshness": "CURRENT USGS pages retrieved 2026-09-23; 99% statistic explicitly 2024; recheck new projects/export controls before publication",
+        "seed_only": true,
+        "fixture_id": "C084-F05",
+        "live_connector": false
+      },
+      "factual_status": "verified",
+      "derived_analysis": {
+        "candidate": {
+          "thesis": "Gallium is a semiconductor-material chokepoint because the United States does not produce low-purity primary gallium domestically while global primary production is overwhelmingly concentrated in China.",
+          "why_now": "USGS 2026 data and China study quantify the concentration; 2025 export-policy changes show why provenance matters.",
+          "decision": "RESEARCH"
+        },
+        "narration": {
+          "risk": "Do not say 99% of U.S. gallium comes from China; 99% is world primary production share.",
+          "dictionary": {
+            "GaN": "gallium nitride",
+            "GaAs": "gallium arsenide",
+            "gallium": "GAL-ee-um",
+            "provenance": "PROV-uh-nens"
+          }
+        },
+        "seed_only": true,
+        "story_key": "gallium-compound-semiconductor-dependence",
+        "reel_beats": [
+          "what gallium compound semiconductors are",
+          "no U.S. low-purity primary production",
+          "China 99% world primary production in 2024",
+          "U.S. wafer/IC use",
+          "direct-import vs producer-provenance caveat"
+        ],
+        "reel_hooks": [
+          "A semiconductor supply chain can depend on a metal the U.S. does not produce in primary form.",
+          "The surprising gallium number is 99%—but it does not mean 99% of U.S. imports arrive directly from China.",
+          "To understand this chip-material bottleneck, ignore the shipping label for a moment and trace where the gallium was actually produced."
+        ],
+        "visual_plan": [
+          "original value-chain map producer -> intermediary/refiner -> U.S. wafer maker",
+          "99% world-production card explicitly labeled China, 2024",
+          "compound-semiconductor wafer diagram; no third-party chip photography needed"
+        ],
+        "factual_core": "Gallium’s chokepoint combines no U.S. low-purity primary production, heavy use in compound-semiconductor wafers, and extreme concentration of primary world production in China; direct customs origin alone can misstate underlying producer dependence.",
+        "long_excerpt": "The cleanest warning is methodological. A customs table can say a shipment came from Canada, Germany or Japan while the underlying material chain began elsewhere. USGS now explicitly models indirect provenance because supplier country and producer country are not always the same thing.",
+        "long_outline": [
+          "gallium uses",
+          "production/refining stages",
+          "global concentration",
+          "U.S. import path",
+          "indirect provenance/transshipment problem",
+          "new projects/substitution/recycling as relief"
+        ],
+        "authoritative_fixture_work_log_id": 958
+      },
+      "seed_pack_work_log_id": 963,
+      "source_content_item_id": "ef388746-4933-4885-8246-feef3978238b"
+    },
+    "created_at": "2026-09-23 23:24:20.889753+00"
+  },
+  {
+    "id": "4a4de9fd-58c6-43b0-b1f0-f410c5c079ff",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "74f95f01-33f9-4a92-a6b0-27aed5071f95",
+    "research_packet_id": "635ccdb2-25bc-4089-8e18-e2da54526ff8",
+    "version": 1,
+    "factual_hash": "f68764c7a49ff70ba6414dd954a049aa9225259c0b5529547d049b802f0d2404",
+    "state": "frozen",
+    "facts": {
+      "facts": [
+        "NASA Marshall Space Flight Center used smart-camera technology for the Advanced Video Guidance Sensor on the DART mission.",
+        "NASA Spinoff reports that Southern Vision Systems developed the commercial SpecterView sensor based on work done in support of the DART mission.",
+        "NASA Spinoff reports prototype development began in April 2003 at AOS and volume manufacturing began by April 2004 at Southern Vision Systems."
+      ],
+      "story": "Smart Camera Technology Increases Quality",
+      "sources": [
+        "https://spinoff.nasa.gov/Spinoff2004/ip_6.html",
+        "https://ntrs.nasa.gov/citations/20050031179"
+      ],
+      "non_claims": [
+        "No claim that SpecterView is currently manufactured or sold.",
+        "No current market-share, performance-superiority, or revenue claim.",
+        "No reuse permission implied for NASA or third-party imagery."
+      ],
+      "attribution_rule": "Keep commercialization facts attributed to NASA Spinoff 2004.",
+      "historical_scope": true
+    },
+    "created_at": "2026-09-24 00:13:40.537523+00"
+  },
+  {
+    "id": "14e72290-4dda-47ca-8d63-84e424e05647",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "e6deba25-ccc8-4250-a16a-7fda70873cc7",
+    "research_packet_id": "28b0656c-ec2f-4bfe-929f-78c18f775629",
+    "version": 1,
+    "factual_hash": "39648e7ba6738c3dc9ee95bf69716bf76f83e24b4f6a4665cbb836f0e8102a48",
+    "state": "frozen",
+    "facts": {
+      "facts": [
+        "NASA Spinoff reports that Omniview was developed for NASA as a viewing/receiving device for guiding space robots.",
+        "NASA Spinoff reports that TeleRobotics International developed Omniview under a NASA Small Business Innovation Research contract/grant.",
+        "NASA Spinoff 1994 reports that Omniview was introduced to the commercial market in 1993."
+      ],
+      "story": "A Motionless Camera",
+      "sources": [
+        "https://spinoff.nasa.gov/node/9755",
+        "https://ntrs.nasa.gov/citations/20020080109"
+      ],
+      "non_claims": [
+        "No claim that Omniview/IPIX is currently sold or supported.",
+        "No current market-share, company-status, surveillance-performance, or military-use claim.",
+        "No reuse permission implied for NASA or third-party imagery."
+      ],
+      "attribution_rule": "Keep commercialization and historical company/product facts attributed to NASA Spinoff 1994.",
+      "historical_scope": true
+    },
+    "created_at": "2026-09-24 00:31:01.241669+00"
+  },
+  {
+    "id": "d0862ea2-cb27-49b3-a506-2e0e6a87adfa",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "8b0e7955-e934-4c11-adc4-ad9553b423a0",
+    "research_packet_id": "47d0db3b-bab3-4f27-9f0e-1a9f7b248219",
+    "version": 1,
+    "factual_hash": "967bd10c32b3c74f6eaa00fb8055e6b9a76d4a737b11945693f8bcc1032dda9a",
+    "state": "frozen",
+    "facts": {
+      "facts": [
+        "NASA Spinoff reports Nikon cameras were designed for easy, accurate operation by Skylab astronauts in weightlessness.",
+        "NASA Spinoff reports Nikon later incorporated the plastic-cushioned advance-lever simplification into the commercial Nikon FM compact."
+      ],
+      "story": "Nikon Camera",
+      "sources": [
+        "https://spinoff.nasa.gov/node/9388",
+        "https://ntrs.nasa.gov/citations/20030004814"
+      ],
+      "non_claims": [
+        "No claim about current Nikon products or current sales.",
+        "No claim that every Nikon FM feature originated at NASA.",
+        "No reuse permission implied for NASA/Nikon imagery."
+      ],
+      "historical_scope": true
+    },
+    "created_at": "2026-09-24 00:37:07.735439+00"
+  },
+  {
+    "id": "9ffbab72-11b8-4516-91f5-5dd7c1402f4f",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "549ac962-6c18-4aaa-9641-dedcf9e89bd2",
+    "research_packet_id": "8d23caa8-90c3-4e46-b262-f6df4d5ad900",
+    "version": 1,
+    "factual_hash": "38cbe176cab3ce168f2014b32aef7c6f7260cf0bdef67966b3f45aa5f2fa26c6",
+    "state": "frozen",
+    "facts": {
+      "facts": [
+        "NASA Spinoff reports SciMeasure developed Little Joe with JPL under NASA SBIR.",
+        "NASA Spinoff reports the work led to a commercial modular CCD camera sold by SciMeasure.",
+        "NASA Spinoff reports Phase II was 95 percent smaller, 92 percent lighter, and used 92.5 percent less power than Phase I."
+      ],
+      "story": "New Modular Camera No Ordinary Joe",
+      "sources": [
+        "https://spinoff.nasa.gov/node/10328",
+        "https://ntrs.nasa.gov/citations/20030099649"
+      ],
+      "non_claims": [
+        "No claim about current SciMeasure ownership, product availability, or current biomedical performance.",
+        "No independent clinical efficacy claim.",
+        "No reuse permission implied for source imagery."
+      ],
+      "historical_scope": true
+    },
+    "created_at": "2026-09-24 00:37:45.406873+00"
+  },
+  {
+    "id": "f32d2e1a-38ff-4019-a825-d42c4e07c142",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "bd426f29-a549-4e72-a05f-36bb0f26005b",
+    "research_packet_id": "d095cdc9-6b66-4460-b18d-3f5639a8ce37",
+    "version": 1,
+    "factual_hash": "220ee36d869db6f513a9d3c24ecb8381ee1dc1eb9c12b51e92ce4929b7efc85a",
+    "state": "frozen",
+    "facts": {
+      "facts": [
+        "NASA Spinoff describes PixelVision’s NV652 as a commercial back-illuminated low-light CCD camera.",
+        "NASA Spinoff identifies former JPL engineer James R. Janesick’s prior CCD expertise as the NASA technology input to the development."
+      ],
+      "story": "Night Vision Camera",
+      "sources": [
+        "https://spinoff.nasa.gov/spinoff1996/35.html",
+        "https://ntrs.nasa.gov/citations/20020079084"
+      ],
+      "non_claims": [
+        "No current product availability claim.",
+        "No independent claim of superiority, safety, or medical efficacy.",
+        "No claim that NASA owned the PixelVision product."
+      ],
+      "attribution_rule": "Describe this as personnel-expertise transfer; do not upgrade it to a NASA patent, license, or NASA-funded commercialization claim.",
+      "historical_scope": true
+    },
+    "created_at": "2026-09-24 00:38:48.370799+00"
+  },
+  {
+    "id": "a76bdff5-644b-4cb2-a7d2-b97daf0c6609",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "3b775603-199b-4fe2-ab04-b73a25248a70",
+    "research_packet_id": "4a7dccb4-fe5a-4a31-8c04-36e9bb853401",
+    "version": 1,
+    "factual_hash": "d437d5df3c4ec9681d879e17a5157eaec7b09a7be1e0a128b18de544d11770c8",
+    "state": "frozen",
+    "facts": {
+      "facts": [
+        "NASA Spinoff reports JPL and Amber/Raytheon developed QWIP infrared detector technology together.",
+        "NASA Spinoff reports a QWIP camera identified hot spots during the October 1996 Malibu fires."
+      ],
+      "story": "Infrared Camera",
+      "sources": [
+        "https://spinoff.nasa.gov/spinoff1997/ps2.html",
+        "https://ntrs.nasa.gov/citations/20020076146"
+      ],
+      "non_claims": [
+        "No clinical efficacy or tumor-detection claim.",
+        "No current product-availability or military-performance claim.",
+        "No reuse permission implied for source imagery."
+      ],
+      "historical_scope": true
+    },
+    "created_at": "2026-09-24 00:39:31.793886+00"
+  },
+  {
+    "id": "a47a5a60-bcb2-4a23-bbdf-8579b9686faf",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "90fc5ca2-d714-4cff-ace6-0a3e6699cbb2",
+    "research_packet_id": "2e54c5b6-cbf1-4b1d-ac9b-c35a65c4961c",
+    "version": 1,
+    "factual_hash": "815936bf30f79ab2e44f6638fadbc73854e16264c92d8af8380a84d0e7384b33",
+    "state": "frozen",
+    "facts": {
+      "facts": [
+        "NASA Spinoff reports Nikon specially modified F3 35mm cameras for Space Shuttle astronauts.",
+        "NASA Spinoff reports nonmigratory lubricants developed for the space-camera modification were used in commercial F3 variants.",
+        "NASA Spinoff identifies a coreless motor as another F3 spinoff and reports it allowed 140 rolls of film on one set of batteries."
+      ],
+      "story": "Space Camera",
+      "sources": [
+        "https://spinoff.nasa.gov/node/9384",
+        "https://ntrs.nasa.gov/citations/20030001791"
+      ],
+      "non_claims": [
+        "No current Nikon product or lubricant claim.",
+        "No claim that the entire commercial F3 originated from NASA.",
+        "No reuse permission implied for source imagery."
+      ],
+      "historical_scope": true
+    },
+    "created_at": "2026-09-24 00:40:18.477207+00"
+  },
+  {
+    "id": "8bcbfda5-939d-4557-ac0a-5d230071e1f1",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "deadac24-a079-4f81-bc52-9a2d63c7d63d",
+    "research_packet_id": "1fa32094-813a-4c2e-b662-e8fcbc592d1f",
+    "version": 1,
+    "factual_hash": "006db7e5db44421f439ac3d49690ccc52a52ad49eb827914c48c562f0d50097c",
+    "state": "frozen",
+    "facts": {
+      "agency": "USDA National Institute of Food and Agriculture",
+      "status": "posted",
+      "close_date": "2026-11-17",
+      "posted_date": "2026-10-01",
+      "opportunity_id": "364020",
+      "award_floor_usd": 600000,
+      "reel_truth_guard": "Do not describe this as a grant available to any small business.",
+      "agency_source_url": "https://www.nifa.usda.gov/grants/funding-opportunities/small-business-innovation-research-small-business-technology",
+      "award_ceiling_usd": 650000,
+      "eligibility_guard": "Only previous SBIR/STTR Phase I winners are eligible for Phase II support under this NOFO.",
+      "opportunity_number": "USDA-NIFA-SBIR-012221",
+      "primary_source_url": "https://www.grants.gov/search-results-detail/364020",
+      "cost_share_required": false,
+      "estimated_total_program_funding_usd": 24750000
+    },
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "id": "aea306d6-aced-4268-a29c-393adc2f4a7d",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "d13f499f-4caa-4b05-8b3b-ba2fc10e99bd",
+    "research_packet_id": "79e30744-9923-4290-acd9-cd08575606a3",
+    "version": 1,
+    "factual_hash": "c534e23652e3be0c07e99f8428e30b2d2700ce1fb92883ab1ef4a8044c0be90a",
+    "state": "frozen",
+    "facts": {
+      "agency": "U.S. Department of Transportation / OSDBU",
+      "status": "posted",
+      "award_usd": 250143,
+      "close_date": "2026-10-31",
+      "posted_date": "2026-09-30",
+      "region_states": [
+        "Alabama",
+        "Arkansas",
+        "Illinois",
+        "Iowa",
+        "Kentucky",
+        "Mississippi",
+        "Missouri",
+        "Nebraska",
+        "Tennessee"
+      ],
+      "opportunity_id": "364004",
+      "applicant_guard": "Current synopsis says financial assistance is to an eligible nonprofit organization to establish and operate the center.",
+      "reel_truth_guard": "Do not say small businesses can each apply for or receive the $250,143 award directly.",
+      "funding_instrument": "Cooperative Agreement",
+      "opportunity_number": "OST-OSDBU-2027-SBTTAC-REGION-4-FY2027-1",
+      "primary_source_url": "https://www.grants.gov/search-results-detail/364004",
+      "program_context_url": "https://www.transportation.gov/sites/dot.gov/files/2026-07/Region%204%20Long%20NOFO%20%20final%20.pdf",
+      "small_business_benefit": "Technical assistance, business development support and access-to-capital resources for small businesses competing for transportation-related contracts."
+    },
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  },
+  {
+    "id": "b2c76194-f2ee-40e8-bb3b-8fd6c180806c",
+    "workspace_id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "story_candidate_id": "527fdab2-8418-4aac-b700-895ef63f2aaf",
+    "research_packet_id": "d5649985-dca2-4ee6-a2d7-b771211b46d8",
+    "version": 1,
+    "factual_hash": "3c18b192825c0599fbe83998c83d1476a30aab2c5ff243bc102b0961e820e39c",
+    "state": "frozen",
+    "facts": {
+      "agency": "NIH / CDC / FDA",
+      "status": "posted",
+      "mechanisms": [
+        "R43",
+        "R44"
+      ],
+      "posted_date": "2026-05-28",
+      "applicant_type": "Small businesses",
+      "opportunity_id": "359671",
+      "program_purpose": "Support U.S. small business concerns in feasibility and R&D needed to move scientific innovations toward commercial products.",
+      "reel_truth_guard": "Funding/program explainer only. Do not make medical efficacy claims. Tell viewers to verify the exact current due date in the official announcement.",
+      "agency_source_url": "https://grants.nih.gov/funding/explore-nih-opportunities/parent-announcements",
+      "opportunity_number": "PA-27-100",
+      "primary_source_url": "https://www.grants.gov/search-results-detail/359671",
+      "grants_gov_close_date": "2027-04-05",
+      "nih_parent_announcement_expiration_context": "2027-04-06"
+    },
+    "created_at": "2026-10-03 08:22:12.12851+00"
+  }
+]

@@ -1,0 +1,302 @@
+[
+  {
+    "version": "reveng_v2",
+    "status": "retired",
+    "weights": {
+      "differentiation": 8,
+      "owner_time_support": 4,
+      "channel_optionality": 5,
+      "evergreen_shelf_life": 7,
+      "end_to_end_automation": 14,
+      "demand_purchase_intent": 14,
+      "economics_cac_headroom": 12,
+      "legal_ip_platform_risk": 4,
+      "competition_adjusted_gap": 10,
+      "batchability_test_velocity": 10,
+      "distribution_sales_friction": 12
+    },
+    "gates": {
+      "sellability_cap": 60,
+      "sellability_requirements": [
+        "buyer",
+        "purchase_trigger",
+        "discovery_path",
+        "differentiation",
+        "price_evidence",
+        "fulfillment",
+        "acquisition_economics"
+      ],
+      "external_actions_owner_gated": true
+    },
+    "confidence_multipliers": {
+      "A": 1,
+      "B": 0.9,
+      "C": 0.75,
+      "D": 0.6
+    },
+    "notes": "Engine-first, sellability/CAC-aware, end-to-end automation and batchability scorecard. Retired after owner feedback on 2026-09-24: v2 over-weighted automation/ease of fulfillment and allowed low-value commodity souvenir products to outrank stronger business opportunities.",
+    "created_at": "2026-09-24 19:39:40.4447+00"
+  },
+  {
+    "version": "reveng_v3",
+    "status": "retired",
+    "weights": {
+      "capital_risk": 4,
+      "market_depth": 8,
+      "defensibility": 12,
+      "owner_time_support": 4,
+      "willingness_to_pay": 10,
+      "repeat_ltv_potential": 10,
+      "end_to_end_automation": 6,
+      "distribution_advantage": 10,
+      "competition_adjusted_gap": 8,
+      "customer_problem_or_value": 16,
+      "absolute_gross_profit_potential": 12
+    },
+    "gates": {
+      "commodity_block": {
+        "rule": "If a current direct substitute already provides the same core offer and no evidenced wedge exists, candidate cannot be a top finalist.",
+        "score_cap": 45
+      },
+      "low_value_block": {
+        "rule": "Decorative/souvenir/novelty products with weak functional value, low repeat/LTV and no exceptional organic demand cannot become the project final merely because they are easy to automate.",
+        "score_cap": 45
+      },
+      "business_quality_gate": {
+        "must_show_at_least_two": [
+          "measurable economic or time benefit to buyer",
+          "recurring/repeat purchase or recurring revenue",
+          "high absolute gross profit dollars per customer",
+          "owned/defensible distribution advantage",
+          "strong data/workflow/network/IP moat",
+          "large expandable SKU/customer/account value"
+        ]
+      },
+      "finalist_requirements": [
+        "clear buyer and purchase trigger",
+        "clear customer outcome/value",
+        "verified current demand",
+        "absolute dollar economics, not margin percentage only",
+        "credible acquisition path",
+        "credible reason to choose us",
+        "scale path beyond one low-value SKU"
+      ],
+      "external_actions_owner_gated": true
+    },
+    "confidence_multipliers": {
+      "A": 1,
+      "B": 0.9,
+      "C": 0.75,
+      "D": 0.6
+    },
+    "notes": "Value-first business opportunity scorecard. Automation is an enabler, not the definition of opportunity. Explicitly prevents easy-to-generate commodity souvenirs from becoming final recommendations. Retired on 2026-09-24 after ontology failure review: even value-first weights are insufficient unless only true niche-level entities can enter final ranking.",
+    "created_at": "2026-09-24 20:34:00.721995+00"
+  },
+  {
+    "version": "reveng_v4",
+    "status": "retired",
+    "weights": {
+      "capital_risk": 4,
+      "market_depth": 8,
+      "defensibility": 12,
+      "owner_time_support": 4,
+      "willingness_to_pay": 10,
+      "repeat_ltv_potential": 10,
+      "end_to_end_automation": 6,
+      "distribution_advantage": 10,
+      "competition_adjusted_gap": 8,
+      "customer_problem_or_value": 16,
+      "absolute_gross_profit_potential": 12
+    },
+    "gates": {
+      "final_output_contract": "Rank niches/business opportunities, never individual artifacts, listings, designs, templates, books, posters, apps or other single offers.",
+      "finalist_requirements": [
+        "defined buyer segment",
+        "important recurring or high-value job/problem",
+        "verified willingness-to-pay or transaction evidence",
+        "credible acquisition/distribution path",
+        "absolute unit economics and customer economics",
+        "competition/substitutes and reason to win",
+        "repeat/LTV or sufficiently high customer value",
+        "scale path for a two-person starting team",
+        "multiple possible offers/tests inside the niche"
+      ],
+      "finalization_entity_level": "niche",
+      "external_actions_owner_gated": true,
+      "offers_and_skus_cannot_be_finalists": true
+    },
+    "confidence_multipliers": {
+      "A": 1,
+      "B": 0.9,
+      "C": 0.75,
+      "D": 0.6
+    },
+    "notes": "RevEng v4: niche-first ontology enforced in database. Products/offers are test vehicles inside a niche and cannot become final ranked opportunities. Retired after red-team showed pain+WTP+market can still produce crowded me-too categories without a new-entrant advantage.",
+    "created_at": "2026-09-24 20:40:00.419217+00"
+  },
+  {
+    "version": "reveng_v5",
+    "status": "retired",
+    "weights": {
+      "capital_risk": 3,
+      "entrant_edge": 16,
+      "market_depth": 6,
+      "defensibility": 10,
+      "owner_time_support": 3,
+      "willingness_to_pay": 8,
+      "repeat_ltv_potential": 8,
+      "end_to_end_automation": 4,
+      "distribution_advantage": 10,
+      "competition_adjusted_gap": 8,
+      "customer_problem_or_value": 14,
+      "absolute_gross_profit_potential": 10
+    },
+    "gates": {
+      "finalist_requirements": [
+        "true niche-level entity",
+        "important recurring or high-value buyer problem/job",
+        "verified current spend/WTP",
+        "credible market depth",
+        "evidenced entrant edge",
+        "credible acquisition path and CAC logic",
+        "absolute customer economics/LTV",
+        "competition/substitutes and reason a new entrant can win",
+        "two-person launch feasibility and scale path",
+        "multiple possible business models/offers/tests"
+      ],
+      "entrant_edge_hard_gate": {
+        "not_edge": [
+          "AI",
+          "automation",
+          "better UX",
+          "cheaper",
+          "faster",
+          "all-in-one",
+          "niche focus",
+          "generic personalization",
+          "generic managed service"
+        ],
+        "required_status": "evidenced",
+        "acceptable_edge_types": [
+          "privileged_or_low-CAC_distribution",
+          "proprietary_or_compounding_data",
+          "embedded_workflow_or_system_of_record_position",
+          "network_effect_or_marketplace_liquidity",
+          "exclusive_or_difficult_supply/access",
+          "regulatory_license_permission_or_certification_advantage",
+          "local_physical_density_or_operational_footprint",
+          "structural_unit_economics_advantage",
+          "unique_recovery_or_outcome_based_economics",
+          "existing_owned_audience_customer_base_or_partner_channel"
+        ],
+        "direct_substitute_rule": "If current competitors already serve the same buyer with the same proposed wedge and no evidenced entrant edge exists, reject rather than merely subtract points.",
+        "required_before_deep_screen": true
+      },
+      "finalization_entity_level": "niche",
+      "external_actions_owner_gated": true,
+      "offers_and_skus_cannot_be_finalists": true
+    },
+    "confidence_multipliers": {
+      "A": 1,
+      "B": 0.9,
+      "C": 0.75,
+      "D": 0.6
+    },
+    "notes": "RevEng v5: edge-first niche discovery. A real pain/market is not enough; a new entrant must have an evidenced structural advantage before deep screen. Direct me-too substitutes cause rejection, not a soft score penalty. Retired 2026-10-08: global scoring was contaminated by user-specific/false owner-network assumptions; superseded by reveng_v6_independent.",
+    "created_at": "2026-09-24 21:13:45.434993+00"
+  },
+  {
+    "version": "reveng_v6_independent",
+    "status": "active",
+    "weights": {
+      "capital_risk": 3,
+      "entrant_edge": 16,
+      "market_depth": 6,
+      "defensibility": 10,
+      "owner_time_support": 3,
+      "willingness_to_pay": 8,
+      "repeat_ltv_potential": 8,
+      "end_to_end_automation": 4,
+      "distribution_advantage": 10,
+      "competition_adjusted_gap": 8,
+      "customer_problem_or_value": 14,
+      "absolute_gross_profit_potential": 10
+    },
+    "gates": {
+      "score_integrity": {
+        "formula": "raw_score = SUM(component_score * component_weight) / 10",
+        "adjusted_formula": "adjusted_score = COALESCE(capped_score, raw_score) * confidence_multiplier",
+        "database_trigger_enforced": true,
+        "component_keys_must_exactly_match_weights": true
+      },
+      "global_scan_scope": [
+        "software/SaaS",
+        "games",
+        "ecommerce/dropshipping",
+        "services",
+        "marketplaces",
+        "data/information products",
+        "digital products",
+        "content/media",
+        "affiliate/referral",
+        "physical products",
+        "local businesses",
+        "B2B operations",
+        "consumer products"
+      ],
+      "entrant_edge_hard_gate": {
+        "not_edge": [
+          "AI",
+          "automation",
+          "better UX",
+          "cheaper",
+          "faster",
+          "all-in-one",
+          "niche focus",
+          "generic personalization",
+          "generic managed service",
+          "current user personal network",
+          "current user biography or experience"
+        ],
+        "required_status": "evidenced_independent",
+        "acceptable_edge_types": [
+          "business-intrinsic privileged_or_low-CAC_distribution",
+          "proprietary_or_compounding_data",
+          "embedded_workflow_or_system_of_record_position",
+          "network_effect_or_marketplace_liquidity",
+          "exclusive_or_difficult_supply/access",
+          "regulatory license/permission/certification advantage intrinsic to the business model",
+          "structural_unit_economics_advantage",
+          "unique recovery/outcome-based economics",
+          "acquirable owned audience/customer base/partner channel demonstrated independently of the current user"
+        ],
+        "direct_substitute_rule": "If current competitors serve the same buyer with the same wedge and no independent entrant edge exists, reject from deep screen.",
+        "hard_gate_fail_score_cap": 45,
+        "required_before_deep_screen": true,
+        "user_specific_assets_never_qualify": true
+      },
+      "global_independence_rule": {
+        "rule": "Global business ranking must be independent of the current user. Personal network, biography, location, capital, licenses, employer, contacts, prior industry experience, private access, or other user-specific assets cannot increase or decrease the global score.",
+        "user_fit_default": "OFF",
+        "user_fit_separate_layer": true,
+        "excluded_evidence_source_types": [
+          "owner_provided",
+          "owner_provided_retracted",
+          "user_memory",
+          "personal_context"
+        ]
+      },
+      "finalization_entity_level": "niche",
+      "external_actions_owner_gated": true,
+      "offers_and_skus_cannot_be_finalists": true
+    },
+    "confidence_multipliers": {
+      "A": 1,
+      "B": 0.9,
+      "C": 0.75,
+      "D": 0.6
+    },
+    "notes": "RevEng v6 independent baseline. Global ranking is user-agnostic. User fit may exist only as a separate optional overlay and never mutates global score. Adds DB-enforced score arithmetic integrity.",
+    "created_at": "2026-10-09 05:02:31.243543+00"
+  }
+]

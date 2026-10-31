@@ -1,0 +1,137 @@
+[
+  {
+    "path": "CATALOG_RU.md",
+    "bytes": 310214,
+    "sha256": "75affe156c466abfead8f08b6d0cb5bfcaa4ec51c6c97b7882da4d74a49dbd13"
+  },
+  {
+    "path": "catalog_business_models.json",
+    "bytes": 10247,
+    "sha256": "6c1355c53e00d34ecaed036810cad70eea57d9a42ce0c6b6d286715ef4574c22"
+  },
+  {
+    "path": "catalog_candidate_inbox.json",
+    "bytes": 35997,
+    "sha256": "b0a8cac99039822df397630437305fc7c8aa17c31ecf17d01dc63d1f4ee7ab1e"
+  },
+  {
+    "path": "catalog_candidate_sources.json",
+    "bytes": 887,
+    "sha256": "d94fe93cdd0f0851c31b9fd33f0be24d597dd55816d37d5c58faca2707351325"
+  },
+  {
+    "path": "catalog_claim_evidence.json",
+    "bytes": 26808,
+    "sha256": "f7d7e8d17804479dc23e8782bc674dfe4a595137bca737fccb45e0dc38b7a41a"
+  },
+  {
+    "path": "catalog_claims.json",
+    "bytes": 28796,
+    "sha256": "1c029dfc1ab848cd57fd98268755fc435e42aad6349e1522cebe1b9c8528b780"
+  },
+  {
+    "path": "catalog_evidence_sources.json",
+    "bytes": 5496,
+    "sha256": "9c113ee9c9d0f1ab242f8f809c48fa5d5b089c3f32ba175e841b538b33f0c625"
+  },
+  {
+    "path": "catalog_markets.json",
+    "bytes": 864,
+    "sha256": "0c61f5780eb7acbb21f2c1bb365403169698369427ec6a0330c7cace1a70f00c"
+  },
+  {
+    "path": "catalog_niches.json",
+    "bytes": 2510,
+    "sha256": "411023e88797cebb0b4464de5284a125230240f55a6a7e3fcb1baa10b7fd9cc8"
+  },
+  {
+    "path": "catalog_opportunities.json",
+    "bytes": 5169,
+    "sha256": "7e7fe8b10dcdc7b5357e02f7d35f637998328c3b0bdfecb0dfe37dd740178408"
+  },
+  {
+    "path": "evidence_items.json",
+    "bytes": 430694,
+    "sha256": "ef527fb4ecdac5a6fb848646caf07242671dda866d154407ab791067f1c6ce9f"
+  },
+  {
+    "path": "ideas_102.csv",
+    "bytes": 42369,
+    "sha256": "98bfa16d3938006bb50013d339add4f9301bdf581024a4c70cfdcf51b6d793b9"
+  },
+  {
+    "path": "ideas_102.json",
+    "bytes": 62752,
+    "sha256": "f164db5721e7cb7ed8633822fee6c3e9cf59d82fd7530cc83a8c3b920294170e"
+  },
+  {
+    "path": "niche_dossiers.json",
+    "bytes": 77919,
+    "sha256": "10f00f3023dce685a2ea4b39d346cff9808e9214c4108a5753d816c624cb6648"
+  },
+  {
+    "path": "niches.json",
+    "bytes": 88977,
+    "sha256": "3b6a8a9bd537a51fdf04e462360009f094d6a6b3dc1b639ae9047ea5d77a49a2"
+  },
+  {
+    "path": "opportunities.json",
+    "bytes": 25553,
+    "sha256": "5f7e59c60cb7b5c6c475301406b32ce14721d79395258d6bb38403a7eb491dbc"
+  },
+  {
+    "path": "opportunity_score_runs.json",
+    "bytes": 13108,
+    "sha256": "b4ea1fc7573a4cc4127c46ffc5a192be6c7955c389cf5a8d70ed17d09af9f80a"
+  },
+  {
+    "path": "opportunity_scoring_versions.json",
+    "bytes": 1093,
+    "sha256": "61d7084c5d0f53e39e0ba07a687d64fe4243779dda33014a26b527bf876842e8"
+  },
+  {
+    "path": "opportunity_validation_gates.json",
+    "bytes": 27517,
+    "sha256": "845480a2a040d596df0d0778b369fbbf08da9463586002a84acec4c29db636bc"
+  },
+  {
+    "path": "privacy_redactions.json",
+    "bytes": 2,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  {
+    "path": "provenance.json",
+    "bytes": 5571,
+    "sha256": "c5c052d01183a35a420958e08643efcfe95e00f52f710d93db91599752f1c5cb"
+  },
+  {
+    "path": "research_queue.json",
+    "bytes": 100290,
+    "sha256": "30691ca07e27b7f1b113d69321eb733e7e01aecb36e936a7aa887632e161a593"
+  },
+  {
+    "path": "score_runs.json",
+    "bytes": 129915,
+    "sha256": "a349a075ef1a9b5f07b1aaf897d263c078bdd8dd4a10219bfdbf81103f6bda95"
+  },
+  {
+    "path": "scoring_dimensions.json",
+    "bytes": 3986,
+    "sha256": "2a974da2c1633bc46ad2f3f18e05d486ed59f086f9f7f0b6bda6b4f76cc23b1a"
+  },
+  {
+    "path": "scoring_versions.json",
+    "bytes": 11825,
+    "sha256": "07eaa682770a44d460b5d0db0a321539d036e2a8f383cadd1ec08afa6a723e6f"
+  },
+  {
+    "path": "workspace_opportunity_state.json",
+    "bytes": 2232,
+    "sha256": "d0504043688efa8c316a3128fac0a55f691592abe380a09ea15566580bbf4bce"
+  },
+  {
+    "path": "workspaces.json",
+    "bytes": 997,
+    "sha256": "1161b3ae676238db082bccf95b2c9819a8e361d82a3e2c1056db0fa527d8e6f3"
+  }
+]

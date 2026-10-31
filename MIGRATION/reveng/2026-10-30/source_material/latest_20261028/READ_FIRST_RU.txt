@@ -1,0 +1,4 @@
+ТОЧНЫЙ SOURCE-ONLY СЛОЙ 2026-10-28. Не установщик и не готовая runtime-дистрибуция.
+Оригинальные entries сохранены без изменений и сверены по size/SHA256. FILES_SHA256.json содержит provenance.
+VALIDATION_SUMMARY.json сообщает прежние результаты архива; новых тестов в handoff не запускалось.
+Читайте repository.md и artifacts.md в корне handoff перед любым исполнением.

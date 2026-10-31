@@ -1,0 +1,18 @@
+[
+  {
+    "id": "48d38d5e-ed04-47b6-9035-d936e9887f0e",
+    "slug": "social-internal-lab",
+    "name": "Social Internal Lab",
+    "status": "active",
+    "created_at": "2026-09-23 23:20:22.807365+00",
+    "updated_at": "2026-09-25 05:12:42.179582+00"
+  },
+  {
+    "id": "84e21c7c-6931-4df2-bc3b-62ed253564c7",
+    "slug": "social-test-84e21c7c",
+    "name": "Social Test",
+    "status": "active",
+    "created_at": "2026-09-29 07:16:32.612961+00",
+    "updated_at": "2026-09-29 07:16:32.612961+00"
+  }
+]

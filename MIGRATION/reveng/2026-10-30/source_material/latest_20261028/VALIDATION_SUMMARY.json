@@ -1,0 +1,25 @@
+{
+  "project": "reveng",
+  "reported_prior_validation": {
+    "actual_guarded_normal": 245,
+    "actual_guarded_optimized": 245,
+    "total_guarded_passed": 490,
+    "aggregate_runs": 1,
+    "capability_each_mode": {
+      "attempted": 15,
+      "passed": 5,
+      "errors_missing_bs4": 10
+    },
+    "compile_only": 84,
+    "native": "NOT_RUN",
+    "hosted": "NOT_RUN",
+    "GUI": "NOT_RUN"
+  },
+  "shared_limits": [
+    "No installation",
+    "No publication",
+    "No Windows native or GUI verification",
+    "No live data or model qualification"
+  ],
+  "new_tests_this_handoff": false
+}

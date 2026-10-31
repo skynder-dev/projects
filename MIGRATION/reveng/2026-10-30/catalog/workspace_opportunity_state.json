@@ -1,0 +1,62 @@
+[
+  {
+    "workspace_id": "d632ae07-2200-47a1-9928-891fc6cc0833",
+    "catalog_opportunity_id": "a442b222-c210-4a55-ac73-3719a403e737",
+    "lifecycle_status": "editing",
+    "saved": true,
+    "first_seen_at": "2026-09-25 05:00:54.392543+00",
+    "last_touched_at": "2026-09-25 05:00:54.392543+00",
+    "accepted_revision_id": null,
+    "state_version": 1
+  },
+  {
+    "workspace_id": "0d4cb938-ce63-49a9-9e01-d1378a54746c",
+    "catalog_opportunity_id": "a442b222-c210-4a55-ac73-3719a403e737",
+    "lifecycle_status": "editing",
+    "saved": true,
+    "first_seen_at": "2026-09-25 05:00:54.392543+00",
+    "last_touched_at": "2026-09-25 05:00:54.392543+00",
+    "accepted_revision_id": null,
+    "state_version": 1
+  },
+  {
+    "workspace_id": "d632ae07-2200-47a1-9928-891fc6cc0833",
+    "catalog_opportunity_id": "ba717581-9470-4ae1-9b0a-e39747247095",
+    "lifecycle_status": "editing",
+    "saved": true,
+    "first_seen_at": "2026-09-25 05:10:16.151821+00",
+    "last_touched_at": "2026-09-25 05:10:16.151821+00",
+    "accepted_revision_id": null,
+    "state_version": 1
+  },
+  {
+    "workspace_id": "4d473eb7-61f3-4d66-9155-50ca30a57239",
+    "catalog_opportunity_id": "777118d4-c16b-40a4-9c85-70a96ab85b77",
+    "lifecycle_status": "editing",
+    "saved": true,
+    "first_seen_at": "2026-09-25 06:24:56.773668+00",
+    "last_touched_at": "2026-09-25 06:24:56.773668+00",
+    "accepted_revision_id": "0aa3c6ee-832b-4f5c-beee-a42f4e3321e0",
+    "state_version": 1
+  },
+  {
+    "workspace_id": "4d473eb7-61f3-4d66-9155-50ca30a57239",
+    "catalog_opportunity_id": "da06df72-129f-4139-be4a-5e2741303274",
+    "lifecycle_status": "accepted",
+    "saved": true,
+    "first_seen_at": "2026-09-30 08:30:07.338851+00",
+    "last_touched_at": "2026-09-30 08:30:07.338851+00",
+    "accepted_revision_id": "7aa7aa3e-e104-4b2f-94d3-7edcb0d7626b",
+    "state_version": 2
+  },
+  {
+    "workspace_id": "4d473eb7-61f3-4d66-9155-50ca30a57239",
+    "catalog_opportunity_id": "976fec4d-aa9d-4f0f-9d09-69aad03744d6",
+    "lifecycle_status": "editing",
+    "saved": true,
+    "first_seen_at": "2026-09-30 08:57:35.188849+00",
+    "last_touched_at": "2026-09-30 08:57:35.188849+00",
+    "accepted_revision_id": null,
+    "state_version": 1
+  }
+]
