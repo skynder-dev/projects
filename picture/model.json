@@ -1,0 +1,108 @@
+{
+ "repo": "black-forest-labs/FLUX.2-klein-4B",
+ "sha": "e7b7dc27f91deacad38e78976d1f2b499d76a294",
+ "gated": false,
+ "license": "apache-2.0",
+ "files": [
+  {
+   "file": ".gitattributes",
+   "size": 1580
+  },
+  {
+   "file": "LICENSE.md",
+   "size": 9584
+  },
+  {
+   "file": "README.md",
+   "size": 9991
+  },
+  {
+   "file": "editing.jpg",
+   "size": 2506178
+  },
+  {
+   "file": "flux-2-klein-4b.safetensors",
+   "size": 7751105712
+  },
+  {
+   "file": "model_index.json",
+   "size": 446
+  },
+  {
+   "file": "others.jpg",
+   "size": 3386946
+  },
+  {
+   "file": "realism.jpg",
+   "size": 2855711
+  },
+  {
+   "file": "scheduler/scheduler_config.json",
+   "size": 486
+  },
+  {
+   "file": "text_encoder/config.json",
+   "size": 1536
+  },
+  {
+   "file": "text_encoder/generation_config.json",
+   "size": 214
+  },
+  {
+   "file": "text_encoder/model-00001-of-00002.safetensors",
+   "size": 4967215360
+  },
+  {
+   "file": "text_encoder/model-00002-of-00002.safetensors",
+   "size": 3077766632
+  },
+  {
+   "file": "text_encoder/model.safetensors.index.json",
+   "size": 32855
+  },
+  {
+   "file": "tokenizer/added_tokens.json",
+   "size": 707
+  },
+  {
+   "file": "tokenizer/chat_template.jinja",
+   "size": 4168
+  },
+  {
+   "file": "tokenizer/merges.txt",
+   "size": 1671853
+  },
+  {
+   "file": "tokenizer/special_tokens_map.json",
+   "size": 613
+  },
+  {
+   "file": "tokenizer/tokenizer.json",
+   "size": 11422654
+  },
+  {
+   "file": "tokenizer/tokenizer_config.json",
+   "size": 5404
+  },
+  {
+   "file": "tokenizer/vocab.json",
+   "size": 2776833
+  },
+  {
+   "file": "transformer/config.json",
+   "size": 541
+  },
+  {
+   "file": "transformer/diffusion_pytorch_model.safetensors",
+   "size": 7751109744
+  },
+  {
+   "file": "vae/config.json",
+   "size": 821
+  },
+  {
+   "file": "vae/diffusion_pytorch_model.safetensors",
+   "size": 168120878
+  }
+ ]
+}
