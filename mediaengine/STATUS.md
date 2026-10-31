@@ -1013,6 +1013,14 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   an idea order done again could file twice; hand-edited item files broke the page and slowed the bot (normalised);
   notifications for removed downloads or a blocked bot retried for ever (given up once); a webhook set elsewhere
   (deleteWebhook on connect); the new-items count read every file on every page (cached by the folder's change).
+- 2026-10-31, **b274** published (commit d2f822a, run 41154457743: all green) and **installed on the owner PC by Claude**
+  through the PC agent (03:11 Chicago, task medeng-update in the private repo skynder-dev/pc: b273 -> b274 through the app's
+  own Updates page). b274: automatic updates (every 30 minutes, only when idle, same runtime only, no window; a switch on
+  the Updates page, the last automatic check, logs/update_auto.log) - the owner: "update the programs without me". The PC
+  agent: GitHub's own self-hosted runner, installed by the owner (no password: a startup task in his name, S4U), only
+  manual workflow runs in a private repository; outputs on its branch results. The picture probe (FLUX.2 [klein] 4B,
+  Apache-2.0, on a 4-core runner) drew one 512 px picture in about 4 hours and was stopped at 5 h: it loads and draws a
+  clean flat graphic, but the real trial belongs on the owner's RTX 3060 (through the agent).
 - 2026-10-30, **b273** published (commit ad3e921, ZIP 5,157,659 bytes, the same runtime; run 41104078757: all green,
   handedit 11/11 with the editor used in Edge): Edit by hand (a real time-line editor; the owner: "typing a title does
   nothing" on the old page, then "how do you see it?" - step 1 of 3: pieces, order, cuts, MP4 in four formats; next: text,
