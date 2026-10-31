@@ -1,0 +1,31 @@
+﻿#requires -Version 7.5
+# Merch Forge · automatic daily data copy (runs hidden, in its own process, so the window never waits)
+# Same format and checks as Home -> My data -> Save a copy. Keeps the newest copies in <data>\backups\auto-*.zip.
+# Holds backups\auto-copy.lock for the whole run: a second helper exits at once, and a restore waits for it.
+param([string]$StateRoot=(Join-Path $env:LOCALAPPDATA 'MerchForge'),[int]$Keep=3)
+Set-StrictMode -Version 2.0
+$ErrorActionPreference='Stop'
+if($PSVersionTable.PSEdition-cne'Core'){throw 'Automatic backup requires PowerShell Core 7.5+; no legacy fallback is supported.'}
+$status=$null; $lock=$null
+$result=[ordered]@{schema='forge.auto_data_copy.v1';at=[DateTime]::UtcNow.ToString('o');state='started';ok=$false;file='';files=0;error=''}
+function Write-Status { try{ if($status){ [IO.File]::WriteAllText($status,($result | ConvertTo-Json),(New-Object Text.UTF8Encoding($false))) } }catch{} }
+try {
+    function Get-PropertyValue($Object,[string]$Name){ if($null -eq $Object){return $null}; if($Object -is [System.Collections.IDictionary]){ if($Object.Contains($Name)){return $Object[$Name]}; return $null }; $p=$Object.PSObject.Properties[$Name]; if($null -eq $p){return $null}; return $p.Value }
+    function Ensure-Dir([string]$Path){ if(-not (Test-Path -LiteralPath $Path)){ New-Item -ItemType Directory -Path $Path -Force | Out-Null } }
+    function Get-UiText([string]$Key,[string]$Fallback=''){ return $Fallback }
+    $script:StateRoot=$StateRoot; $script:UiText=$null; $script:StaticUiTranslations=$null
+    $script:AppVersion=''; try{ $m=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'candidate_manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json; $script:AppVersion=[string]$m.desktop.app_version }catch{}
+    $backups=Join-Path $StateRoot 'backups'; Ensure-Dir $backups
+    try{ $lock=[IO.File]::Open((Join-Path $backups 'auto-copy.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None) }catch{ exit 0 }   # another copy or a restore is running
+    $status=Join-Path $backups 'auto-last.json'; Write-Status
+    . (Join-Path $PSScriptRoot 'Modules\Forge.BriefApproval.ps1')
+    . (Join-Path $PSScriptRoot 'Modules\Forge.DataBackup.ps1')
+    foreach($stale in @(Get-ChildItem -LiteralPath $backups -Filter 'auto-*.zip.tmp.*' -File -ErrorAction SilentlyContinue)){ try{ Remove-Item -LiteralPath $stale.FullName -Force }catch{} }
+    if(-not (Test-Path -LiteralPath (Join-Path $StateRoot 'local-core-v1') -PathType Container)){ throw 'No local data yet.' }
+    $zip=Join-Path $backups ('auto-'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'.zip')
+    $r=New-ForgeDataBackup $StateRoot $zip
+    $result.ok=$true; $result.state='done'; $result.file=$zip; $result.files=[int]$r.file_count
+    foreach($old in @(Get-ChildItem -LiteralPath $backups -Filter 'auto-*.zip' -File | Sort-Object LastWriteTimeUtc -Descending | Select-Object -Skip $Keep)){ try{ Remove-Item -LiteralPath $old.FullName -Force }catch{} }
+} catch { $result.state='failed'; $result.error=$_.Exception.Message }
+finally { $result.at=[DateTime]::UtcNow.ToString('o'); Write-Status; if($null -ne $lock){ $lock.Dispose() } }
+if($result.ok){ exit 0 } else { exit 1 }

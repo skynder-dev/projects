@@ -1,0 +1,25 @@
+{
+  "generation_available": false,
+  "files": [
+    {
+      "path": "Modules/Forge.GenerationWorkerBridge.ps1",
+      "sha256": "8954bb66cda1c582b0bf1e938f0c27198763d36cdfd37d7be18695df863b2282"
+    },
+    {
+      "path": "Modules/Forge.GenerationAuthority.ps1",
+      "sha256": "5ad8833599915b61f7f4bb153e6ba4f568ef315a779ec8576446b2011116ad68"
+    },
+    {
+      "path": "Modules/Forge.LocalFlux.ps1",
+      "sha256": "07f9d946ad9edc3e771caf72e5c6fbd7538bdcf3db014c4cd9f2412848fa1857"
+    },
+    {
+      "path": "Modules/Forge.GenerationMaintenance.ps1",
+      "sha256": "d34e0ebd75ea663604d0a607cf292af166704affb17f50c8e4966bc47d8929ea"
+    },
+    {
+      "path": "Modules/Forge.GenerationCapability.ps1",
+      "sha256": "3638a9ade82c53604c45926aa6b812346860c2d260e68f8e0ab22cbb0a96898a"
+    }
+  ]
+}

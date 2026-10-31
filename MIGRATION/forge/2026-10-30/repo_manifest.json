@@ -1,0 +1,895 @@
+{
+  "observed_at_utc": "2026-10-30T16:00:00Z",
+  "repository": "skynder-dev/projects",
+  "main_commit": "82a034efb536ca2cda7315c465df935027673fa2",
+  "historical_forge_green_commit": "00d786445581d2cf283c67c106efd311f20dd755",
+  "historical_windows_run": "https://github.com/skynder-dev/projects/actions/runs/38070923432",
+  "forge_files": [
+    {
+      "path": "forge/.gitattributes",
+      "git_blob_sha": "a25dc38d80feaa9066965b8f9fa68e8395bfcc9c",
+      "size": 104
+    },
+    {
+      "path": "forge/README.md",
+      "git_blob_sha": "df66d38197cfeb077886a4b400186f2b6f8f8294",
+      "size": 1034
+    },
+    {
+      "path": "forge/android-mobile-updates/Forge-Mobile-0.1.1.apk",
+      "git_blob_sha": "17361e83efb3096531ce103f4f146af662776f8b",
+      "size": 65811
+    },
+    {
+      "path": "forge/android-mobile-updates/Forge-Mobile-0.1.2.apk",
+      "git_blob_sha": "186398b393b5694dd43004d6c74b2884d017d379",
+      "size": 65811
+    },
+    {
+      "path": "forge/android-mobile-updates/update.json",
+      "git_blob_sha": "7fe1f052de540c07ebec6b49b8742f9d7071944c",
+      "size": 360
+    },
+    {
+      "path": "forge/android-updates/Forge-Control-0.1.1-test.apk",
+      "git_blob_sha": "b825040b85b891ba291456f8a82e800b59520c70",
+      "size": 57842
+    },
+    {
+      "path": "forge/android-updates/update.json",
+      "git_blob_sha": "e77e1162ebcc83e08ded73402706b69155cbffb0",
+      "size": 360
+    },
+    {
+      "path": "forge/app/FORGE_077_CHECKPOINT.json",
+      "git_blob_sha": "8646b7905446d372a580a0d44ea7374665f6c077",
+      "size": 1265
+    },
+    {
+      "path": "forge/app/HOW_TO_USE_RU.txt",
+      "git_blob_sha": "e2658e9c75b0766b98f106937ab52f723cc2e876",
+      "size": 4890
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Configure Image Provider.ps1",
+      "git_blob_sha": "1251179578bae0f7b1f2d20e7283afb231708975",
+      "size": 6991
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Configure Image Provider.vbs",
+      "git_blob_sha": "0b947fd13506b357b405dd0674238f26e2075bad",
+      "size": 753
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/AmazonPrintProfile.template.json",
+      "git_blob_sha": "0d000fc80c5df2fe0dcbedf7f96a10f82d8379b5",
+      "size": 726
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/Forge.GenerationProviders.json",
+      "git_blob_sha": "6778f04f7cd12f73758a7ab304824caf74da0144",
+      "size": 9730
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/Forge.LastKnownIdeas.json",
+      "git_blob_sha": "db62021a5cd13c86ce5d204515955c87b8bb5002",
+      "size": 10522
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/Forge.MessageTranslations.json",
+      "git_blob_sha": "da6b725c9d2987420a415b1cdeb88f7475daac27",
+      "size": 89573
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/Forge.WhatsNew.json",
+      "git_blob_sha": "ad69e1656a99bf3f4e16d7f41bd2b6ae2ac367fb",
+      "size": 3009
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/GenerationJob.example.json",
+      "git_blob_sha": "59357a9a79a1613df4ed96312b443c46b4700147",
+      "size": 1415
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/GenerationResult.example.json",
+      "git_blob_sha": "74ca1769e2a55a6650f93b1f54267bcde1b5db09",
+      "size": 1688
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/LocalCheckEvidence.template.json",
+      "git_blob_sha": "f78f07fbac6f05da55d62bb8f4c12aa4bd527834",
+      "size": 1517
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/LocalCheckRequest_README.txt",
+      "git_blob_sha": "2bb2786a912d4ceca2dc3c0f8e0a19b92278d91a",
+      "size": 2460
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/PrintProduction_README.txt",
+      "git_blob_sha": "9e5d0bd378f1e5852d2d144726e4b15b2fb86df4",
+      "size": 1614
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/ProviderSetup_README.txt",
+      "git_blob_sha": "8b93a3c77b22229797f149daac0c8149772e39f4",
+      "size": 3862
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/PublicationReceipt.template.json",
+      "git_blob_sha": "79aa010b4e316b6badfca4b77645789320c38ee6",
+      "size": 1007
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/SalesImport_README.txt",
+      "git_blob_sha": "2e50b98eb60bfe80b76600fd5355215691d6d98f",
+      "size": 2486
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/SelfTest/mock-01.png",
+      "git_blob_sha": "9367fdc10d8a1d66380fa0c038300e89871ff593",
+      "size": 7715
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Data/SelfTest/mock-02.png",
+      "git_blob_sha": "b63252867fdbf608adb219caee890ce8f62bf0f4",
+      "size": 8035
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Import Amazon Print Profile.ps1",
+      "git_blob_sha": "ab8f7ed28dd68db3eab1e37039714f2f908313cb",
+      "size": 4574
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Import Amazon Print Profile.vbs",
+      "git_blob_sha": "24bf4a27f25c7124eba1e6e8a4928d63eeb67927",
+      "size": 467
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Install Merch Forge.vbs",
+      "git_blob_sha": "f332e9910a7b2c413fa3aed93ddf735ed39e9828",
+      "size": 21877
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeAutoDataCopy.ps1",
+      "git_blob_sha": "2468f20f7ccbcec2499ae40aac0ac4c457c6a5ee",
+      "size": 3006
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeCheckWorker.ps1",
+      "git_blob_sha": "31352b07a6eae245ed12e5d813340c3e47e0e852",
+      "size": 7173
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeGenerationWorker.ps1",
+      "git_blob_sha": "7d3b3a43a1ba7a394c53d46bec01ddc3279705dc",
+      "size": 24122
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeLauncher.cmd",
+      "git_blob_sha": "99963db4c01261e70f61fb324cbc30e115e9bcc5",
+      "size": 1775
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgePreflight.ps1",
+      "git_blob_sha": "42583afda874c9924c329897d8144d64657442d8",
+      "size": 11516
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeProviderPipelineSelfTest.ps1",
+      "git_blob_sha": "772cc4ddbd3a7e1670fac97eb745ce3d871b4f93",
+      "size": 87747
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeResearchDraftSelfTest.ps1",
+      "git_blob_sha": "6b7f4f422029c7b5e39199161ab647e8a5759d66",
+      "size": 51814
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeWorkbench.ps1",
+      "git_blob_sha": "348e484612c3bccc268df4d1226da83f0e5bdf54",
+      "size": 259794
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.AmazonProfile.ps1",
+      "git_blob_sha": "d694a8a72e2ca34e262a8a28ce40e3fa09502243",
+      "size": 24793
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.BackendStatus.ps1",
+      "git_blob_sha": "5dd5ba2174c8cf2140532d49386db520c3c5b616",
+      "size": 2114
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.CheckAttestation.ps1",
+      "git_blob_sha": "b7bf832b8456137d9d3b89953c5da9e99064c44e",
+      "size": 24835
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.DataAdapter.ps1",
+      "git_blob_sha": "af60e9c5b7e6f65689a7d0ac2515dcaa35b70cb3",
+      "size": 1167
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.DataBackup.ps1",
+      "git_blob_sha": "12a2212d4216d7e91c7190e2d1cf1be22b29b78e",
+      "size": 26622
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.DataViews.ps1",
+      "git_blob_sha": "19bc1616002e75c7b6766382f17d310742347d36",
+      "size": 30650
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Diagnostics.ps1",
+      "git_blob_sha": "9219c1db0a37509758a341913dd4428a31c6be51",
+      "size": 4349
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.DomainActions.ps1",
+      "git_blob_sha": "f63f736793b0e4e211da832a3a827687db063bff",
+      "size": 29669
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Gates.ps1",
+      "git_blob_sha": "af5f96a32d615777f19ca65ff096e9d2d57d6a82",
+      "size": 10945
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.GenerationAuthority.ps1",
+      "git_blob_sha": "2c1b9bfa6f642c946169cfd3cb47a493b23e98d8",
+      "size": 18088
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.GenerationMaintenance.ps1",
+      "git_blob_sha": "655ff69cf249d08d3231feeb34706ae161499b5c",
+      "size": 4472
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.GenerationProvider.ps1",
+      "git_blob_sha": "edae508843d4a9e314a700ba757dbc3bab80f142",
+      "size": 17985
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.GenerationWorkerBridge.ps1",
+      "git_blob_sha": "f04ff02a782f4624c752011ae431f120aab57662",
+      "size": 35856
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ImageValidation.ps1",
+      "git_blob_sha": "4c921c67acc6220f7dfe104c7dcd8bc19108e628",
+      "size": 4149
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ListingHints.ps1",
+      "git_blob_sha": "eecb4dd8457b4e5d589e052c3cd3d5f68b3c3c36",
+      "size": 6346
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.LocalCore.ps1",
+      "git_blob_sha": "6e8d067b4e44e604bab356b43874398f4e37e600",
+      "size": 126638
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Localization.ps1",
+      "git_blob_sha": "a6bc4771c56671f355df8c388e726c9339e07609",
+      "size": 19636
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Media.ps1",
+      "git_blob_sha": "1f0cdabee8f715966222e64a8d3680dc0e18f35f",
+      "size": 14304
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.MessageLocalization.ps1",
+      "git_blob_sha": "dfcbadcec988c2e9407d0759de644857178b93a9",
+      "size": 5342
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Pipeline.ps1",
+      "git_blob_sha": "6b02dd4be537221d2c0fa72d321f6d91e0eaef1d",
+      "size": 32178
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.PrintChecks.ps1",
+      "git_blob_sha": "567f52d71f3bb13536b99a0bf0f6b295a4f4d9d2",
+      "size": 18490
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ProductNavigation.ps1",
+      "git_blob_sha": "a1130e73f36d90800c62b2ca8d47c32fadc20133",
+      "size": 14178
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ResearchDrafts.ps1",
+      "git_blob_sha": "7c1b97fd7954fd4aa7d483bbc8d870adb035714f",
+      "size": 33574
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.UI.Layout.ps1",
+      "git_blob_sha": "eedee771778fb6e747100d3d0b0c1ca72c6fb916",
+      "size": 9674
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.WhatsNew.ps1",
+      "git_blob_sha": "de679ff8ac0aa71d722cc75570163852691e888e",
+      "size": 2832
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Open Error Log.vbs",
+      "git_blob_sha": "cd19fe8a2ffc048c2011d684ceda0556a6aa14bb",
+      "size": 1697
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/README.txt",
+      "git_blob_sha": "90ea98e644e883fbefe85ca1dc25207b76607b57",
+      "size": 17991
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Remove Saved Access.vbs",
+      "git_blob_sha": "ba130f68c4744c774799b76f6c176dbe706728f6",
+      "size": 469
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Start Merch Forge.vbs",
+      "git_blob_sha": "1d6c6407ff1cd72e2d4b462ef5a60eac27e710c5",
+      "size": 5334
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Test Image Provider Online.ps1",
+      "git_blob_sha": "14b67a7489c6ab30ddb66be9821b8939a8e5e0c3",
+      "size": 3101
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Test Image Provider Online.vbs",
+      "git_blob_sha": "5fdbbc5202c3aaaee4e428165fa4b7efe783c353",
+      "size": 1529
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Test Image Provider.ps1",
+      "git_blob_sha": "17c4670edccc9b4cdab885d99f7569b28d17e632",
+      "size": 8055
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Test Image Provider.vbs",
+      "git_blob_sha": "a46436235e2865dd03df52e86128b9eb06c179eb",
+      "size": 1309
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/candidate_manifest.json",
+      "git_blob_sha": "6783ff03012fd8654c6b4d54909b21e84c043666",
+      "size": 78091
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/integrity.json",
+      "git_blob_sha": "fee403801714734e1fbf4a3e9612114113ce9a0f",
+      "size": 10642
+    },
+    {
+      "path": "forge/app/Mobile_ReadReview/FORGENIGHT-018_Merch_Forge_Mobile_ReadReview_0_2_1.zip",
+      "git_blob_sha": "c8a92ecc8d15e2940c99e895d13f8297b9b710e2",
+      "size": 23611
+    },
+    {
+      "path": "forge/app/README_FIRST.txt",
+      "git_blob_sha": "7295a5391174563ab48f408d6f8c1a1a1982fe7e",
+      "size": 987
+    },
+    {
+      "path": "forge/app/START_077_MERCH_FORGE.vbs",
+      "git_blob_sha": "839fcc848ae770d1fe4b04d52d574b3b73606adc",
+      "size": 1340
+    },
+    {
+      "path": "forge/archive/050_Merch_Forge_CORE_WORKING_RC.zip",
+      "git_blob_sha": "c2e8da75cfbd1300af8e3515be9537b668e86ca4",
+      "size": 262109
+    },
+    {
+      "path": "forge/archive/050_NO_DISPATCH_ARTWORK_STAGING.zip",
+      "git_blob_sha": "8272b44d9a00971c7e1133e4c9475f551a18860f",
+      "size": 55859
+    },
+    {
+      "path": "forge/archive/050_OWNER_REVIEW_SELECTION_PACKET.zip",
+      "git_blob_sha": "1a5692ea1f5cc6bfc102d812f99928bd63f2669a",
+      "size": 96729
+    },
+    {
+      "path": "forge/archive/050_REAL_PRODUCT_READINESS_MANIFEST.zip",
+      "git_blob_sha": "11832d9cfbc43c01e13e5024c2ce78ba82c96087",
+      "size": 26718
+    },
+    {
+      "path": "forge/archive/054_Merch_Forge_DISCOVER_RESEARCH_RC.zip",
+      "git_blob_sha": "4f873b2faba996f68ef0f17376d61cd933dc7494",
+      "size": 269429
+    },
+    {
+      "path": "forge/ci/ForgeWpfSmoke.hook.ps1",
+      "git_blob_sha": "7663c00424e39dff161b00990a4d1a91b7343559",
+      "size": 54937
+    },
+    {
+      "path": "forge/ci/Invoke-ForgeWindowsCi.ps1",
+      "git_blob_sha": "89b9bb07d87f063495d567b898930a4def0008a0",
+      "size": 8596
+    },
+    {
+      "path": "forge/ci/Test-ForgeInstall.ps1",
+      "git_blob_sha": "3a0fdd90353de9076ddce182a0661bb77fbe282f",
+      "size": 12132
+    },
+    {
+      "path": "forge/docs/CURRENT_STATE.md",
+      "git_blob_sha": "7167b94ed71e0b44f5ea8aead56e21a8f8980040",
+      "size": 4464
+    },
+    {
+      "path": "forge/docs/NEXT_ACTION.md",
+      "git_blob_sha": "836caa63d5b4e13c387644737f1ce468a74d03e7",
+      "size": 1506
+    },
+    {
+      "path": "forge/docs/ROADMAP.md",
+      "git_blob_sha": "0a3c9c951e53eef0afc14f18b1c6c1af71c65de8",
+      "size": 21905
+    },
+    {
+      "path": "forge/docs/WORKLOG.md",
+      "git_blob_sha": "b04e5a0deae7b0a73b92f0ad37b88e61a8053b2c",
+      "size": 14886
+    },
+    {
+      "path": "forge/docs/migration_01/00_START_HERE.md",
+      "git_blob_sha": "18b5a5add194ea4e0222ac06adf070f363c30b31",
+      "size": 1990
+    },
+    {
+      "path": "forge/docs/migration_01/01_PRODUCT_SPEC.md",
+      "git_blob_sha": "24e9c47aa636ca4a3745f962e7bbc863f056faf6",
+      "size": 1350
+    },
+    {
+      "path": "forge/docs/migration_01/02_CURRENT_STATE.md",
+      "git_blob_sha": "034c69443d98a58f0d15eb0ca8036baf38383b27",
+      "size": 1671
+    },
+    {
+      "path": "forge/docs/migration_01/03_DONE_DEFINITION.md",
+      "git_blob_sha": "f73f6401748296e522e230dbae4f4c3f8ee05796",
+      "size": 1303
+    },
+    {
+      "path": "forge/docs/migration_01/04_OWNER_RULES.md",
+      "git_blob_sha": "2f1e55b25f03b60549b8808b3c3d5c0d79c118e3",
+      "size": 807
+    },
+    {
+      "path": "forge/docs/migration_01/05_KNOWN_FAILURES.md",
+      "git_blob_sha": "814c0439ab90a093338cf82b288a87782f7d12cb",
+      "size": 1149
+    },
+    {
+      "path": "forge/docs/migration_01/06_DECISIONS.md",
+      "git_blob_sha": "5e0694a84dbf7ca76bb7e4a8b981287253ecdd03",
+      "size": 621
+    },
+    {
+      "path": "forge/docs/migration_01/07_NEXT_WORK.md",
+      "git_blob_sha": "e7f08e15e262f09443a7727fdb295941cc6b6034",
+      "size": 1464
+    },
+    {
+      "path": "forge/docs/migration_01/08_SOURCE_MANIFEST.json",
+      "git_blob_sha": "adbc39f50c0124120a337a6b494c2582a92b711b",
+      "size": 3475
+    },
+    {
+      "path": "forge/docs/migration_01/09_CLAUDE_START_PROMPT.md",
+      "git_blob_sha": "994563025265db32877d951c11befb35b29178c9",
+      "size": 1100
+    },
+    {
+      "path": "forge/docs/migration_01/ALEX_AUTONOMOUS_WORK_CONTRACT.md",
+      "git_blob_sha": "eb5659f916c54622213ee7a615a9d777645318a6",
+      "size": 1422
+    },
+    {
+      "path": "forge/docs/migration_01/evidence/FORGE_051_IN_APP_OWNER_REVIEW_CHECKPOINT.json",
+      "git_blob_sha": "3e816ca6fd4b76d125336ed6b7f38df44a228af5",
+      "size": 1607
+    },
+    {
+      "path": "forge/docs/migration_01/evidence/FORGE_052_OWNER_REVIEW_CLICK_FIX_CHECKPOINT.json",
+      "git_blob_sha": "69db16dfaf9bb32734c845660a9d576fbd6e8121",
+      "size": 2170
+    },
+    {
+      "path": "forge/docs/migration_01/evidence/FORGE_053_OWNER_REVIEW_RUNTIME_CHECKPOINT.json",
+      "git_blob_sha": "5bc139ffdec69537bd9d80a2fe831e632a699433",
+      "size": 2066
+    },
+    {
+      "path": "forge/docs/releases/056.md",
+      "git_blob_sha": "777c0792fe214ba6b8c8a7d1f2661bc6ec35c4ee",
+      "size": 927
+    },
+    {
+      "path": "forge/docs/releases/057.md",
+      "git_blob_sha": "4b6048534ac687c5f1e679ca2afcf11edda57bd2",
+      "size": 1620
+    },
+    {
+      "path": "forge/docs/releases/058.md",
+      "git_blob_sha": "6120abe34c1bbf6b24676496ddde9fdaeba1f511",
+      "size": 1197
+    },
+    {
+      "path": "forge/docs/releases/059.md",
+      "git_blob_sha": "749b3fc2208dbc238ade2119b425f50a02b523b2",
+      "size": 1360
+    },
+    {
+      "path": "forge/docs/releases/060.md",
+      "git_blob_sha": "0f03ed8d9644b591df6fb43e903c50684068d7a6",
+      "size": 519
+    },
+    {
+      "path": "forge/docs/releases/061.md",
+      "git_blob_sha": "b2eb1c7a5d2add454f710612ec349362119ac9e5",
+      "size": 467
+    },
+    {
+      "path": "forge/docs/releases/062.md",
+      "git_blob_sha": "d4fee8faceedfed072178d13978f407328358a5f",
+      "size": 577
+    },
+    {
+      "path": "forge/docs/releases/063.md",
+      "git_blob_sha": "e99baad03c6025242000125cbf0b314b149f4cc1",
+      "size": 424
+    },
+    {
+      "path": "forge/docs/releases/064.md",
+      "git_blob_sha": "4890b724757552256287b945e48f38b6af10f634",
+      "size": 811
+    },
+    {
+      "path": "forge/docs/releases/065.md",
+      "git_blob_sha": "6f63805c6d9482dfe95b7ebc1e45a815f2f4c5a4",
+      "size": 813
+    },
+    {
+      "path": "forge/docs/releases/066.md",
+      "git_blob_sha": "c7672086dc31445b663d01437dd985b7319cbf33",
+      "size": 597
+    },
+    {
+      "path": "forge/docs/releases/067.md",
+      "git_blob_sha": "9742b09ff4cf6572f87695ff85705a8f267d256c",
+      "size": 603
+    },
+    {
+      "path": "forge/docs/releases/068.md",
+      "git_blob_sha": "6d47a694138c129cd237dcacb420e9174c79e3a3",
+      "size": 1271
+    },
+    {
+      "path": "forge/docs/releases/069.md",
+      "git_blob_sha": "b98b6cd9c0155e6112366ea151f69ef367a0859c",
+      "size": 663
+    },
+    {
+      "path": "forge/docs/releases/070.md",
+      "git_blob_sha": "a3ec4f512bac4929516ae95e77ef4f612afddbf4",
+      "size": 220
+    },
+    {
+      "path": "forge/docs/releases/071.md",
+      "git_blob_sha": "ec0aeeb4dde701e2cb79e5ed0956b3675d583043",
+      "size": 900
+    },
+    {
+      "path": "forge/docs/releases/072.md",
+      "git_blob_sha": "962072c4b762aa736a640d8158198a22f78a3780",
+      "size": 1229
+    },
+    {
+      "path": "forge/docs/releases/073.md",
+      "git_blob_sha": "57c08c6ff26c91ad97be53039a9e9d7626968ac9",
+      "size": 614
+    },
+    {
+      "path": "forge/docs/releases/074.md",
+      "git_blob_sha": "3453bcff75cf2847d87a7febf31dc87912e8a0bd",
+      "size": 920
+    },
+    {
+      "path": "forge/docs/releases/075.md",
+      "git_blob_sha": "f377d30e4a5814ee64f9403af6dd2b6544f057cc",
+      "size": 568
+    },
+    {
+      "path": "forge/docs/releases/076.md",
+      "git_blob_sha": "959f470376d8f7122159819ea578926307eaad58",
+      "size": 307
+    },
+    {
+      "path": "forge/docs/releases/077.md",
+      "git_blob_sha": "b274f1becde79ea9df678dd35d1d935290ba7eaa",
+      "size": 573
+    },
+    {
+      "path": "forge/releases/055_Merch_Forge_RESEARCH_DRAFT_RC.SHA256.json",
+      "git_blob_sha": "54cb1a5d7c2a6422f365e2b4336af16b8627628f",
+      "size": 366
+    },
+    {
+      "path": "forge/releases/055_Merch_Forge_RESEARCH_DRAFT_RC.zip",
+      "git_blob_sha": "d7ca7c7840ecdfe4c239a30789bf7d81a8cb0419",
+      "size": 289737
+    },
+    {
+      "path": "forge/releases/055_Merch_Forge_RESEARCH_DRAFT_RC.zip.sha256",
+      "git_blob_sha": "09b503cb93b6391ccbb0ef83b9878fa803ea1159",
+      "size": 104
+    },
+    {
+      "path": "forge/releases/056_Merch_Forge_WINDOWS_FIXES_RC.zip",
+      "git_blob_sha": "ef874525d59fa76057b2d821c7f7f87a18e3d955",
+      "size": 286813
+    },
+    {
+      "path": "forge/releases/056_Merch_Forge_WINDOWS_FIXES_RC.zip.sha256",
+      "git_blob_sha": "b0e57ab8813b04f61075729fecc953e00bd172c7",
+      "size": 103
+    },
+    {
+      "path": "forge/releases/057_Merch_Forge_AMAZON_PROFILE_FIX_RC.zip",
+      "git_blob_sha": "4c3a47b32aa22aeabbc2ab1f27e28c8515655189",
+      "size": 289063
+    },
+    {
+      "path": "forge/releases/057_Merch_Forge_AMAZON_PROFILE_FIX_RC.zip.sha256",
+      "git_blob_sha": "a9ef220d032cfd8443c404ebaea38f234f0d150f",
+      "size": 108
+    },
+    {
+      "path": "forge/releases/058_Merch_Forge_PORTFOLIO_PIPELINE_RC.zip",
+      "git_blob_sha": "1c9720c4f69a51c9bc9e2c29927ad36b9e3e24d3",
+      "size": 294910
+    },
+    {
+      "path": "forge/releases/058_Merch_Forge_PORTFOLIO_PIPELINE_RC.zip.sha256",
+      "git_blob_sha": "e3c12f5d1399d75f69bd4a19345607039c78a0fd",
+      "size": 108
+    },
+    {
+      "path": "forge/releases/059_Merch_Forge_LOCAL_PACKAGE_PATH_RC.zip",
+      "git_blob_sha": "6e9d321195d932c62f1e6ce1e437f2daaea80b9e",
+      "size": 296684
+    },
+    {
+      "path": "forge/releases/059_Merch_Forge_LOCAL_PACKAGE_PATH_RC.zip.sha256",
+      "git_blob_sha": "0ab21500f74705ec13b15862d4c685373f1a2c70",
+      "size": 108
+    },
+    {
+      "path": "forge/releases/060_Merch_Forge_LOCALIZED_MESSAGES_RC.zip",
+      "git_blob_sha": "6f1936e6b4a8bfcf4b6369d89b699660b9696870",
+      "size": 307784
+    },
+    {
+      "path": "forge/releases/060_Merch_Forge_LOCALIZED_MESSAGES_RC.zip.sha256",
+      "git_blob_sha": "f45c6612c4362495d6f77c308e6df12d9cdc91ed",
+      "size": 108
+    },
+    {
+      "path": "forge/releases/061_Merch_Forge_READABLE_ERRORS_RC.zip",
+      "git_blob_sha": "7e4e479c8638d2733b3e78fcbd1d7755bacbee1a",
+      "size": 314401
+    },
+    {
+      "path": "forge/releases/061_Merch_Forge_READABLE_ERRORS_RC.zip.sha256",
+      "git_blob_sha": "2e6c7daa13b24bd953a9114bc7bb7444ca9098a9",
+      "size": 105
+    },
+    {
+      "path": "forge/releases/062_Merch_Forge_PERFORMANCE_INSIGHTS_RC.zip",
+      "git_blob_sha": "1dba14cc454e4a6590136c196f40783c68eebe2e",
+      "size": 318233
+    },
+    {
+      "path": "forge/releases/062_Merch_Forge_PERFORMANCE_INSIGHTS_RC.zip.sha256",
+      "git_blob_sha": "e7ae6376032c25f9d97dd42333584b9d208d68b2",
+      "size": 110
+    },
+    {
+      "path": "forge/releases/063_Merch_Forge_NEXT_STEP_RC.zip",
+      "git_blob_sha": "6e8d44978e8b1b00a16a5965b71110058f16a781",
+      "size": 317109
+    },
+    {
+      "path": "forge/releases/063_Merch_Forge_NEXT_STEP_RC.zip.sha256",
+      "git_blob_sha": "74e9508e850965402e6efed4e850385a7252246b",
+      "size": 99
+    },
+    {
+      "path": "forge/releases/064_Merch_Forge_CONFIRM_CHECKS_RC.zip",
+      "git_blob_sha": "0b43ff83238ff24755235361576fdab39501fcc4",
+      "size": 328594
+    },
+    {
+      "path": "forge/releases/064_Merch_Forge_CONFIRM_CHECKS_RC.zip.sha256",
+      "git_blob_sha": "f88df6e5b8c5ef414f737e73ea8a3931686ca8fc",
+      "size": 104
+    },
+    {
+      "path": "forge/releases/065_Merch_Forge_AMAZON_PROFILE_RC.zip",
+      "git_blob_sha": "16d297766de6bdd0d36bdd31282e2d210d139b72",
+      "size": 338474
+    },
+    {
+      "path": "forge/releases/065_Merch_Forge_AMAZON_PROFILE_RC.zip.sha256",
+      "git_blob_sha": "34a3764f6c0c27b21c45f0d98d6b0fe5fad70bab",
+      "size": 104
+    },
+    {
+      "path": "forge/releases/066_Merch_Forge_CRASH_HUNT_RC.zip",
+      "git_blob_sha": "e4854fb30d94602b8f2504593ff021f824d02ed0",
+      "size": 339162
+    },
+    {
+      "path": "forge/releases/066_Merch_Forge_CRASH_HUNT_RC.zip.sha256",
+      "git_blob_sha": "5cc21842d02bbf694aa4efb6ea81208497282716",
+      "size": 100
+    },
+    {
+      "path": "forge/releases/067_Merch_Forge_LAYOUT_RC.zip",
+      "git_blob_sha": "d5f54b6058f54afd99699c2388130aa8e32de693",
+      "size": 338640
+    },
+    {
+      "path": "forge/releases/067_Merch_Forge_LAYOUT_RC.zip.sha256",
+      "git_blob_sha": "29203fce03dfd9ed132ce3d1cb90c5a799d15e62",
+      "size": 96
+    },
+    {
+      "path": "forge/releases/068_Merch_Forge_REVIEW_FIXES_RC.zip",
+      "git_blob_sha": "b3a49fbccff9c222e8aa992dc9ff1fde685e0dc6",
+      "size": 345189
+    },
+    {
+      "path": "forge/releases/068_Merch_Forge_REVIEW_FIXES_RC.zip.sha256",
+      "git_blob_sha": "911cc5757aa1b46d37098154613f295cb94881cd",
+      "size": 102
+    },
+    {
+      "path": "forge/releases/069_Merch_Forge_START_FIX_RC.zip",
+      "git_blob_sha": "78cf529bc51e1815528f4da44cb9597ccaafd621",
+      "size": 344450
+    },
+    {
+      "path": "forge/releases/069_Merch_Forge_START_FIX_RC.zip.sha256",
+      "git_blob_sha": "8127f47a3e36c9ef0f151cf0ec2a3a66dcf89bf6",
+      "size": 99
+    },
+    {
+      "path": "forge/releases/070_Merch_Forge_DRAFT_CHECKS_TEXT_RC.zip",
+      "git_blob_sha": "d78c3f147547dbf2faa57bbafc1a17e8c6f8153c",
+      "size": 345386
+    },
+    {
+      "path": "forge/releases/070_Merch_Forge_DRAFT_CHECKS_TEXT_RC.zip.sha256",
+      "git_blob_sha": "de0aab9869879e86be48da0d29abc94f6a5c63fe",
+      "size": 107
+    },
+    {
+      "path": "forge/releases/071_Merch_Forge_DATA_COPY_RC.zip",
+      "git_blob_sha": "fd3da373b07195b65cc7564a08cf37644fcbba87",
+      "size": 354074
+    },
+    {
+      "path": "forge/releases/071_Merch_Forge_DATA_COPY_RC.zip.sha256",
+      "git_blob_sha": "8c7cce169a4e08d593512cb5f7785c5b3e371887",
+      "size": 99
+    },
+    {
+      "path": "forge/releases/072_Merch_Forge_SECOND_REVIEW_RC.zip",
+      "git_blob_sha": "c8f89d6317ae26729395cd2c5837196317df7432",
+      "size": 358208
+    },
+    {
+      "path": "forge/releases/072_Merch_Forge_SECOND_REVIEW_RC.zip.sha256",
+      "git_blob_sha": "5f9a7b5d25eb68a2617c2086dcea8986d6795dc1",
+      "size": 103
+    },
+    {
+      "path": "forge/releases/073_Merch_Forge_LISTING_HINTS_RC.zip",
+      "git_blob_sha": "db8c22fc46b0fd4123e5ac037df5412a0a6b84e6",
+      "size": 362011
+    },
+    {
+      "path": "forge/releases/073_Merch_Forge_LISTING_HINTS_RC.zip.sha256",
+      "git_blob_sha": "5ece426a5cedec0e0f9b55702ff97bf527c2d437",
+      "size": 103
+    },
+    {
+      "path": "forge/releases/074_Merch_Forge_THIRD_REVIEW_RC.zip",
+      "git_blob_sha": "a69e24cc53073de2669f90b09c1a920e237127c5",
+      "size": 363273
+    },
+    {
+      "path": "forge/releases/074_Merch_Forge_THIRD_REVIEW_RC.zip.sha256",
+      "git_blob_sha": "72f3b3aff5e5a71a9f80971e8179f1c689cfbb0f",
+      "size": 102
+    },
+    {
+      "path": "forge/releases/075_Merch_Forge_AUTO_COPY_RC.zip",
+      "git_blob_sha": "a8f292d44bcc4b6493e25a16034c2762f4849a67",
+      "size": 365546
+    },
+    {
+      "path": "forge/releases/075_Merch_Forge_AUTO_COPY_RC.zip.sha256",
+      "git_blob_sha": "60a56ce0705427add4adef7757b5fab12dcbac2a",
+      "size": 99
+    },
+    {
+      "path": "forge/releases/076_Merch_Forge_WHATS_NEW_RC.zip",
+      "git_blob_sha": "f533dba0c65871c9feadd5c49415c1fd1f687cbe",
+      "size": 369503
+    },
+    {
+      "path": "forge/releases/076_Merch_Forge_WHATS_NEW_RC.zip.sha256",
+      "git_blob_sha": "40f325ac17b72dd91e150028a08ae2095504818b",
+      "size": 99
+    },
+    {
+      "path": "forge/releases/077_Merch_Forge_FOURTH_REVIEW_RC.zip",
+      "git_blob_sha": "8b0807d42c92a433c22a154fffe66554a3587242",
+      "size": 371027
+    },
+    {
+      "path": "forge/releases/077_Merch_Forge_FOURTH_REVIEW_RC.zip.sha256",
+      "git_blob_sha": "c7d940874157e5904964e6ca42efcb723f59a4ed",
+      "size": 103
+    },
+    {
+      "path": "forge/tools/README.md",
+      "git_blob_sha": "0b40e4eafa75d942ec95d75646522d1fdaf5db2c",
+      "size": 672
+    },
+    {
+      "path": "forge/tools/build055.py",
+      "git_blob_sha": "82624f2b5dadcb269bea579ffbb596f88fa6fba9",
+      "size": 19196
+    },
+    {
+      "path": "forge/tools/build_release.py",
+      "git_blob_sha": "6289d8431d7e8e947f51d9c21da8cbcfc790a891",
+      "size": 10313
+    },
+    {
+      "path": "forge/tools/patch055.py",
+      "git_blob_sha": "b7c1246dad5c0edefa1c2bd396758363ea045d9a",
+      "size": 7224
+    },
+    {
+      "path": "forge/tools/patch055b.py",
+      "git_blob_sha": "5be5d08661419a1913fdfdb16e3e9d51e15b7491",
+      "size": 1722
+    }
+  ],
+  "limitations": [
+    "read-only source audit; no new runtime tests",
+    "selected source excerpts in repo_evidence are text reference, not installer"
+  ],
+  "private_source_delivery": {
+    "filename": "CORE_SOURCE_FIXES_001_20261028.zip",
+    "new_owner_attachment_at_utc": "2026-10-30T16:12:54Z",
+    "size_bytes": 1288003,
+    "sha256": "76afccb5a55b1a7aa0c8aa29a56f8f7a256e8c1d6c2884b067719ff74f092d73",
+    "status": "New owner attachment obtained and identity verified; Forge extracted separately; no fresh runtime test"
+  }
+}

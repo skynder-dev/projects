@@ -1,0 +1,12 @@
+{
+  "schema": "forge.prompt_staging_binding.v1",
+  "concept_key": "v4_ic_instrument_play",
+  "source_revision_id": "24a48dfc-bca1-452e-96f6-af3b85f802bc",
+  "source_revision_hash": "c087a77cd95e0e4126112df42c29af6750a0cad99c0363f51147c56e53ee7219",
+  "prompt_compiler_version": "forge.prompt.apparel.v2",
+  "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4",
+  "prompt_sha256": "cda16ce52659066a888a23c4d52fce2fd78f2a5fa874c22262754e58e8a50893",
+  "hook_render_policy": "exactly_once",
+  "external_dispatch_authorized": false,
+  "generation_job_created": false
+}

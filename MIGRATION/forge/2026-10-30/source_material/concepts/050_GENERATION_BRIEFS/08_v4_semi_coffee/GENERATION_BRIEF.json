@@ -1,0 +1,15 @@
+{
+  "schema": "forge.local_generation_brief.v2",
+  "created_at": "2026-10-03T09:25:00Z",
+  "concept_key": "v4_semi_coffee",
+  "title": "Fab tech — coffee versus gowning",
+  "hook": "GOWN. UNGOWN. REGRET THE COFFEE. REPEAT.",
+  "niche_name": "Semiconductor Processing Technician",
+  "concept": "Cleanroom life joke about regretting fluids because every bathroom trip means ungowning and regowning.",
+  "visual_direction": "Coffee cup caught in a loop diagram of gowning stages, stylized not procedural.",
+  "source_revision_id": "1b58bfa8-5fcc-4e3f-a178-af87e67c7275",
+  "source_revision_hash": "143a0a0c31206495225c78d10235504e04d498a3cbb3bb58fd1207fec712fae5",
+  "provider_mode": "manual_artwork_bridge",
+  "external_generation_authorized": false,
+  "note": "Creative brief only. Import the finished image back into Merch Forge; exact SHA/revision binding is required before acceptance."
+}

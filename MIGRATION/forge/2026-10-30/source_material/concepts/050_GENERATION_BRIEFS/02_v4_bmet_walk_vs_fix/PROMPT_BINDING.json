@@ -1,0 +1,12 @@
+{
+  "schema": "forge.prompt_staging_binding.v1",
+  "concept_key": "v4_bmet_walk_vs_fix",
+  "source_revision_id": "6c484c8d-7746-4e6d-8485-02c9bcb472ac",
+  "source_revision_hash": "17b737427aec9c19c5598bec18bd975661b8f27e0385f551500eeeec8c25bdd7",
+  "prompt_compiler_version": "forge.prompt.apparel.v2",
+  "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4",
+  "prompt_sha256": "57edf7803b0150c988834c212fb0247fccbbde925a0f9d617d6e88041786e958",
+  "hook_render_policy": "exactly_once",
+  "external_dispatch_authorized": false,
+  "generation_job_created": false
+}

@@ -1,0 +1,122 @@
+[
+  {
+    "historical_label": "F01",
+    "concept_key": "ophth_tonometry_measure_record",
+    "concept_id": "58d4843b-e345-4065-81eb-687272780819",
+    "hook": "PRESSURE • MEASURE • RECORD",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F02",
+    "concept_key": "industrial_machine_systems",
+    "concept_id": "645bd4bb-d3de-4f61-8763-52fc6a7e9a10",
+    "hook": "MACHINE SYSTEMS | MOTORS • CONVEYORS • DRIVES",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F03",
+    "concept_key": "sterile_processing_one_way_workflow",
+    "concept_id": "98f86f06-fd0d-4094-b74b-b8dd7f49170d",
+    "hook": "SOILED → CLEAN → STERILE",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F04",
+    "concept_key": "cyto_cell_nucleus_morphology_pattern",
+    "concept_id": "7d30a222-3c96-4635-b98f-868ee862f04a",
+    "hook": "CELL • NUCLEUS • MORPHOLOGY • PATTERN",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F05",
+    "concept_key": "eet_schematic_board_signal_path",
+    "concept_id": "f97d8d81-ae7f-4c6e-a70a-2c28b99ac386",
+    "hook": "SCHEMATIC → BOARD → SIGNAL",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F06",
+    "concept_key": "avionics_fault_isolate_lru",
+    "concept_id": "b1ec1e4d-3846-4288-b92a-a6eb37564893",
+    "hook": "FAULT → ISOLATE → LRU → VERIFY",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F07",
+    "concept_key": "cyto_stain_screen_identify_report",
+    "concept_id": "3dc79458-1446-4169-bc9a-77847f30526a",
+    "hook": "STAIN • SCREEN • IDENTIFY • REPORT",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F08",
+    "concept_key": "bmet_service_call_test_fix_verify",
+    "concept_id": "a54bb77e-a4af-47e0-8678-adac5643515c",
+    "hook": "SYMPTOM → TEST → FIX → VERIFY",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F09",
+    "concept_key": "ic_loop_check_zero_span",
+    "concept_id": "781a214c-ae1b-47dd-8a7f-686d97dd8d17",
+    "hook": "LOOP CHECK • ZERO • SPAN",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F10",
+    "concept_key": "ophth_visual_field_map",
+    "concept_id": "f46b0365-9b54-4e2f-a52f-01a633453307",
+    "hook": "FIELD • MAP • REVIEW",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F11",
+    "concept_key": "relay_ct_pt_logic_trip_chain",
+    "concept_id": "de018ff3-8bda-48ed-a5a9-56a82c3fc353",
+    "hook": "CT/PT → RELAY → LOGIC → TRIP",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F12",
+    "concept_key": "relay_fault_trip_breaker_path",
+    "concept_id": "42023ae6-8cae-44f6-9014-df27950cc978",
+    "hook": "FAULT → RELAY → TRIP → BREAKER",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F13",
+    "concept_key": "spd_count_inspect_verify_release",
+    "concept_id": "011701ac-32ac-4819-89d5-69c90d269bfd",
+    "hook": "COUNT • INSPECT • VERIFY • RELEASE",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F14",
+    "concept_key": "avionics_pin_to_pin_trace",
+    "concept_id": "51c1c1bc-29e0-4bf6-9d0d-2c7cd6a8f93b",
+    "hook": "PIN → WIRE → CONNECTOR → PIN",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  },
+  {
+    "historical_label": "F15",
+    "concept_key": "semi_wafer_lot_tool_metrology",
+    "concept_id": "e68f66b6-854e-4950-a1b5-798915367b1f",
+    "hook": "WAFER • LOT • TOOL • METROLOGY",
+    "status": "retired after owner review; not the V4 finalist list",
+    "mapping_source": "Historical conversation table F01–F15, reconciled against live concept hooks"
+  }
+]

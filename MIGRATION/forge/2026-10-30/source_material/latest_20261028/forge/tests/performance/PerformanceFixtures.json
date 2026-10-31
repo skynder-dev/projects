@@ -1,0 +1,38 @@
+{
+  "schema": "forge.performance.synthetic_fixtures.v1",
+  "now_utc": "2026-10-24T12:00:00.0000000Z",
+  "mixed": [
+    {"id":"A","age":1,"units":1.25,"royalty":10,"currency":"USD"},
+    {"id":"A","age":2,"units":2.5,"royalty":20,"currency":"EUR"}
+  ],
+  "ranking": [
+    {"id":"A","age":1,"units":1,"royalty":1000,"currency":"JPY"},
+    {"id":"B","age":1,"units":2,"royalty":20,"currency":"USD"}
+  ],
+  "boundaries": [
+    {"id":"A","age":29,"units":1,"royalty":10,"currency":"USD"},
+    {"id":"A","age":30,"units":2,"royalty":20,"currency":"USD"},
+    {"id":"A","age":89,"units":4,"royalty":40,"currency":"USD"},
+    {"id":"A","age":90,"units":8,"royalty":80,"currency":"USD"}
+  ],
+  "seven_day_boundaries": [
+    {"id":"A","age":6,"units":1,"royalty":10,"currency":"USD"},
+    {"id":"A","age":7,"units":2,"royalty":20,"currency":"USD"}
+  ],
+  "unknown_numeric": [
+    {"id":"A","age":1,"units":2,"royalty":10,"currency":"USD"},
+    {"id":"A","age":1,"units":99,"royalty":999,"currency":"USD","verified":false}
+  ],
+  "refund_zero": [
+    {"id":"A","age":1,"units":-1.25,"royalty":-10,"currency":"USD"},
+    {"id":"B","age":2,"units":0,"royalty":0,"currency":"USD"}
+  ],
+  "agreement": [
+    {"id":"A","age":1,"units":1.25,"royalty":10,"currency":"USD"},
+    {"id":"A","age":29,"units":2.5,"royalty":20,"currency":"EUR"},
+    {"id":"B","age":30,"units":0.5,"royalty":1000,"currency":"JPY"},
+    {"id":"B","age":89,"units":-0.25,"royalty":-2,"currency":"USD"},
+    {"id":"B","age":90,"units":99,"royalty":999,"currency":"USD"},
+    {"id":"UNKNOWN","age":1,"units":99,"royalty":999,"currency":"USD"}
+  ]
+}

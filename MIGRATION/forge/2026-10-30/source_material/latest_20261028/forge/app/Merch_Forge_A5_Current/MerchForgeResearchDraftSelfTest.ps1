@@ -1,0 +1,458 @@
+﻿# Merch Forge · Research -> concept draft self-test (headless)
+# Runs the REAL Forge functions (workbench functions are extracted with the PowerShell parser, modules are dot-sourced)
+# against an isolated temporary state root. WPF controls are replaced by inert property bags.
+# Proof boundary: logic + persistence + authority guards. This is NOT a native WPF click/visual test.
+# Network: Invoke-ForgeApi / Invoke-RestMethod / Invoke-WebRequest are replaced by recorders; any call fails the test.
+param(
+    [string]$PackageRoot = $PSScriptRoot,
+    [string]$OutputPath = '',
+    [ValidateSet('driver','create','restart','legacy054')][string]$Phase = 'driver',
+    [string]$StateRoot = '',
+    [string]$LegacyPackageRoot = ''
+)
+Set-StrictMode -Version 2.0
+$ErrorActionPreference = 'Stop'
+
+function New-Report([string]$Name) { return [ordered]@{phase=$Name;checks=[ordered]@{};notes=@();api_calls=0;network_calls=0} }
+$script:R = New-Report $Phase
+function Check([string]$Name,[bool]$Ok,[string]$Detail='') { $script:R.checks[$Name]=[ordered]@{pass=$Ok;detail=$Detail} }
+
+if($Phase -eq 'driver'){
+    $exe=[Diagnostics.Process]::GetCurrentProcess().MainModule.FileName
+    $tmpRoot=Join-Path ([IO.Path]::GetTempPath()) ('MerchForge-rdtest-'+[Guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $tmpRoot -Force | Out-Null
+    $phases=@('create','restart'); if($LegacyPackageRoot){$phases+='legacy054'}
+    $all=[ordered]@{}; $ok=$true; $api=0; $net=0
+    foreach($ph in $phases){
+        $out=Join-Path $tmpRoot ("$ph.json")
+        $argList=@('-NoLogo','-NoProfile','-NonInteractive','-File',$PSCommandPath,'-PackageRoot',$PackageRoot,'-Phase',$ph,'-StateRoot',(Join-Path $tmpRoot 'state'),'-OutputPath',$out)
+        if($LegacyPackageRoot){$argList+=@('-LegacyPackageRoot',$LegacyPackageRoot)}
+        $log=& $exe @argList 2>&1 | Out-String
+        if(-not (Test-Path -LiteralPath $out)){ $all[$ph]=[ordered]@{error='phase produced no report';log=$log}; $ok=$false; continue }
+        $j=Get-Content -LiteralPath $out -Raw -Encoding UTF8 | ConvertFrom-Json
+        $all[$ph]=$j; $api+=[int]$j.api_calls; $net+=[int]$j.network_calls
+        foreach($p in $j.checks.PSObject.Properties){ if(-not [bool]$p.Value.pass){$ok=$false} }
+        if($j.PSObject.Properties['fatal']){$ok=$false}
+    }
+    $total=0;$passed=0;foreach($ph in $all.Keys){$j=$all[$ph];if($j -is [System.Collections.IDictionary]){continue};foreach($p in $j.checks.PSObject.Properties){$total++;if([bool]$p.Value.pass){$passed++}}}
+    if($api -ne 0 -or $net -ne 0){$ok=$false}
+    $report=[ordered]@{
+        schema='forge.research_draft_selftest.v1'; status=$(if($ok){'PASS'}else{'FAIL'}); passed=$passed; total=$total
+        api_calls=$api; network_calls=$net; billable_requests=0; backend_mutations=0
+        proof_boundary='Headless PowerShell execution of the real Forge functions with inert WPF control stubs and an isolated state root. Restart persistence is proven across separate PowerShell processes. Native Windows WPF rendering/click behaviour is NOT covered by this test.'
+        powershell=$PSVersionTable.PSVersion.ToString(); platform=[Environment]::OSVersion.VersionString
+        executed_at=[DateTime]::UtcNow.ToString('o'); phases=$all
+    }
+    $json=$report | ConvertTo-Json -Depth 30
+    if($OutputPath){[IO.File]::WriteAllText($OutputPath,$json,(New-Object Text.UTF8Encoding($false)))}
+    Remove-Item -LiteralPath $tmpRoot -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Output ("RESEARCH DRAFT SELFTEST {0}: {1}/{2} checks; api_calls={3}; network_calls={4}" -f $report.status,$passed,$total,$api,$net)
+    if($ok){exit 0}else{exit 1}
+}
+
+# ---------------- phase setup: load real code ----------------
+try {
+$root = if($Phase -eq 'legacy054'){$LegacyPackageRoot}else{$PackageRoot}
+$wbPath = Join-Path $root 'MerchForgeWorkbench.ps1'
+$tokens=$null;$errors=$null
+$ast=[System.Management.Automation.Language.Parser]::ParseFile($wbPath,[ref]$tokens,[ref]$errors)
+if(@($errors).Count){throw ('Workbench parse failed: '+(@($errors)[0].Message))}
+foreach($f in $ast.FindAll({param($a) $a -is [System.Management.Automation.Language.FunctionDefinitionAst]},$false)){ . ([scriptblock]::Create($f.Extent.Text)) }
+foreach($a in $ast.FindAll({param($a) $a -is [System.Management.Automation.Language.AssignmentStatementAst]},$false)){
+    $left=$a.Left.Extent.Text
+    if($left -in @('$script:UiText','$script:StaticUiTranslations','$script:SupportedLocales')){ . ([scriptblock]::Create($a.Extent.Text)) }
+}
+$controlNames=@([regex]::Matches((Get-Content -LiteralPath $wbPath -Raw -Encoding UTF8),"\`$(\w+)=X '(\w+)'") | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
+function New-Ctl { return [pscustomobject]@{Text='';Content='';IsEnabled=$true;Visibility='Visible';FontWeight='Normal';BorderBrush=$null;Background=$null;Foreground=$null;IsReadOnly=$false;ItemsSource=$null;SelectedItem=$null;SelectedIndex=-1;Items=@();SelectedItems=@();ToolTip=$null;Tag=$null} }
+foreach($n in $controlNames){ Set-Variable -Name $n -Value (New-Ctl) -Scope Script }
+$script:Window=[pscustomobject]@{}; $script:Window | Add-Member -MemberType ScriptMethod -Name FindResource -Value { param($k) return $k }
+$script:MainTabs=New-Ctl
+
+$mod=Join-Path $root 'Modules'
+foreach($m in @('Forge.Media.ps1','Forge.LocalCore.ps1','Forge.ProductNavigation.ps1','Forge.Localization.ps1','Forge.Gates.ps1','Forge.DataViews.ps1','Forge.DomainActions.ps1')){ . (Join-Path $mod $m) }
+$hasDraftModule = Test-Path -LiteralPath (Join-Path $mod 'Forge.ResearchDrafts.ps1')
+if($hasDraftModule){ . (Join-Path $mod 'Forge.ResearchDrafts.ps1') }
+$hasPipelineModule = Test-Path -LiteralPath (Join-Path $mod 'Forge.Pipeline.ps1')
+if($hasPipelineModule){ . (Join-Path $mod 'Forge.Pipeline.ps1') }
+$hasCheckAttestation = Test-Path -LiteralPath (Join-Path $mod 'Forge.CheckAttestation.ps1')
+if($hasCheckAttestation){ . (Join-Path $mod 'Forge.MessageLocalization.ps1'); . (Join-Path $mod 'Forge.CheckAttestation.ps1'); Register-CheckAttestationUiText }
+$hasDataBackup = Test-Path -LiteralPath (Join-Path $mod 'Forge.DataBackup.ps1')
+if($hasDataBackup){ . (Join-Path $mod 'Forge.DataBackup.ps1'); Register-DataBackupUiText }
+$hasListingHints = Test-Path -LiteralPath (Join-Path $mod 'Forge.ListingHints.ps1')
+if($hasListingHints){ . (Join-Path $mod 'Forge.ListingHints.ps1'); Register-ListingHintsUiText }
+$hasAmazonProfile = Test-Path -LiteralPath (Join-Path $mod 'Forge.AmazonProfile.ps1')
+if($hasAmazonProfile){ . (Join-Path $mod 'Forge.AmazonProfile.ps1'); Register-AmazonProfileUiText }
+
+# state root isolation
+$script:StateRoot=$StateRoot; $script:LogRoot=Join-Path $StateRoot 'logs'; $script:RuntimeLogPath=Join-Path $script:LogRoot 'runtime.log'
+$script:LocalCoreRoot=Join-Path $StateRoot 'local-core-v1'; $script:LocalCoreStatePath=Join-Path $script:LocalCoreRoot 'state.json'; $script:LocalCoreBackupPath=Join-Path $script:LocalCoreRoot 'state.lastgood.json'
+$script:LocalCoreArtworkRoot=Join-Path $script:LocalCoreRoot 'artwork'; $script:LocalCorePackageRoot=Join-Path $script:LocalCoreRoot 'packages'; $script:LocalCoreExportRoot=Join-Path $script:LocalCoreRoot 'exports'; $script:LocalCoreImportRoot=Join-Path $script:LocalCoreRoot 'imports'
+$script:QueueSnapshotPath=Join-Path $StateRoot 'queue-snapshot.json'; $script:EmbeddedIdeasPath=Join-Path (Join-Path $root 'Data') 'Forge.LastKnownIdeas.json'
+foreach($p in @($script:LocalCoreRoot,$script:LocalCoreArtworkRoot,$script:LocalCorePackageRoot,$script:LocalCoreExportRoot,$script:LocalCoreImportRoot)){ if(-not (Test-Path -LiteralPath $p)){New-Item -ItemType Directory -Path $p -Force | Out-Null} }
+$script:Locale='en'; $script:Queue=@(); $script:Current=$null; $script:Dirty=$false; $script:Busy=$false; $script:PublicationDirty=$false; $script:Session=$null; $script:OfflineMode=$false; $script:OfflineSnapshotMode=$false
+$script:ProductSection='discover'; $script:LocalGenerationProviderMode='manual_artwork_bridge'; $script:BackendVersion='0.2.70'; $script:ReviewWorkspace=$null; $script:Delivery=$null; $script:Publication=$null; $script:RestoreSourceRevisionId=$null; $script:PendingOwnerActionKeys=@{}
+$script:ConceptLoadInProgress=$false; $script:DiscoverSnapshot=$null; $script:DiscoverLoadedAt=$null; $script:ConnectionState='Connected'
+
+# stubs: UI routing / dialogs / network recorders
+$script:Errors=New-Object System.Collections.Generic.List[string]; $script:Sections=New-Object System.Collections.Generic.List[string]
+function Show-Error([string]$Message){ $script:Errors.Add($Message) }
+function Confirm([string]$Message,[string]$Title=''){ return $true }
+function Write-AppLog([string]$Level,[string]$Message){}
+function Invoke-ForgeApi([string]$Action,[hashtable]$Payload=@{}){ $script:R.api_calls++; throw ('TEST: API call attempted: '+$Action) }
+function Invoke-RestMethod { $script:R.network_calls++; throw 'TEST: network call attempted' }
+function Invoke-WebRequest { $script:R.network_calls++; throw 'TEST: network call attempted' }
+function Show-ProductSection([string]$Section){ $script:ProductSection=$Section; $script:Sections.Add($Section) }
+function Select-MainTab([string]$H){}; function Update-MainTabUi{}; function Update-ResponsiveLayout{}; function Set-QueueEmptyState($c){}
+function Update-AcceptanceControls{}; function Update-CancelGenerationState{}; function Update-PackageButtons{}
+function Test-LocalProductionProviderReady { return $false }
+function Sync-LocalGenerationResults { return $null }  # local result import only; no network
+
+$FilterBox.SelectedItem=[pscustomobject]@{Tag=''}; $SortBox.SelectedItem=[pscustomobject]@{Tag='score'}; $SearchBox.Text=''
+if($hasDraftModule){ Register-ResearchDraftUiText }
+
+function Get-Fixture {
+    # Labeled test fixture shaped like forge.discover_snapshot.v1. Not market data.
+    $n1=[pscustomobject]@{niche_key='fixture-niche-nurses';name='TEST FIXTURE · Night-shift nurses';category='profession';audience='ICU and ER nurses on night rotation';score_total=8.4;score_confidence=72;concept_count=3;research_summary='Fixture summary: recurring humor about night shifts and coffee.';dimensions=[pscustomobject]@{demand=8.1;competition=6.2;evergreen=9.0;ip_risk=2.0}}
+    $n2=[pscustomobject]@{niche_key='fixture-niche-welders';name='TEST FIXTURE · Pipe welders';category='trade';audience='Union pipe welders';score_total=7.1;score_confidence=60;concept_count=0;research_summary='Fixture summary: pride and safety culture.';dimensions=[pscustomobject]@{demand=7.0}}
+    return [pscustomobject]@{contract='forge.discover_snapshot.v1';stats=[pscustomobject]@{niches=2;research_notes=3;active_sources=2;concepts=3}
+        niches=@($n1,$n2)
+        notes=@([pscustomobject]@{id='fixture-note-1';niche_key='fixture-niche-nurses';topic='Shift humor';conclusion='Fixture: night-shift jokes recur across forums.'},[pscustomobject]@{id='fixture-note-2';niche_key='fixture-niche-welders';topic='Safety';conclusion='Fixture: welders value safety pride.'},[pscustomobject]@{id='fixture-note-3';topic='Unlinked';conclusion='Fixture: note without niche link must not be attached.'})
+        sources=@([pscustomobject]@{id='fixture-src-1';name='Fixture source A';source_class='forum'},[pscustomobject]@{id='fixture-src-2';name='Fixture source B';source_class='marketplace'})}
+}
+function Find-QueueItem([string]$Key){ foreach($i in @($script:Queue)){ if([string]$i.concept_key -eq $Key){return $i} }; return $null }
+$script:KeyFile = Join-Path $StateRoot 'selftest-keys.json'
+
+# ---------------- phase: create ----------------
+if($Phase -eq 'create'){
+    Check 'draft_module_present' $hasDraftModule
+    $null=Read-LocalCoreState
+    $snap=Get-Fixture; $rows=@(Add-DiscoverDisplayProperties @($snap.niches)); $loaded=[DateTime]::UtcNow
+    # 1) no fabrication without live research
+    $threw=$false; try{ $null=New-ResearchConceptDraft $rows[0] $null $loaded '0.2.70' }catch{ $threw=($_.Exception.Message -like 'NO_LIVE_RESEARCH*') }
+    Check 'refuses_without_live_snapshot' $threw
+    # 2) create from niche 1 via the real Discover button handler
+    $DiscoverNicheList.SelectedItem=$rows[0]; $script:DiscoverSnapshot=$snap; $script:DiscoverLoadedAt=$loaded
+    $script:Queue=@(Add-QueueDisplayProperties @(Merge-ResearchDraftsIntoQueue @(Read-QueueSnapshotFile $script:EmbeddedIdeasPath)))
+    $serverCount=@($script:Queue).Count
+    Update-DiscoverDraftControls
+    Check 'discover_button_enabled_with_selection' ([bool]$DiscoverCreateDraftButton.IsEnabled)
+    Invoke-DiscoverCreateDraft
+    Check 'no_errors_on_create' ($script:Errors.Count -eq 0) (($script:Errors) -join ' | ')
+    $s=Read-LocalCoreState; $drafts=@(Get-ResearchDraftList $s)
+    Check 'draft_persisted' ($drafts.Count -eq 1)
+    $d=$drafts[0]; $key=[string]$d.concept_key; $p=$d.provenance
+    Check 'draft_key_prefix' ($key -like 'rd-*') $key
+    Check 'provenance_niche_identity' ([string]$p.niche_identity -eq 'fixture-niche-nurses' -and [string]$p.niche_identity_field -eq 'niche_key')
+    Check 'provenance_row_hash' ([string]$p.niche_row_sha256 -match '^[0-9a-f]{64}$')
+    Check 'provenance_contract' ([string]$p.contract -eq 'forge.discover_snapshot.v1')
+    Check 'provenance_snapshot_time' (-not [string]::IsNullOrWhiteSpace([string]$p.snapshot_loaded_at))
+    Check 'evidence_only_explicitly_linked_notes' (@($p.evidence_notes).Count -eq 1 -and [string]@($p.evidence_notes)[0].note_id -eq 'fixture-note-1')
+    Check 'creative_fields_not_invented' ([string]::IsNullOrEmpty([string]$d.revisions[0].hook) -and [string]::IsNullOrEmpty([string]$d.revisions[0].visual_direction_text))
+    Check 'authority_all_false' (-not [bool]$d.authority.generation_authorized -and -not [bool]$d.authority.paid_provider_authorized -and -not [bool]$d.authority.accept_authorized -and -not [bool]$d.authority.publication_authorized -and -not [bool]$d.authority.backend_mutation)
+    # 3) appears in the normal concept list and filter
+    $qi=Find-QueueItem $key
+    Check 'draft_in_ideas_queue' ($null -ne $qi -and @($script:Queue).Count -eq $serverCount+1)
+    Check 'queue_label_research_draft' ($null -ne $qi -and [string]$qi.workflow_label -eq 'Research draft')
+    $FilterBox.SelectedItem=[pscustomobject]@{Tag='research_draft'}; Apply-Filter
+    Check 'filter_research_draft' (@($ConceptList.ItemsSource).Count -eq 1)
+    $FilterBox.SelectedItem=[pscustomobject]@{Tag=''}; Apply-Filter
+    # 4) opened as current concept, routed into Ideas, owner review ready
+    Check 'draft_opened_as_current' ((Test-CurrentIsResearchDraft) -and [string]$script:Current.concept.concept_key -eq $key)
+    Check 'routed_to_ideas' ($script:ProductSection -eq 'ideas')
+    Check 'overview_flags_missing_creative' ([string]$OverviewNext.Text -like '*hook*' -and [string]$OverviewNext.Text -like '*visual direction*')
+    $lc=Get-LocalCoreConcept $key
+    Check 'localcore_mirror_bound_to_revision' ($null -ne $lc -and [string]$lc.source_revision_id -eq [string]$d.current_revision_id)
+    Check 'edit_boxes_editable_for_draft' (-not [bool]$TitleBox.IsReadOnly -and [bool]$SpecBox.IsReadOnly)
+    # 5) idempotent second click on identical research
+    Invoke-DiscoverCreateDraft
+    Check 'second_click_same_research_reuses' (@(Get-ResearchDraftList (Read-LocalCoreState)).Count -eq 1)
+    # 6) 052 regression: owner buttons follow Busy transitions
+    Set-Busy $true 'busy'
+    $disabled=(-not $OwnerKeepButton.IsEnabled -and -not $OwnerSkipButton.IsEnabled)
+    Set-Busy $false 'idle'
+    Check 'owner_buttons_disabled_while_busy' $disabled
+    Check 'owner_buttons_enabled_after_busy_052' ([bool]$OwnerKeepButton.IsEnabled -and [bool]$OwnerEditDecisionButton.IsEnabled -and [bool]$OwnerRegenButton.IsEnabled -and [bool]$OwnerSkipButton.IsEnabled)
+    # 7) KEEP on draft 1
+    Check 'keep_saved' (Set-LocalOwnerDecision 'KEEP')
+    Check 'keep_visible' ([string]$OwnerKeepButton.FontWeight -eq 'Bold')
+    # 8) second niche -> second draft, SKIP, then switch back
+    $DiscoverNicheList.SelectedItem=$rows[1]; Invoke-DiscoverCreateDraft
+    $key2=[string]$script:Current.concept.concept_key
+    Check 'second_draft_created' ($key2 -ne $key -and @(Get-ResearchDraftList (Read-LocalCoreState)).Count -eq 2)
+    Check 'second_draft_has_no_decision' ([string]$OwnerDecisionStatusText.Text -eq 'No decision yet')
+    Check 'skip_saved' (Set-LocalOwnerDecision 'SKIP')
+    Open-ConceptItem (Find-QueueItem $key)
+    Check 'switch_back_keeps_keep' ([string]$OwnerKeepButton.FontWeight -eq 'Bold' -and [string]$OwnerSkipButton.FontWeight -ne 'Bold')
+    $prog=Get-LocalOwnerDecisionProgress
+    Check 'progress_counts_drafts' ([int]$prog.keep -ge 1 -and [int]$prog.skip -ge 1)
+    # 9) Russian labels
+    $script:Locale='ru'; Check 'ru_state_label' ((Show-WorkflowState 'research_draft') -eq 'Черновик исследования'); $script:Locale='en'
+    @{key=$key;key2=$key2;rev1=[string]$d.current_revision_id} | ConvertTo-Json | Set-Content -LiteralPath $script:KeyFile -Encoding UTF8
+}
+
+# ---------------- phase: restart ----------------
+if($Phase -eq 'restart'){
+    $k=Get-Content -LiteralPath $script:KeyFile -Raw -Encoding UTF8 | ConvertFrom-Json
+    $script:Queue=@(Add-QueueDisplayProperties @(Merge-ResearchDraftsIntoQueue @()))
+    Check 'drafts_survive_restart' ($null -ne (Find-QueueItem $k.key) -and $null -ne (Find-QueueItem $k.key2))
+    $d=Get-ResearchDraft $k.key
+    Check 'provenance_survives_restart' ([string]$d.provenance.niche_identity -eq 'fixture-niche-nurses' -and @($d.provenance.evidence_notes).Count -eq 1)
+    Check 'state_envelope_valid' (Test-LocalCorePersistedStateEnvelope (Get-Content -LiteralPath $script:LocalCoreStatePath -Raw -Encoding UTF8 | ConvertFrom-Json))
+    Check 'backup_written' (Test-Path -LiteralPath $script:LocalCoreBackupPath)
+    $rawState=Get-Content -LiteralPath $script:LocalCoreStatePath -Raw -Encoding UTF8
+    Check 'state_research_drafts_plain_json_array' ($rawState -match '"research_drafts":\s*\[' -and $rawState -notmatch '"research_drafts":\s*\{')
+    $rawJson=$rawState | ConvertFrom-Json; $revOk=$true; foreach($x in @($rawJson.research_drafts)){ if(-not ($x.revisions -is [array])){$revOk=$false} }
+    Check 'state_revisions_plain_json_array' $revOk
+    Open-ConceptItem (Find-QueueItem $k.key)
+    Check 'keep_survives_restart' ([string]$OwnerKeepButton.FontWeight -eq 'Bold' -and [bool]$OwnerKeepButton.IsEnabled)
+    Open-ConceptItem (Find-QueueItem $k.key2)
+    Check 'skip_survives_restart' ([string]$OwnerSkipButton.FontWeight -eq 'Bold')
+    Open-ConceptItem (Find-QueueItem $k.key)
+    # EDIT -> new revision invalidates stale decision
+    $HookBox.Text='Fixture hook: Running on caffeine and charting'; $VisualBox.Text='Fixture visual: bold typographic stack, coffee cup icon'; $ReasonBox.Text='selftest edit'
+    $script:Dirty=$true
+    Save-Revision
+    $d2=Get-ResearchDraft $k.key
+    Check 'edit_creates_revision_2' ([int]$d2.current_revision_no -eq 2 -and @($d2.revisions).Count -eq 2 -and [string]$d2.current_revision_id -ne [string]$k.rev1)
+    Check 'revision_1_preserved' ([string]$d2.revisions[0].revision_id -eq [string]$k.rev1 -and [string]::IsNullOrEmpty([string]$d2.revisions[0].hook))
+    $rec=Get-LocalOwnerDecisionRecord $k.key
+    Check 'stale_keep_invalidated' ([string]$rec.decision -eq 'UNDECIDED')
+    Check 'ui_shows_no_decision_after_edit' ([string]$OwnerDecisionStatusText.Text -eq 'No decision yet')
+    Check 'overview_no_missing_after_edit' (-not ([string]$OverviewNext.Text -like 'Still missing*'))
+    $threw=$false; try{ $null=Save-ResearchDraftRevision $k.key ([ordered]@{title='x'}) 'stale' $k.rev1 }catch{ $threw=($_.Exception.Message -like 'DRAFT_STALE*') }
+    Check 'stale_save_rejected' $threw
+    $before=@(Get-ResearchDraft $k.key).revisions.Count; $HookBox.Text=$HookBox.Text; $script:Dirty=$true; Save-Revision
+    Check 'unchanged_save_no_revision' (@((Get-ResearchDraft $k.key).revisions).Count -eq $before)
+    Check 'keep_on_revision_2' (Set-LocalOwnerDecision 'KEEP')
+    # portfolio pipeline board (pure computation over the same state)
+    if($hasPipelineModule){
+        $script:Queue=@(Add-QueueDisplayProperties @(Merge-ResearchDraftsIntoQueue @(Read-QueueSnapshotFile $script:EmbeddedIdeasPath)))
+        $pipe=Get-ForgePortfolioPipeline (Read-LocalCoreState) $script:Queue
+        $r1=@($pipe.rows | Where-Object { $_.concept_key -eq $k.key }); $r2=@($pipe.rows | Where-Object { $_.concept_key -eq $k.key2 })
+        Check 'pipeline_keep_draft_needs_artwork' ($r1.Count -eq 1 -and $r1[0].stage -eq 'keep_no_artwork') $(if($r1.Count){$r1[0].stage}else{'missing'})
+        Check 'pipeline_skip_draft_parked' ($r2.Count -eq 1 -and $r2[0].stage -eq 'skip') $(if($r2.Count){$r2[0].stage}else{'missing'})
+        Check 'pipeline_counts' ($pipe.summary.kept_or_later -eq 1 -and $pipe.summary.skip -eq 1 -and $pipe.summary.drafts -eq 2 -and $pipe.summary.ideas -eq @($script:Queue).Count -and $pipe.summary.undecided -eq (@($script:Queue).Count-2)) ($pipe.summary | ConvertTo-Json -Compress)
+        Check 'pipeline_keep_sorted_first' ([string]@($pipe.rows)[0].concept_key -eq [string]$k.key) ([string]@($pipe.rows)[0].concept_key)
+        $nurses=@($pipe.niches | Where-Object { $_.niche_name -like '*Night-shift nurses*' })
+        Check 'pipeline_niche_counts' ($nurses.Count -eq 1 -and $nurses[0].keep -eq 1 -and $nurses[0].total -eq 1) ($nurses | ConvertTo-Json -Compress)
+        $map=@('undecided','edit','regen','skip','keep_no_artwork','artwork_accepted','checks_ready','package_ready','published' | ForEach-Object { Get-PipelineTargetSection $_ }) -join ','
+        Check 'pipeline_next_step_sections' ($map -eq 'ideas,ideas,artwork,ideas,artwork,checks,publish,publish,publish') $map
+        # performance insights: pure aggregation over a synthetic verified state (authority + profile stubbed in a child scope)
+        $now=[DateTime]::UtcNow; $d=[Globalization.CultureInfo]::InvariantCulture
+        $ps=[pscustomobject]@{
+            concepts=@([pscustomobject]@{concept_key='pc-1';title='Quiet Product';active_acceptance=[pscustomobject]@{x=1};packages=@()},
+                       [pscustomobject]@{concept_key='pc-2';title='Waiting Package';active_acceptance=[pscustomobject]@{x=1};packages=@([pscustomobject]@{valid=$true;status='READY_FOR_MANUAL_UPLOAD';created_at=$now.AddDays(-10).ToString('o');path=''})},
+                       [pscustomobject]@{concept_key='pc-3';title='Best Seller';active_acceptance=[pscustomobject]@{x=1};packages=@()})
+            publication_receipts=@([pscustomobject]@{concept_key='pc-1';channel='amazon_merch';marketplace='amazon.com_us';product_id='ASIN-QUIET';published_at=$now.AddDays(-40).ToString('o')},
+                                   [pscustomobject]@{concept_key='pc-3';channel='amazon_merch';marketplace='amazon.com_us';product_id='ASIN-BEST';published_at=$now.AddDays(-50).ToString('o')})
+            sales_rows=@([pscustomobject]@{date=$now.AddDays(-5).ToString('yyyy-MM-dd',$d);units=2;royalty=5.0;product_id='ASIN-BEST'},
+                         [pscustomobject]@{date=$now.AddDays(-60).ToString('yyyy-MM-dd',$d);units=1;royalty=1.0;product_id='ASIN-BEST'},
+                         [pscustomobject]@{date='';units=7;royalty=7.0;product_id='ASIN-BEST'},
+                         [pscustomobject]@{date=$now.AddDays(-1).ToString('yyyy-MM-dd',$d);units=4;royalty=4.0;product_id='ASIN-OTHER'},
+                         [pscustomobject]@{date=$now.AddDays(-2).ToString('yyyy-MM-dd',$d);units=1;royalty=1.0;product_id='ASIN-OTHER'})
+        }
+        $ins=& { function Test-LocalPublicationReceiptAuthority($State,$Receipt){ return $true }; function Get-LocalAmazonPrintProfile { return [pscustomobject]@{valid_until=([DateTime]::UtcNow.AddDays(3).ToString('o'))} }; Get-ForgePerformanceInsights $ps $now }
+        $lead=@($ins.leaders)
+        Check 'perf_leader_best_seller' ($lead.Count -eq 1 -and $lead[0].product_id -eq 'ASIN-BEST' -and $lead[0].units30 -eq 2 -and $lead[0].roy30 -eq 5.0 -and $lead[0].units90 -eq 3 -and $lead[0].roy90 -eq 6.0) ($lead | ConvertTo-Json -Compress -Depth 3)
+        $kinds=@($ins.attention | ForEach-Object { $_.kind }) -join ','
+        Check 'perf_attention_kinds' ($kinds -eq 'nosales,unknown,profile,unpublished,undated') $kinds
+        $unk=@($ins.attention | Where-Object { $_.kind -eq 'unknown' })
+        Check 'perf_unknown_counted_by_id' ($unk.Count -eq 1 -and $unk[0].args[0] -eq 'ASIN-OTHER' -and $unk[0].args[1] -eq 2) ($unk | ConvertTo-Json -Compress -Depth 3)
+        $ins2=& { function Test-LocalPublicationReceiptAuthority($State,$Receipt){ return $false }; function Get-LocalAmazonPrintProfile { return $null }; Get-ForgePerformanceInsights $ps $now }
+        $psNoSales=[pscustomobject]@{concepts=$ps.concepts;publication_receipts=$ps.publication_receipts;sales_rows=@()}
+        $ins3=& { function Test-LocalPublicationReceiptAuthority($State,$Receipt){ return $true }; function Get-LocalAmazonPrintProfile { return $null }; Get-ForgePerformanceInsights $psNoSales $now }
+        $k3=@($ins3.attention | ForEach-Object { $_.kind }) -join ','
+        Check 'perf_no_data_is_not_no_sales' ($k3 -notlike '*nosales*' -and $k3 -like 'nodata*') $k3
+        $psOld=[pscustomobject]@{concepts=$ps.concepts;publication_receipts=$ps.publication_receipts;sales_rows=@([pscustomobject]@{date=$now.AddDays(-40).ToString('yyyy-MM-dd',$d);units=1;royalty=1.0;product_id='ASIN-BEST'})}
+        $ins4=& { function Test-LocalPublicationReceiptAuthority($State,$Receipt){ return $true }; function Get-LocalAmazonPrintProfile { return $null }; Get-ForgePerformanceInsights $psOld $now }
+        $k4=@($ins4.attention | ForEach-Object { $_.kind }) -join ','
+        Check 'perf_stale_data_reported' ($k4 -notlike '*nosales*' -and $k4 -like 'stale*') $k4
+        Check 'perf_unverified_receipts_ignored' (@($ins2.leaders).Count -eq 0 -and (@($ins2.attention | ForEach-Object { $_.kind }) -join ',') -eq 'unknown,unknown,noprofile,unpublished') (@($ins2.attention | ForEach-Object { $_.kind }) -join ',')
+    }
+    # owner check confirmation (pure part: evidence built from answers; import validation stays the normal importer)
+    if($hasCheckAttestation){
+        function New-Tpl { return ('{"schema":"forge.local_check_evidence.v3","concept_key":"k","ip":{"state":"","evidence_refs":[]},"visual":{"state":"pass"},"print":{"state":"pass"},"policy":{"state":"","marketplace":"amazon.com_us","evidence_refs":[]},"metadata":{"state":"","evidence_refs":[]}}' | ConvertFrom-Json) }
+        $chkAns=@{ip=[pscustomobject]@{state='pass';ref='https://tmsearch.uspto.gov/ (no live mark)';note='n'};policy=[pscustomobject]@{state='needs_review';ref='';note=''};metadata=[pscustomobject]@{state='unchanged';ref='';note=''}}
+        $chkEv=New-OwnerCheckEvidence (New-Tpl) $chkAns $true
+        $names=@($chkEv.evidence.PSObject.Properties | ForEach-Object { $_.Name }) -join ','
+        Check 'chk_evidence_sections' ($names -eq 'schema,concept_key,ip,policy' -and (@($chkEv.saved) -join ',') -eq 'ip,policy') $names
+        Check 'chk_pass_is_owner_attested' ($chkEv.evidence.ip.state -eq 'pass' -and $chkEv.evidence.ip.attested -eq $true -and $chkEv.evidence.ip.authority_kind -eq 'owner_attested_external' -and $chkEv.evidence.ip.evidence_refs -is [array] -and @($chkEv.evidence.ip.evidence_refs).Count -eq 1 -and ($chkEv.evidence | ConvertTo-Json -Depth 5 -Compress).Contains('"evidence_refs":["https://tmsearch') -and $chkEv.evidence.ip.source -eq 'owner_in_app_checklist') ($chkEv.evidence.ip | ConvertTo-Json -Compress)
+        Check 'chk_review_not_attested' ($chkEv.evidence.policy.state -eq 'needs_review' -and $chkEv.evidence.policy.attested -eq $false -and $chkEv.evidence.policy.authority_kind -eq 'none' -and $chkEv.evidence.policy.marketplace -eq 'amazon.com_us') ($chkEv.evidence.policy | ConvertTo-Json -Compress)
+        $e1=''; try{ $null=New-OwnerCheckEvidence (New-Tpl) $chkAns $false }catch{ $e1=$_.Exception.Message }
+        Check 'chk_pass_needs_confirm' ($e1 -like 'Tick*') $e1
+        $chkAns2=@{ip=[pscustomobject]@{state='pass';ref=' ';note=''}}
+        $e2=''; try{ $null=New-OwnerCheckEvidence (New-Tpl) $chkAns2 $true }catch{ $e2=$_.Exception.Message }
+        Check 'chk_pass_needs_reference' ($e2 -like '*: ip.') $e2
+        $e3=''; try{ $null=New-OwnerCheckEvidence (New-Tpl) @{} $true }catch{ $e3=$_.Exception.Message }
+        Check 'chk_nothing_chosen' ($e3 -like 'Choose a result*') $e3
+        $prevLoc=$script:Locale; $script:Locale='ru'
+        $txt=Get-CheckChecklistText 'Тест' 'check-evidence-x.template.json'
+        $ruErr=''; try{ $null=New-OwnerCheckEvidence (New-Tpl) $chkAns2 $true }catch{ $ruErr=$_.Exception.Message }
+        $script:Locale=$prevLoc
+        Check 'chk_checklist_ru' ($txt -like '*ЧЕК-ЛИСТ ДЛЯ «Тест»*' -and $txt -like '*tmsearch.uspto.gov*' -and $txt -like '*check-evidence-x.template.json*' -and $txt -like "*`r`n*") ($txt.Substring(0,[Math]::Min(120,$txt.Length)))
+        Check 'chk_ru_error_is_known_message' ($ruErr -like 'Для «всё в порядке»*' -and (Test-KnownUiMessage $ruErr)) $ruErr
+        Check 'chk_server_error_not_known' (-not (Test-KnownUiMessage 'HTTP 500 database exploded')) ''
+    }
+    # sales CSV numbers and dates (decimal commas, thousands, US/ISO/dotted dates; unclear -> not guessed)
+    $money=@(@('$1,234.56',1234.56),@('1.234,56 €',1234.56),@('1,50',1.5),@('(0.35)',-0.35),@('-2.10',-2.1),@('4.50',4.5),@('1,234',1234.0),@('',0.0))
+    $mBad=@($money | Where-Object { $v=ConvertFrom-ForgeMoney $_[0]; $null -eq $v -or [Math]::Abs([double]$v-[double]$_[1]) -gt 0.0001 } | ForEach-Object { $_[0]+'=>'+[string](ConvertFrom-ForgeMoney $_[0]) })
+    Check 'sales_money_parsing' ($mBad.Count -eq 0 -and $null -eq (ConvertFrom-ForgeMoney 'n/a')) ($mBad -join ' | ')
+    $dates=@(@('2026-10-05','2026-10-05'),@('10/5/2026','2026-10-05'),@('5.10.2026','2026-10-05'),@('2026-10-05T23:10:00Z','2026-10-05'),@('2026/10/05','2026-10-05'))
+    $dBad=@($dates | Where-Object { $v=ConvertFrom-ForgeSalesDate $_[0]; $null -eq $v -or $v.ToString('yyyy-MM-dd') -ne $_[1] } | ForEach-Object { $_[0] })
+    Check 'sales_date_parsing' ($dBad.Count -eq 0 -and $null -eq (ConvertFrom-ForgeSalesDate '13/25/2026') -and $null -eq (ConvertFrom-ForgeSalesDate 'last week')) ($dBad -join ' | ')
+    # static guard: no assignment to PowerShell's read-only automatic variables anywhere in the package ($pid broke local generation)
+    $ro=@('pid','host','true','false','error','executioncontext','home','pshome','shellid','psversiontable','psculture','psuiculture')   # read-only/constant: assigning throws at run time
+    $roHits=@()
+    foreach($f in @(Get-ChildItem -LiteralPath $root -Recurse -Filter *.ps1)){ $tk=$null;$er=$null; $a=[System.Management.Automation.Language.Parser]::ParseFile($f.FullName,[ref]$tk,[ref]$er)
+        foreach($as in $a.FindAll({param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst]},$true)){ $l=$as.Left; if($l -is [System.Management.Automation.Language.ConvertExpressionAst]){$l=$l.Child}; if($l -is [System.Management.Automation.Language.VariableExpressionAst] -and $ro -contains $l.VariablePath.UserPath.ToLowerInvariant()){ $roHits+=($f.Name+':'+$as.Extent.StartLineNumber+' $'+$l.VariablePath.UserPath) } } }
+    Check 'no_readonly_automatic_variable_assignment' ($roHits.Count -eq 0) ($roHits -join ', ')
+    # data copy: path move between computers (everywhere) and a full save -> damage -> restore round trip (Windows paths only)
+    if($hasDataBackup){
+        $js='{"p":"C:\\Users\\a\\AppData\\Local\\MerchForge\\local-core-v1\\x.png","q":"C:\\Users\\a\\AppData\\Local\\MerchForge2\\y","r":"c:\\users\\A\\appdata\\local\\merchforge"}'
+        $mv=Convert-BackupJsonRoot $js 'C:\Users\a\AppData\Local\MerchForge' 'D:\U\b\MerchForge' | ConvertFrom-Json
+        $apo=Convert-BackupJsonRoot ((@{p="C:\Users\O'Brien\AppData\Local\MerchForge\a.png"} | ConvertTo-Json -Compress)) "C:\Users\O'Brien\AppData\Local\MerchForge" 'D:\X\MerchForge' | ConvertFrom-Json
+        Check 'backup_paths_moved_apostrophe' ($apo.p -eq 'D:\X\MerchForge\a.png') ([string]$apo.p)
+        Check 'backup_rejects_tricky_names' (-not (Test-BackupRelativePath 'local-core-v1/state.json.') -and -not (Test-BackupRelativePath 'local-core-v1/STATE~1.JSO') -and -not (Test-BackupRelativePath 'local-core-v1/../owner.key') -and -not (Test-BackupRelativePath 'owner.key') -and -not (Test-BackupRelativePath 'local-core-v1/a.png:zone') -and (Test-BackupRelativePath 'local-core-v1/artwork/final art (2).png')) ''
+        Check 'backup_paths_moved_to_this_computer' ($mv.p -eq 'D:\U\b\MerchForge\local-core-v1\x.png' -and $mv.q -eq 'C:\Users\a\AppData\Local\MerchForge2\y' -and $mv.r -eq 'D:\U\b\MerchForge') ($mv | ConvertTo-Json -Compress)
+        if($env:OS -eq 'Windows_NT'){
+            $bk=Join-Path ([IO.Path]::GetTempPath()) ('forge-bk-'+[Guid]::NewGuid().ToString('N')+'.zip')
+            $draftsBefore=@(Get-ResearchDraftList (Read-LocalCoreState)).Count
+            $null=New-Item -ItemType Directory -Path $script:StateRoot -Force; [IO.File]::WriteAllText((Join-Path $script:StateRoot 'owner.key'),'not-a-real-key')
+            $probePath=Join-Path $script:LocalCoreRoot 'exports\probe-in-copy.txt'; New-Item -ItemType Directory -Path (Split-Path -Parent $probePath) -Force | Out-Null; [IO.File]::WriteAllText($probePath,'probe')
+            $b=New-ForgeDataBackup $script:StateRoot $bk
+            Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[System.IO.Compression.ZipFile]::OpenRead($bk); $names=@($z.Entries | ForEach-Object { $_.FullName }); $z.Dispose()
+            Check 'backup_contains_state_not_keys' ($b.file_count -gt 0 -and $names -contains 'data/local-core-v1/state.json' -and @($names | Where-Object { $_ -like '*owner.key*' -or $_ -like '*provider-secrets*' -or $_ -like '*/logs/*' }).Count -eq 0) ([string]$b.file_count+' files')
+            $s0=Read-LocalCoreState; Set-ResearchDraftList $s0 @(); Write-LocalCoreState $s0
+            Remove-Item -LiteralPath $probePath -Force
+            $extra=Join-Path $script:LocalCoreRoot 'exports\added-after-copy.txt'; New-Item -ItemType Directory -Path (Split-Path -Parent $extra) -Force | Out-Null; [IO.File]::WriteAllText($extra,'x')
+            $odd=Join-Path $script:LocalCoreRoot 'exports\notes & links.txt'; [IO.File]::WriteAllText($odd,'kept')
+            $lockH=[IO.File]::Open($extra,[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+            $eb=$script:Errors.Count; try { $resBusy=Restore-ForgeDataBackupFromPath $bk } finally { $lockH.Dispose() }
+            Check 'backup_restore_refuses_while_file_open' (-not $resBusy.ok -and [string]$script:Errors[$script:Errors.Count-1] -like '*open in another program*' -and @(Get-ResearchDraftList (Read-LocalCoreState)).Count -eq 0 -and (Test-Path -LiteralPath $extra)) ([string]$script:Errors[$script:Errors.Count-1])
+            $res=Restore-ForgeDataBackupFromPath $bk
+            $aside=@(Get-ChildItem -LiteralPath (Join-Path $script:StateRoot 'backups') -Recurse -File -Filter 'added-after-copy.txt' -ErrorAction SilentlyContinue)
+            Check 'backup_restore_brings_files_back_and_matches_copy' ((Test-Path -LiteralPath $probePath) -and [IO.File]::ReadAllText($probePath) -eq 'probe' -and -not (Test-Path -LiteralPath $extra) -and $aside.Count -eq 1) ('probe '+$probePath+'; set aside '+$aside.Count)
+            Check 'backup_restore_never_touches_other_files' ((Test-Path -LiteralPath $odd) -and [IO.File]::ReadAllText($odd) -eq 'kept') $odd
+            $draftsAfter=@(Get-ResearchDraftList (Read-LocalCoreState)).Count
+            Check 'backup_restore_brings_data_back' ($res.ok -and $draftsBefore -gt 0 -and $draftsAfter -eq $draftsBefore -and (Test-Path -LiteralPath $res.previous)) ('before '+$draftsBefore+', after '+$draftsAfter+', prev '+$res.previous)
+            $bad=$bk+'.bad.zip'; $z=[System.IO.Compression.ZipFile]::Open($bk,[System.IO.Compression.ZipArchiveMode]::Update); try{ $en=$z.GetEntry('data/local-core-v1/state.json'); $sw=New-Object IO.StreamWriter($en.Open()); try{ $sw.BaseStream.SetLength(0); $sw.Write('{"tampered":true}') } finally { $sw.Dispose() } } finally { $z.Dispose() }
+            $errBefore=$script:Errors.Count; $res2=Restore-ForgeDataBackupFromPath $bk
+            Check 'backup_damaged_copy_refused' (-not $res2.ok -and $script:Errors.Count -gt $errBefore -and [string]$script:Errors[$script:Errors.Count-1] -like '*checksum mismatch*' -and @(Get-ResearchDraftList (Read-LocalCoreState)).Count -eq $draftsBefore) ([string]$(if($script:Errors.Count){$script:Errors[$script:Errors.Count-1]}else{''}))
+            Remove-Item -LiteralPath $bk -Force -ErrorAction SilentlyContinue; Remove-Item -LiteralPath (Join-Path $script:StateRoot 'owner.key') -Force -ErrorAction SilentlyContinue
+            # automatic daily copy helper: makes a valid copy, never includes the key, keeps at most N copies
+            $bdir=Join-Path $script:StateRoot 'backups'; New-Item -ItemType Directory -Path $bdir -Force | Out-Null
+            foreach($i in 1..3){ $old=Join-Path $bdir ('auto-2026010'+$i+'-000000.zip'); [IO.File]::WriteAllText($old,'old'); (Get-Item $old).LastWriteTimeUtc=[DateTime]::UtcNow.AddDays(-10+$i) }
+            $psExe=Join-Path $PSHOME 'pwsh.exe'   # same already-installed Core host required by strict backup validation
+            $ap=Start-Process -FilePath $psExe -ArgumentList @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+(Join-Path $PackageRoot 'MerchForgeAutoDataCopy.ps1')+'"'),'-StateRoot',('"'+$script:StateRoot+'"'),'-Keep','2') -WindowStyle Hidden -PassThru; $null=$ap.Handle; $null=$ap.WaitForExit(120000)
+            $autos=@(Get-ChildItem -LiteralPath $bdir -Filter 'auto-*.zip' -File | Sort-Object LastWriteTimeUtc -Descending)
+            $vm=$null; try{ $vm=Read-ForgeDataBackup $autos[0].FullName (Join-Path ([IO.Path]::GetTempPath()) ('forge-av-'+[Guid]::NewGuid().ToString('N'))) }catch{}
+            $lk=[IO.File]::Open((Join-Path $bdir 'auto-copy.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+            try { $ap2=Start-Process -FilePath $psExe -ArgumentList @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+(Join-Path $PackageRoot 'MerchForgeAutoDataCopy.ps1')+'"'),'-StateRoot',('"'+$script:StateRoot+'"'),'-Keep','2') -WindowStyle Hidden -PassThru; $null=$ap2.Handle; $null=$ap2.WaitForExit(60000) } finally { $lk.Dispose() }
+            $autos2=@(Get-ChildItem -LiteralPath $bdir -Filter 'auto-*.zip' -File)
+            Check 'auto_copy_second_helper_steps_aside' ($ap2.ExitCode -eq 0 -and $autos2.Count -eq $autos.Count -and @(Get-ChildItem -LiteralPath $bdir -Filter 'auto-*.zip.tmp.*' -File).Count -eq 0) ('exit '+$ap2.ExitCode+'; copies '+$autos2.Count)
+            Check 'auto_copy_helper_valid_and_pruned' ($ap.ExitCode -eq 0 -and $autos.Count -eq 2 -and $null -ne $vm -and @($vm.files | Where-Object { $_.path -like '*owner.key*' }).Count -eq 0) ('exit '+$ap.ExitCode+'; copies '+$autos.Count)
+        }
+    }
+    # sales CSV as Amazon-like exports write it: other column names, ';' delimiter, decimal commas, a row without ASIN and one without a date
+    $csvP=Join-Path ([IO.Path]::GetTempPath()) ('forge-sales-'+[Guid]::NewGuid().ToString('N')+'.csv')
+    [IO.File]::WriteAllText($csvP,("Purchase Date;ASIN;Units Sold;Royalty (USD);Marketplace`r`n2026-10-01;B0TESTCSV1;2;`"3,10`";amazon.com`r`n2026-10-02;B0TESTCSV1;1;1,55;amazon.com`r`n2026-10-03;;4;8,00;amazon.com`r`nsoon;B0TESTCSV2;1;2,00;amazon.com`r`n"),(New-Object Text.UTF8Encoding($false)))
+    $nBefore=@((Read-LocalCoreState).sales_rows).Count
+    Import-LocalSalesCsvFromPath $csvP
+    $rowsNew=@(@((Read-LocalCoreState).sales_rows) | Select-Object -Skip $nBefore)
+    $r1=@($rowsNew | Where-Object { $_.product_id -eq 'B0TESTCSV1' })
+    Check 'sales_csv_amazon_like_columns' ($rowsNew.Count -eq 4 -and $r1.Count -eq 2 -and [double]$r1[0].royalty -eq 3.1 -and [double]$r1[1].royalty -eq 1.55 -and $r1[1].date -eq '2026-10-02' -and [double]$r1[0].units -eq 2) ($rowsNew | ConvertTo-Json -Compress -Depth 3)
+    Check 'sales_csv_reports_unreadable_rows' ($StatusText.Text -like '*Not readable: 1 without a product ID (ASIN), 1 without a date, 0 unreadable amount(s).') $StatusText.Text
+    Remove-Item -LiteralPath $csvP -Force -ErrorAction SilentlyContinue
+    $colPick=Find-CsvColumn @('Date','Royalty Rate','Royalties Currency','Royalty Amount','Units Ordered') @('royalty','royalties','royalt*')
+    $unitPick=Find-CsvColumn @('Date','Royalty Rate','Units Ordered') @('units','units sold','units*')
+    Check 'sales_csv_skips_rate_and_currency_columns' ($colPick -eq 'Royalty Amount' -and $unitPick -eq 'Units Ordered') ([string]$colPick+' / '+[string]$unitPick)
+    $o1=Get-CsvSlashDateOrder @('25/09/2026','10/10/2026') ','; $o2=Get-CsvSlashDateOrder @('09/25/2026','10/10/2026') ';'
+    $refused=0
+    foreach($separator in @(',',';')){try{$null=Get-CsvSlashDateOrder @('03/10/2026') $separator}catch{if($_.Exception.Message -like '*ambiguous slash dates*'){$refused++}}}
+    try{$null=Get-CsvSlashDateOrder @('25/09/2026','09/25/2026') ','}catch{if($_.Exception.Message -like '*conflicting day/month*'){$refused++}}
+    Check 'sales_csv_date_order_requires_unambiguous_values' ($o1 -eq 'dmy' -and $o2 -eq 'mdy' -and $refused -eq 3 -and (ConvertFrom-ForgeSalesDate '25/09/2026' $o1).ToString('yyyy-MM-dd') -eq '2026-09-25') ($o1+','+$o2+'; refused '+$refused)
+    $csvN=Join-Path ([IO.Path]::GetTempPath()) ('forge-sales-'+[Guid]::NewGuid().ToString('N')+'.csv'); [IO.File]::WriteAllText($csvN,"Date,ASIN,Title`r`n2026-10-01,B0X,Shirt`r`n",(New-Object Text.UTF8Encoding($false)))
+    $eb=$script:Errors.Count; Import-LocalSalesCsvFromPath $csvN
+    Check 'sales_csv_without_units_or_royalty_refused' ($script:Errors.Count -eq $eb+1 -and [string]$script:Errors[$script:Errors.Count-1] -like 'This sales CSV has no units or royalty column*') $(if($script:Errors.Count){[string]$script:Errors[$script:Errors.Count-1]}else{''})
+    Remove-Item -LiteralPath $csvN -Force -ErrorAction SilentlyContinue
+    # listing hints: Amazon lengths and risky wording (advice only)
+    if($hasListingHints){
+        $ok=@(Get-ListingIssues ([pscustomobject]@{title='Night Shift Nurse Coffee Fuel Funny ICU ER Nurse Gift';brand='Night Shift Supply';bullet1='Funny night shift nurse design.';bullet2='Great for ICU nurses.';description=('A '+('very '*20)+'funny nurse shirt.');keywords='nurse, icu'}))
+        Check 'listing_clean_text_no_issues' ($ok.Count -eq 0) (($ok | ConvertTo-Json -Compress))
+        $bad=@(Get-ListingIssues ([pscustomobject]@{title=('Official Nurse Shirt '+('x'*60));brand='AB';bullet1='<b>Best Seller</b> design';bullet2='<b>Best Seller</b> design';description='short';keywords='official, amazon'}))
+        $kinds=(@($bad | ForEach-Object { $_.field+':'+$_.kind }) -join ',')
+        Check 'listing_problems_found' ($kinds -eq 'title:long,title:word,brand:short,bullet1:word,bullet1:html,bullet2:word,bullet2:html,description:short,bullet2:samebullets') $kinds
+        $prevLoc=$script:Locale; $script:Locale='ru'; $l1=Format-ListingIssue $bad[0]; $l2=Format-ListingIssue $bad[1]; $script:Locale=$prevLoc
+        Check 'listing_hint_text_ru' ($l1 -like '• Название: 81 симв., Amazon разрешает 60.' -and $l2 -like '• Название: «official» обычно не пропускают*') ($l1+' | '+$l2)
+        $notWord=@(Get-ListingIssues ([pscustomobject]@{title='Unofficial guide to salesforce discounts';brand='';bullet1='';bullet2='';description='';keywords=''}) | Where-Object { $_.kind -eq 'word' })
+        $fp=@(Get-ListingIssues ([pscustomobject]@{title='LPN Licensed Practical Nurse Gift';brand='';bullet1='100% Cotton feel, x < y > z';bullet2='';description='';keywords=''}))
+        $star=@(Get-ListingIssues ([pscustomobject]@{title=('Night shift nurse '+[char]0x2B50);brand='';bullet1='';bullet2='';description='';keywords=''}))
+        Check 'listing_no_false_alarms_and_star_emoji' ($fp.Count -eq 0 -and @($star | Where-Object { $_.kind -eq 'emoji' }).Count -eq 1) (($fp | ConvertTo-Json -Compress)+' / '+($star | ConvertTo-Json -Compress))
+        Check 'listing_words_match_whole_words_only' ($notWord.Count -eq 1 -and $notWord[0].args[0] -eq 'discount') (($notWord | ConvertTo-Json -Compress))
+    }
+    # Amazon print profile: status wording and the owner form -> attestation (the standalone tool re-validates)
+    if($hasAmazonProfile){
+        $now=[DateTime]::UtcNow
+        $vp={param($d) [pscustomobject]@{canvas_width_px=4500;canvas_height_px=5400;dpi=300;marketplace='amazon.com_us';product_type_key='standard_tshirt';valid_until=$now.AddDays($d).ToString('o')}}
+        $s1=Get-AmazonProfileStatusFrom $false $null $null $now; $s2=Get-AmazonProfileStatusFrom $true (& $vp 29.6) $null $now; $s3=Get-AmazonProfileStatusFrom $true (& $vp 2.6) $null $now
+        $s4=Get-AmazonProfileStatusFrom $true $null ([pscustomobject]@{valid_until=$now.AddDays(-2).ToString('o')}) $now; $s5=Get-AmazonProfileStatusFrom $true $null ([pscustomobject]@{x=1}) $now
+        Check 'prof_states' ((@($s1,$s2,$s3,$s4,$s5) | ForEach-Object { $_.state }) -join ',' -eq 'none,valid,expiring,expired,invalid') ((@($s1,$s2,$s3,$s4,$s5) | ForEach-Object { $_.state }) -join ',')
+        $prevLoc=$script:Locale; $script:Locale='ru'; $txt2=Format-AmazonProfileStatus $s2; $txt3=Format-AmazonProfileStatus $s3; $txt1=Format-AmazonProfileStatus $s1; $script:Locale=$prevLoc
+        Check 'prof_status_text_ru' ($txt2 -like '4500 × 5400 пикс., 300 DPI · amazon.com_us / standard_tshirt · действует до *(осталось дней: 30).' -and $txt3 -like 'Скоро истекает:*осталось дней: 3*' -and $txt1 -like 'Не импортирован*') ($txt2+' | '+$txt3)
+        $profFields={ [pscustomobject]@{marketplace='amazon.com_us';product_type_key='standard_tshirt';template_key='std-4500';template_file_sha256=('b'*64);width='4500';height='5400';dpi='300';days='90';source_ref='https://merch.amazon.com/resource/Y28FFE5NLRYJG4V';attested=$true} }
+        $att=New-AmazonProfileAttestation (& $profFields) $now
+        $vd=([DateTime]::Parse($att.valid_until,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind)-[DateTime]::Parse($att.captured_at,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind)).TotalDays
+        Check 'prof_attestation_shape' ($att.schema -eq 'forge.amazon_print_profile_attestation.v1' -and $att.attested -eq $true -and $att.canvas_width_px -eq 4500 -and $att.file_format -eq 'png' -and $att.background -eq 'transparent' -and [int]$vd -eq 90 -and ($att | ConvertTo-Json -Compress).Contains('"source_refs":["https://merch.amazon.com')) ($att | ConvertTo-Json -Compress)
+        $errs=@()
+        foreach($mut in @({param($f) $f.attested=$false},{param($f) $f.width='300'},{param($f) $f.days='200'},{param($f) $f.source_ref='http://example.com/x'},{param($f) $f.template_file_sha256=''},{param($f) $f.template_key=' '})){ $pf=& $profFields; & $mut $pf; try{ $null=New-AmazonProfileAttestation $pf $now; $errs+='NO ERROR' }catch{ $errs+=$_.Exception.Message } }
+        $pfa=& $profFields; $forb=@{}; $forb[('b'*64)]=$true; $eArt=''; try{ $null=New-AmazonProfileAttestation $pfa $now $forb }catch{ $eArt=$_.Exception.Message }
+        Check 'prof_rejects_accepted_artwork_as_template' ($eArt -like 'This file is one of your accepted designs*') $eArt
+        $pfe=& $profFields; $pfe.source_ref=''; $eRef=''; try{ $null=New-AmazonProfileAttestation $pfe $now }catch{ $eRef=$_.Exception.Message }
+        Check 'prof_requires_source_ref' ($eRef -like 'Paste the Amazon page*') $eRef
+        Check 'prof_form_rejects_bad_input' (@($errs | Where-Object { $_ -eq 'NO ERROR' }).Count -eq 0 -and $errs[0] -like 'Tick*' -and $errs[1] -like 'Width and height*' -and $errs[2] -like 'Valid for*' -and $errs[3] -like 'Paste the Amazon page*' -and $errs[4] -like 'Choose the Amazon template*' -and $errs[5] -like 'Fill marketplace*') ($errs -join ' | ')
+    }
+    # no-dispatch artwork preparation
+    Export-LocalGenerationBrief
+    $dir=Join-Path $script:LocalCoreExportRoot (Get-LocalCoreSafeKey $k.key); $bj=@(Get-ChildItem -LiteralPath $dir -Filter 'generation-brief-*.json')
+    $brief=$null; if($bj.Count){$brief=Get-Content -LiteralPath $bj[0].FullName -Raw -Encoding UTF8 | ConvertFrom-Json}
+    Check 'brief_exported' ($null -ne $brief)
+    Check 'brief_bound_to_revision_2' ($null -ne $brief -and [string]$brief.source_revision_id -eq [string](Get-ResearchDraft $k.key).current_revision_id)
+    Check 'brief_no_external_generation' ($null -ne $brief -and -not [bool]$brief.external_generation_authorized)
+    # authority guards
+    $script:Errors.Clear(); Queue-Generation
+    Check 'generate_blocked_for_draft' ($script:Errors.Count -eq 1 -and $script:Errors[0] -like 'Research drafts cannot be generated*')
+    foreach($a in @('Prepare-DeliveryPackage','Start-NewIteration','Reopen-CurrentAcceptance','Cancel-Generation')){ $script:Errors.Clear(); & $a; Check ("live_action_blocked_$a") ($script:Errors.Count -eq 1 -and $script:Errors[0] -like 'This is a local research draft*') }
+    $s=Read-LocalCoreState; $lc=Get-LocalCoreConcept $k.key $s
+    Check 'no_acceptance_created' ($null -eq $lc.active_acceptance)
+    Check 'no_package_created' (@($lc.packages).Count -eq 0)
+    $script:Errors.Clear(); $missing=Load-Concept 'rd-000000000000000000000000' $true
+    Check 'missing_draft_key_never_hits_api' (-not [bool]$missing -and $script:Errors.Count -eq 1 -and $script:R.api_calls -eq 0)
+    $script:Errors.Clear(); $script:Current=$null; Open-ResearchDraftItem ([pscustomobject]@{concept_key=$k.key}) $true
+    $VariantList.ItemsSource=@('stale-live-variant'); $AnalysisScores.Text='stale live scores'
+    Open-ResearchDraftItem ([pscustomobject]@{concept_key=$k.key2}) $true
+    Check 'stale_live_surfaces_cleared' ((@($VariantList.ItemsSource) -notcontains 'stale-live-variant') -and [string]$AnalysisScores.Text -eq '')
+    $saved=${function:Ensure-LocalCoreConceptFromCurrent}; Set-Item function:Ensure-LocalCoreConceptFromCurrent { throw 'Local Forge state changed in another window. (injected)' }
+    $script:Errors.Clear(); $crashed=$false; try{ Open-ResearchDraftItem ([pscustomobject]@{concept_key=$k.key}) $true }catch{ $crashed=$true }
+    Set-Item function:Ensure-LocalCoreConceptFromCurrent $saved
+    Check 'open_error_is_contained' (-not $crashed -and $script:Errors.Count -eq 1)
+    $script:Errors.Clear(); $reloaded=Load-Concept $k.key $true
+    Check 'reload_draft_stays_local' ([bool]$reloaded -and (Test-CurrentIsResearchDraft) -and $script:Errors.Count -eq 0 -and [string]$script:Current.concept.concept_key -eq [string]$k.key)
+    Check 'draft_still_not_server_concept' (-not [bool](Get-ResearchDraft $k.key).authority.server_concept)
+}
+
+# ---------------- phase: legacy054 (rollback compatibility) ----------------
+if($Phase -eq 'legacy054'){
+    Check 'legacy_has_no_draft_module' (-not $hasDraftModule)
+    $s=$null; $err=''; try{$s=Read-LocalCoreState}catch{$err=$_.Exception.Message}
+    Check 'legacy_054_reads_055_state' ($null -ne $s) $err
+    $k=Get-Content -LiteralPath $script:KeyFile -Raw -Encoding UTF8 | ConvertFrom-Json
+    $lc=$null; if($null -ne $s){$lc=Get-LocalCoreConcept $k.key $s}
+    Check 'legacy_sees_owner_decision_mirror' ($null -ne $lc -and [string]$lc.owner_decision -eq 'KEEP')
+    $err=''; try{ Write-LocalCoreState $s; $s2=Read-LocalCoreState }catch{$err=$_.Exception.Message}
+    $kept=$false; if($err -eq ''){ $p=$s2.PSObject.Properties['research_drafts']; $kept=($null -ne $p -and @($p.Value).Count -eq 2) }
+    Check 'legacy_write_preserves_drafts' $kept $err
+}
+} catch {
+    $script:R['fatal']=($_.Exception.Message+' @ '+$_.InvocationInfo.PositionMessage)
+}
+if($OutputPath){ [IO.File]::WriteAllText($OutputPath,($script:R | ConvertTo-Json -Depth 12),(New-Object Text.UTF8Encoding($false))) }

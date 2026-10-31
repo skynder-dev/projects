@@ -1,0 +1,15 @@
+{
+  "schema": "forge.local_generation_brief.v2",
+  "created_at": "2026-10-03T09:25:00Z",
+  "concept_key": "v4_relay_nervous",
+  "title": "Relay tech — professionally making people nervous",
+  "hook": "TRIP TEST: PROFESSIONALLY MAKING PEOPLE NERVOUS.",
+  "niche_name": "Substation / Relay Technician",
+  "concept": "Humor about trip testing making everyone nearby tense even when done correctly.",
+  "visual_direction": "Nervous observers behind a calm technician at a test set.",
+  "source_revision_id": "a675c85e-fd62-4fe0-855d-c84c59b70b7e",
+  "source_revision_hash": "7bf318a34bcfad46c57f6cb42372a6cb02f9131f62d57c59826cd1b6289abbe0",
+  "provider_mode": "manual_artwork_bridge",
+  "external_generation_authorized": false,
+  "note": "Creative brief only. Import the finished image back into Merch Forge; exact SHA/revision binding is required before acceptance."
+}

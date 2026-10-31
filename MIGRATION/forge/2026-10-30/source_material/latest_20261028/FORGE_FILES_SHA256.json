@@ -1,0 +1,637 @@
+{
+  "schema": "forge-subset-extracted-v1",
+  "original_archive_sha256": "76afccb5a55b1a7aa0c8aa29a56f8f7a256e8c1d6c2884b067719ff74f092d73",
+  "source_library_file_id": "libfile_91f9f32acc148191a086bc68e83b636a",
+  "files": [
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Configure Image Provider.ps1",
+      "sha256": "45efd5c519cc292c18f08a606312f18261cdcb76072ab92b52973ee64b2bec97",
+      "bytes": 6991
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Configure Image Provider.vbs",
+      "sha256": "d2def86c2b6174781738fffd8340077b42b553693ccca401a0dda00fa8502cb7",
+      "bytes": 753
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Import Amazon Print Profile.ps1",
+      "sha256": "19a78d1d968256ccef98ad52e4d13ec31151cff6de2687846209aaecdd246718",
+      "bytes": 4574
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Import Amazon Print Profile.vbs",
+      "sha256": "3659e01c40b80984d1d23f0ffe6d1fa6b1ad8a490252609e37b7ee9f7ed5ce8a",
+      "bytes": 467
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Install Merch Forge.vbs",
+      "sha256": "c58423c15ef671c24346adcb1b52ef3c82fab7e7bd1698c4b05390cdcb65a71f",
+      "bytes": 22152
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeAutoDataCopy.ps1",
+      "sha256": "b841365ff087794fe0b86160e1548ea51bb5772a90602467230a05ea6c3404a2",
+      "bytes": 3225
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeCheckWorker.ps1",
+      "sha256": "374b07e0136048c4035f41891b55ab9eceffa598ad9ad16ccae343c6884b9441",
+      "bytes": 7173
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeGenerationWorker.ps1",
+      "sha256": "9c09688a4579fe8f156c8052b55e229b927286c48b23e8fabe55873e39fa36ae",
+      "bytes": 24122
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeLauncher.cmd",
+      "sha256": "f05b8e5e70086d4c7c8cca819b070df0e4b9c645c1553228e1e0a63ea30d3b76",
+      "bytes": 2563
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgePreflight.ps1",
+      "sha256": "0f51bff286407bac7c2bc40ed4459bc4743da23ae6bab51506c0635b2befcf8b",
+      "bytes": 13449
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeProviderPipelineSelfTest.ps1",
+      "sha256": "041801ed36d6b35230c9a2917660d47de38ed1965c403bf7255f467f4228fc5a",
+      "bytes": 87747
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeResearchDraftSelfTest.ps1",
+      "sha256": "1068cf3f8179c999240dce1c74aeb8f068df7caaced85cd94a1bca29a3d753f7",
+      "bytes": 52088
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/MerchForgeWorkbench.ps1",
+      "sha256": "d2050b6867359daf70c2a75699102b2a59a70cf7ba2cc1e317d2c995dea83122",
+      "bytes": 270809
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.AmazonProfile.ps1",
+      "sha256": "449d7f201193e3a6ee0e4c66f4604698e06b86fdbbcfa8fcd20958dd7ecc4ca5",
+      "bytes": 24793
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.AutoResearch.ps1",
+      "sha256": "e5e720604994e6473d93c6d1da2e58eeae9b582d08752ad6d42c80a8ee24a3cc",
+      "bytes": 65242
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.BackendStatus.ps1",
+      "sha256": "d3c1bd722836a2a90ac3afa83d8d0c288f9d04a6be5ef1ee9a1990e0c876ab42",
+      "bytes": 8878
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.BriefApproval.ps1",
+      "sha256": "b236b69d8818d25f96b93e056d22c7a21cfc30ea0193ea63f0082b68afaf9c5e",
+      "bytes": 19858
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.CanonicalDesignPrototype.ps1",
+      "sha256": "7361f4d5820462b151c0fd2b5afc02a95b2e475d6daa4829932e54a7cf993f96",
+      "bytes": 22714
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.CheckAttestation.ps1",
+      "sha256": "8c1b89ae5b916e52f11e8df81b32e4ab6e86c647670984581d3016157b03c0ad",
+      "bytes": 24835
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ColourReview.ps1",
+      "sha256": "af477f0fa7a36c14faa3a76ec8213cd421a6542351c65766821c220697432966",
+      "bytes": 9273
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.DataAdapter.ps1",
+      "sha256": "f23d240f6feffa0043f695ac5a8c964925837ef014ee19b430aef276f45c08d7",
+      "bytes": 1167
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.DataBackup.ps1",
+      "sha256": "18aeeb1100c181a7e06155c7e870e005c3825b07dc7e83df1e5056de6d631109",
+      "bytes": 44517
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.DataViews.ps1",
+      "sha256": "2e4510db4057767f468ca67867cd3f03f69a2de423de56ea8ccb9ef1c2bb6470",
+      "bytes": 63265
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Diagnostics.ps1",
+      "sha256": "ff9bc2409466c41652dbb56d2acfed564e292ea6b03daddaf456646397e47f11",
+      "bytes": 4349
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.DomainActions.ps1",
+      "sha256": "97fdd43904c8594413ae94ba802751db9b0e35e8239040a112623b6821bdedb0",
+      "bytes": 37614
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Economics.ps1",
+      "sha256": "4e5a0c1d08c049472408f0034d0a229fc82f191081a11475945caeeb4408b86c",
+      "bytes": 19893
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Gates.ps1",
+      "sha256": "933b586b484ed646b6b2d5de7cba3751a74a431605bd74e0919f316d5b719eab",
+      "bytes": 11974
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.GenerationAuthority.ps1",
+      "sha256": "5ad8833599915b61f7f4bb153e6ba4f568ef315a779ec8576446b2011116ad68",
+      "bytes": 21997
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.GenerationCapability.ps1",
+      "sha256": "3638a9ade82c53604c45926aa6b812346860c2d260e68f8e0ab22cbb0a96898a",
+      "bytes": 1469
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.GenerationMaintenance.ps1",
+      "sha256": "d34e0ebd75ea663604d0a607cf292af166704affb17f50c8e4966bc47d8929ea",
+      "bytes": 4601
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.GenerationProvider.ps1",
+      "sha256": "6b722a65e9b581c8a1a95ecc4e271409c0150bf6d4c5381e8f1fc966373fb224",
+      "bytes": 17985
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.GenerationWorkerBridge.ps1",
+      "sha256": "8954bb66cda1c582b0bf1e938f0c27198763d36cdfd37d7be18695df863b2282",
+      "bytes": 55359
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ImageValidation.ps1",
+      "sha256": "5affae33e9f08f394ae090bac65b31fb52f3c30cf1a64ab0fb4dcef6aa46e5f8",
+      "bytes": 11233
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.InstrumentalClaims.ps1",
+      "sha256": "493737322484e9998155369a33b8e2c0a7c3ef62045af26b3a117d2c521e1f86",
+      "bytes": 1845
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ListingHints.ps1",
+      "sha256": "d66ecfb9e25e2ca1a45d21e295c2274c0c0ec9e81aaa837fb4c39aebd7235151",
+      "bytes": 6346
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.LocalAI.ps1",
+      "sha256": "7b990e49aaab5fe3a66024d51c5bd34d8090a857a910259ba76bf7a1e14d1a2c",
+      "bytes": 37230
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.LocalAILifecycle.ps1",
+      "sha256": "255ce7e71acef6e221b6485ef7ce43a1e30b350992ce1fccdff3ae963b3b77b7",
+      "bytes": 2554
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.LocalCore.ps1",
+      "sha256": "34cab2031ef10a6626d86903dda2292e7ba11a4e50a6d0af14d739d417a02d7d",
+      "bytes": 274523
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.LocalFlux.ps1",
+      "sha256": "07f9d946ad9edc3e771caf72e5c6fbd7538bdcf3db014c4cd9f2412848fa1857",
+      "bytes": 7773
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Localization.ps1",
+      "sha256": "07ead0b70f250c9fac9e83721aadf60268de11d4a70b9927b18da29df7e2eb50",
+      "bytes": 19651
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Media.ps1",
+      "sha256": "b4a6250f8dce016b4b08ddc3d8fb1d56c11836bdfa07c5fb9255317f20eebb52",
+      "bytes": 14304
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.MessageLocalization.ps1",
+      "sha256": "96d20c98c5f391ed09de1b4cbfecc68090f9f82246ed7e148851ef0e0275eb2a",
+      "bytes": 6124
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.OwnerLanguage.ps1",
+      "sha256": "09a60b0037a3f5eb0f1f5a67c25349ce17c6006fe848fd83747c6f3625670802",
+      "bytes": 24195
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Pipeline.ps1",
+      "sha256": "02058c6cf3b7a8e6c44a431f4fc1f7cf3a38d7249f53d19ccb6f316b784160d9",
+      "bytes": 35795
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.PrintChecks.ps1",
+      "sha256": "33173471368c0c4c8315e4ce70ffd087df3c0bc26d6583a7ff5025bc7eb016cf",
+      "bytes": 18490
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ProductNavigation.ps1",
+      "sha256": "e46d8b56369198c6bc2f9e28b9006d2c06d4275cb7b1f56dde469612f4b46e31",
+      "bytes": 14178
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.PublicEvidence.ps1",
+      "sha256": "5750d50cc9eba70ab7f974287cca2e125c1c7eb12b738915507db59a2ed46863",
+      "bytes": 11427
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.PublicRss.ps1",
+      "sha256": "e07bcc1e759b548e5a729fbf7bc061395b8637b225d756035ec9edca82cd8cb2",
+      "bytes": 18933
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.PublicSignals.ps1",
+      "sha256": "92fc5d755871b543e510f129dcb4e204a571c3897d26ea7f80962e5abf74a392",
+      "bytes": 25397
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.RejectedAI.ps1",
+      "sha256": "4bd132ac2870c21e483fa6d271a0fb49efbb3fa3f8434b751655d05446bf1cfc",
+      "bytes": 29555
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ResearchDrafts.ps1",
+      "sha256": "e73a8f47919161f303674a61308f4a0a7b0de38601b09c8e36aa66cf2e5fb3ac",
+      "bytes": 51015
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ResearchImport.ps1",
+      "sha256": "595a6630c9eb3d36695b593ca6d1a1d00b4acad83935f823db6df4b85eb0aa75",
+      "bytes": 7475
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ResearchReview.ps1",
+      "sha256": "8e14f2e81490de5d2e8fea86fe1d54a407f9259c3b0132354190f26b8d460343",
+      "bytes": 25310
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.ResponseContract.ps1",
+      "sha256": "db5b3fd4b41adc14834491012a21ca8c6e12e1a4ff0ccb20886011f3aad76b3d",
+      "bytes": 2586
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.SemanticReview.ps1",
+      "sha256": "ec44acebec5b6a7bdfd5458da2e140b9e822d6c9af2a98f1e64e894c0c703030",
+      "bytes": 5849
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.SemanticReviewUI.ps1",
+      "sha256": "3aa247e93d014a9e0647d1ed60e88fe1b2a11b629a05984daee909ae10d83faf",
+      "bytes": 6012
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.StrictJsonSyntax.ps1",
+      "sha256": "a56fa0e314446d9b4b59b489f5fc5bf53270b003e5504f5b494603e6d688eca7",
+      "bytes": 3464
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.UI.Layout.ps1",
+      "sha256": "d108b602d40c5a506810436671a045711fc89cef447f49253b45fed72a302867",
+      "bytes": 10636
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Modules/Forge.WhatsNew.ps1",
+      "sha256": "3e9f21e69eab6687e46147fa072ea23857f37d2452a64df5a37a537d4a2caf52",
+      "bytes": 2832
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Open Error Log.vbs",
+      "sha256": "8749bcde87f3e3be3eeeb6e0d3b766732b3889eb4725581d74f6e01b2b75f152",
+      "bytes": 1697
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Remove Saved Access.vbs",
+      "sha256": "38d51383e0367579d20a4a26e14d29890ef7d4f942a239fcee2a39e6d33f7c9d",
+      "bytes": 469
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Start Merch Forge.vbs",
+      "sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
+      "bytes": 5334
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Test Image Provider Online.ps1",
+      "sha256": "f25b4fdbc759344f5edc87d70405cf68e505118b786371cc146ab39d336e59cc",
+      "bytes": 3101
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Test Image Provider Online.vbs",
+      "sha256": "70af1402830993ff228bcbdb2d67a8a7bfd831e8067fdea7222cfdbd837b482b",
+      "bytes": 1529
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Test Image Provider.ps1",
+      "sha256": "43fc72fe3c69b1211ca5abbb2906510294637a747822b0fe16facba2d5513896",
+      "bytes": 8055
+    },
+    {
+      "path": "forge/app/Merch_Forge_A5_Current/Test Image Provider.vbs",
+      "sha256": "ff417711e239d0d48c30c8f51810de7332c9f74288972dec5cee1dad97559d0c",
+      "bytes": 1309
+    },
+    {
+      "path": "forge/app/START_077_MERCH_FORGE.vbs",
+      "sha256": "2aab5f2e54090c7e44a3b8efd859d74a44aa3ec1e3f89a74a82ce7c5e2c4e58a",
+      "bytes": 1340
+    },
+    {
+      "path": "forge/ci/ForgeWpfSmoke.hook.ps1",
+      "sha256": "117e7bda580cd008abd1415ad0a86ee2c97afeb750f3dd06c0e4e0a6f0f292ce",
+      "bytes": 54937
+    },
+    {
+      "path": "forge/ci/Invoke-ForgeWindowsCi.ps1",
+      "sha256": "f2ac9bce34eddddc3992a9515d552b66c9c75cafd9cdd18767ebfdca679b4ba1",
+      "bytes": 8596
+    },
+    {
+      "path": "forge/ci/Test-ForgeInstall.ps1",
+      "sha256": "e2f713a72de25bab2be5b9035bfb6f38a2f3244551dc0b6ccf4296c8dbb7d241",
+      "bytes": 12132
+    },
+    {
+      "path": "forge/tests/GenerationUnavailableInputs.json",
+      "sha256": "36ac00af64cddb90b4cfd7911316baa7f3128845831b23b317738e9223f55d6d",
+      "bytes": 804
+    },
+    {
+      "path": "forge/tests/PipelinePackageAuthority.sources.json",
+      "sha256": "a37f3e41d57d3cb9893f8d6d0a0725751a07ca9fcf453d3e3ae77ef500e9600c",
+      "bytes": 8744
+    },
+    {
+      "path": "forge/tests/README-ComposedProductRegressions.md",
+      "sha256": "f484a9279830e3c25f7cf0ac85e56d3aff1e9b83632575f39ca13bce976e9941",
+      "bytes": 5870
+    },
+    {
+      "path": "forge/tests/README-PipelinePackageAuthority.md",
+      "sha256": "ec90fb051c72275220db149fad35cd5408f2ae2f768eb2850ba8e9253bc1e6d0",
+      "bytes": 12738
+    },
+    {
+      "path": "forge/tests/Test-CoreRecoveryGuards.ps1",
+      "sha256": "9497e7fe1e5b95b291ea903f256f626e2e07e4e9e37e519d29aa34a7128083bb",
+      "bytes": 33400
+    },
+    {
+      "path": "forge/tests/Test-GenerationUnavailableBoundary.ps1",
+      "sha256": "4191ef211e94ed0d72495f6e82f956f2de3c6c984d25f639ffccb9fcc717c5ff",
+      "bytes": 14524
+    },
+    {
+      "path": "forge/tests/Test-JsonClonePreservation.ps1",
+      "sha256": "9e5185190a20612cae3593646d2a1c7abec261639194a62c67a8cbc622a64b30",
+      "bytes": 41800
+    },
+    {
+      "path": "forge/tests/Test-PipelinePackageAuthority.ps1",
+      "sha256": "bd9a27e7b59e2044881352fb45a1418ff6fa557245b93e5da89f7b7ea95a3c4a",
+      "bytes": 59426
+    },
+    {
+      "path": "forge/tests/Test-ProviderIsolation.ps1",
+      "sha256": "c5edf9e56ea4e0d362eb67d6278163fd728ea9bc151fc23f24069a4cc264e868",
+      "bytes": 28924
+    },
+    {
+      "path": "forge/tests/Test-RejectedNoopRetry.ps1",
+      "sha256": "b5c5724436419a2b6afff52e83ce1159621ac8cc13972148b436084b43f74c64",
+      "bytes": 24602
+    },
+    {
+      "path": "forge/tests/Test-WorkbenchReconciliationWpf.ps1",
+      "sha256": "35d7598d904e1d9b623b83f84c30dd7301f6ca3c091ce1e32d0f03fa51413b92",
+      "bytes": 33721
+    },
+    {
+      "path": "forge/tests/WorkbenchReconciliationInputs.json",
+      "sha256": "928f5f50749929cbc91dd3bd3f1e855e2c56cc3cac3c283eefc5891eeacbda6b",
+      "bytes": 5194
+    },
+    {
+      "path": "forge/tests/backup-transaction/BackupPins.json",
+      "sha256": "e3700a894fd4fbdc3f89d6e589dd472a1200cda4bab05979db8c29946916faae",
+      "bytes": 6333
+    },
+    {
+      "path": "forge/tests/backup-transaction/README.md",
+      "sha256": "01e40b2006db0cd17835d8495d069b5bf7065ad729c7a44086acd96dac4dcbb7",
+      "bytes": 3711
+    },
+    {
+      "path": "forge/tests/backup-transaction/Test-ForgeBackupTransaction.ps1",
+      "sha256": "1eb9bfee034ef9293e011e22b9171e857a92572f62fc0241247fbbf4d8180f41",
+      "bytes": 30945
+    },
+    {
+      "path": "forge/tests/backup-transaction/test_backup_static.py",
+      "sha256": "4de18d253c3e7bfa9c2d1ca15b8adc2f53afb6512cd46b5534f23970fc8cbb14",
+      "bytes": 8646
+    },
+    {
+      "path": "forge/tests/core-history-sales/HistorySalesDependencies.json",
+      "sha256": "48d06b8e7e758f08f11cbff313f8c8d24ace008ae0304080550dab26717246a4",
+      "bytes": 3192
+    },
+    {
+      "path": "forge/tests/core-history-sales/HistorySalesFixtures.json",
+      "sha256": "cef5d50c012d0ccaf2445df52759536eb9de53d85b65c182f48d99b67f30a83d",
+      "bytes": 185
+    },
+    {
+      "path": "forge/tests/core-history-sales/HistorySalesPins.json",
+      "sha256": "afe9721eeed217ae12bceedf8f4e4fe6571f20526c53e2cf78151e0db804add7",
+      "bytes": 4351
+    },
+    {
+      "path": "forge/tests/core-history-sales/README.md",
+      "sha256": "a35571bc4797410828d0201644affd08b0f14819357a6f2ac00e3e729921ccd6",
+      "bytes": 4126
+    },
+    {
+      "path": "forge/tests/core-history-sales/Test-ForgeHistoryAndSales.ps1",
+      "sha256": "9042b0cb2f42b616be50a22ca8b58ae77e92ca8c0299a3344af0ff82f162ec04",
+      "bytes": 36294
+    },
+    {
+      "path": "forge/tests/core-history-sales/test_history_sales_static.py",
+      "sha256": "3160b8275dd4089203597a5294677fcf5ea07df555d2bce860c0894c2bd52704",
+      "bytes": 5266
+    },
+    {
+      "path": "forge/tests/csv-date-ambiguity/CsvDateDependencies.json",
+      "sha256": "fcc59e71127c63a88b16c0aeafbf77fbbf7a99f4c6703aaeb2f66b88665841aa",
+      "bytes": 2223
+    },
+    {
+      "path": "forge/tests/csv-date-ambiguity/CsvDateFixtures.json",
+      "sha256": "4a73dbd6c7fcbc298ea4c9dc44880f40f54e7b4a4323b5cc215941f02d36919c",
+      "bytes": 7455
+    },
+    {
+      "path": "forge/tests/csv-date-ambiguity/CsvDatePins.json",
+      "sha256": "92030d0e45bee17b8489ab97f284ffd157ce7a0209fc5e4c14e2e8e9d96cd3f3",
+      "bytes": 3959
+    },
+    {
+      "path": "forge/tests/csv-date-ambiguity/README.md",
+      "sha256": "8aae60e4ef31edfbcdba6139f3851cfd9c1ef91c1e247ad24838a95b07e51bbc",
+      "bytes": 6915
+    },
+    {
+      "path": "forge/tests/csv-date-ambiguity/Test-ForgeCsvDateAmbiguity.ps1",
+      "sha256": "f93d49f4d35ba347c927aa5f6c05c788265859bc5d464f81cfee48cb582ae901",
+      "bytes": 24992
+    },
+    {
+      "path": "forge/tests/history-receipt/test_history_receipt_static.py",
+      "sha256": "eb53ba8a8a096019fe0fb721ca95e75da7d50d79177282beadba668bae57e8c5",
+      "bytes": 4656
+    },
+    {
+      "path": "forge/tests/local-reopen/LocalReopenDependencies.json",
+      "sha256": "ac57019d9d62dc7037aa54e10ab74b6cdbf4e90d5e29cae441da05408ae9be7c",
+      "bytes": 3364
+    },
+    {
+      "path": "forge/tests/local-reopen/LocalReopenFixtures.json",
+      "sha256": "aad6cd4accd436a7c263d7ec79b43719964b4011c54584ea595c944c1e8883ef",
+      "bytes": 268
+    },
+    {
+      "path": "forge/tests/local-reopen/LocalReopenPins.json",
+      "sha256": "ed3a1e4b039501be5591d6c73e116c5fbe1d66ec5fe3fe42d7aeee96d24c9b7d",
+      "bytes": 5044
+    },
+    {
+      "path": "forge/tests/local-reopen/README.md",
+      "sha256": "ef11a82ec540196175ea590f8a32ba6ab0cfd80b6547e1fb472fa7dddb50aa0f",
+      "bytes": 4538
+    },
+    {
+      "path": "forge/tests/local-reopen/Test-ForgeLocalReopen.ps1",
+      "sha256": "477507a80ac3f92688fe5e5e1b9cf25200e69ca68e100d3e2edd30aacae9c4fc",
+      "bytes": 42716
+    },
+    {
+      "path": "forge/tests/local-reopen/test_reopen_static.py",
+      "sha256": "2048e4151c2dada542aedc9d5bd09afe595089484e9e8a545a5bc2adb77b4dcf",
+      "bytes": 7002
+    },
+    {
+      "path": "forge/tests/locale-edit-preservation/LocalePins.json",
+      "sha256": "c3a1ecbb88b643055e4e63f7d1ed437b2f91fbe19e417d3d1ffea76cb584b364",
+      "bytes": 2724
+    },
+    {
+      "path": "forge/tests/locale-edit-preservation/README.md",
+      "sha256": "7b8a98618d6763a5683adc4105b8961e798b6b2d374d34a978f957fcba610c94",
+      "bytes": 3073
+    },
+    {
+      "path": "forge/tests/locale-edit-preservation/Test-ForgeLocaleEditPreservation.ps1",
+      "sha256": "4d5d993e502106becf92aaebf1eee36e0740367b92f634ae5c87cc068d1e3725",
+      "bytes": 17577
+    },
+    {
+      "path": "forge/tests/locale-edit-preservation/test_locale_static.py",
+      "sha256": "b402b743970d1180e39d3f8311f0de4c1120c2b4b8a28b420a1e480f1cd0dbb5",
+      "bytes": 5246
+    },
+    {
+      "path": "forge/tests/performance-coverage/PerformanceCoverageDependencies.json",
+      "sha256": "8945f862e4f6b63e5430568eea758ca2a59c1d15a8ab5ee4a9091aa52293c9b1",
+      "bytes": 1686
+    },
+    {
+      "path": "forge/tests/performance-coverage/PerformanceCoverageFixtures.json",
+      "sha256": "107e5e88aa9e529b5ced0f6eaaf5a15277dd845fb8e22248861dae249b0e143a",
+      "bytes": 137
+    },
+    {
+      "path": "forge/tests/performance-coverage/PerformanceCoveragePins.json",
+      "sha256": "546aaef8cc550e4769893b5b6c7e35aa856ed02391267813723e20aebe97c28d",
+      "bytes": 1081
+    },
+    {
+      "path": "forge/tests/performance-coverage/Test-ForgePerformanceCoverage.ps1",
+      "sha256": "dbcbef8a3ed2d257fdf8139e294a6654baa6d6a708707ae78cf8d5b941c1b85d",
+      "bytes": 21194
+    },
+    {
+      "path": "forge/tests/performance/PerformanceFixtures.json",
+      "sha256": "6fe2e06acc039ebcbc057d3365bf308a73a354ff8c4acd1becf83f6cb6fec96b",
+      "bytes": 1605
+    },
+    {
+      "path": "forge/tests/performance/PerformancePins.portable.json",
+      "sha256": "4db1ba3659ff3ba9a24f7b0b27826dc2f23f5919fb8f91ab075f99a020a0f596",
+      "bytes": 5428
+    },
+    {
+      "path": "forge/tests/performance/README.md",
+      "sha256": "c7855119e03ea1c31b991c32099db8da859b70d58086b920a67a611a26fdbc12",
+      "bytes": 8468
+    },
+    {
+      "path": "forge/tests/performance/Test-ForgePerformanceMetrics.ps1",
+      "sha256": "1dec1c2c20dd7571c7f31c43259b70573cab1dccba846106e4686396509ebc6d",
+      "bytes": 32242
+    },
+    {
+      "path": "forge/tests/performance/dependencies.json",
+      "sha256": "8945f862e4f6b63e5430568eea758ca2a59c1d15a8ab5ee4a9091aa52293c9b1",
+      "bytes": 1686
+    },
+    {
+      "path": "forge/tests/performance/process_supervisor.py",
+      "sha256": "7cec5afad989b2d85d969f3653621974f46edf989088407a711166538a25e057",
+      "bytes": 4677
+    },
+    {
+      "path": "forge/tests/performance/supervise_performance.py",
+      "sha256": "195516c6ce2af56b4e6d7bd7e19b9b5661a0fc852acbdeea5c6ea2fda183b894",
+      "bytes": 16517
+    },
+    {
+      "path": "forge/tests/performance/test_supervisor_contract.py",
+      "sha256": "1b145d4c785f2e33f4f69e7ff181f0db8a8fbbb5944c5df4232ac807b396fbf8",
+      "bytes": 6670
+    },
+    {
+      "path": "forge/tests/recovered/Test-ResearchEvidenceIdentity.ps1",
+      "sha256": "39ad48f15f117f564f76ae3e6e17b12f8fda84ff00d038321bafa4a1b90efb54",
+      "bytes": 7095
+    },
+    {
+      "path": "forge/tests/test_workbench_reconciliation_static.py",
+      "sha256": "901eb14d8fc7cc4eb09e7017288cd28ac0180324991ad427fde02aa8f7bffc01",
+      "bytes": 18891
+    },
+    {
+      "path": "forge/tools/build055.py",
+      "sha256": "9f73656410970432921a1cb175c02f8ac0e8b6c799e397047ae2fd278e78e836",
+      "bytes": 19196
+    },
+    {
+      "path": "forge/tools/build_release.py",
+      "sha256": "0db57200d30e110ac1c3d1f3d112cf293a65cc5390508c17c7191e90bebac4b8",
+      "bytes": 10313
+    },
+    {
+      "path": "forge/tools/patch055.py",
+      "sha256": "e5bc9870c015515ec3ca851f6bac9fd5362f05f70232b6ebe28974040cc2de58",
+      "bytes": 7224
+    },
+    {
+      "path": "forge/tools/patch055b.py",
+      "sha256": "e37da1f64e6e4566bc33132ac45c2a43c4ab704773b689bd601dadcfbe7e1f2e",
+      "bytes": 1722
+    }
+  ]
+}

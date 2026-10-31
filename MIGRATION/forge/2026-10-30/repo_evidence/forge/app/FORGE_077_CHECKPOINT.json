@@ -1,0 +1,35 @@
+{
+  "schema": "forge.release_checkpoint.v1",
+  "package": "077_Merch_Forge_FOURTH_REVIEW_RC",
+  "previous_package": "076_Merch_Forge_WHATS_NEW_RC",
+  "app_version": "2.24.1-forge-fourth-review",
+  "installer_generation": "00000000000000100260",
+  "static": "16/16",
+  "checks": {
+    "xaml_xml_parse": true,
+    "xaml_names_unique": true,
+    "version_header_matches_appversion": true,
+    "powershell_parse_all": true,
+    "ps1_nonascii_have_bom": true,
+    "byte_equal_054_Start_Merch_Forge.vbs": true,
+    "byte_equal_054_MerchForgeLauncher.cmd": true,
+    "byte_equal_054_MerchForgePreflight.ps1": true,
+    "byte_equal_054_Install_Merch_Forge.vbs": true,
+    "vbs_no_utf8_bom_ascii_only": true,
+    "whats_new_valid": true,
+    "whats_new_matches_release": true,
+    "integrity_all_pass": true,
+    "manifest_workbench_sha": true,
+    "manifest_authority_all_false": true,
+    "headless_selftest_pass": true
+  },
+  "headless_selftest": "PASS 110/110 (PowerShell 7, Linux)",
+  "integrity": "62 files",
+  "windows_proof": "see GitHub workflow forge-windows (branch forge-ci-results)",
+  "authority": {
+    "generate_authorized": false,
+    "accept_authorized": false,
+    "external_submission_authorized": false,
+    "production_dispatch_authorized": false
+  }
+}

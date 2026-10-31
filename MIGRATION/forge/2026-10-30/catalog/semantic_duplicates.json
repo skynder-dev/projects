@@ -1,0 +1,44 @@
+[
+  {
+    "concept_key": "avionics_power_signal_data_ground",
+    "canonical_concept_key": "avionics_power_ground_signal_data_v2",
+    "reason": "Same four core domains POWER/SIGNAL/DATA/GROUND; v2 has the stronger score and equivalent concept substance.",
+    "canonical_classification": "Исследовательский кандидат; одобрение владельца не зафиксировано"
+  },
+  {
+    "concept_key": "cyto_cell_nucleus_pattern_abnormality",
+    "canonical_concept_key": "cyto_cell_nucleus_morphology_pattern",
+    "reason": "Same core cell/nucleus/pattern morphology-analysis concept; existing concept is stronger and cleaner.",
+    "canonical_classification": "Исторический: снят после owner review; не возвращать автоматически"
+  },
+  {
+    "concept_key": "cyto_pap_fna_fluid_slide",
+    "canonical_concept_key": "cyto_pap_fna_body_fluids",
+    "reason": "Same PAP/FNA/body-fluid specimen-family hook; challenger only adds generic SLIDE.",
+    "canonical_classification": "Исследовательский кандидат; одобрение владельца не зафиксировано"
+  },
+  {
+    "concept_key": "cyto_prep_stain_screen_report",
+    "canonical_concept_key": "cyto_stain_screen_identify_report",
+    "reason": "Same cytology preparation/stain/screen/report workflow; existing concept is stronger and adds identification.",
+    "canonical_classification": "Исторический: снят после owner review; не возвращать автоматически"
+  },
+  {
+    "concept_key": "eet_prototype_assemble_test_troubleshoot",
+    "canonical_concept_key": "eet_build_test_troubleshoot_document",
+    "reason": "Same build/assemble + test + troubleshoot workflow; challenger scores higher and adds documentation.",
+    "canonical_classification": "Исследовательский кандидат; одобрение владельца не зафиксировано"
+  },
+  {
+    "concept_key": "oph_iop_field_acuity_refraction",
+    "canonical_concept_key": "ophth_acuity_pressure_refraction",
+    "reason": "Same core ophthalmic diagnostic-domain list; IOP is pressure and FIELD is incremental, not a materially new buyer hook.",
+    "canonical_classification": "Исследовательский кандидат; одобрение владельца не зафиксировано"
+  },
+  {
+    "concept_key": "oph_measure_record_verify_assist",
+    "canonical_concept_key": "ophth_tonometry_measure_record",
+    "reason": "Generic measure/record workflow materially overlaps the stronger tonometry-specific measurement concept.",
+    "canonical_classification": "Исторический: снят после owner review; не возвращать автоматически"
+  }
+]

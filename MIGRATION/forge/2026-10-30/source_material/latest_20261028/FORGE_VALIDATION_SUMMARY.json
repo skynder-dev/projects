@@ -1,0 +1,16 @@
+{
+  "source_release": "CORE_SOURCE_FIXES_001_20261028",
+  "artifact_kind": "source_and_tests_not_installer",
+  "forge": {
+    "static_pass_normal": 73,
+    "static_pass_optimized": 73,
+    "native": "NOT_RUN",
+    "prepared_native_cases": 34
+  },
+  "shared_limits": [
+    "No installation",
+    "No publication",
+    "No Windows native or GUI verification",
+    "No live data or model qualification"
+  ]
+}

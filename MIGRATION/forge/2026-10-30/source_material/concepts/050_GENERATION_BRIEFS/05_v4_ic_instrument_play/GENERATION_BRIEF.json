@@ -1,0 +1,15 @@
+{
+  "schema": "forge.local_generation_brief.v2",
+  "created_at": "2026-10-03T09:25:00Z",
+  "concept_key": "v4_ic_instrument_play",
+  "title": "I&C — what instrument do you play",
+  "hook": "ASKED WHAT INSTRUMENT I PLAY. I SAID 4–20 mA.",
+  "niche_name": "Instrumentation & Controls Technician",
+  "concept": "Use the recurring outsider misunderstanding of 'instrument technician' as the setup.",
+  "visual_direction": "Concert-poster layout with a process signal replacing a musical waveform.",
+  "source_revision_id": "24a48dfc-bca1-452e-96f6-af3b85f802bc",
+  "source_revision_hash": "c087a77cd95e0e4126112df42c29af6750a0cad99c0363f51147c56e53ee7219",
+  "provider_mode": "manual_artwork_bridge",
+  "external_generation_authorized": false,
+  "note": "Creative brief only. Import the finished image back into Merch Forge; exact SHA/revision binding is required before acceptance."
+}

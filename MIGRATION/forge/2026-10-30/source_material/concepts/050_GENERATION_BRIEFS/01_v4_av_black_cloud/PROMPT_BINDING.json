@@ -1,0 +1,12 @@
+{
+  "schema": "forge.prompt_staging_binding.v1",
+  "concept_key": "v4_av_black_cloud",
+  "source_revision_id": "30563cf9-0722-4622-b845-f43fbdc4872b",
+  "source_revision_hash": "e9969acf78ac492591cdfe8b66efd25fb407d16bfa5be0d9ff2b27731496d684",
+  "prompt_compiler_version": "forge.prompt.apparel.v2",
+  "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4",
+  "prompt_sha256": "37a9ea8571ae8dc29f098f0f476eb017159afb12af9e218f23db497d1dab7720",
+  "hook_render_policy": "exactly_once",
+  "external_dispatch_authorized": false,
+  "generation_job_created": false
+}

@@ -1,0 +1,12 @@
+{
+  "schema": "forge.prompt_staging_binding.v1",
+  "concept_key": "v4_relay_nervous",
+  "source_revision_id": "a675c85e-fd62-4fe0-855d-c84c59b70b7e",
+  "source_revision_hash": "7bf318a34bcfad46c57f6cb42372a6cb02f9131f62d57c59826cd1b6289abbe0",
+  "prompt_compiler_version": "forge.prompt.apparel.v2",
+  "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4",
+  "prompt_sha256": "dd2fac67f31380fb15778aa0b7d05befb76ea51e563f118a9a58a7e4f1d3a313",
+  "hook_render_policy": "exactly_once",
+  "external_dispatch_authorized": false,
+  "generation_job_created": false
+}

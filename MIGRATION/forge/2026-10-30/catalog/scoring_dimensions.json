@@ -1,0 +1,182 @@
+[
+  {
+    "scope": "concept",
+    "dimension_key": "buyer_desire",
+    "label": "Buyer desire",
+    "description": "Would a real buyer pay to wear or gift this exact idea because of a concrete emotional/social trigger? Mere recognition of job vocabulary scores low.",
+    "weight": "30.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 19:52:41.650467+00"
+  },
+  {
+    "scope": "concept",
+    "dimension_key": "clarity_at_glance",
+    "label": "Clarity at glance",
+    "description": "Can a viewer quickly understand the human premise or punchline, not merely parse technical steps?",
+    "weight": "8.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 19:52:41.650467+00"
+  },
+  {
+    "scope": "concept",
+    "dimension_key": "distinctiveness",
+    "label": "Distinctiveness",
+    "description": "Is there an original point of view, joke, situation, identity signal or visual premise? Rare jargon by itself is not distinctiveness.",
+    "weight": "15.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 19:52:41.650467+00"
+  },
+  {
+    "scope": "concept",
+    "dimension_key": "giftability",
+    "label": "Giftability",
+    "description": "Is there a plausible recipient/occasion and a reason a giver would choose this exact idea over generic profession merch?",
+    "weight": "10.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 19:52:41.650467+00"
+  },
+  {
+    "scope": "concept",
+    "dimension_key": "insider_resonance",
+    "label": "Insider resonance",
+    "description": "Does it capture a shared situation, frustration, pride point, ritual or truth insiders recognize? Jargon density alone does not count.",
+    "weight": "15.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 19:52:41.650467+00"
+  },
+  {
+    "scope": "concept",
+    "dimension_key": "ip_safety",
+    "label": "IP safety",
+    "description": "Can the exact premise, wording and visual be executed without protected brands, slogans, characters, copied graphics or misleading claims?",
+    "weight": "5.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 19:52:41.650467+00"
+  },
+  {
+    "scope": "concept",
+    "dimension_key": "niche_fit",
+    "label": "Niche fit",
+    "description": "Does the concept genuinely belong to this audience without depending on job-title labeling or vocabulary lists?",
+    "weight": "5.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 19:52:41.650467+00"
+  },
+  {
+    "scope": "concept",
+    "dimension_key": "visual_potential",
+    "label": "Visual potential",
+    "description": "Can the human idea become a strong apparel composition rather than a diagram, checklist or training graphic?",
+    "weight": "12.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 19:52:41.650467+00"
+  },
+  {
+    "scope": "niche",
+    "dimension_key": "channel_breadth",
+    "label": "Channel breadth",
+    "description": "Usefulness beyond one marketplace/channel and fit with broader Town Label commerce/content.",
+    "weight": "5.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 06:09:05.042086+00"
+  },
+  {
+    "scope": "niche",
+    "dimension_key": "competition_opportunity",
+    "label": "Competition opportunity",
+    "description": "Room for differentiated offers; higher means less commoditized/copycat pressure relative to demand.",
+    "weight": "15.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 06:09:05.042086+00"
+  },
+  {
+    "scope": "niche",
+    "dimension_key": "concept_depth",
+    "label": "Concept depth",
+    "description": "How many materially different authentic hooks can be developed without repeating the same joke/text.",
+    "weight": "12.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 06:09:05.042086+00"
+  },
+  {
+    "scope": "niche",
+    "dimension_key": "demand_evidence",
+    "label": "Demand evidence",
+    "description": "Evidence that a real buyer population actively searches, buys, gifts or identifies with this niche.",
+    "weight": "20.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 06:09:05.042086+00"
+  },
+  {
+    "scope": "niche",
+    "dimension_key": "founder_edge",
+    "label": "Founder/domain edge",
+    "description": "Advantage from first-hand knowledge, access, community understanding or easier validation.",
+    "weight": "2.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 06:09:05.042086+00"
+  },
+  {
+    "scope": "niche",
+    "dimension_key": "identity_intensity",
+    "label": "Identity intensity",
+    "description": "How strongly people self-identify with the niche and enjoy signaling membership.",
+    "weight": "15.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 06:09:05.042086+00"
+  },
+  {
+    "scope": "niche",
+    "dimension_key": "legal_safety",
+    "label": "Legal/IP safety",
+    "description": "Relative ability to create without leaning on protected brands, logos, characters or risky claims.",
+    "weight": "3.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 06:09:05.042086+00"
+  },
+  {
+    "scope": "niche",
+    "dimension_key": "purchase_motivation",
+    "label": "Purchase motivation",
+    "description": "Strength of plausible reasons to buy beyond generic job-title decoration.",
+    "weight": "15.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 06:09:05.042086+00"
+  },
+  {
+    "scope": "niche",
+    "dimension_key": "repeatability",
+    "label": "Repeatability",
+    "description": "Ability to support a series, variants, seasons, gifts or repeat purchase.",
+    "weight": "5.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 06:09:05.042086+00"
+  },
+  {
+    "scope": "niche",
+    "dimension_key": "visual_language",
+    "label": "Visual language",
+    "description": "Availability of recognizable symbols, tools, situations, environments and insider cues for strong art.",
+    "weight": "8.00",
+    "active": true,
+    "created_at": "2026-09-23 06:09:05.042086+00",
+    "updated_at": "2026-09-23 06:09:05.042086+00"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schema": "forge.local_generation_brief.v2",
+  "created_at": "2026-10-03T09:25:00Z",
+  "concept_key": "v4_cyto_confess",
+  "title": "Cytology — cells confess",
+  "hook": "I STARE AT CELLS UNTIL ONE CONFESSES.",
+  "niche_name": "Cytotechnologist / Cytologist",
+  "concept": "Turn microscopic interpretation into a detective interrogation metaphor.",
+  "visual_direction": "Microscope spotlight/interrogation room with stylized generic cells.",
+  "source_revision_id": "c8c1237e-3f8d-411a-ac8f-5fe2404dbe57",
+  "source_revision_hash": "f83c0bb8827dc29addfe6b3684f8710b3eee2f519c01e60ac6755102efa64709",
+  "provider_mode": "manual_artwork_bridge",
+  "external_generation_authorized": false,
+  "note": "Creative brief only. Import the finished image back into Merch Forge; exact SHA/revision binding is required before acceptance."
+}

@@ -1,0 +1,72 @@
+[
+  {
+    "path": "source/Modules/Forge.BriefApproval.ps1",
+    "bytes": 19841,
+    "sha256": "ce85754a3824cb6d4826d6400de3f227e3fb02152378dff6964accecba241b32"
+  },
+  {
+    "path": "source/Modules/Forge.CanonicalDesignPrototype.ps1",
+    "bytes": 22714,
+    "sha256": "7361f4d5820462b151c0fd2b5afc02a95b2e475d6daa4829932e54a7cf993f96"
+  },
+  {
+    "path": "source/Modules/Forge.LocalAI.ps1",
+    "bytes": 36432,
+    "sha256": "9345ebc594b798a57ce833bb0137c9dd591d1271bb902f50056ab923bb3da33b"
+  },
+  {
+    "path": "source/Modules/Forge.LocalCore.ps1",
+    "bytes": 255016,
+    "sha256": "9c22994c1945efa18be0c7d44c9b3a2fcaa9dccb88e824634179cfb314f46f4e"
+  },
+  {
+    "path": "source/Modules/Forge.PublicEvidence.ps1",
+    "bytes": 11427,
+    "sha256": "5750d50cc9eba70ab7f974287cca2e125c1c7eb12b738915507db59a2ed46863"
+  },
+  {
+    "path": "source/Modules/Forge.SemanticReview.ps1",
+    "bytes": 5849,
+    "sha256": "ec44acebec5b6a7bdfd5458da2e140b9e822d6c9af2a98f1e64e894c0c703030"
+  },
+  {
+    "path": "source/Modules/Forge.SemanticReviewUI.ps1",
+    "bytes": 6012,
+    "sha256": "3aa247e93d014a9e0647d1ed60e88fe1b2a11b629a05984daee909ae10d83faf"
+  },
+  {
+    "path": "tests/forge-canonical-hold-candidate-007/Test-HeldSave.ps1",
+    "bytes": 10838,
+    "sha256": "84f3882a4f63e5e0faee19eccd2955c57a4612c5798346fbd9670d5c54759940"
+  },
+  {
+    "path": "tests/forge-canonical-hold-candidate-007/Test-NativeGaps.ps1",
+    "bytes": 12999,
+    "sha256": "622cc26932468ec3b9af15b60afe1c57bfbb7b38aa8599dcf51685d0bc95b93f"
+  },
+  {
+    "path": "tests/forge-canonical-hold-candidate-007/Test-LegacyParity.ps1",
+    "bytes": 2010,
+    "sha256": "175bd2734f72cb97e1dcfb7f3bb985bee575edb5e0fb2d86868d285aaa546965"
+  },
+  {
+    "path": "tests/forge-canonical-hold-candidate-007/Test-Restart.ps1",
+    "bytes": 2241,
+    "sha256": "706875533fb6e5ad09e4a7b7991b20aacfc258dd164b2a71d8d1ab03dd1beaa1"
+  },
+  {
+    "path": "tests/forge-semantic-review-candidate-010/Test-SemanticReview.ps1",
+    "bytes": 8732,
+    "sha256": "08eafc4506d2cbdb9ee6fcbcd46500cc73d8f26c7787abe60273d72b25d7f4ae"
+  },
+  {
+    "path": "tests/forge-semantic-review-ui-candidate-011/Test-SemanticReviewUI.ps1",
+    "bytes": 6039,
+    "sha256": "3581c94e65ae44be198f9362122b331ddbfee7302bf7d8fb4eb41484394ac2ff"
+  },
+  {
+    "path": "tests/fixtures/synthetic-valid-fields.json",
+    "bytes": 2432,
+    "sha256": "9c4d4d525b4d8a2c2c33527d4f1b6457c07eca3fda6fd747ccb06e85d7acf99c"
+  }
+]

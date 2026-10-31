@@ -1,0 +1,46 @@
+{
+  "schema": "forge.csv_date.function_dependencies.v1",
+  "functions": {
+    "MerchForgeWorkbench.ps1": [
+      "Get-PropertyValue",
+      "Get-HumanErrorMessage"
+    ],
+    "Modules/Forge.Media.ps1": [
+      "Get-ByteSha256Hex"
+    ],
+    "Modules/Forge.BriefApproval.ps1": [
+      "ConvertTo-ForgeBriefCanonicalJson"
+    ],
+    "Modules/Forge.Localization.ps1": [
+      "Get-UiText"
+    ],
+    "Modules/Forge.MessageLocalization.ps1": [
+      "Test-KnownUiMessage",
+      "Test-UiTextMessage"
+    ],
+    "Modules/Forge.LocalCore.ps1": [
+      "Add-OrSetProperty",
+      "Get-StringSha256Hex",
+      "Reconcile-LocalSalesLinks",
+      "ConvertTo-CsvKey",
+      "Find-CsvColumn",
+      "ConvertFrom-ForgeMoney",
+      "ConvertFrom-ForgeSalesDate",
+      "Get-CsvSlashDateOrder",
+      "Resolve-LocalSalesCurrency",
+      "Get-LocalSalesOverlapSummary",
+      "Read-ForgeSalesCsvSnapshot",
+      "Get-ForgeSalesNormalizationSnapshot",
+      "Update-ForgeSalesExactSource",
+      "Import-LocalSalesCsvFromPath",
+      "Import-LocalSalesCsv"
+    ]
+  },
+  "doubles": {
+    "durable state": "Read-LocalCoreState and Write-LocalCoreState use fresh synthetic JSON fixture files only; read returns detached native objects with DateKind String. State-store migrations/locking/atomic-write implementation is not covered.",
+    "UI": "Actual Test-KnownUiMessage/Get-HumanErrorMessage routing predicates are tested with empty optional translation tables; actual WPF Show-Error dialog is not invoked. StatusText plain Text object; Show-Error collects exact error; business refresh counts calls; Confirm dequeues explicit boolean decisions and fails on unexpected prompts.",
+    "file picker": "Only final cancel case doubles New-Object Microsoft.Win32.OpenFileDialog with ShowDialog=false. Actual Import-LocalSalesCsv and absence of importer calls are checked. No WPF runtime claim.",
+    "publication authority": "Fixture receipts are empty. Guard throws if authority is unexpectedly invoked. No receipt/package authority claim.",
+    "external boundaries": "Unexpected process/model/network/command-level mutations throw. Private fixture file creation/writes use explicit .NET IO. These guards are not a hostile-code sandbox."
+  }
+}

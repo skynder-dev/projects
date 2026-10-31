@@ -1,0 +1,18 @@
+{
+  "schema": "forge.performance.coverage_pins.v1",
+  "sources": {
+    "MerchForgeWorkbench.ps1": "d2050b6867359daf70c2a75699102b2a59a70cf7ba2cc1e317d2c995dea83122",
+    "Modules/Forge.Localization.ps1": "07ead0b70f250c9fac9e83721aadf60268de11d4a70b9927b18da29df7e2eb50",
+    "Modules/Forge.LocalCore.ps1": "34cab2031ef10a6626d86903dda2292e7ba11a4e50a6d0af14d739d417a02d7d",
+    "Modules/Forge.Pipeline.ps1": "02058c6cf3b7a8e6c44a431f4fc1f7cf3a38d7249f53d19ccb6f316b784160d9"
+  },
+  "tests": {
+    "PerformanceCoverageFixtures.json": "107e5e88aa9e529b5ced0f6eaaf5a15277dd845fb8e22248861dae249b0e143a",
+    "Test-ForgePerformanceCoverage.ps1": "dbcbef8a3ed2d257fdf8139e294a6654baa6d6a708707ae78cf8d5b941c1b85d",
+    "PerformanceCoverageDependencies.json": "8945f862e4f6b63e5430568eea758ca2a59c1d15a8ab5ee4a9091aa52293c9b1"
+  },
+  "expected_cases": 12,
+  "expected_actual_functions": 20,
+  "status": "PREPARED_NATIVE_NOT_RUN",
+  "source_policy": "Exact isolated 20261026 historical-receipt importer candidate; native execution NOT_RUN; sealed local-Reopen base remains unchanged."
+}

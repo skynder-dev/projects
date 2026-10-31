@@ -1,0 +1,55 @@
+{
+  "source": "Supabase read-only connector",
+  "project": "media-business-projects",
+  "project_ref": "ldlhnedbqeqcbqelhuhm",
+  "schema": "merch",
+  "project_slug": "merch",
+  "retrieved_utc": "2026-10-30T16:02:51Z",
+  "counts": {
+    "niches": 48,
+    "concept_records": 174,
+    "semantic_duplicate_records": 7,
+    "canonical_concepts": 167,
+    "concept_score_rows": 1392,
+    "niche_score_rows": 480,
+    "scoring_dimensions": 18,
+    "acceptances": 0,
+    "concept_statuses": {
+      "scored": 157,
+      "paused": 7,
+      "shortlisted": 10
+    },
+    "classification_counts": {
+      "Исследовательский кандидат; одобрение владельца не зафиксировано": 102,
+      "Исторический: снят после owner review; не возвращать автоматически": 15,
+      "Исторический: семантический дубликат": 7,
+      "V4: редакционный финалист на выбор владельца, НЕ подтвержденное одобрение": 10,
+      "V4: исследовательский банк, не вошел в 10 финалистов; это не отказ владельца": 31,
+      "V4: понижен редакционным отбором, сохранен в истории": 9
+    },
+    "concept_revisions": 174,
+    "current_revision_links_resolved": 174,
+    "revision_production_specs_nonempty": 10,
+    "revision_production_specs_empty": 164
+  },
+  "scope": "niche_candidates, design_concepts, niche_scores, concept_scores, scoring_dimensions, scoring_policy_versions, concept_acceptances, concept_revisions",
+  "notes": [
+    "All 174 concept user_decision values and all 48 niche user_decision values are null.",
+    "No rows in concept_acceptances. This does not prove no decisions exist in other project evidence; retirement metadata records rejected historical batch.",
+    "Scores are stored research judgments, not validated sales or probability of success. Evidence is preserved as historical source content, not freshly verified external facts.",
+    "Current scoring_dimensions snapshot must not be blindly applied to older scored_at totals.",
+    "All 174 rows preserved; 7 semantic duplicate links, 167 canonical rows. Canonical does not mean approved.",
+    "No DB writes performed; no authentication or credential tables/values exported.",
+    "All 174 concept revisions currently in the scoped database were exported: one initial revision_no=1 per concept, all created 2026-09-25 04:58:58.215835+00; no parent/source revision links. No earlier revision chain exists in these returned records.",
+    "10 revision production_spec objects are populated and prepared_not_generated; 164 empty. Presence is not proof of image generation or owner approval.",
+    "This is an October 30 read of database records last updated September 24, not proof that PC-local state is synchronized or unchanged. Not a full Forge database or PC backup.",
+    "31 V4 concepts are explicitly research_bank_not_promoted; this is not rejection."
+  ],
+  "revision_retrieved_utc": "2026-10-30T16:06:16Z",
+  "source_record_dates": {
+    "design_concepts_updated_at_min": "2026-09-23 09:51:32.257179+00",
+    "design_concepts_updated_at_max": "2026-09-24 22:40:42.70901+00",
+    "concept_revisions_created_at_min": "2026-09-25 04:58:58.215835+00",
+    "concept_revisions_created_at_max": "2026-09-25 04:58:58.215835+00"
+  }
+}

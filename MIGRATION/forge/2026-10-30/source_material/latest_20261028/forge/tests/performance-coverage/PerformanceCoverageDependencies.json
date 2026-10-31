@@ -1,0 +1,41 @@
+{
+  "schema": "forge.performance.function_dependencies.v1",
+  "functions": {
+    "MerchForgeWorkbench.ps1": [
+      "Get-PropertyValue"
+    ],
+    "Modules/Forge.LocalCore.ps1": [
+      "Add-OrSetProperty",
+      "Get-LocalCoreConcept",
+      "Get-LocalPublicationProductKey",
+      "Reconcile-LocalSalesLinks",
+      "Resolve-LocalSalesCurrency",
+      "Get-LocalSalesRawProperty",
+      "Get-LocalSalesUtcDay",
+      "Get-LocalSalesCalendarDate",
+      "Get-LocalVerifiedSalesAmount",
+      "Get-LocalRoyaltyTotals",
+      "Get-LocalSalesTotals",
+      "Get-LocalSalesMetrics",
+      "Format-LocalRoyaltyTotal",
+      "Format-LocalSalesUnits"
+    ],
+    "Modules/Forge.Localization.ps1": [
+      "Get-UiText"
+    ],
+    "Modules/Forge.Pipeline.ps1": [
+      "Register-PipelineUiText",
+      "ConvertTo-PerfUtc",
+      "Get-ForgePerformanceInsights",
+      "Update-PerformanceInsightsSurface"
+    ]
+  },
+  "doubles": {
+    "Test-LocalPublicationReceiptAuthority": "Returns true only for synthetic receipt fixture_verified boolean true; no claim to test receipt/package authority.",
+    "Read-LocalCoreState": "Returns only the current synthetic in-memory state; no original data read or writes.",
+    "Get-LocalAmazonPrintProfile": "Returns null; no real profile or account access.",
+    "UI controls": "Plain objects with a Text property, not WPF controls. Actual production rendering function is executed.",
+    "boundary guards": "File/model/network/worker mutation command names throw if called. Not a hostile-code sandbox.",
+    "clock adapter": "Rendering only: passes fixed UTC to original production Get-ForgePerformanceInsights ScriptBlock; no aggregation is imitated."
+  }
+}

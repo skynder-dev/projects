@@ -1,0 +1,16 @@
+MERCH FORGE — GENERATION BRIEF
+
+Title: BMET — twenty-minute walk, thirty-second fix
+Hook: 20-MINUTE WALK. 30-SECOND FIX.
+Niche: Biomedical Equipment Technician
+
+Revision: 6c484c8d-7746-4e6d-8485-02c9bcb472ac
+Revision SHA256: 17b737427aec9c19c5598bec18bd975661b8f27e0385f551500eeeec8c25bdd7
+
+Concept:
+Celebrate the disproportion between the time spent getting to a call and the tiny fix itself.
+
+Visual direction:
+Large 20:00 versus 0:30 typography with a small generic tool icon.
+
+Boundary: creative brief only; no provider dispatch or publishing was authorized.

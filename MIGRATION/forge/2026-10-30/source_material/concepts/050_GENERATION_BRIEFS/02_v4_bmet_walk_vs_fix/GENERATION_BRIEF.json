@@ -1,0 +1,15 @@
+{
+  "schema": "forge.local_generation_brief.v2",
+  "created_at": "2026-10-03T09:25:00Z",
+  "concept_key": "v4_bmet_walk_vs_fix",
+  "title": "BMET — twenty-minute walk, thirty-second fix",
+  "hook": "20-MINUTE WALK. 30-SECOND FIX.",
+  "niche_name": "Biomedical Equipment Technician",
+  "concept": "Celebrate the disproportion between the time spent getting to a call and the tiny fix itself.",
+  "visual_direction": "Large 20:00 versus 0:30 typography with a small generic tool icon.",
+  "source_revision_id": "6c484c8d-7746-4e6d-8485-02c9bcb472ac",
+  "source_revision_hash": "17b737427aec9c19c5598bec18bd975661b8f27e0385f551500eeeec8c25bdd7",
+  "provider_mode": "manual_artwork_bridge",
+  "external_generation_authorized": false,
+  "note": "Creative brief only. Import the finished image back into Merch Forge; exact SHA/revision binding is required before acceptance."
+}

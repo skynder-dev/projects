@@ -1,0 +1,6 @@
+{
+  "schema": "forge.core_history_sales.fixtures.v1",
+  "synthetic_only": true,
+  "fixtures": "Constructed explicitly in native script; no external or user data.",
+  "case_count": 32
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "forge.local_generation_brief.v2",
+  "created_at": "2026-10-03T09:25:00Z",
+  "concept_key": "v4_elec_argue_circuit",
+  "title": "Electronics tech — arguing with circuits",
+  "hook": "I ARGUE WITH CIRCUITS UNTIL THEY ADMIT WHAT'S WRONG.",
+  "niche_name": "Electrical / Electronic Engineering Technician",
+  "concept": "Anthropomorphize diagnosis as an argument with a stubborn board.",
+  "visual_direction": "Technician speech bubble facing an annoyed circuit board character.",
+  "source_revision_id": "a9396362-1fde-4d87-ad58-49ab4421f91e",
+  "source_revision_hash": "4f7027c0021e19b5eae0ad35966b537bf9cc6e8835cafba3854553cc58da67dd",
+  "provider_mode": "manual_artwork_bridge",
+  "external_generation_authorized": false,
+  "note": "Creative brief only. Import the finished image back into Merch Forge; exact SHA/revision binding is required before acceptance."
+}

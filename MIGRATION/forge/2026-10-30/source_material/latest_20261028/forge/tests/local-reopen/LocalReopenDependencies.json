@@ -1,0 +1,61 @@
+{
+  "schema": "forge.local_reopen.dependencies.v1",
+  "functions": {
+    "MerchForgeWorkbench.ps1": [
+      "Get-PropertyValue"
+    ],
+    "Modules/Forge.Media.ps1": [
+      "Get-ByteSha256Hex"
+    ],
+    "Modules/Forge.BriefApproval.ps1": [
+      "Get-ForgeBriefValue",
+      "Get-ForgeProductionSpec",
+      "ConvertTo-ForgeBriefCanonicalJson",
+      "Get-ForgeBriefSha256",
+      "New-ForgeGenerationBriefSnapshot"
+    ],
+    "Modules/Forge.Localization.ps1": [
+      "Get-UiText"
+    ],
+    "Modules/Forge.ResearchDrafts.ps1": [
+      "Get-ResearchDraftList",
+      "Get-ResearchDraft",
+      "Test-CurrentIsResearchDraft",
+      "Get-ResearchDraftContentHash",
+      "Get-ResearchDraftCurrentFields",
+      "ConvertTo-ResearchDraftConcept"
+    ],
+    "Modules/Forge.LocalCore.ps1": [
+      "Add-OrSetProperty",
+      "Get-StringSha256Hex",
+      "Get-LocalCoreConcept",
+      "Get-LocalCurrentRevisionIdentity",
+      "New-LocalAcceptanceFingerprint",
+      "Get-LocalPublicationHash",
+      "Preserve-ForgeLocalReviewHistory",
+      "Get-ForgeLocalReviewHistoryEvents",
+      "Invalidate-LocalCorePackages",
+      "New-LocalCoreCheckRecord",
+      "New-LocalCoreChecks",
+      "Get-ForgeLocalReopenTarget",
+      "Reopen-LocalExactAcceptance",
+      "New-LocalVariantDisplay",
+      "Get-LocalCoreVariantsForCurrent",
+      "Get-LocalDeliveryReadiness"
+    ],
+    "Modules/Forge.Gates.ps1": [
+      "Has-Cap",
+      "Update-AcceptanceControls"
+    ],
+    "Modules/Forge.DomainActions.ps1": [
+      "Reopen-CurrentAcceptance"
+    ]
+  },
+  "doubles": {
+    "state": "Read/Write-LocalCoreState use fresh synthetic JSON files, DateKind String detached objects, and an explicit simulated revision/write-id conflict check. Write rejection and write race are injected. This is NOT actual durable-store, filesystem lock, atomic replacement, recovery, multi-process concurrency or app restart evidence. Commit-then-throw is an explicit synthetic uncertain-outcome injection, not actual store verification failure.",
+    "UI": "Controls are plain objects. Actual Update-AcceptanceControls and Domain dispatch execute; Confirm dequeues explicit answers and optional mutations. Set-PublicationDirty and listing/status rendering use bounded seams. Actual WPF events, modal dispatch, controls, screenshots and full app reload are NOT tested. Postcommit button ScriptProperty setter failure is injected; refreshed stage filtering is a counter.",
+    "rendering": "Format-LocalCheck returns a label/state string; Load-LocalPublicationUi and Update-LocalCoreStatusUi are counters. Actual local variant projection, review history event projection, and post-withdrawal readiness early rejection execute. Listing refresh, later ready-path helpers, actual PNG and ZIP verification are NOT covered.",
+    "artifacts": "Seeded artwork/archive files contain ordinary synthetic sentinel bytes, not verified PNG/ZIP packages. Tests compare exact bytes and retained metadata; they do NOT establish package or publication receipt authority.",
+    "external": "Unexpected server API, concept load, generation job synchronization/dispatch, check automation/export, reapproval, process/network/IO command boundaries throw and are counted globally. These guards are not OS isolation; use the existing private-staging + owned-process supervisor. Module initializers are not executed."
+  }
+}

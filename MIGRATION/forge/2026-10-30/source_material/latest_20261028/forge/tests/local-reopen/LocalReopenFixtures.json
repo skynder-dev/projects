@@ -1,0 +1,6 @@
+{
+  "schema": "forge.local_reopen.fixtures.v1",
+  "synthetic_only": true,
+  "fixtures": "Constructed explicitly in native script; no external or user data. Artwork/archive bytes are synthetic preservation sentinels, not valid PNG/ZIP authority.",
+  "case_count": 39
+}

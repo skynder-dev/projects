@@ -1,0 +1,79 @@
+{
+  "schema": "forge.locale_edit_preservation.pins.v1",
+  "status": "PREPARED_NATIVE_NOT_RUN",
+  "sources": {
+    "MerchForgeWorkbench.ps1": "d2050b6867359daf70c2a75699102b2a59a70cf7ba2cc1e317d2c995dea83122",
+    "Modules/Forge.Localization.ps1": "07ead0b70f250c9fac9e83721aadf60268de11d4a70b9927b18da29df7e2eb50",
+    "Modules/Forge.ResearchDrafts.ps1": "e73a8f47919161f303674a61308f4a0a7b0de38601b09c8e36aa66cf2e5fb3ac"
+  },
+  "functions": {
+    "MerchForgeWorkbench.ps1": [
+      "Get-PropertyValue"
+    ],
+    "Modules/Forge.Localization.ps1": [
+      "Set-UiLocale",
+      "Sync-LanguageSelector",
+      "Initialize-UiLocale"
+    ],
+    "Modules/Forge.ResearchDrafts.ps1": [
+      "Test-CurrentIsResearchDraft",
+      "Restore-DynamicSurfacesAfterLocale"
+    ]
+  },
+  "expected_function_names": [
+    "Get-PropertyValue",
+    "Set-UiLocale",
+    "Sync-LanguageSelector",
+    "Initialize-UiLocale",
+    "Test-CurrentIsResearchDraft",
+    "Restore-DynamicSurfacesAfterLocale"
+  ],
+  "expected_case_names": [
+    "same_en_clean",
+    "same_en_creative",
+    "same_en_publication",
+    "same_en_both",
+    "same_ru_clean",
+    "same_ru_creative",
+    "same_ru_publication",
+    "same_ru_both",
+    "same_es_clean",
+    "same_es_creative",
+    "same_es_publication",
+    "same_es_both",
+    "same_normalized_input_is_noop",
+    "unsupported_input_rejected_before_noop",
+    "different_en_creative_blocked",
+    "different_en_publication_blocked",
+    "different_en_both_blocked",
+    "different_en_clean_persist_true",
+    "different_en_clean_persist_false",
+    "different_ru_creative_blocked",
+    "different_ru_publication_blocked",
+    "different_ru_both_blocked",
+    "different_ru_clean_persist_true",
+    "different_ru_clean_persist_false",
+    "different_es_creative_blocked",
+    "different_es_publication_blocked",
+    "different_es_both_blocked",
+    "different_es_clean_persist_true",
+    "different_es_clean_persist_false",
+    "helper_creative_preserved",
+    "helper_publication_preserved",
+    "helper_both_preserved",
+    "helper_clean_reopens_exact_draft",
+    "helper_clean_restores_portfolio_section",
+    "helper_nonresearch_does_not_reopen",
+    "initialize_en_still_applies",
+    "initialize_ru_still_applies",
+    "initialize_es_still_applies",
+    "initialize_invalid_preference_falls_back",
+    "initialize_existing_registry_reapplies",
+    "no_external_or_product_mutation_calls"
+  ],
+  "tests": {
+    "README.md": "7b8a98618d6763a5683adc4105b8961e798b6b2d374d34a978f957fcba610c94",
+    "Test-ForgeLocaleEditPreservation.ps1": "4d5d993e502106becf92aaebf1eee36e0740367b92f634ae5c87cc068d1e3725",
+    "test_locale_static.py": "b402b743970d1180e39d3f8311f0de4c1120c2b4b8a28b420a1e480f1cd0dbb5"
+  }
+}

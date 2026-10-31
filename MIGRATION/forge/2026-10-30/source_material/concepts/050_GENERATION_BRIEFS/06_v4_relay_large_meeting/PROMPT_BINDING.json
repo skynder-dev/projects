@@ -1,0 +1,12 @@
+{
+  "schema": "forge.prompt_staging_binding.v1",
+  "concept_key": "v4_relay_large_meeting",
+  "source_revision_id": "3b5796a5-a76c-431c-8d07-a3f34cbc5724",
+  "source_revision_hash": "9edf653b8a5f742f3863bf07ee223c06949defa7062aa999812771b5864d2d70",
+  "prompt_compiler_version": "forge.prompt.apparel.v2",
+  "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4",
+  "prompt_sha256": "8982c5b0cde03ba083ed8520c57a7085693902fea94b51af8b0e72995acbc6bc",
+  "hook_render_policy": "exactly_once",
+  "external_dispatch_authorized": false,
+  "generation_job_created": false
+}

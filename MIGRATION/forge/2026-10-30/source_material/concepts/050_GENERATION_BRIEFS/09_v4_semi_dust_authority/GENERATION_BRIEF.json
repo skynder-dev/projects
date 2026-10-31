@@ -1,0 +1,15 @@
+{
+  "schema": "forge.local_generation_brief.v2",
+  "created_at": "2026-10-03T09:25:00Z",
+  "concept_key": "v4_semi_dust_authority",
+  "title": "Fab tech — dust outranks me",
+  "hook": "ONE SPECK OF DUST OUTRANKS ME.",
+  "niche_name": "Semiconductor Processing Technician",
+  "concept": "Personify contamination rules as a tiny speck having more authority than the worker.",
+  "visual_direction": "Tiny dust particle wearing a manager badge above a suited technician.",
+  "source_revision_id": "47485853-cba4-431f-848a-de5fc995b41d",
+  "source_revision_hash": "ef0f1e8062f88ddf7f4069c5dcd94be88797a1197a99e4de898c099b73c80503",
+  "provider_mode": "manual_artwork_bridge",
+  "external_generation_authorized": false,
+  "note": "Creative brief only. Import the finished image back into Merch Forge; exact SHA/revision binding is required before acceptance."
+}

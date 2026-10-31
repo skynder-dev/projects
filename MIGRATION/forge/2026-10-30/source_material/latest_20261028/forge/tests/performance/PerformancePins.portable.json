@@ -1,0 +1,115 @@
+{
+  "schema": "forge.performance.pins.v1",
+  "created_at_utc": "2026-10-24T09:47:26.024410+00:00",
+  "source_policy": "Exact isolated 20261026 historical-receipt importer candidate; native execution NOT_RUN; sealed local-Reopen base remains unchanged.",
+  "sources": {
+    "MerchForgeWorkbench.ps1": "d2050b6867359daf70c2a75699102b2a59a70cf7ba2cc1e317d2c995dea83122",
+    "Modules/Forge.LocalCore.ps1": "34cab2031ef10a6626d86903dda2292e7ba11a4e50a6d0af14d739d417a02d7d",
+    "Modules/Forge.Localization.ps1": "07ead0b70f250c9fac9e83721aadf60268de11d4a70b9927b18da29df7e2eb50",
+    "Modules/Forge.Pipeline.ps1": "02058c6cf3b7a8e6c44a431f4fc1f7cf3a38d7249f53d19ccb6f316b784160d9"
+  },
+  "provenance": {
+    "MerchForgeWorkbench.ps1": "forge/app/Merch_Forge_A5_Current/MerchForgeWorkbench.ps1",
+    "Modules/Forge.LocalCore.ps1": "forge/app/Merch_Forge_A5_Current/Modules/Forge.LocalCore.ps1",
+    "Modules/Forge.Localization.ps1": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Localization.ps1",
+    "Modules/Forge.Pipeline.ps1": "forge/app/Merch_Forge_A5_Current/Modules/Forge.Pipeline.ps1"
+  },
+  "tests": {
+    "Test-ForgePerformanceMetrics.ps1": "1dec1c2c20dd7571c7f31c43259b70573cab1dccba846106e4686396509ebc6d",
+    "PerformanceFixtures.json": "6fe2e06acc039ebcbc057d3365bf308a73a354ff8c4acd1becf83f6cb6fec96b",
+    "dependencies.json": "8945f862e4f6b63e5430568eea758ca2a59c1d15a8ab5ee4a9091aa52293c9b1",
+    "supervise_performance.py": "195516c6ce2af56b4e6d7bd7e19b9b5661a0fc852acbdeea5c6ea2fda183b894",
+    "process_supervisor.py": "7cec5afad989b2d85d969f3653621974f46edf989088407a711166538a25e057",
+    "test_supervisor_contract.py": "1b145d4c785f2e33f4f69e7ff181f0db8a8fbbb5944c5df4232ac807b396fbf8",
+    "README.md": "c7855119e03ea1c31b991c32099db8da859b70d58086b920a67a611a26fdbc12"
+  },
+  "expected_cases": [
+    "mixed_currency_not_summed",
+    "ranking_uses_units_not_raw_money",
+    "ranking_ties_are_stable_not_money",
+    "unverified_999_and_99_excluded_unknown",
+    "unverified_receipt_excluded_and_unknown_product",
+    "utc_day_29_in_30_out_89_in_90_out",
+    "utc_day_6_in_7_out",
+    "future_and_undated_rows_excluded",
+    "refund_and_zero_are_observed_transactions",
+    "aggregate_and_each_product_agree_all_windows",
+    "units_missing_is_unknown",
+    "units_null_is_unknown",
+    "units_blank_is_unknown",
+    "units_NaN_is_unknown",
+    "units_positive_infinity_is_unknown",
+    "units_negative_infinity_is_unknown",
+    "units_too_large_is_unknown",
+    "units_unreadable_is_unknown",
+    "units_array_is_unknown",
+    "units_object_is_unknown",
+    "units_boolean_is_unknown",
+    "units_missing_flag_is_unknown",
+    "units_false_flag_is_unknown",
+    "units_string_true_flag_is_unknown",
+    "royalty_missing_is_unknown",
+    "royalty_null_is_unknown",
+    "royalty_blank_is_unknown",
+    "royalty_NaN_is_unknown",
+    "royalty_positive_infinity_is_unknown",
+    "royalty_negative_infinity_is_unknown",
+    "royalty_too_large_is_unknown",
+    "royalty_unreadable_is_unknown",
+    "royalty_array_is_unknown",
+    "royalty_object_is_unknown",
+    "royalty_boolean_is_unknown",
+    "royalty_missing_flag_is_unknown",
+    "royalty_false_flag_is_unknown",
+    "royalty_string_true_flag_is_unknown",
+    "singleton_currency_array_is_unknown",
+    "singleton_date_array_is_undated",
+    "legacy_v1_with_true_numeric_flags_remains_valid",
+    "legacy_source_identity_without_numeric_flags_stays_unknown_unchanged",
+    "es_ES_culture_does_not_change_numeric_totals",
+    "render_en_currency_and_fractional_labels",
+    "render_ru_currency_and_fractional_labels",
+    "render_es_currency_and_fractional_labels"
+  ],
+  "dependencies": {
+    "schema": "forge.performance.function_dependencies.v1",
+    "functions": {
+      "MerchForgeWorkbench.ps1": [
+        "Get-PropertyValue"
+      ],
+      "Modules/Forge.LocalCore.ps1": [
+        "Add-OrSetProperty",
+        "Get-LocalCoreConcept",
+        "Get-LocalPublicationProductKey",
+        "Reconcile-LocalSalesLinks",
+        "Resolve-LocalSalesCurrency",
+        "Get-LocalSalesRawProperty",
+        "Get-LocalSalesUtcDay",
+        "Get-LocalSalesCalendarDate",
+        "Get-LocalVerifiedSalesAmount",
+        "Get-LocalRoyaltyTotals",
+        "Get-LocalSalesTotals",
+        "Get-LocalSalesMetrics",
+        "Format-LocalRoyaltyTotal",
+        "Format-LocalSalesUnits"
+      ],
+      "Modules/Forge.Localization.ps1": [
+        "Get-UiText"
+      ],
+      "Modules/Forge.Pipeline.ps1": [
+        "Register-PipelineUiText",
+        "ConvertTo-PerfUtc",
+        "Get-ForgePerformanceInsights",
+        "Update-PerformanceInsightsSurface"
+      ]
+    },
+    "doubles": {
+      "Test-LocalPublicationReceiptAuthority": "Returns true only for synthetic receipt fixture_verified boolean true; no claim to test receipt/package authority.",
+      "Read-LocalCoreState": "Returns only the current synthetic in-memory state; no original data read or writes.",
+      "Get-LocalAmazonPrintProfile": "Returns null; no real profile or account access.",
+      "UI controls": "Plain objects with a Text property, not WPF controls. Actual production rendering function is executed.",
+      "boundary guards": "File/model/network/worker mutation command names throw if called. Not a hostile-code sandbox.",
+      "clock adapter": "Rendering only: passes fixed UTC to original production Get-ForgePerformanceInsights ScriptBlock; no aggregation is imitated."
+    }
+  }
+}

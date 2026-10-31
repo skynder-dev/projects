@@ -1,0 +1,77 @@
+{
+  "schema": "forge.owner_review_decisions.v1",
+  "source_packet_sha256": "6054dd239b6d5bf1199b16d82df9bfa7d2f0529d0caf101aedd5c2239b513abe",
+  "decisions": [
+    {
+      "concept_key": "v4_av_black_cloud",
+      "revision_id": "30563cf9-0722-4622-b845-f43fbdc4872b",
+      "revision_hash": "e9969acf78ac492591cdfe8b66efd25fb407d16bfa5be0d9ff2b27731496d684",
+      "decision": "UNDECIDED",
+      "notes": ""
+    },
+    {
+      "concept_key": "v4_bmet_walk_vs_fix",
+      "revision_id": "6c484c8d-7746-4e6d-8485-02c9bcb472ac",
+      "revision_hash": "17b737427aec9c19c5598bec18bd975661b8f27e0385f551500eeeec8c25bdd7",
+      "decision": "UNDECIDED",
+      "notes": ""
+    },
+    {
+      "concept_key": "v4_cyto_confess",
+      "revision_id": "c8c1237e-3f8d-411a-ac8f-5fe2404dbe57",
+      "revision_hash": "f83c0bb8827dc29addfe6b3684f8710b3eee2f519c01e60ac6755102efa64709",
+      "decision": "UNDECIDED",
+      "notes": ""
+    },
+    {
+      "concept_key": "v4_elec_argue_circuit",
+      "revision_id": "a9396362-1fde-4d87-ad58-49ab4421f91e",
+      "revision_hash": "4f7027c0021e19b5eae0ad35966b537bf9cc6e8835cafba3854553cc58da67dd",
+      "decision": "UNDECIDED",
+      "notes": ""
+    },
+    {
+      "concept_key": "v4_ic_instrument_play",
+      "revision_id": "24a48dfc-bca1-452e-96f6-af3b85f802bc",
+      "revision_hash": "c087a77cd95e0e4126112df42c29af6750a0cad99c0363f51147c56e53ee7219",
+      "decision": "UNDECIDED",
+      "notes": ""
+    },
+    {
+      "concept_key": "v4_relay_large_meeting",
+      "revision_id": "3b5796a5-a76c-431c-8d07-a3f34cbc5724",
+      "revision_hash": "9edf653b8a5f742f3863bf07ee223c06949defa7062aa999812771b5864d2d70",
+      "decision": "UNDECIDED",
+      "notes": ""
+    },
+    {
+      "concept_key": "v4_relay_nervous",
+      "revision_id": "a675c85e-fd62-4fe0-855d-c84c59b70b7e",
+      "revision_hash": "7bf318a34bcfad46c57f6cb42372a6cb02f9131f62d57c59826cd1b6289abbe0",
+      "decision": "UNDECIDED",
+      "notes": ""
+    },
+    {
+      "concept_key": "v4_semi_coffee",
+      "revision_id": "1b58bfa8-5fcc-4e3f-a178-af87e67c7275",
+      "revision_hash": "143a0a0c31206495225c78d10235504e04d498a3cbb3bb58fd1207fec712fae5",
+      "decision": "UNDECIDED",
+      "notes": ""
+    },
+    {
+      "concept_key": "v4_semi_dust_authority",
+      "revision_id": "47485853-cba4-431f-848a-de5fc995b41d",
+      "revision_hash": "ef0f1e8062f88ddf7f4069c5dcd94be88797a1197a99e4de898c099b73c80503",
+      "decision": "UNDECIDED",
+      "notes": ""
+    },
+    {
+      "concept_key": "v4_spd_everybody_back",
+      "revision_id": "bc45b397-7727-4285-a175-7dcf7f383a80",
+      "revision_hash": "b4c8899f2be9203de71dab4f3f654e1c1e8b1e34eef68617d1e0cc48db2e2f2b",
+      "decision": "UNDECIDED",
+      "notes": ""
+    }
+  ],
+  "external_submission_authorized": false
+}

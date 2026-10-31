@@ -1,0 +1,15 @@
+{
+  "schema": "forge.local_generation_brief.v2",
+  "created_at": "2026-10-03T09:25:00Z",
+  "concept_key": "v4_spd_everybody_back",
+  "title": "SPD — one dirty instrument",
+  "hook": "ONE OF YOU IS DIRTY. EVERYBODY GOES BACK.",
+  "niche_name": "Sterile Processing",
+  "concept": "Make one dirty instrument the guilty classmate that sends the entire tray back.",
+  "visual_direction": "Cartoon tray lineup with one guilty-looking generic instrument; no gore.",
+  "source_revision_id": "bc45b397-7727-4285-a175-7dcf7f383a80",
+  "source_revision_hash": "b4c8899f2be9203de71dab4f3f654e1c1e8b1e34eef68617d1e0cc48db2e2f2b",
+  "provider_mode": "manual_artwork_bridge",
+  "external_generation_authorized": false,
+  "note": "Creative brief only. Import the finished image back into Merch Forge; exact SHA/revision binding is required before acceptance."
+}

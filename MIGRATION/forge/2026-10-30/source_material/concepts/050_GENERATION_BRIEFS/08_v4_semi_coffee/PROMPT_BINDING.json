@@ -1,0 +1,12 @@
+{
+  "schema": "forge.prompt_staging_binding.v1",
+  "concept_key": "v4_semi_coffee",
+  "source_revision_id": "1b58bfa8-5fcc-4e3f-a178-af87e67c7275",
+  "source_revision_hash": "143a0a0c31206495225c78d10235504e04d498a3cbb3bb58fd1207fec712fae5",
+  "prompt_compiler_version": "forge.prompt.apparel.v2",
+  "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4",
+  "prompt_sha256": "ce0d6040df4375129f76859776f83986bc70293635a06c1d24936568859538f3",
+  "hook_render_policy": "exactly_once",
+  "external_dispatch_authorized": false,
+  "generation_job_created": false
+}

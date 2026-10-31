@@ -1,0 +1,175 @@
+{
+  "schema": "forge.pipeline_package_authority.source_lock.v1",
+  "application_sources": [
+    {
+      "path": "Modules/Forge.Pipeline.ps1",
+      "sha256": "02058c6cf3b7a8e6c44a431f4fc1f7cf3a38d7249f53d19ccb6f316b784160d9"
+    },
+    {
+      "path": "Modules/Forge.LocalCore.ps1",
+      "sha256": "34cab2031ef10a6626d86903dda2292e7ba11a4e50a6d0af14d739d417a02d7d"
+    },
+    {
+      "path": "Modules/Forge.ImageValidation.ps1",
+      "sha256": "5affae33e9f08f394ae090bac65b31fb52f3c30cf1a64ab0fb4dcef6aa46e5f8"
+    },
+    {
+      "path": "Modules/Forge.Media.ps1",
+      "sha256": "b4a6250f8dce016b4b08ddc3d8fb1d56c11836bdfa07c5fb9255317f20eebb52"
+    },
+    {
+      "path": "Modules/Forge.ResearchDrafts.ps1",
+      "sha256": "e73a8f47919161f303674a61308f4a0a7b0de38601b09c8e36aa66cf2e5fb3ac"
+    },
+    {
+      "path": "Modules/Forge.BriefApproval.ps1",
+      "sha256": "b236b69d8818d25f96b93e056d22c7a21cfc30ea0193ea63f0082b68afaf9c5e"
+    },
+    {
+      "path": "Modules/Forge.StrictJsonSyntax.ps1",
+      "sha256": "a56fa0e314446d9b4b59b489f5fc5bf53270b003e5504f5b494603e6d688eca7"
+    },
+    {
+      "path": "Modules/Forge.PrintChecks.ps1",
+      "sha256": "33173471368c0c4c8315e4ce70ffd087df3c0bc26d6583a7ff5025bc7eb016cf"
+    },
+    {
+      "path": "MerchForgeWorkbench.ps1",
+      "sha256": "d2050b6867359daf70c2a75699102b2a59a70cf7ba2cc1e317d2c995dea83122"
+    }
+  ],
+  "test_sources": [
+    {
+      "path": "Test-PipelinePackageAuthority.ps1",
+      "sha256": "bd9a27e7b59e2044881352fb45a1418ff6fa557245b93e5da89f7b7ea95a3c4a"
+    }
+  ],
+  "expected_loaded_functions": [
+    "Get-ForgePipelineStage",
+    "ConvertTo-PerfUtc",
+    "Get-ForgePerformanceInsights",
+    "Get-StringSha256Hex",
+    "Get-LocalPublicationHash",
+    "Get-FileSha256Hex",
+    "Get-LocalCoreConcept",
+    "Get-LocalOwnerDecisionRecord",
+    "Get-LocalDeliveryReadiness",
+    "Test-LocalPackageCurrentAuthority",
+    "Get-LocalPackageZipEntrySha256",
+    "Test-LocalPackageBoolean",
+    "Get-LocalPackageZipJsonEntry",
+    "Test-LocalPackageArtworkTechnical",
+    "Get-LocalReadyPackageZipAuthority",
+    "Get-LocalPublicationProductKey",
+    "Test-LocalPublicationReceiptAuthority",
+    "Assert-ForgeNoSemanticHold",
+    "Get-LocalSalesRawProperty",
+    "Get-LocalSalesUtcDay",
+    "Get-LocalSalesCalendarDate",
+    "Get-LocalVerifiedSalesAmount",
+    "Resolve-LocalSalesCurrency",
+    "Get-LocalRoyaltyTotals",
+    "Get-LocalSalesTotals",
+    "Read-LocalCheckEvidencePayload",
+    "Get-LocalPublicationReceiptBindingDecision",
+    "Import-LocalPublicationReceiptFromPath",
+    "Read-ForgeUInt32BE",
+    "Get-ForgePngMetadata",
+    "Test-ForgeGenerationPngBytes",
+    "Test-ForgePrintPngBytes",
+    "Test-ForgeFlexibleUploadRules",
+    "Test-ForgeAmazonPrintProfile",
+    "Get-ForgeUploadTechnicalSnapshot",
+    "Get-ByteSha256Hex",
+    "Get-ResearchDraftList",
+    "Get-ResearchDraft",
+    "ConvertFrom-ForgeJsonObjectStrict",
+    "Assert-ForgeStrictJsonSyntax",
+    "ConvertTo-ForgeUtcDateTime",
+    "Get-LocalAmazonPrintProfile",
+    "Get-PropertyValue"
+  ],
+  "expected_case_names": [
+    "Current valid noncanonical physical package is ready on both surfaces",
+    "Saved flags cannot confer authority: string_false",
+    "Saved flags cannot confer authority: boolean_false",
+    "Saved flags cannot confer authority: draft_status",
+    "Saved flags cannot confer authority: stale_revision",
+    "Saved flags cannot confer authority: stale_listing_hash",
+    "Missing physical ZIP cannot remain package ready",
+    "Tampered physical ZIP with unchanged saved hash is rejected",
+    "Self-consistent archive hashes cannot hide an invalid archived gate",
+    "Changed current listing invalidates a previously valid package",
+    "Expired archived profile cannot remain ready even with ready prerequisites",
+    "Changed current profile invalidates an internally valid old archive",
+    "Current readiness loss overrides old ready flags: approval",
+    "Current readiness loss overrides old ready flags: checks",
+    "Current readiness loss overrides old ready flags: print",
+    "Later semantic HOLD is enforced by the actual persisted-state guard",
+    "Persisted later HOLD is not bypassed by a stale supplied state",
+    "Unreadable current state fails closed on both surfaces",
+    "Verified historical publication retains precedence over current package expiry",
+    "Unverified receipt never masks an invalid current package",
+    "Noncanonical concept without packages preserves accepted and decision fallbacks",
+    "Historical receipt import validates real archive without restoring current readiness",
+    "Historical receipt cancellation preserves state and source files",
+    "Historical exact receipt source deduplicates before confirmation",
+    "Historical same product package binding deduplicates a different source",
+    "Historical conflicting product binding is refused using real archive authority",
+    "Historical receipt bytes changed during confirmation are not imported",
+    "Historical archive bytes changed during confirmation are not imported",
+    "Historical receipt identity channel market and event date guards remain exact",
+    "Historical malformed validity and non READY status cannot become evidence",
+    "Historical missing or tampered physical archives are still refused",
+    "Historical self consistent ZIP with invalid gate is refused by real authority",
+    "Historical stale writer is refused by disclosed synthetic CAS seam",
+    "Historical commit then throw stays uncertain and retry deduplicates",
+    "Current valid package import retains prior nonhistorical flow and truthful evidence kind",
+    "Historical import never infers publication from invalidation timestamp",
+    "Historical import preserves current concept approval checks history artwork and archives",
+    "Historical confirmation distinguishes owner report from external verification",
+    "Historical receipt duplicate JSON keys are rejected before state access",
+    "Historical saved receipt survives UI refresh failure without second mutation",
+    "Historical receipt path makes no generation publication or network dispatch",
+    "Final source integrity: Modules/Forge.Pipeline.ps1",
+    "Final source integrity: Modules/Forge.LocalCore.ps1",
+    "Final source integrity: Modules/Forge.ImageValidation.ps1",
+    "Final source integrity: Modules/Forge.Media.ps1",
+    "Final source integrity: Modules/Forge.ResearchDrafts.ps1",
+    "Final source integrity: Modules/Forge.BriefApproval.ps1",
+    "Final source integrity: Modules/Forge.StrictJsonSyntax.ps1",
+    "Final source integrity: Modules/Forge.PrintChecks.ps1",
+    "Final source integrity: MerchForgeWorkbench.ps1",
+    "Final control integrity: source manifest",
+    "Final control integrity: Test-PipelinePackageAuthority.ps1",
+    "Exact ordered receipt case and function identities"
+  ],
+  "native_runtime_contract": {
+    "edition": "Core",
+    "minimum_stable_version": "7.5",
+    "preview_releases_allowed": false,
+    "platform": "Win32NT",
+    "date_kind_string_required": true
+  },
+  "external_supervisor_contract": {
+    "ownership": "Separately reviewed Windows supervisor must provision and verify owner-private ACLs and reject redirected ancestors before any read/write.",
+    "process_tree": "Assign waiting child to owned Windows Job before releasing native command; bounded timeout and termination of residual descendants. Reuse reviewed process_supervisor.py SHA256 7cec5afad989b2d85d969f3653621974f46edf989088407a711166538a25e057.",
+    "completion": "Require zero native exit, no timeout, fresh matching run id/timestamps, exact ordered complete case/function/source/control identities, all case statuses PASS, matching source hashes before/after, and unchanged externally pinned manifest/test files.",
+    "failure": "Nonzero, timeout, crash, missing/reused/mismatched/non-PASS receipt, source drift or incomplete identity lists is failure. No receipt required after kill.",
+    "bundled_launcher": "None. Draft launcher is excluded and unsafe to use as-is."
+  },
+  "expected_control_source_names": [
+    "source manifest",
+    "Test-PipelinePackageAuthority.ps1"
+  ],
+  "historical_receipt_extension": {
+    "status": "PREPARED_NATIVE_NOT_RUN",
+    "retained_original_cases": 33,
+    "focused_added_cases": 20,
+    "total_cases": 53,
+    "actual_functions": 43,
+    "physical_archive_authority": "Actual ZIP/PNG/strict JSON/lineage validators retained; importer and binding decision extracted unchanged from candidate.",
+    "persistence": "Detached synthetic JSON CAS and injected uncertainty only; no real store or Windows runtime claim.",
+    "event_evidence": "Owner-attested external publication; independent_publication_verification=false."
+  }
+}

@@ -1,0 +1,16 @@
+MERCH FORGE — GENERATION BRIEF
+
+Title: Fab tech — coffee versus gowning
+Hook: GOWN. UNGOWN. REGRET THE COFFEE. REPEAT.
+Niche: Semiconductor Processing Technician
+
+Revision: 1b58bfa8-5fcc-4e3f-a178-af87e67c7275
+Revision SHA256: 143a0a0c31206495225c78d10235504e04d498a3cbb3bb58fd1207fec712fae5
+
+Concept:
+Cleanroom life joke about regretting fluids because every bathroom trip means ungowning and regowning.
+
+Visual direction:
+Coffee cup caught in a loop diagram of gowning stages, stylized not procedural.
+
+Boundary: creative brief only; no provider dispatch or publishing was authorized.

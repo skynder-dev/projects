@@ -1,0 +1,66 @@
+{
+  "schema": "forge.core_history_sales.dependencies.v1",
+  "functions": {
+    "MerchForgeWorkbench.ps1": [
+      "Get-PropertyValue"
+    ],
+    "Modules/Forge.Media.ps1": [
+      "Get-ByteSha256Hex"
+    ],
+    "Modules/Forge.BriefApproval.ps1": [
+      "Get-ForgeBriefValue",
+      "Get-ForgeProductionSpec",
+      "ConvertTo-ForgeBriefCanonicalJson",
+      "Get-ForgeBriefSha256"
+    ],
+    "Modules/Forge.Localization.ps1": [
+      "Get-UiText"
+    ],
+    "Modules/Forge.LocalCore.ps1": [
+      "Add-OrSetProperty",
+      "Get-StringSha256Hex",
+      "Get-LocalCoreConcept",
+      "Preserve-ForgeLocalReviewHistory",
+      "Invalidate-LocalCorePackages",
+      "New-LocalCoreCheckRecord",
+      "New-LocalCoreChecks",
+      "Get-LocalPublicationProductKey",
+      "Reconcile-LocalSalesLinks",
+      "ConvertTo-CsvKey",
+      "Find-CsvColumn",
+      "ConvertFrom-ForgeMoney",
+      "ConvertFrom-ForgeSalesDate",
+      "Get-CsvSlashDateOrder",
+      "Resolve-LocalSalesCurrency",
+      "Get-LocalSalesOverlapSummary",
+      "Read-ForgeSalesCsvSnapshot",
+      "Get-ForgeSalesNormalizationSnapshot",
+      "Update-ForgeSalesExactSource",
+      "Import-LocalSalesCsvFromPath"
+    ],
+    "Modules/Forge.ResearchDrafts.ps1": [
+      "Get-ResearchDraftList",
+      "ConvertTo-PlainArray",
+      "Set-PlainArrayProperty",
+      "Get-ResearchDraft",
+      "Test-CurrentIsResearchDraft",
+      "Get-ResearchDraftContentHash",
+      "New-ResearchDraftRevision",
+      "Get-ResearchDraftCurrentFields",
+      "Get-ResearchDraftHistory",
+      "Get-ResearchDraftRestoreSource",
+      "Save-ResearchDraftRevision",
+      "ConvertTo-ResearchDraftConcept",
+      "Restore-SelectedResearchDraftRevision",
+      "Save-CurrentResearchDraftRevision"
+    ]
+  },
+  "doubles": {
+    "state": "Read/Write-LocalCoreState use fresh synthetic JSON files and detached DateKind String objects. Write rejection is injected, not real concurrency/atomic-write proof.",
+    "UI": "Editor/status controls are plain Text objects; selected history row is synthetic. Confirm dequeues explicit answers and an optional navigation seam. Dirty flags and tab selection are tracked. WPF events, dialog dispatch and Windows rendering are NOT tested.",
+    "saved reload": "Queue refresh/reopen are bounded counters; reopen replaces Current from actual saved draft concept conversion. Actual full startup, checks/packages and LocalCore materialization are NOT covered.",
+    "receipt authority": "Only Test-LocalPublicationReceiptAuthority is a fixture-controlled boolean seam. Actual receipt key, matching/conflict logic, importer and revalidation run. Does not prove ZIP/package authority.",
+    "owner language and strict parser": "Owner language returns an explicit unapproved synthetic marker. UI save JSON parser accepts only synthetic object JSON using native DateKind String; production strict parser has separate tests. Hash/canonical JSON, revision writer and preservation function are actual production functions.",
+    "external": "Unexpected model/network/process/AI save paths fail. These guards are not an OS sandbox; use existing private staging + owned process supervisor. No module initializers are executed."
+  }
+}

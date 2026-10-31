@@ -1,0 +1,354 @@
+{
+  "schema": "forge.csv_date.synthetic_fixtures.v1",
+  "synthetic_only": true,
+  "helper_cases": [
+    {
+      "name": "helper_comma_ambiguity",
+      "dates": [
+        "03/04/2026"
+      ],
+      "delimiter": ",",
+      "error": "ambiguous slash dates",
+      "order": null,
+      "expected_dates": []
+    },
+    {
+      "name": "helper_semicolon_ambiguity",
+      "dates": [
+        "03/04/2026"
+      ],
+      "delimiter": ";",
+      "error": "ambiguous slash dates",
+      "order": null,
+      "expected_dates": []
+    },
+    {
+      "name": "helper_other_dmy_row_is_not_proof",
+      "dates": [
+        "03/04/2026",
+        "25/09/2026"
+      ],
+      "delimiter": ",",
+      "error": "ambiguous slash dates",
+      "order": null,
+      "expected_dates": []
+    },
+    {
+      "name": "helper_other_mdy_row_is_not_proof",
+      "dates": [
+        "03/04/2026",
+        "09/25/2026"
+      ],
+      "delimiter": ";",
+      "error": "ambiguous slash dates",
+      "order": null,
+      "expected_dates": []
+    },
+    {
+      "name": "helper_conflicting_valid_orders",
+      "dates": [
+        "25/09/2026",
+        "09/25/2026"
+      ],
+      "delimiter": ",",
+      "error": "conflicting day/month",
+      "order": null,
+      "expected_dates": []
+    },
+    {
+      "name": "helper_equal_month_day_is_safe",
+      "dates": [
+        "04/04/2026"
+      ],
+      "delimiter": ",",
+      "error": null,
+      "order": "mdy",
+      "expected_dates": [
+        {
+          "raw": "04/04/2026",
+          "iso": "2026-04-04"
+        }
+      ]
+    },
+    {
+      "name": "helper_clear_dmy",
+      "dates": [
+        "25/09/2026",
+        "04/04/2026"
+      ],
+      "delimiter": ",",
+      "error": null,
+      "order": "dmy",
+      "expected_dates": [
+        {
+          "raw": "25/09/2026",
+          "iso": "2026-09-25"
+        },
+        {
+          "raw": "04/04/2026",
+          "iso": "2026-04-04"
+        }
+      ]
+    },
+    {
+      "name": "helper_clear_mdy",
+      "dates": [
+        "09/25/2026",
+        "04/04/2026"
+      ],
+      "delimiter": ";",
+      "error": null,
+      "order": "mdy",
+      "expected_dates": [
+        {
+          "raw": "09/25/2026",
+          "iso": "2026-09-25"
+        }
+      ]
+    },
+    {
+      "name": "helper_iso_and_year_first_unchanged",
+      "dates": [
+        "2026-10-20",
+        "2026/10/21",
+        "2026-10-22T23:10:00-08:00"
+      ],
+      "delimiter": ",",
+      "error": null,
+      "order": "mdy",
+      "expected_dates": [
+        {
+          "raw": "2026-10-20",
+          "iso": "2026-10-20"
+        },
+        {
+          "raw": "2026/10/21",
+          "iso": "2026-10-21"
+        },
+        {
+          "raw": "2026-10-22T23:10:00-08:00",
+          "iso": "2026-10-22"
+        }
+      ]
+    },
+    {
+      "name": "helper_invalid_calendar_not_order_evidence",
+      "dates": [
+        "31/02/2026",
+        "09/25/2026"
+      ],
+      "delimiter": ",",
+      "error": null,
+      "order": "mdy",
+      "expected_dates": [
+        {
+          "raw": "09/25/2026",
+          "iso": "2026-09-25"
+        }
+      ]
+    },
+    {
+      "name": "helper_timestamp_cannot_choose_month_first",
+      "dates": [
+        "03/04/2026 1:15 PM"
+      ],
+      "delimiter": ",",
+      "error": "ambiguous slash dates",
+      "order": null,
+      "expected_dates": []
+    },
+    {
+      "name": "helper_bad_suffix_cannot_authorize_ambiguity",
+      "dates": [
+        "03/04/2026 invalid"
+      ],
+      "delimiter": ",",
+      "error": "ambiguous slash dates",
+      "order": null,
+      "expected_dates": []
+    },
+    {
+      "name": "helper_invalid_dates_only_remain_unknown",
+      "dates": [
+        "31/02/2026",
+        "13/13/2026"
+      ],
+      "delimiter": ",",
+      "error": null,
+      "order": "mdy",
+      "expected_dates": []
+    },
+    {
+      "name": "helper_inner_whitespace_ambiguity",
+      "dates": [
+        "03 / 04 / 2026"
+      ],
+      "delimiter": ",",
+      "error": "ambiguous slash dates",
+      "order": null,
+      "expected_dates": []
+    },
+    {
+      "name": "helper_compact_time_suffix_ambiguity",
+      "dates": [
+        "03/04/20261:15 PM"
+      ],
+      "delimiter": ",",
+      "error": "ambiguous slash dates",
+      "order": null,
+      "expected_dates": []
+    },
+    {
+      "name": "helper_tabbed_slashes_ambiguity",
+      "dates": [
+        "03\t/04/\t2026"
+      ],
+      "delimiter": ",",
+      "error": "ambiguous slash dates",
+      "order": null,
+      "expected_dates": []
+    },
+    {
+      "name": "helper_valid_leap_day_dmy",
+      "dates": [
+        "29/02/2024"
+      ],
+      "delimiter": ",",
+      "error": null,
+      "order": "dmy",
+      "expected_dates": [
+        {
+          "raw": "29/02/2024",
+          "iso": "2024-02-29"
+        }
+      ]
+    }
+  ],
+  "rejected_imports": [
+    {
+      "name": "import_comma_ambiguity_rejected_before_state",
+      "dates": [
+        "03/04/2026"
+      ],
+      "delimiter": ",",
+      "error": "ambiguous slash dates"
+    },
+    {
+      "name": "import_semicolon_ambiguity_rejected_before_state",
+      "dates": [
+        "03/04/2026"
+      ],
+      "delimiter": ";",
+      "error": "ambiguous slash dates"
+    },
+    {
+      "name": "import_conflict_comma_rejected_before_state",
+      "dates": [
+        "25/09/2026",
+        "09/25/2026"
+      ],
+      "delimiter": ",",
+      "error": "conflicting day/month"
+    },
+    {
+      "name": "import_conflict_semicolon_rejected_before_state",
+      "dates": [
+        "25/09/2026",
+        "09/25/2026"
+      ],
+      "delimiter": ";",
+      "error": "conflicting day/month"
+    },
+    {
+      "name": "import_inner_whitespace_ambiguity_rejected_before_state",
+      "dates": [
+        "03 / 04 / 2026"
+      ],
+      "delimiter": ",",
+      "error": "ambiguous slash dates"
+    },
+    {
+      "name": "import_compact_suffix_ambiguity_rejected_before_state",
+      "dates": [
+        "03/04/20261:15 PM"
+      ],
+      "delimiter": ";",
+      "error": "ambiguous slash dates"
+    },
+    {
+      "name": "import_iso_row_does_not_authorize_ambiguity",
+      "dates": [
+        "2026-10-20",
+        "03/04/2026"
+      ],
+      "delimiter": ",",
+      "error": "ambiguous slash dates"
+    }
+  ],
+  "accepted_imports": [
+    {
+      "name": "import_iso_preserved",
+      "dates": [
+        "2026-10-20",
+        "2026-10-21T23:00:00-08:00"
+      ],
+      "delimiter": ",",
+      "expected_dates": [
+        "2026-10-20",
+        "2026-10-21"
+      ]
+    },
+    {
+      "name": "import_dmy_unambiguous_preserved",
+      "dates": [
+        "25/09/2026"
+      ],
+      "delimiter": ",",
+      "expected_dates": [
+        "2026-09-25"
+      ]
+    },
+    {
+      "name": "import_mdy_unambiguous_preserved",
+      "dates": [
+        "09/25/2026"
+      ],
+      "delimiter": ";",
+      "expected_dates": [
+        "2026-09-25"
+      ]
+    },
+    {
+      "name": "import_equal_month_day_preserved",
+      "dates": [
+        "04/04/2026"
+      ],
+      "delimiter": ";",
+      "expected_dates": [
+        "2026-04-04"
+      ]
+    },
+    {
+      "name": "import_invalid_date_stays_undated",
+      "dates": [
+        "31/02/2026"
+      ],
+      "delimiter": ",",
+      "expected_dates": [
+        ""
+      ]
+    },
+    {
+      "name": "import_year_first_and_dot_dates_preserved",
+      "dates": [
+        "2026/10/20",
+        "21.10.2026"
+      ],
+      "delimiter": ",",
+      "expected_dates": [
+        "2026-10-20",
+        "2026-10-21"
+      ]
+    }
+  ]
+}

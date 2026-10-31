@@ -1,0 +1,16 @@
+MERCH FORGE — GENERATION BRIEF
+
+Title: I&C — what instrument do you play
+Hook: ASKED WHAT INSTRUMENT I PLAY. I SAID 4–20 mA.
+Niche: Instrumentation & Controls Technician
+
+Revision: 24a48dfc-bca1-452e-96f6-af3b85f802bc
+Revision SHA256: c087a77cd95e0e4126112df42c29af6750a0cad99c0363f51147c56e53ee7219
+
+Concept:
+Use the recurring outsider misunderstanding of 'instrument technician' as the setup.
+
+Visual direction:
+Concert-poster layout with a process signal replacing a musical waveform.
+
+Boundary: creative brief only; no provider dispatch or publishing was authorized.

@@ -1,0 +1,1545 @@
+[
+  {
+    "id": "6cf6c633-d812-4049-bc1a-59c33e5feb88",
+    "niche_key": "avionics_technician",
+    "name": "Avionics Technician",
+    "audience": "Aircraft avionics technicians, maintainers and electronics specialists",
+    "category": "occupational_identity",
+    "status": "shortlisted",
+    "research_summary": "Technically rich aviation-maintenance identity with wiring, boxes, troubleshooting and test-equipment language; current Etsy samples exist but appear materially narrower than generic aircraft-mechanic merch.",
+    "score_total": "81.40",
+    "score_confidence": "71.00",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/installation-maintenance-and-repair/aircraft-and-avionics-equipment-mechanics-and-technicians.htm",
+        "combined_growth_pct": 6,
+        "avionics_employment_2025": 19800,
+        "avionics_median_pay_2025": 82280,
+        "combined_annual_openings": 13100,
+        "avionics_growth_2025_35_pct": 9,
+        "combined_aircraft_avionics_employment_2025": 159800
+      },
+      "community": {
+        "reddit": "Recent avionics/aviationmaintenance threads show strong troubleshooting identity and insider jokes around boxes, wiring and diagnostics"
+      },
+      "marketplace": {
+        "etsy_sample": "Relevant avionics technician listings found, but search results are mixed with aircraft mechanic and aircraft-model merch"
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v1",
+      "working_shortlist_v1": true,
+      "working_shortlist_v2": true,
+      "working_shortlist_date": "2026-09-23"
+    },
+    "created_at": "2026-09-23 09:34:00.70472+00",
+    "updated_at": "2026-09-23 10:03:30.159451+00"
+  },
+  {
+    "id": "58b924ce-1dbf-4d0e-b959-7ec80b0fb3f5",
+    "niche_key": "biomedical_equipment_technician",
+    "name": "Biomedical Equipment Technician",
+    "audience": "BMET / clinical engineering technicians",
+    "category": "occupational_identity",
+    "status": "shortlisted",
+    "research_summary": "Legacy Town Label occupational niche carried forward for re-evaluation under the new niche-first scoring engine. Existing artwork quality does not determine niche status.",
+    "score_total": "80.35",
+    "score_confidence": "75.46",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {},
+    "metadata": {
+      "migration_note": "niche not approved or rejected; needs evidence-based scoring",
+      "working_shortlist_v1": true,
+      "working_shortlist_v2": true,
+      "working_shortlist_date": "2026-09-23",
+      "legacy_design_internal_name": "bmet_evergreen_01"
+    },
+    "created_at": "2026-09-23 06:11:01.997287+00",
+    "updated_at": "2026-09-23 10:03:30.159451+00"
+  },
+  {
+    "id": "3641e68f-a764-482e-b5e8-7e42366a6a15",
+    "niche_key": "calibration_technician",
+    "name": "Calibration Technician",
+    "audience": "Calibration / metrology technicians",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Legacy Town Label occupational niche carried forward for re-evaluation under the new niche-first scoring engine. Existing artwork quality does not determine niche status.",
+    "score_total": "78.75",
+    "score_confidence": "76.38",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {},
+    "metadata": {
+      "migration_note": "niche not approved or rejected; needs evidence-based scoring",
+      "working_shortlist_date": "2026-09-23",
+      "legacy_design_internal_name": "calibration_tech_evergreen_01",
+      "historical_working_shortlist_v1": true
+    },
+    "created_at": "2026-09-23 06:11:01.997287+00",
+    "updated_at": "2026-09-23 10:03:30.159451+00"
+  },
+  {
+    "id": "8cc6069b-5866-49de-a8a4-35ddfc2d9c62",
+    "niche_key": "cardiovascular_perfusionist",
+    "name": "Cardiovascular Perfusionist",
+    "audience": "Clinical perfusionists operating heart-lung and extracorporeal circulation systems",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Highly specialized cardiac-surgery profession with exceptional heart-lung circuit and flow/pressure visual language. Exact national employment sizing is not clean in current O*NET/BLS surfacing; current Etsy market is meaningful at roughly 47–55 relevant items.",
+    "score_total": "75.90",
+    "score_confidence": "67.26",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "limitation": "No clean standalone 2025 national BLS employment count captured in this research pass; keep demand confidence conservative.",
+      "marketplace": {
+        "etsy_signal": "47 to 55+ perfusionist T-shirt items in sampled current Etsy pages"
+      },
+      "official_context": {
+        "url": "https://www.mass.gov/orgs/board-of-registration-of-perfusionists",
+        "source": "Massachusetts Board of Registration of Perfusionists",
+        "description": "Perfusionists operate extracorporeal circulation/heart-lung equipment and monitor circulatory support during surgery"
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_pool_to_40_v1"
+    },
+    "created_at": "2026-09-23 10:00:20.805089+00",
+    "updated_at": "2026-09-23 10:04:52.652496+00"
+  },
+  {
+    "id": "e34da865-d6f0-4cb9-9ff9-eb54a9b62e39",
+    "niche_key": "cardiovascular_technologist",
+    "name": "Cardiovascular Technologist / Technician",
+    "audience": "Cardiovascular technologists and technicians",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Medium-sized cardiovascular diagnostic/procedural occupation with strong technical identity and multiple sub-specialties. Needs marketplace decomposition because cardiac-sonography and broad cardiology merch can contaminate exact demand signals.",
+    "score_total": "75.05",
+    "score_confidence": "66.22",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/healthcare/cardiovascular-technologists-and-technicians.htm",
+        "annual_openings": 3400,
+        "employment_2025": 64500,
+        "median_pay_2025": 74310,
+        "growth_2025_35_pct": 4
+      },
+      "marketplace": {
+        "limitation": "Sampled exact Etsy query did not yield a clean dedicated market page; broader cardiology/sonography overlap requires separate scan."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_pool_to_40_v1"
+    },
+    "created_at": "2026-09-23 10:00:20.805089+00",
+    "updated_at": "2026-09-23 10:04:52.652496+00"
+  },
+  {
+    "id": "72c39f24-d2f5-427d-a28f-11aefbeb68cd",
+    "niche_key": "chemical_plant_operator",
+    "name": "Chemical Plant / System Operator",
+    "audience": "Chemical plant and system operators",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Small process-operations occupation with excellent control-room/process visual language, but projected employment is declining. Retained as a process-industry benchmark and possible insider micro-niche.",
+    "score_total": "72.05",
+    "score_confidence": "63.92",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm",
+        "employment_2025": 16700,
+        "median_pay_2025": 78120,
+        "growth_2025_35_pct": -5.2,
+        "annual_openings_approx": 1300
+      },
+      "marketplace": {
+        "sample": "Exact Chemical Plant Operator shirt search did not surface a dedicated Etsy category in sampled results."
+      }
+    },
+    "metadata": {
+      "benchmark_role": "small_declining_process_trade",
+      "research_batch": "forge_2026-09-23_pool_to_40_v1"
+    },
+    "created_at": "2026-09-23 10:00:20.805089+00",
+    "updated_at": "2026-09-23 10:04:52.652496+00"
+  },
+  {
+    "id": "2824041a-b8fb-4c03-a745-197c7ebf7c18",
+    "niche_key": "chemical_technician",
+    "name": "Chemical Technician",
+    "audience": "Chemical laboratory, manufacturing-process and QC technicians",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Mid-sized technical occupation combining laboratory analysis, manufacturing-process monitoring, testing and quality control. Strong original visual language from glassware, samples, process data and instrumentation; sampled exact Etsy search did not surface a dedicated Chemical Technician shirt category.",
+    "score_total": "76.50",
+    "score_confidence": "63.82",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/life-physical-and-social-science/chemical-technicians.htm",
+        "annual_openings": 7600,
+        "employment_2025": 60000,
+        "median_pay_2025": 60390,
+        "growth_2025_35_pct": 5
+      },
+      "marketplace": {
+        "sample": "No dedicated exact Chemical Technician shirt category surfaced in sampled Etsy/web search; competition score therefore provisional."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_diversity_v3"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 09:56:40.513406+00"
+  },
+  {
+    "id": "58608283-b662-4461-afdf-290813a3d438",
+    "niche_key": "civil_engineering_technologist_technician",
+    "name": "Civil Engineering Technologist / Technician",
+    "audience": "Civil engineering technologists and technicians supporting infrastructure projects",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Large enough infrastructure-support occupation with roads, bridges, drainage, survey/layout, testing and construction-document visual language. Marketplace appears fragmented into generic civil-engineering merch rather than exact technician identity.",
+    "score_total": "76.85",
+    "score_confidence": "64.90",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/architecture-and-engineering/civil-engineering-technicians.htm",
+        "annual_openings": 6100,
+        "employment_2025": 70900,
+        "median_pay_2025": 64950,
+        "growth_2025_35_pct": 3
+      },
+      "marketplace": {
+        "sample": "Exact Civil Engineering Technician shirt category did not surface in sampled Etsy search; broader civil-engineering merch is known to exist."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_diversity_v3"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 09:56:40.513406+00"
+  },
+  {
+    "id": "00f957d4-9e11-4a23-9ae3-6642877cef1d",
+    "niche_key": "cnc_machinist",
+    "name": "CNC Machinist",
+    "audience": "Machinists and CNC machine-tool operators/programmers",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Very large replacement-driven occupation with rich manufacturing language, but generic machinist/CNC merch likely competitive; retained for later evidence-based comparison.",
+    "score_total": "79.10",
+    "score_confidence": "81.46",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/production/machinists-and-tool-and-die-makers.htm",
+        "annual_openings": 30400,
+        "machinist_median_pay_2025": 58750,
+        "combined_growth_2025_35_pct": -1,
+        "machinist_tool_die_employment_2025": 344900
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v1"
+    },
+    "created_at": "2026-09-23 09:34:00.70472+00",
+    "updated_at": "2026-09-23 09:57:21.800356+00"
+  },
+  {
+    "id": "09b0db6a-2264-413d-bb79-fbc11adea9f4",
+    "niche_key": "control_valve_repairer",
+    "name": "Control & Valve Installer / Repairer",
+    "audience": "Industrial and utility control-valve installers and repairers",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Mid-sized technical maintenance occupation with strong visual language around regulating devices, valves, meters, governors, actuators and flow control. Potentially adjacent to I&C but more mechanical/service-focused.",
+    "score_total": "77.95",
+    "score_confidence": "63.98",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/about/data-for-occupations-not-covered-in-detail.htm",
+        "employment_2025": 50400,
+        "median_pay_2025": 74340,
+        "growth_2025_35_pct": 4.3
+      },
+      "marketplace": {
+        "sample": "Exact Control Valve Technician Etsy-focused search did not surface a dedicated merch category in sampled results."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_pool_to_40_v1"
+    },
+    "created_at": "2026-09-23 10:00:20.805089+00",
+    "updated_at": "2026-09-23 10:04:52.652496+00"
+  },
+  {
+    "id": "2be782f0-ba27-4ed5-a75d-6c2b26e8eaa2",
+    "niche_key": "cytotechnologist",
+    "name": "Cytotechnologist / Cytologist",
+    "audience": "Cytotechnologists / cytologists in clinical pathology laboratories",
+    "category": "occupational_identity",
+    "status": "shortlisted",
+    "research_summary": "Deep microscope/cell-pattern identity with authentic workflow around prepare, stain, examine, classify and document. Exact profession sizing is bundled into broader lab employment, so demand confidence is lower; marketplace is relatively small at 17+ sampled Etsy items.",
+    "score_total": "80.60",
+    "score_confidence": "70.74",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "onet": {
+        "url": "https://www.onetonline.org/link/details/29-2011.02",
+        "tasks": [
+          "prepare samples",
+          "stain cells",
+          "examine by microscope",
+          "detect abnormalities",
+          "document specimens"
+        ],
+        "updated": 2026,
+        "occupation": "Cytotechnologists 29-2011.02"
+      },
+      "marketplace": {
+        "etsy_signal": "17+ Cytotechnologist Shirt items in sampled current Etsy page"
+      },
+      "employment_limitation": "O*NET employment trend is mapped to broader Clinical Laboratory Technologists and Technicians rather than a clean standalone cytotechnologist count."
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_pool_to_40_v1",
+      "working_shortlist_v2": true,
+      "working_shortlist_date": "2026-09-23"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 10:03:30.159451+00"
+  },
+  {
+    "id": "4da340c1-db6b-4f9e-8a44-cc05b7485db9",
+    "niche_key": "dental_laboratory_technician",
+    "name": "Dental Laboratory Technician",
+    "audience": "Dental laboratory technicians fabricating crowns, bridges, dentures and appliances",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Declining employment but highly tangible craft identity around models, crowns, shade, wax, ceramic and fabrication. Etsy has a modest dedicated market rather than a mass category.",
+    "score_total": "72.20",
+    "score_confidence": "76.08",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/production/dental-and-ophthalmic-laboratory-technicians-and-medical-appliance-technicians.htm",
+        "employment_2025": 34400,
+        "growth_2025_35_pct": -6,
+        "parent_annual_openings": 7100,
+        "parent_median_pay_2025": 47060
+      },
+      "marketplace": {
+        "sample": "Dedicated but modest current market.",
+        "etsy_count_signal": "48+ Dental Lab Technician Tshirt items"
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_diversity_v3"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 09:56:40.513406+00"
+  },
+  {
+    "id": "0cbf9c6f-fa26-4a54-9fba-98b5e65c8cd8",
+    "niche_key": "diagnostic_medical_sonographer",
+    "name": "Diagnostic Medical Sonographer",
+    "audience": "Diagnostic medical sonographers / ultrasound technologists",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Large, fast-growing, highly identifiable occupation with strong visual language, but Etsy already shows substantial sonography competition. Retain mainly as a high-demand/high-competition benchmark unless a materially different insider concept emerges.",
+    "score_total": "78.00",
+    "score_confidence": "81.72",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/healthcare/diagnostic-medical-sonographers.htm",
+        "annual_openings": 6000,
+        "employment_2025": 92200,
+        "median_pay_2025": 96590,
+        "growth_2025_35_pct": 14
+      },
+      "marketplace": {
+        "etsy_signal": "125+ preppy sonography items in one sampled market page plus many high-review ultrasound/sonographer listings across broader searches."
+      }
+    },
+    "metadata": {
+      "benchmark_role": "high-demand_high-competition",
+      "research_batch": "forge_2026-09-23_hidden_trades_v2"
+    },
+    "created_at": "2026-09-23 09:42:54.27545+00",
+    "updated_at": "2026-09-23 09:43:36.792084+00"
+  },
+  {
+    "id": "b2c88bf5-9589-47ae-98dd-be8af6621208",
+    "niche_key": "electrical_electronic_engineering_technician",
+    "name": "Electrical / Electronic Engineering Technician",
+    "audience": "Electrical and electronic engineering technologists and technicians",
+    "category": "occupational_identity",
+    "status": "shortlisted",
+    "research_summary": "Large technical occupation spanning labs, factories, utilities and electronics manufacturing. Strong visual depth around prototypes, test equipment, circuits, calibration and fault finding; exact occupational merch appeared sparse in sampled search.",
+    "score_total": "80.35",
+    "score_confidence": "67.30",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/architecture-and-engineering/electrical-and-electronics-engineering-technicians.htm",
+        "annual_openings": 8100,
+        "employment_2025": 96900,
+        "median_pay_2025": 78190,
+        "growth_2025_35_pct": 2
+      },
+      "marketplace": {
+        "sample": "Exact Engineering Technician merch did not surface as a strong dedicated category in sampled search; adjacent Electronics Technician/Electrical Engineer competition requires follow-up."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_diversity_v3",
+      "working_shortlist_v2": true,
+      "working_shortlist_date": "2026-09-23"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 10:03:30.159451+00"
+  },
+  {
+    "id": "24a8b363-f1b4-4b82-8394-dbf150e1dcf4",
+    "niche_key": "elevator_mechanic",
+    "name": "Elevator & Escalator Mechanic",
+    "audience": "Elevator and escalator installers, repairers, apprentices and service crews",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Small, high-skill trade with strong insider identity, high pay, distinctive machinery/shaft/control-panel visual language, and sampled merch that is present but not lineman-scale.",
+    "score_total": "77.85",
+    "score_confidence": "70.80",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/construction-and-extraction/elevator-installers-and-repairers.htm",
+        "annual_openings": 1900,
+        "employment_2025": 24700,
+        "median_pay_2025": 109910,
+        "growth_2025_35_pct": 6
+      },
+      "community": {
+        "reddit": "Recent 2026 r/Elevators/skilledtrades discussion shows strong trade identity and apprenticeship culture"
+      },
+      "marketplace": {
+        "etsy_sample": "Multiple elevator-mechanic listings found; sampled designs skew generic mechanic/humor/keeping-world-moving rather than deep technical insider language"
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v1"
+    },
+    "created_at": "2026-09-23 09:34:00.70472+00",
+    "updated_at": "2026-09-23 09:34:30.438105+00"
+  },
+  {
+    "id": "e1b2c74c-ca75-48cc-b7e9-dfb309808b5e",
+    "niche_key": "environmental_science_protection_technician",
+    "name": "Environmental Science & Protection Technician",
+    "audience": "Environmental field, sampling, monitoring and compliance technicians",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Growing field/lab occupation with authentic identity around sampling, monitoring, field instruments, compliance and pollution control. Sampled exact Etsy search did not surface a dedicated category, suggesting possible whitespace but with lower-confidence market evidence.",
+    "score_total": "78.25",
+    "score_confidence": "64.62",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/life-physical-and-social-science/environmental-science-and-protection-technicians.htm",
+        "annual_openings": 5300,
+        "employment_2025": 36400,
+        "median_pay_2025": 55090,
+        "growth_2025_35_pct": 7
+      },
+      "marketplace": {
+        "sample": "No dedicated exact Environmental Science Technician shirt category surfaced in sampled search; validate before promotion."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_diversity_v3"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 09:56:40.513406+00"
+  },
+  {
+    "id": "2fcffef6-c85a-4117-9447-9a78c6e811eb",
+    "niche_key": "fire_inspector",
+    "name": "Fire Inspector / Investigator",
+    "audience": "Fire inspectors, investigators and prevention specialists",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Real professional identity and code/investigation language, but official-looking seals/department marks create execution constraints and merch demand is not yet proven.",
+    "score_total": "73.45",
+    "score_confidence": "72.12",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/protective-service/fire-inspectors-and-investigators.htm",
+        "annual_openings": 1900,
+        "employment_2025": 17600,
+        "growth_2025_35_pct": 6,
+        "median_pay_fire_inspectors_2025": 73680
+      },
+      "marketplace": {
+        "etsy_sample": "Fire Marshal / Fire Inspector digital designs exist; deeper saturation study required"
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v1"
+    },
+    "created_at": "2026-09-23 09:34:00.70472+00",
+    "updated_at": "2026-09-23 09:57:21.800356+00"
+  },
+  {
+    "id": "4e052e26-5be1-44ef-8217-c02832c6d3a7",
+    "niche_key": "gas_plant_operator",
+    "name": "Gas Plant Operator",
+    "audience": "Natural-gas processing plant operators",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Small high-skill process-operations niche with compression, pressure, flow and control-room language; employment is projected to decline, so this is a concept-quality rather than growth bet.",
+    "score_total": "71.85",
+    "score_confidence": "63.92",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm",
+        "employment_2025": 18200,
+        "median_pay_2025": 87820,
+        "growth_2025_35_pct": -6,
+        "annual_openings_approx": 1400
+      },
+      "industry_context": {
+        "url": "https://www.bls.gov/iag/tgs/iag486.htm",
+        "pipeline_transportation_employment_2025": 5710
+      }
+    },
+    "metadata": {
+      "benchmark_role": "small_declining_process_trade",
+      "research_batch": "forge_2026-09-23_pool_to_40_v1"
+    },
+    "created_at": "2026-09-23 10:00:20.805089+00",
+    "updated_at": "2026-09-23 10:04:52.652496+00"
+  },
+  {
+    "id": "49679cdd-e2de-4618-b796-76f838caa476",
+    "niche_key": "geological_hydrologic_technician",
+    "name": "Geological / Hydrologic Technician",
+    "audience": "Geological, hydrologic and field data technicians",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Small field-science niche with unusually strong visual language around cores, samples, water levels, maps, field instruments and remote-site data collection. Low raw employment but potentially strong insider identity and marketplace whitespace.",
+    "score_total": "76.25",
+    "score_confidence": "66.82",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/life-physical-and-social-science/geological-and-petroleum-technicians.htm",
+        "annual_openings": 1400,
+        "employment_2025": 10300,
+        "growth_2025_35_pct": 2,
+        "median_combined_2025": 57150,
+        "geological_employment_2025": 7300,
+        "hydrologic_employment_2025": 3000
+      },
+      "marketplace": {
+        "sample": "No dedicated exact Geological/Hydrologic Technician shirt cluster surfaced in sampled search; competition estimate is low-confidence."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_diversity_v3"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 09:56:40.513406+00"
+  },
+  {
+    "id": "3b25ea72-c1c4-4e5a-bf45-0f79c7bae7b2",
+    "niche_key": "hearing_aid_specialist",
+    "name": "Hearing Aid Specialist",
+    "audience": "Hearing aid / hearing instrument specialists",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Small but fast-growing hearing-care occupation with fitting/programming/device visual language. Dedicated merch exists but is still relatively bounded at 43+ sampled Etsy items, much of it generic definition/audiology crossover.",
+    "score_total": "72.30",
+    "score_confidence": "67.32",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "source_note": "BLS 2025 occupational employment/projections tables",
+        "growth_2025_35_pct": 19.4,
+        "employment_2025_approx": 11200,
+        "median_pay_2025_approx": 66370
+      },
+      "marketplace": {
+        "etsy_signal": "43+ Hearing Aid Specialist Shirt items; dominant results include generic definition, audiology crossover and hearing-device imagery."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_pool_to_40_v1"
+    },
+    "created_at": "2026-09-23 10:00:20.805089+00",
+    "updated_at": "2026-09-23 10:04:52.652496+00"
+  },
+  {
+    "id": "a3a8a361-3309-412c-a0a5-b5f054d059cb",
+    "niche_key": "heavy_equipment_field_mechanic",
+    "name": "Heavy Equipment Field Mechanic",
+    "audience": "Mobile heavy equipment mechanics and field-service technicians",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Large and growing trade with strong tool/machine identity, but sampled Etsy evidence shows meaningful blue-collar/mechanic competition. Useful as a demand-rich benchmark and possible differentiated diagnostic-systems lane.",
+    "score_total": "76.45",
+    "score_confidence": "74.10",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/installation-maintenance-and-repair/heavy-vehicle-and-mobile-equipment-service-technicians.htm",
+        "broader_annual_openings": 20300,
+        "broader_employment_2025": 242400,
+        "broader_median_pay_2025": 63850,
+        "broader_growth_2025_35_pct": 7,
+        "mobile_heavy_equipment_employment_2025": 180300
+      },
+      "marketplace": {
+        "etsy_sample": "Heavy Equipment Mechanic listings with thousands of shop/listing reviews indicate established competition"
+      }
+    },
+    "metadata": {
+      "benchmark_role": "high-demand_higher-competition",
+      "research_batch": "forge_2026-09-23_hidden_trades_v1"
+    },
+    "created_at": "2026-09-23 09:34:00.70472+00",
+    "updated_at": "2026-09-23 09:34:30.438105+00"
+  },
+  {
+    "id": "caa683d4-242b-4a38-b8e8-f0675ba32afc",
+    "niche_key": "histotechnologist",
+    "name": "Histotechnologist / Histology Technician",
+    "audience": "Histotechnologists, histology technicians and pathology-lab tissue-processing staff",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Extremely rich authentic workflow—embed, section, stain, inspect—with vivid tissue/microtome visual language. However Etsy already contains a meaningful histology-specific merch ecosystem, so opportunity depends on superior insider concepts rather than category novelty.",
+    "score_total": "77.90",
+    "score_confidence": "73.40",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "onet": {
+        "url": "https://www.onetonline.org/link/details/29-2011.04",
+        "tasks": [
+          "embed tissue in paraffin",
+          "cut sections with microtomes",
+          "stain tissue",
+          "inspect slides"
+        ],
+        "updated": 2026,
+        "occupation": "Histotechnologists 29-2011.04"
+      },
+      "bls_parent": {
+        "url": "https://www.bls.gov/ooh/healthcare/clinical-laboratory-technologists-and-technicians.htm",
+        "annual_openings": 20800,
+        "median_pay_2025": 62930,
+        "growth_2025_35_pct": 3,
+        "clinical_lab_employment_2025": 343000
+      },
+      "marketplace": {
+        "etsy_signal": "Many dedicated histology/histotech designs; established competition with workflow jokes, tissue images, Lab Week and specialty pride."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v2"
+    },
+    "created_at": "2026-09-23 09:42:54.27545+00",
+    "updated_at": "2026-09-23 09:43:36.792084+00"
+  },
+  {
+    "id": "3082674b-06d3-4af1-a463-7984ef084898",
+    "niche_key": "industrial_engineering_technologist_technician",
+    "name": "Industrial Engineering Technologist / Technician",
+    "audience": "Industrial engineering technologists and technicians in manufacturing, automation and process improvement",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Replacement-driven technical occupation with process-flow, time-study, layout, automation, efficiency and quality language. Exact technician identity appears much thinner than generic engineer/Lean/Six Sigma merch.",
+    "score_total": "75.95",
+    "score_confidence": "62.22",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/architecture-and-engineering/industrial-engineering-technicians.htm",
+        "annual_openings": 6600,
+        "employment_2025": 76700,
+        "median_pay_2025": 66120,
+        "growth_2025_35_pct": 3
+      },
+      "marketplace": {
+        "sample": "Exact Industrial Engineering Technician shirt category did not surface in sampled search; generic engineering/process-improvement products remain a likely adjacent competitor."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_diversity_v3"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 09:56:40.513406+00"
+  },
+  {
+    "id": "2513707a-16e1-4a76-9b1e-4ad53dc55f9e",
+    "niche_key": "industrial_machinery_mechanic",
+    "name": "Industrial Machinery Mechanic",
+    "audience": "Industrial machinery mechanics / maintenance technicians",
+    "category": "occupational_identity",
+    "status": "shortlisted",
+    "research_summary": "Legacy Town Label occupational niche carried forward for re-evaluation under the new niche-first scoring engine. Existing artwork quality does not determine niche status.",
+    "score_total": "79.85",
+    "score_confidence": "79.78",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {},
+    "metadata": {
+      "migration_note": "niche not approved or rejected; needs evidence-based scoring",
+      "working_shortlist_v1": true,
+      "working_shortlist_v2": true,
+      "working_shortlist_date": "2026-09-23",
+      "legacy_design_internal_name": "industrial_machinery_mechanic_evergreen_01"
+    },
+    "created_at": "2026-09-23 06:11:01.997287+00",
+    "updated_at": "2026-09-23 10:03:30.159451+00"
+  },
+  {
+    "id": "17f0cbd7-4e06-4f60-95a7-4522529502f4",
+    "niche_key": "instrumentation_controls_technician",
+    "name": "Instrumentation & Controls Technician",
+    "audience": "Instrumentation, process-control, automation and I&C technicians",
+    "category": "occupational_identity",
+    "status": "shortlisted",
+    "research_summary": "Very strong insider vocabulary (loops, calibration, transmitters, PLCs, fault finding) with active practitioner community and surprisingly thin sampled merch.",
+    "score_total": "79.65",
+    "score_confidence": "73.66",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "onet": {
+        "url": "https://www.onetonline.org/link/details/17-3024.01",
+        "updated": 2026,
+        "occupation": "Robotics Technicians 17-3024.01",
+        "reported_titles": [
+          "Instrumentation and Controls Technician",
+          "Instrument Technician",
+          "Process Control Technician",
+          "PLC Technician"
+        ]
+      },
+      "community": {
+        "reddit": "Active r/instrumentation discussion through Sep 2026 repeatedly centers calibration, troubleshooting, process control and mixed hands-on/laptop work"
+      },
+      "limitation": "No clean standalone BLS employment series for the exact I&C title; initial demand score uses O*NET title mapping plus community evidence and therefore lower confidence.",
+      "marketplace": {
+        "etsy_sample": "Instrumentation Control Technician listing found; sampled search was sparse relative to broad automation merch"
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v1",
+      "working_shortlist_v1": true,
+      "working_shortlist_v2": true,
+      "working_shortlist_date": "2026-09-23"
+    },
+    "created_at": "2026-09-23 09:34:00.70472+00",
+    "updated_at": "2026-09-23 10:14:18.633101+00"
+  },
+  {
+    "id": "26361351-2c9a-4ead-8157-59bc890543ec",
+    "niche_key": "mechatronics_technician",
+    "name": "Mechatronics Technician",
+    "audience": "Electro-mechanical, mechatronics and robotics maintenance technicians",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Small occupation but excellent visual/technical language around sensors, pneumatics, robotics, alignment, test and automated machinery. Marketplace evidence is still thin and needs deeper validation.",
+    "score_total": "75.40",
+    "score_confidence": "63.30",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/architecture-and-engineering/electro-mechanical-technicians.htm",
+        "annual_openings": 1400,
+        "employment_2025": 15700,
+        "median_pay_2025": 73900,
+        "growth_2025_35_pct": 3
+      },
+      "limitation": "Marketplace saturation not yet quantified; treat competition score as provisional."
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v1"
+    },
+    "created_at": "2026-09-23 09:34:00.70472+00",
+    "updated_at": "2026-09-23 09:34:30.438105+00"
+  },
+  {
+    "id": "531254b3-5bb6-48bc-89f0-5810186b7e6f",
+    "niche_key": "medical_dosimetrist",
+    "name": "Medical Dosimetrist",
+    "audience": "Certified medical dosimetrists and radiation-treatment planning teams",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Very small but high-skill, highly paid profession with strong technical identity around dose, beams, planning, fractions and treatment geometry. Etsy has about 46–48 dedicated items, so demand is small but identity and concept specificity are unusually strong.",
+    "score_total": "72.95",
+    "score_confidence": "78.18",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/healthcare/medical-dosimetrists.htm",
+        "annual_openings": 200,
+        "employment_2025": 3500,
+        "median_pay_2025": 147470,
+        "growth_2025_35_pct": 5
+      },
+      "marketplace": {
+        "etsy_signal": "46+ to 48+ dedicated Medical Dosimetrist items in sampled current Etsy market pages; dominant patterns include floral job-title, generic “nobody knows what that means,” dose puns and credential pride."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v2"
+    },
+    "created_at": "2026-09-23 09:42:54.27545+00",
+    "updated_at": "2026-09-23 09:43:36.792084+00"
+  },
+  {
+    "id": "b25ef37f-c96d-441e-bd69-83ae149c66f9",
+    "niche_key": "medical_laboratory_scientist",
+    "name": "Medical Laboratory Scientist / CLS",
+    "audience": "Medical laboratory scientists, clinical laboratory scientists and technologists",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Large replacement-driven healthcare occupation with broad specialty depth but a mature merch market. Retain as benchmark and potential specialty-splitting source rather than treating generic MLS as whitespace.",
+    "score_total": "75.95",
+    "score_confidence": "81.74",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/healthcare/clinical-laboratory-technologists-and-technicians.htm",
+        "annual_openings": 20800,
+        "employment_2025": 343000,
+        "median_pay_2025": 62930,
+        "growth_2025_35_pct": 3
+      },
+      "marketplace": {
+        "etsy_signal": "837+ Clinical Laboratory Scientist items sampled; broader medical-science pages show thousands of items. Generic MLS identity is crowded."
+      },
+      "specialty_opportunity": [
+        "blood bank",
+        "microbiology",
+        "hematology",
+        "molecular",
+        "histology",
+        "cytology"
+      ]
+    },
+    "metadata": {
+      "benchmark_role": "large-demand_saturated_generic",
+      "research_batch": "forge_2026-09-23_hidden_trades_v2"
+    },
+    "created_at": "2026-09-23 09:42:54.27545+00",
+    "updated_at": "2026-09-23 09:43:36.792084+00"
+  },
+  {
+    "id": "f98e08b7-fb25-4cf9-bd14-4c425382509a",
+    "niche_key": "neurodiagnostic_technologist",
+    "name": "Neurodiagnostic / EEG Technologist",
+    "audience": "EEG, END, IONM and neurodiagnostic technologists",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "High-insider specialty with authentic terminology around electrodes, impedance, 10–20 placement, artifact recognition, EEG waves and IONM. Etsy already has 60+ neurodiagnostic items including unusually specific insider jokes, so this is a quality/differentiation challenge rather than empty whitespace.",
+    "score_total": "76.85",
+    "score_confidence": "72.98",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "onet": {
+        "url": "https://www.onetonline.org/link/details/29-2099.01",
+        "tests": [
+          "EEG",
+          "evoked potentials",
+          "polysomnograms",
+          "nerve conduction"
+        ],
+        "updated": 2026,
+        "occupation": "Neurodiagnostic Technologists 29-2099.01",
+        "bright_outlook": true
+      },
+      "marketplace": {
+        "etsy_signal": "60+ neurodiagnostic technologist items sampled; existing products include artifact/60-Hz, 10–20 placement and other real insider language."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v2"
+    },
+    "created_at": "2026-09-23 09:42:54.27545+00",
+    "updated_at": "2026-09-23 09:43:36.792084+00"
+  },
+  {
+    "id": "b1e293dc-286d-40b5-944e-fb4201594c8c",
+    "niche_key": "nondestructive_testing_technician",
+    "name": "Nondestructive Testing (NDT/NDE) Technician",
+    "audience": "NDT/NDE technicians working across UT, RT, MT, PT, VT and advanced inspection methods",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "High insider-language depth and certification/method identity; strong visual potential from waveforms, weld inspection and method families. Direct BLS sizing is not clean, so this is a high-upside / medium-confidence research candidate.",
+    "score_total": "78.50",
+    "score_confidence": "73.11",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "community": {
+        "reddit": "Active r/nondestructivetesting discussion in 2026 shows strong method/certification identity and career mobility"
+      },
+      "limitation": "Exact occupation size and marketplace saturation require dedicated follow-up; do not treat current score as demand-proven."
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v1",
+      "working_shortlist_date": "2026-09-23",
+      "historical_working_shortlist_v1": true
+    },
+    "created_at": "2026-09-23 09:34:00.70472+00",
+    "updated_at": "2026-09-23 10:14:18.633101+00"
+  },
+  {
+    "id": "dc542fff-fd7a-4fec-a4ee-95972b5d0dc8",
+    "niche_key": "nuclear_medicine_technologist",
+    "name": "Nuclear Medicine Technologist",
+    "audience": "Nuclear medicine technologists in hospitals, imaging centers and clinics",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Compact imaging specialty with strong identity around radiopharmaceuticals, activity, uptake, PET/SPECT and radiation safety. Current sampled marketplace shows dedicated items but not the broad saturation seen in sonography/MLS.",
+    "score_total": "77.55",
+    "score_confidence": "71.62",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/healthcare/nuclear-medicine-technologists.htm",
+        "annual_openings": 800,
+        "employment_2025": 17400,
+        "median_pay_2025": 101370,
+        "growth_2025_35_pct": 4
+      },
+      "marketplace": {
+        "etsy_sample": "Dedicated NUC MED TECH apparel exists; sampled results did not indicate a huge category count."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v2"
+    },
+    "created_at": "2026-09-23 09:42:54.27545+00",
+    "updated_at": "2026-09-23 09:43:36.792084+00"
+  },
+  {
+    "id": "6c6d60c8-4318-483d-8f23-1956b79c483d",
+    "niche_key": "occupational_safety_technician",
+    "name": "Occupational Health & Safety Technician",
+    "audience": "EHS / workplace safety technicians",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Legacy Town Label occupational niche carried forward for re-evaluation under the new niche-first scoring engine. Existing artwork quality does not determine niche status.",
+    "score_total": "74.45",
+    "score_confidence": "72.94",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {},
+    "metadata": {
+      "migration_note": "niche not approved or rejected; needs evidence-based scoring",
+      "legacy_design_internal_name": "safety_tech_evergreen_01"
+    },
+    "created_at": "2026-09-23 06:11:01.997287+00",
+    "updated_at": "2026-09-23 09:44:55.053118+00"
+  },
+  {
+    "id": "58d43e55-4ac2-4768-b567-98197b18b37d",
+    "niche_key": "ophthalmic_medical_technician",
+    "name": "Ophthalmic Medical Technician",
+    "audience": "Ophthalmic medical technicians working with ophthalmologists",
+    "category": "occupational_identity",
+    "status": "shortlisted",
+    "research_summary": "Fast-growing eye-care technician occupation with instrument-heavy clinical visual language. Sampled exact Etsy search did not surface a strong dedicated category, making it worth deeper validation.",
+    "score_total": "84.95",
+    "score_confidence": "68.98",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/about/data-for-occupations-not-covered-in-detail.htm",
+        "employment_2025": 72500,
+        "median_pay_2025": 45570,
+        "new_jobs_2025_35": 15500,
+        "growth_2025_35_pct": 21
+      },
+      "onet": {
+        "url": "https://www.onetonline.org/link/details/29-2057.00",
+        "tasks": [
+          "tonometry",
+          "retinoscopy",
+          "vision testing",
+          "operate diagnostic instruments"
+        ],
+        "updated": 2026
+      },
+      "marketplace": {
+        "sample": "Exact Ophthalmic Medical Technician shirt search did not surface a dedicated category page in sampled results."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_pool_to_40_v1",
+      "working_shortlist_v2": true,
+      "working_shortlist_date": "2026-09-23"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 10:03:30.159451+00"
+  },
+  {
+    "id": "84d64709-8e51-4681-ae9a-df1d651b603e",
+    "niche_key": "orthotist_prosthetist",
+    "name": "Orthotist / Prosthetist",
+    "audience": "Certified orthotists, prosthetists and O&P clinicians",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Tiny but fast-growing design-and-fabrication profession with extraordinary visual and process depth: measure, model, fabricate, align, fit, gait. Etsy has 33+ to 51+ dedicated O&P shirt items, including many generic/fandom parody designs.",
+    "score_total": "75.65",
+    "score_confidence": "78.46",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/healthcare/orthotists-and-prosthetists.htm",
+        "annual_openings": 700,
+        "employment_2025": 9500,
+        "median_pay_2025": 81110,
+        "growth_2025_35_pct": 13
+      },
+      "marketplace": {
+        "etsy_signal": "33+ Prosthetist & Orthotist T-shirt items and 51+ prosthetic/orthotics shirt items sampled; many are generic job-title, puns or pop-culture parody."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v2"
+    },
+    "created_at": "2026-09-23 09:42:54.27545+00",
+    "updated_at": "2026-09-23 09:43:36.792084+00"
+  },
+  {
+    "id": "18dbdecd-a0e4-4770-b976-090db1ca08b8",
+    "niche_key": "power_line_installer_repairer",
+    "name": "Electrical Power-Line Installer / Repairer",
+    "audience": "Power-line installers, repairers, journeymen linemen and apprentices",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Excellent demand and identity, but marketplace is clearly saturated. Retained as a benchmark so Forge does not confuse large occupational demand with whitespace.",
+    "score_total": "73.45",
+    "score_confidence": "80.20",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/installation-maintenance-and-repair/line-installers-and-repairers.htm",
+        "annual_openings": 10900,
+        "employment_2025": 131900,
+        "median_pay_2025": 95320,
+        "growth_2025_35_pct": 10
+      },
+      "marketplace": {
+        "dominant_patterns": [
+          "flags",
+          "skulls",
+          "high voltage",
+          "wife/family",
+          "pole jokes",
+          "religious",
+          "union/pride"
+        ],
+        "etsy_count_signal": "3,000+ Lineman Shirts for Men items"
+      }
+    },
+    "metadata": {
+      "benchmark_role": "high-demand_saturated",
+      "research_batch": "forge_2026-09-23_hidden_trades_v1"
+    },
+    "created_at": "2026-09-23 09:34:00.70472+00",
+    "updated_at": "2026-09-23 09:34:30.438105+00"
+  },
+  {
+    "id": "2a3cb67b-e59b-4207-bf14-2e39a9767582",
+    "niche_key": "power_plant_operator",
+    "name": "Power Plant / Control Room Operator",
+    "audience": "Power plant operators and control-room operators",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "High-skill control-room occupation with strong systems language around generation, voltage, flow, turbines, generators and alarms. Total employment is declining, but replacement openings remain and visual/identity depth is high.",
+    "score_total": "77.75",
+    "score_confidence": "67.07",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/production/power-plant-operators-distributors-and-dispatchers.htm",
+        "annual_openings": 3400,
+        "median_pay_2025": 105080,
+        "combined_employment_2025": 43700,
+        "combined_growth_2025_35_pct": -4,
+        "power_plant_operator_employment_2025": 29800,
+        "power_plant_operator_median_pay_2025": 102040
+      },
+      "duties": [
+        "control generating/distribution equipment",
+        "read charts meters and gauges",
+        "detect operating problems",
+        "adjust controls",
+        "start/stop generators and turbines"
+      ],
+      "marketplace": {
+        "sample": "Dedicated power-plant-operator merch did not dominate sampled exact searches; deeper channel scan still required."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v2"
+    },
+    "created_at": "2026-09-23 09:42:54.27545+00",
+    "updated_at": "2026-09-23 09:43:36.792084+00"
+  },
+  {
+    "id": "17d703f9-6abd-4831-9c85-b79641ed3a03",
+    "niche_key": "radiation_therapist",
+    "name": "Radiation Therapist",
+    "audience": "Radiation therapists in oncology treatment teams",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Small high-skill cancer-treatment occupation with strong beam, setup, treatment-plan and verification visual language. Marketplace is clearly established, so opportunity depends on technical insider concepts rather than generic job-title/floral merch.",
+    "score_total": "77.05",
+    "score_confidence": "78.26",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/healthcare/radiation-therapists.htm",
+        "annual_openings": 700,
+        "employment_2025": 17400,
+        "median_pay_2025": 105310,
+        "growth_2025_35_pct": 3
+      },
+      "onet": {
+        "url": "https://www.onetonline.org/link/details/29-1124.00",
+        "tasks": [
+          "accurate patient positioning",
+          "administer prescribed radiation",
+          "radiation protection"
+        ],
+        "median_pay_2025": 105310
+      },
+      "marketplace": {
+        "etsy_signal": "Multiple current dedicated Radiation Therapist apparel listings surfaced in sampled search; generic job-title/floral/retro patterns already exist."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_pool_to_40_v1",
+      "status_reconciled_at": "2026-09-23T23:52:40.297494+00:00",
+      "status_reconciled_by": "Audit21",
+      "status_reconciliation_reason": "score_total, score_confidence, score_coverage and research_summary were already complete; stale discovered/researching label did not represent unfinished work"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 23:52:40.297494+00"
+  },
+  {
+    "id": "fd5e41f3-0015-42b1-8b3d-7f3809610833",
+    "niche_key": "rail_signal_maintainer",
+    "name": "Rail Signal Maintainer / Signal & Track Switch Repairer",
+    "audience": "Railroad signal maintainers and signal/track-switch repairers",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Very small rail-systems trade with distinctive signal circuits, interlockings, crossings, relays and track-switch visual language. Strong insider specificity but limited audience size.",
+    "score_total": "77.45",
+    "score_confidence": "66.52",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/about/data-for-occupations-not-covered-in-detail.htm",
+        "employment_2025": 8700,
+        "median_pay_2025": 92460,
+        "growth_2025_35_pct": 2
+      },
+      "marketplace": {
+        "sample": "Exact Etsy-focused search did not surface a dedicated Signal Maintainer shirt category in sampled results."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_pool_to_40_v1"
+    },
+    "created_at": "2026-09-23 10:00:20.805089+00",
+    "updated_at": "2026-09-23 10:04:52.652496+00"
+  },
+  {
+    "id": "7369723c-aa8a-4e42-95d0-ff2a8485b370",
+    "niche_key": "refinery_operator",
+    "name": "Refinery / Petroleum Pump System Operator",
+    "audience": "Refinery operators, petroleum pump-system operators and gaugers",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Process-industry identity with strong equipment/flow/control-room language and a nontrivial but still bounded merch market. Audience is modest and slightly declining.",
+    "score_total": "73.45",
+    "score_confidence": "70.92",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm",
+        "employment_2025": 32900,
+        "median_pay_2025": 96710,
+        "growth_2025_35_pct": -1.9,
+        "annual_openings_approx": 2700
+      },
+      "marketplace": {
+        "etsy_signal": "65+ Refinery Operators items in current sampled Etsy market page",
+        "dominant_patterns": [
+          "oil refinery worker",
+          "blue collar",
+          "plant operator",
+          "stickers",
+          "generic operator identity"
+        ]
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_pool_to_40_v1"
+    },
+    "created_at": "2026-09-23 10:00:20.805089+00",
+    "updated_at": "2026-09-23 10:04:52.652496+00"
+  },
+  {
+    "id": "a0c54b9c-945d-4c74-99b1-e865132bd23c",
+    "niche_key": "respiratory_therapist",
+    "name": "Respiratory Therapist",
+    "audience": "Respiratory therapists / RT / RRT professionals",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Large and fast-growing profession with very strong identity, but current Etsy is massively saturated. Retained as a benchmark showing why high demand alone is not enough.",
+    "score_total": "76.20",
+    "score_confidence": "82.38",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/healthcare/respiratory-therapists.htm",
+        "annual_openings": 8600,
+        "employment_2025": 142000,
+        "median_pay_2025": 82280,
+        "growth_2025_35_pct": 9
+      },
+      "marketplace": {
+        "dominant_patterns": [
+          "lungs",
+          "RT/RRT",
+          "floral",
+          "graduation",
+          "NICU",
+          "heartbeat"
+        ],
+        "etsy_count_signal": "5,000+ Respiratory Therapist Shirts"
+      }
+    },
+    "metadata": {
+      "benchmark_role": "high-demand_extreme-saturation",
+      "research_batch": "forge_2026-09-23_diversity_v3"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 09:56:40.513406+00"
+  },
+  {
+    "id": "8c4df196-09cb-4ca9-aee4-63d578bf0b9a",
+    "niche_key": "semiconductor_processing_technician",
+    "name": "Semiconductor Processing Technician",
+    "audience": "Cleanroom semiconductor processing / fab technicians",
+    "category": "occupational_identity",
+    "status": "shortlisted",
+    "research_summary": "Growing U.S. fab workforce with distinctive cleanroom, wafer, process-step and equipment language. Marketplace appears thin in sampled exact searches, while technical visual depth is unusually high.",
+    "score_total": "79.55",
+    "score_confidence": "75.14",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/production/semiconductor-processing-technicians.htm",
+        "annual_openings": 3400,
+        "employment_2025": 31200,
+        "median_pay_2025": 51430,
+        "growth_2025_35_pct": 8
+      },
+      "marketplace": {
+        "sample": "No strong dedicated semiconductor-technician shirt cluster surfaced in sampled exact Etsy searches."
+      },
+      "work_context": "Primarily manufacturing plants and cleanrooms; technicians regulate equipment used to manufacture microchips."
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v2",
+      "working_shortlist_v1": true,
+      "working_shortlist_v2": true,
+      "working_shortlist_date": "2026-09-23"
+    },
+    "created_at": "2026-09-23 09:42:54.27545+00",
+    "updated_at": "2026-09-23 10:14:18.633101+00"
+  },
+  {
+    "id": "a2a6c202-6947-484a-aa53-f078b3cb3835",
+    "niche_key": "stationary_engineer_boiler_operator",
+    "name": "Stationary Engineer / Boiler Operator",
+    "audience": "Stationary engineers, boiler operators and central-plant operators",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Compact but durable 24/7 plant-operations niche with high visual specificity: steam, pressure, temperature, water level, burners, chillers and control-room instrumentation. Sampled Etsy merch is unusually thin.",
+    "score_total": "78.25",
+    "score_confidence": "66.05",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/production/stationary-engineers-and-boiler-operators.htm",
+        "annual_openings": 3200,
+        "employment_2025": 31200,
+        "median_pay_2025": 78620,
+        "growth_2025_35_pct": 3
+      },
+      "marketplace": {
+        "etsy_sample": "Search surfaced essentially one dedicated Stationary Engineer Boiler Operator tee amid gauges/boiler objects and unrelated Boiler Room music merch"
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v1"
+    },
+    "created_at": "2026-09-23 09:34:00.70472+00",
+    "updated_at": "2026-09-23 09:34:30.438105+00"
+  },
+  {
+    "id": "38220d7b-2525-4b98-9091-5b86760f76b5",
+    "niche_key": "sterile_processing",
+    "name": "Sterile Processing",
+    "audience": "Sterile processing technicians / central service staff",
+    "category": "occupational_identity",
+    "status": "shortlisted",
+    "research_summary": "Legacy Town Label occupational niche carried forward for re-evaluation under the new niche-first scoring engine. Existing artwork quality does not determine niche status.",
+    "score_total": "82.75",
+    "score_confidence": "80.70",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {},
+    "metadata": {
+      "migration_note": "niche not approved or rejected; needs evidence-based scoring",
+      "working_shortlist_v1": true,
+      "working_shortlist_v2": true,
+      "working_shortlist_date": "2026-09-23",
+      "legacy_design_internal_name": "spd_evergreen_01"
+    },
+    "created_at": "2026-09-23 06:11:01.997287+00",
+    "updated_at": "2026-09-23 10:03:30.159451+00"
+  },
+  {
+    "id": "3a4b94b7-6b06-4b0c-a88f-7ea62231cc41",
+    "niche_key": "substation_relay_technician",
+    "name": "Substation / Relay Technician",
+    "audience": "Powerhouse, substation and protective-relay electrical/electronics repairers",
+    "category": "occupational_identity",
+    "status": "shortlisted",
+    "research_summary": "Small but fast-growing utility specialty with high pay, strong grid identity and exceptional visual language around relays, one-lines, breakers, CT/PT circuits, oscillography and protection logic. Sampled exact Etsy searches did not surface a dedicated relay-technician merch cluster.",
+    "score_total": "83.00",
+    "score_confidence": "79.84",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/installation-maintenance-and-repair/electrical-and-electronics-installers-and-repairers.htm",
+        "employment_2025": 20900,
+        "median_pay_2025": 103020,
+        "growth_2025_35_pct": 10
+      },
+      "duties": "Maintain and repair electrical equipment used in generating stations, substations and in-service relays; also known as relay technicians or power transformer repairers.",
+      "marketplace": {
+        "sample": "No dedicated relay/substation technician Etsy cluster surfaced in sampled exact searches; validate more deeply before promotion."
+      }
+    },
+    "metadata": {
+      "research_batch": "forge_2026-09-23_hidden_trades_v2",
+      "working_shortlist_v1": true,
+      "working_shortlist_v2": true,
+      "working_shortlist_date": "2026-09-23"
+    },
+    "created_at": "2026-09-23 09:42:54.27545+00",
+    "updated_at": "2026-09-23 10:14:18.633101+00"
+  },
+  {
+    "id": "e69fa963-a957-46d0-b351-c4583bfee7b5",
+    "niche_key": "surgical_technologist",
+    "name": "Surgical Technologist / Scrub Tech",
+    "audience": "Surgical technologists / scrub techs",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Large identifiable healthcare-tech occupation with strong instrument/sterile-field language, but current Etsy competition is very high. Retained as a high-demand/saturated benchmark, not a whitespace candidate.",
+    "score_total": "75.95",
+    "score_confidence": "82.78",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {
+      "bls": {
+        "url": "https://www.bls.gov/ooh/healthcare/surgical-technologists.htm",
+        "employment_2025": 118400,
+        "median_pay_2025": 64650,
+        "growth_2025_35_pct": 5
+      },
+      "marketplace": {
+        "etsy_signal": "1,000+ Surgical Tech Shirt items; 112+ Surgical Technology Shirt and 92+ Certified Surgical Technologist Shirt pages also surfaced."
+      }
+    },
+    "metadata": {
+      "benchmark_role": "high-demand_saturated",
+      "research_batch": "forge_2026-09-23_pool_to_40_v1",
+      "status_reconciled_at": "2026-09-23T23:52:40.297494+00:00",
+      "status_reconciled_by": "Audit21",
+      "status_reconciliation_reason": "score_total, score_confidence, score_coverage and research_summary were already complete; stale discovered/researching label did not represent unfinished work"
+    },
+    "created_at": "2026-09-23 09:56:40.513406+00",
+    "updated_at": "2026-09-23 23:52:40.297494+00"
+  },
+  {
+    "id": "f6fdd529-b52f-4a50-92ec-e2991b4e36da",
+    "niche_key": "survey_mapping_technician",
+    "name": "Surveying & Mapping Technician",
+    "audience": "Surveying and mapping technicians",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Legacy Town Label occupational niche carried forward for re-evaluation under the new niche-first scoring engine. Existing artwork quality does not determine niche status.",
+    "score_total": "74.35",
+    "score_confidence": "75.44",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {},
+    "metadata": {
+      "migration_note": "niche not approved or rejected; needs evidence-based scoring",
+      "legacy_design_internal_name": "survey_mapping_tech_evergreen_01"
+    },
+    "created_at": "2026-09-23 06:11:01.997287+00",
+    "updated_at": "2026-09-23 09:44:55.053118+00"
+  },
+  {
+    "id": "a4090b28-a22b-4929-ad08-30e1d5f20c4b",
+    "niche_key": "wastewater_operator",
+    "name": "Wastewater Operator",
+    "audience": "Municipal wastewater treatment operators",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Legacy Town Label occupational niche carried forward for re-evaluation under the new niche-first scoring engine. Existing artwork quality does not determine niche status.",
+    "score_total": "77.45",
+    "score_confidence": "75.72",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {},
+    "metadata": {
+      "migration_note": "niche not approved or rejected; needs evidence-based scoring",
+      "legacy_design_internal_name": "wastewater_evergreen_01"
+    },
+    "created_at": "2026-09-23 06:11:01.997287+00",
+    "updated_at": "2026-09-23 09:44:55.053118+00"
+  },
+  {
+    "id": "3d4024a3-2aaf-4f9c-ad2c-bc5032f01dde",
+    "niche_key": "wind_turbine_service_technician",
+    "name": "Wind Turbine Service Technician",
+    "audience": "Wind turbine service technicians / windtechs",
+    "category": "occupational_identity",
+    "status": "scored",
+    "research_summary": "Legacy Town Label occupational niche carried forward for re-evaluation under the new niche-first scoring engine. Existing artwork quality does not determine niche status.",
+    "score_total": "78.35",
+    "score_confidence": "79.48",
+    "score_coverage": "100.00",
+    "user_decision": null,
+    "user_feedback": null,
+    "source_notes": {},
+    "metadata": {
+      "migration_note": "niche not approved or rejected; needs evidence-based scoring",
+      "working_shortlist_date": "2026-09-23",
+      "legacy_design_internal_name": "wind_turbine_tech_evergreen_01",
+      "historical_working_shortlist_v1": true
+    },
+    "created_at": "2026-09-23 06:11:01.997287+00",
+    "updated_at": "2026-09-23 10:03:30.159451+00"
+  }
+]

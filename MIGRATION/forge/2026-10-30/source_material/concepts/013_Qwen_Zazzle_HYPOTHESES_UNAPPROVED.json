@@ -1,0 +1,793 @@
+{
+  "schema": "forge.prepared_hypotheses.v1",
+  "source": "existing_real_Qwen_Zazzle_pilot_replay",
+  "research_verified": false,
+  "owner_approved": false,
+  "cards": [
+    {
+      "concept_key": "rd-4284777e06934d72ac67033e",
+      "revision_hash": "4c9722cab0cfcf6b40189f1a275b0a34ed3d275d27640d552c8765be56ce81ea",
+      "display_text": "Urban Gardening Enthusiast T-Shirt Design Hypothesis\r\nHYPOTHESIS - no proven Amazon demand; not approved.\r\nWhy explored (model hypothesis): Targets individuals interested in small-space cultivation and plant care, allowing for bold shapes representing foliage or tools rendered with high contrast flat ink. Observed 5 attributed listings; title patterns only. Concept passed required-field/citation checks; no market-success score. Sample has 5 distinct title strings, 5 creators, 0 repeated title groups; not a sales/competition metric.\r\nObserved basis selected by model: E1: observed title Urban gardening mens t shirts farming; E3: observed title Gardening - Engaging in urban gardening, guerrilla T-Shirt\r\nAudience: Urban Gardening Enthusiasts who value practical, hands-on cultivation in small spaces.\r\nOccasion: A bold statement piece for community gardeners and balcony farmers expressing their dedication to local food production.\r\nPrint wording: Roots Run Deep\r\nIdea: The design utilizes a dark forest green ink and charcoal black ink printed with high contrast against a light garment color. The composition is strictly flat with no gradients or shadows. All areas of the fabric not covered by the text or geometric shapes remain explicitly transparent (alpha zero), revealing the base garment material without any white under-base or tinted fill.\r\nDesign: The proposed artwork consists of a central typographic layout where the words 'ROOTS' appear in large, bold Forest Green letters stacked above 'RUN DEEP' in Charcoal Black. The geometric shapes below are also flat ink in Forest Green. This high-contrast arrangement is set against a Light Heather Grey garment to ensure maximum readability. All unprinted areas of the fabric must be explicitly transparent (alpha zero), meaning no white background or tinted fill is applied; only the specific text and shapes carry ink.\r\n{\r\n    \"avoid\":  [\r\n                  \"Faint outlines\",\r\n                  \"Gradients\",\r\n                  \"Shadows\",\r\n                  \"Complex illustrations\",\r\n                  \"Competitor styles\"\r\n              ],\r\n    \"composition\":  \"A centered, large-scale typographic design featuring the words \\u0027ROOTS\\u0027 in a thick, blocky sans-serif font stacked directly above \\u0027RUN DEEP\\u0027. The letters are slightly spaced apart to create a modern, breathable look. Below this central text block, three small, solid geometric shapes (a circle, a square, and a triangle) are arranged horizontally, representing different plant forms or soil layers.\",\r\n    \"illustration\":  \"Bold, high-contrast flat ink shapes with no internal detail or texture. The text is solid and readable from a distance. The geometric shapes are simple and distinct.\",\r\n    \"ink_palette\":  [\r\n                        \"Flat Forest Green\",\r\n                        \"Flat Charcoal Black\"\r\n                    ]\r\n}\r\nSources:\r\nE1 | OR_CREATION1 | https://www.zazzle.com/urban_gardening_mens_t_shirts_farming-256650233033119941\r\nE2 | StevenzTeQShop | https://www.zazzle.com/i_wear_teal_and_purple_for_my_brother_suicide_prev_t_shirt-256698647453655967\r\nE3 | Lylah_Drusilla | https://www.zazzle.com/gardening_engaging_in_urban_gardening_guerrilla_t_shirt-256687572343146084\r\nE4 | GreenApronSoc | https://www.zazzle.com/urban_oasis_greenhouse_retro_geometric_garden_t_t_shirt-256694415859574686\r\nE5 | taborndovievip1120 | https://www.zazzle.com/urban_farming_for_urban_farmer_t_shirt-256105169905085859\r\nLimits: Zazzle text sample only; motives, advantages, visuals, rights, print quality and sales remain unverified.\r\nРЕШЕНИЯ ВЛАДЕЛЬЦА:\r\n1. Одобрить или отредактировать готовую идею и концепт кнопкой Approve idea and design. Сейчас approval отсутствует.\r\n2. Проверить точные буквы, регистр и пунктуацию строки Print wording: это обязательная строка для будущего изображения; её расхождение с описанием композиции нужно исправить перед approval.\r\n3. После разрешённой генерации проверить результат через Qwen (CPU), затем лично принять конкретный файл.\r\n4. Подготовить прозрачный sRGB PNG; проверить читаемость и края в конечном размере печати и права. 4500x5400 — рекомендованный холст; увеличение 512px не доказывает качество.\r\n5. Только после отдельных проверок экспорт станет READY; публикация остаётся ручной и не выполняется Forge.",
+      "research_verified": false,
+      "approved": false,
+      "evidence_count": 5
+    },
+    {
+      "concept_key": "rd-80ef0ccbe738470aaa4a49dc",
+      "revision_hash": "e7832519c0330143d6d32a5a43efa51a5003e5ada5758642d4fefc05b50480c2",
+      "display_text": "Night Sky Observation Tee Hypothesis\r\nHYPOTHESIS - no proven Amazon demand; not approved.\r\nWhy explored (model hypothesis): Serves those who observe celestial bodies at night, enabling composition focused on star charts or planetary orbits without implying specific fabric material properties. Observed 5 attributed listings; title patterns only. Concept passed required-field/citation checks; no market-success score. Sample has 5 distinct title strings, 5 creators, 0 repeated title groups; not a sales/competition metric.\r\nObserved basis selected by model: E1: observed title Funny Jesus Stargazing Stargaze T-Shirt\r\nAudience: Amateur Astronomy Hobbyists seeking a shirt for their next backyard telescope session or local star party.\r\nOccasion: A bold statement to wear while pointing a telescope at the night sky, distinguishing serious observation from casual looking.\r\nPrint wording: LOOKING UP, NOT DOWN\r\nIdea: The design utilizes a deep Void Black garment to simulate the night sky. The text 'LOOKING UP' and 'NOT DOWN' is rendered in Electric Lime Green using a thick, sans-serif font for maximum legibility from a distance or in dim light. A bright cyan outline defines a telescope silhouette on the left side of the chest, contrasting sharply against the dark fabric. The starburst element on the right uses solid flat Cyan ink without any white highlights, ensuring the design remains simple and durable. All areas surrounding the artwork and the entire back of the garment remain explicitly transparent (alpha zero), allowing the dark fabric color to show through completely.\r\nDesign: The proposed artwork is printed on a deep Void Black crew-neck t-shirt. The ink palette consists of flat Electric Lime Green for the primary text and bright Cyan for the secondary graphics. The composition places the bold lettering centrally on the chest with high contrast against the dark background. All unprinted areas, including the sleeves, collar, and back panel, are explicitly transparent (alpha zero), revealing the full depth of the black fabric without any white underbase or light ink overlays.\r\n{\r\n    \"avoid\":  [\r\n                  \"No competitor style references\",\r\n                  \"No character illustrations\",\r\n                  \"No complex line art\"\r\n              ],\r\n    \"composition\":  \"Centered chest layout featuring large, block-style lettering. The text \\u0027LOOKING UP\\u0027 is stacked directly above \\u0027NOT DOWN\\u0027. To the left of the stack is a simple, bold outline of a refractor telescope pointing upward, and to the right is a simplified starburst shape. All graphical elements are flat shapes with no gradients or textures.\",\r\n    \"illustration\":  \"Flat ink outlines and fills for the telescope, starburst, and text. High contrast flat ink on the chosen garment.\",\r\n    \"ink_palette\":  [\r\n                        \"Bright Cyan\",\r\n                        \"Electric Lime Green\"\r\n                    ]\r\n}\r\nSources:\r\nE1 | Smilestore123 | https://www.zazzle.com/funny_jesus_stargazing_stargaze_t_shirt-256148619188219407\r\nE2 | happymoments123 | https://www.zazzle.com/wine_drinker_stargazing_stargaze_t_shirt-256216138853229620\r\nE3 | Rachel_Elfreda | https://www.zazzle.com/orion_constellation_astronomy_lover_stargazing_t_shirt-256143949299669131\r\nE4 | Myhappysoul | https://www.zazzle.com/funny_warning_stargazing_stargaze_t_shirt-256611216752940555\r\nE5 | CelestialTidings | https://www.zazzle.com/solar_eclipse_astronomy_event_2026_t_shirt-256970260886637007\r\nLimits: Zazzle text sample only; motives, advantages, visuals, rights, print quality and sales remain unverified.\r\nРЕШЕНИЯ ВЛАДЕЛЬЦА:\r\n1. Одобрить или отредактировать готовую идею и концепт кнопкой Approve idea and design. Сейчас approval отсутствует.\r\n2. Проверить точные буквы, регистр и пунктуацию строки Print wording: это обязательная строка для будущего изображения; её расхождение с описанием композиции нужно исправить перед approval.\r\n3. После разрешённой генерации проверить результат через Qwen (CPU), затем лично принять конкретный файл.\r\n4. Подготовить прозрачный sRGB PNG; проверить читаемость и края в конечном размере печати и права. 4500x5400 — рекомендованный холст; увеличение 512px не доказывает качество.\r\n5. Только после отдельных проверок экспорт станет READY; публикация остаётся ручной и не выполняется Forge.",
+      "research_verified": false,
+      "approved": false,
+      "evidence_count": 5
+    }
+  ],
+  "drafts": [
+    {
+      "schema": "forge.research_concept_draft.v1",
+      "concept_key": "rd-4284777e06934d72ac67033e",
+      "status": "draft",
+      "created_at": "2026-10-13T23:58:08.5448265Z",
+      "updated_at": "2026-10-13T23:58:08.5448265Z",
+      "current_revision_no": 1,
+      "current_revision_id": "rdrev-4284777e06934d72ac67033e-1-4c9722cab0cf",
+      "current_revision_hash": "4c9722cab0cfcf6b40189f1a275b0a34ed3d275d27640d552c8765be56ce81ea",
+      "revisions": [
+        {
+          "revision_no": 1,
+          "revision_id": "rdrev-4284777e06934d72ac67033e-1-4c9722cab0cf",
+          "revision_hash": "4c9722cab0cfcf6b40189f1a275b0a34ed3d275d27640d552c8765be56ce81ea",
+          "created_at": "2026-10-13T23:58:08.5448265Z",
+          "reason": "local_ai_draft_unapproved",
+          "title": "Urban Gardening Enthusiast T-Shirt Design Hypothesis",
+          "hook": "Roots Run Deep",
+          "concept_text": "The design utilizes a dark forest green ink and charcoal black ink printed with high contrast against a light garment color. The composition is strictly flat with no gradients or shadows. All areas of the fabric not covered by the text or geometric shapes remain explicitly transparent (alpha zero), revealing the base garment material without any white under-base or tinted fill.",
+          "target_buyer": "Urban Gardening Enthusiasts who value practical, hands-on cultivation in small spaces.",
+          "purchase_reason": "A bold statement piece for community gardeners and balcony farmers expressing their dedication to local food production.",
+          "differentiation": "Focuses on the concept of deep root systems essential for urban soil health, unlike generic 'farming' titles found in marketplace listings.",
+          "visual_direction_text": "The proposed artwork consists of a central typographic layout where the words 'ROOTS' appear in large, bold Forest Green letters stacked above 'RUN DEEP' in Charcoal Black. The geometric shapes below are also flat ink in Forest Green. This high-contrast arrangement is set against a Light Heather Grey garment to ensure maximum readability. All unprinted areas of the fabric must be explicitly transparent (alpha zero), meaning no white background or tinted fill is applied; only the specific text and shapes carry ink.",
+          "production_spec": {
+            "avoid": [
+              "Faint outlines",
+              "Gradients",
+              "Shadows",
+              "Complex illustrations",
+              "Competitor styles"
+            ],
+            "composition": "A centered, large-scale typographic design featuring the words 'ROOTS' in a thick, blocky sans-serif font stacked directly above 'RUN DEEP'. The letters are slightly spaced apart to create a modern, breathable look. Below this central text block, three small, solid geometric shapes (a circle, a square, and a triangle) are arranged horizontally, representing different plant forms or soil layers.",
+            "illustration": "Bold, high-contrast flat ink shapes with no internal detail or texture. The text is solid and readable from a distance. The geometric shapes are simple and distinct.",
+            "ink_palette": [
+              "Flat Forest Green",
+              "Flat Charcoal Black"
+            ]
+          }
+        }
+      ],
+      "provenance": {
+        "origin": "local_ai",
+        "contract": "forge.local_ai_draft.v1",
+        "niche_name": "Urban Gardening Enthusiast T-Shirt Design Hypothesis",
+        "model": "qwen3.5:9b",
+        "endpoint": "127.0.0.1:11434",
+        "prompt_sha256": "6695f9cb31171d956a206431e7604c260666ce247a0a124b004ef785a1454879",
+        "evidence_notes": [],
+        "snapshot_sources": [],
+        "research_verified": false,
+        "research_packet": {
+          "schema": "forge.research_evidence_packet.v1",
+          "adapter_key": "public_observations_v1",
+          "niche_key": "rss_7a8475cb1bdbf6114c390608",
+          "niche_name": "Zazzle listing sample: urban gardening tshirt",
+          "audience": "Audience not verified; keywords describe this sample only",
+          "source_sha256": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7",
+          "collected_at": "2026-10-13T23:41:45.984964Z",
+          "freshness_policy": {
+            "max_age_days": 1,
+            "basis": "Conservative pilot application policy, not a market guarantee"
+          },
+          "synthetic": false,
+          "research_verified": false,
+          "rows": [
+            {
+              "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:1",
+              "citation_label": "E1",
+              "niche_key": "rss_7a8475cb1bdbf6114c390608",
+              "source_url": "https://www.zazzle.com/urban_gardening_mens_t_shirts_farming-256650233033119941",
+              "source": "permitted_public_export",
+              "source_sha256": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7",
+              "observed_at": "2026-10-13T23:41:45.984964Z",
+              "collected_at": "2026-10-13T23:41:45.984964Z",
+              "freshness": "within_application_age_policy",
+              "observation_kind": "marketplace_listing",
+              "observation_text": "Observed listing titled Urban gardening mens t shirts farming by creator OR_CREATION1. Price displayed: $22.70. Publication date is listing metadata, not sale date.",
+              "marketplace": "zazzle.com",
+              "product_id": "https://www.zazzle.com/urban_gardening_mens_t_shirts_farming-256650233033119941",
+              "price": null,
+              "currency": null,
+              "title": "Urban gardening mens t shirts farming",
+              "creator": "OR_CREATION1",
+              "guid": "https://www.zazzle.com/urban_gardening_mens_t_shirts_farming-256650233033119941",
+              "pub_date": "Wed, 01 Jul 2026 03:59:11 GMT",
+              "price_display": "$22.70",
+              "query": "urban gardening tshirt",
+              "fetched_at": "2026-10-13T23:41:45.984964Z",
+              "price_observed_at": "2026-10-13T23:41:45.984964Z",
+              "feed_source_url": "https://feed.zazzle.com/rss?qs=urban%20gardening%20tshirt&st=popularity&sp=30&ps=5",
+              "missing_flags": [
+                "sales_unknown",
+                "amazon_competition_unknown",
+                "currency_code_not_supplied"
+              ],
+              "synthetic": false,
+              "research_verified": false
+            },
+            {
+              "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:2",
+              "citation_label": "E2",
+              "niche_key": "rss_7a8475cb1bdbf6114c390608",
+              "source_url": "https://www.zazzle.com/i_wear_teal_and_purple_for_my_brother_suicide_prev_t_shirt-256698647453655967",
+              "source": "permitted_public_export",
+              "source_sha256": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7",
+              "observed_at": "2026-10-13T23:41:45.984964Z",
+              "collected_at": "2026-10-13T23:41:45.984964Z",
+              "freshness": "within_application_age_policy",
+              "observation_kind": "marketplace_listing",
+              "observation_text": "Observed listing titled I Wear Teal And Purple For My Brother Suicide Prev T-Shirt by creator StevenzTeQShop. Price displayed: $26.60. Publication date is listing metadata, not sale date.",
+              "marketplace": "zazzle.com",
+              "product_id": "https://www.zazzle.com/i_wear_teal_and_purple_for_my_brother_suicide_prev_t_shirt-256698647453655967",
+              "price": null,
+              "currency": null,
+              "title": "I Wear Teal And Purple For My Brother Suicide Prev T-Shirt",
+              "creator": "StevenzTeQShop",
+              "guid": "https://www.zazzle.com/i_wear_teal_and_purple_for_my_brother_suicide_prev_t_shirt-256698647453655967",
+              "pub_date": "Sun, 02 Mar 2025 04:34:07 GMT",
+              "price_display": "$26.60",
+              "query": "urban gardening tshirt",
+              "fetched_at": "2026-10-13T23:41:45.984964Z",
+              "price_observed_at": "2026-10-13T23:41:45.984964Z",
+              "feed_source_url": "https://feed.zazzle.com/rss?qs=urban%20gardening%20tshirt&st=popularity&sp=30&ps=5",
+              "missing_flags": [
+                "sales_unknown",
+                "amazon_competition_unknown",
+                "currency_code_not_supplied"
+              ],
+              "synthetic": false,
+              "research_verified": false
+            },
+            {
+              "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:3",
+              "citation_label": "E3",
+              "niche_key": "rss_7a8475cb1bdbf6114c390608",
+              "source_url": "https://www.zazzle.com/gardening_engaging_in_urban_gardening_guerrilla_t_shirt-256687572343146084",
+              "source": "permitted_public_export",
+              "source_sha256": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7",
+              "observed_at": "2026-10-13T23:41:45.984964Z",
+              "collected_at": "2026-10-13T23:41:45.984964Z",
+              "freshness": "within_application_age_policy",
+              "observation_kind": "marketplace_listing",
+              "observation_text": "Observed listing titled Gardening - Engaging in urban gardening, guerrilla T-Shirt by creator Lylah_Drusilla. Price displayed: $23.80. Publication date is listing metadata, not sale date.",
+              "marketplace": "zazzle.com",
+              "product_id": "https://www.zazzle.com/gardening_engaging_in_urban_gardening_guerrilla_t_shirt-256687572343146084",
+              "price": null,
+              "currency": null,
+              "title": "Gardening - Engaging in urban gardening, guerrilla T-Shirt",
+              "creator": "Lylah_Drusilla",
+              "guid": "https://www.zazzle.com/gardening_engaging_in_urban_gardening_guerrilla_t_shirt-256687572343146084",
+              "pub_date": "Thu, 08 May 2025 03:24:50 GMT",
+              "price_display": "$23.80",
+              "query": "urban gardening tshirt",
+              "fetched_at": "2026-10-13T23:41:45.984964Z",
+              "price_observed_at": "2026-10-13T23:41:45.984964Z",
+              "feed_source_url": "https://feed.zazzle.com/rss?qs=urban%20gardening%20tshirt&st=popularity&sp=30&ps=5",
+              "missing_flags": [
+                "sales_unknown",
+                "amazon_competition_unknown",
+                "currency_code_not_supplied"
+              ],
+              "synthetic": false,
+              "research_verified": false
+            },
+            {
+              "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:4",
+              "citation_label": "E4",
+              "niche_key": "rss_7a8475cb1bdbf6114c390608",
+              "source_url": "https://www.zazzle.com/urban_oasis_greenhouse_retro_geometric_garden_t_t_shirt-256694415859574686",
+              "source": "permitted_public_export",
+              "source_sha256": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7",
+              "observed_at": "2026-10-13T23:41:45.984964Z",
+              "collected_at": "2026-10-13T23:41:45.984964Z",
+              "freshness": "within_application_age_policy",
+              "observation_kind": "marketplace_listing",
+              "observation_text": "Observed listing titled Urban Oasis Greenhouse | Retro Geometric Garden  T T-Shirt by creator GreenApronSoc. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+              "marketplace": "zazzle.com",
+              "product_id": "https://www.zazzle.com/urban_oasis_greenhouse_retro_geometric_garden_t_t_shirt-256694415859574686",
+              "price": null,
+              "currency": null,
+              "title": "Urban Oasis Greenhouse | Retro Geometric Garden  T T-Shirt",
+              "creator": "GreenApronSoc",
+              "guid": "https://www.zazzle.com/urban_oasis_greenhouse_retro_geometric_garden_t_t_shirt-256694415859574686",
+              "pub_date": "Mon, 11 May 2026 20:58:48 GMT",
+              "price_display": "$24.10",
+              "query": "urban gardening tshirt",
+              "fetched_at": "2026-10-13T23:41:45.984964Z",
+              "price_observed_at": "2026-10-13T23:41:45.984964Z",
+              "feed_source_url": "https://feed.zazzle.com/rss?qs=urban%20gardening%20tshirt&st=popularity&sp=30&ps=5",
+              "missing_flags": [
+                "sales_unknown",
+                "amazon_competition_unknown",
+                "currency_code_not_supplied"
+              ],
+              "synthetic": false,
+              "research_verified": false
+            },
+            {
+              "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:5",
+              "citation_label": "E5",
+              "niche_key": "rss_7a8475cb1bdbf6114c390608",
+              "source_url": "https://www.zazzle.com/urban_farming_for_urban_farmer_t_shirt-256105169905085859",
+              "source": "permitted_public_export",
+              "source_sha256": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7",
+              "observed_at": "2026-10-13T23:41:45.984964Z",
+              "collected_at": "2026-10-13T23:41:45.984964Z",
+              "freshness": "within_application_age_policy",
+              "observation_kind": "marketplace_listing",
+              "observation_text": "Observed listing titled Urban Farming For Urban Farmer T-Shirt by creator taborndovievip1120. Price displayed: $30.30. Publication date is listing metadata, not sale date.",
+              "marketplace": "zazzle.com",
+              "product_id": "https://www.zazzle.com/urban_farming_for_urban_farmer_t_shirt-256105169905085859",
+              "price": null,
+              "currency": null,
+              "title": "Urban Farming For Urban Farmer T-Shirt",
+              "creator": "taborndovievip1120",
+              "guid": "https://www.zazzle.com/urban_farming_for_urban_farmer_t_shirt-256105169905085859",
+              "pub_date": "Wed, 19 Mar 2025 12:31:36 GMT",
+              "price_display": "$30.30",
+              "query": "urban gardening tshirt",
+              "fetched_at": "2026-10-13T23:41:45.984964Z",
+              "price_observed_at": "2026-10-13T23:41:45.984964Z",
+              "feed_source_url": "https://feed.zazzle.com/rss?qs=urban%20gardening%20tshirt&st=popularity&sp=30&ps=5",
+              "missing_flags": [
+                "sales_unknown",
+                "amazon_competition_unknown",
+                "currency_code_not_supplied"
+              ],
+              "synthetic": false,
+              "research_verified": false
+            }
+          ],
+          "summary": "Imported 0 audience-context and 5 listing observations. These records do not establish Amazon US sales, market size, profitability or seasonality. No numeric niche score is inferred.",
+          "limitations": [
+            "Imported observations are not independent authenticity verification",
+            "Occupation size/tasks describe audience context, not apparel demand",
+            "Listing/search result counts are not sales and are source-specific",
+            "Missing prices, reviews and sales remain unknown",
+            "Freshness is an explicit application policy, not a source guarantee",
+            "No copying of third-party design imagery or wording is authorized"
+          ]
+        },
+        "citation_map": [
+          {
+            "citation": "E1",
+            "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:1",
+            "kind": "marketplace_listing",
+            "source_url": "https://www.zazzle.com/urban_gardening_mens_t_shirts_farming-256650233033119941",
+            "observed_at": "2026-10-13T23:41:45.984964Z",
+            "fact": "Observed listing titled Urban gardening mens t shirts farming by creator OR_CREATION1. Price displayed: $22.70. Publication date is listing metadata, not sale date.",
+            "marketplace": "zazzle.com",
+            "price": null,
+            "currency": null,
+            "creator": "OR_CREATION1",
+            "product_link": "https://www.zazzle.com/urban_gardening_mens_t_shirts_farming-256650233033119941",
+            "price_display": "$22.70"
+          },
+          {
+            "citation": "E2",
+            "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:2",
+            "kind": "marketplace_listing",
+            "source_url": "https://www.zazzle.com/i_wear_teal_and_purple_for_my_brother_suicide_prev_t_shirt-256698647453655967",
+            "observed_at": "2026-10-13T23:41:45.984964Z",
+            "fact": "Observed listing titled I Wear Teal And Purple For My Brother Suicide Prev T-Shirt by creator StevenzTeQShop. Price displayed: $26.60. Publication date is listing metadata, not sale date.",
+            "marketplace": "zazzle.com",
+            "price": null,
+            "currency": null,
+            "creator": "StevenzTeQShop",
+            "product_link": "https://www.zazzle.com/i_wear_teal_and_purple_for_my_brother_suicide_prev_t_shirt-256698647453655967",
+            "price_display": "$26.60"
+          },
+          {
+            "citation": "E3",
+            "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:3",
+            "kind": "marketplace_listing",
+            "source_url": "https://www.zazzle.com/gardening_engaging_in_urban_gardening_guerrilla_t_shirt-256687572343146084",
+            "observed_at": "2026-10-13T23:41:45.984964Z",
+            "fact": "Observed listing titled Gardening - Engaging in urban gardening, guerrilla T-Shirt by creator Lylah_Drusilla. Price displayed: $23.80. Publication date is listing metadata, not sale date.",
+            "marketplace": "zazzle.com",
+            "price": null,
+            "currency": null,
+            "creator": "Lylah_Drusilla",
+            "product_link": "https://www.zazzle.com/gardening_engaging_in_urban_gardening_guerrilla_t_shirt-256687572343146084",
+            "price_display": "$23.80"
+          },
+          {
+            "citation": "E4",
+            "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:4",
+            "kind": "marketplace_listing",
+            "source_url": "https://www.zazzle.com/urban_oasis_greenhouse_retro_geometric_garden_t_t_shirt-256694415859574686",
+            "observed_at": "2026-10-13T23:41:45.984964Z",
+            "fact": "Observed listing titled Urban Oasis Greenhouse | Retro Geometric Garden  T T-Shirt by creator GreenApronSoc. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+            "marketplace": "zazzle.com",
+            "price": null,
+            "currency": null,
+            "creator": "GreenApronSoc",
+            "product_link": "https://www.zazzle.com/urban_oasis_greenhouse_retro_geometric_garden_t_t_shirt-256694415859574686",
+            "price_display": "$24.10"
+          },
+          {
+            "citation": "E5",
+            "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:5",
+            "kind": "marketplace_listing",
+            "source_url": "https://www.zazzle.com/urban_farming_for_urban_farmer_t_shirt-256105169905085859",
+            "observed_at": "2026-10-13T23:41:45.984964Z",
+            "fact": "Observed listing titled Urban Farming For Urban Farmer T-Shirt by creator taborndovievip1120. Price displayed: $30.30. Publication date is listing metadata, not sale date.",
+            "marketplace": "zazzle.com",
+            "price": null,
+            "currency": null,
+            "creator": "taborndovievip1120",
+            "product_link": "https://www.zazzle.com/urban_farming_for_urban_farmer_t_shirt-256105169905085859",
+            "price_display": "$30.30"
+          }
+        ],
+        "model_observation_citations": [
+          "E1",
+          "E3"
+        ],
+        "claim_review": {
+          "schema": "forge.research_claim_review.v1",
+          "revision_hash": "4c9722cab0cfcf6b40189f1a275b0a34ed3d275d27640d552c8765be56ce81ea",
+          "source_facts": [
+            {
+              "citation": "E1",
+              "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:1",
+              "source_url": "https://www.zazzle.com/urban_gardening_mens_t_shirts_farming-256650233033119941",
+              "creator": "OR_CREATION1",
+              "observation": "Observed listing titled Urban gardening mens t shirts farming by creator OR_CREATION1. Price displayed: $22.70. Publication date is listing metadata, not sale date.",
+              "checked_scope": "Captured textual listing metadata only; no images or sales"
+            },
+            {
+              "citation": "E2",
+              "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:2",
+              "source_url": "https://www.zazzle.com/i_wear_teal_and_purple_for_my_brother_suicide_prev_t_shirt-256698647453655967",
+              "creator": "StevenzTeQShop",
+              "observation": "Observed listing titled I Wear Teal And Purple For My Brother Suicide Prev T-Shirt by creator StevenzTeQShop. Price displayed: $26.60. Publication date is listing metadata, not sale date.",
+              "checked_scope": "Captured textual listing metadata only; no images or sales"
+            },
+            {
+              "citation": "E3",
+              "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:3",
+              "source_url": "https://www.zazzle.com/gardening_engaging_in_urban_gardening_guerrilla_t_shirt-256687572343146084",
+              "creator": "Lylah_Drusilla",
+              "observation": "Observed listing titled Gardening - Engaging in urban gardening, guerrilla T-Shirt by creator Lylah_Drusilla. Price displayed: $23.80. Publication date is listing metadata, not sale date.",
+              "checked_scope": "Captured textual listing metadata only; no images or sales"
+            },
+            {
+              "citation": "E4",
+              "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:4",
+              "source_url": "https://www.zazzle.com/urban_oasis_greenhouse_retro_geometric_garden_t_t_shirt-256694415859574686",
+              "creator": "GreenApronSoc",
+              "observation": "Observed listing titled Urban Oasis Greenhouse | Retro Geometric Garden  T T-Shirt by creator GreenApronSoc. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+              "checked_scope": "Captured textual listing metadata only; no images or sales"
+            },
+            {
+              "citation": "E5",
+              "evidence_id": "39d7a7beed142dc55d81f901d27d05946c7f62f864e6fbe97051637a26e917e7:5",
+              "source_url": "https://www.zazzle.com/urban_farming_for_urban_farmer_t_shirt-256105169905085859",
+              "creator": "taborndovievip1120",
+              "observation": "Observed listing titled Urban Farming For Urban Farmer T-Shirt by creator taborndovievip1120. Price displayed: $30.30. Publication date is listing metadata, not sale date.",
+              "checked_scope": "Captured textual listing metadata only; no images or sales"
+            }
+          ],
+          "model_claims_verified": false,
+          "model_text_role": "Unapproved creative hypothesis, not factual competitor/demand/advantage analysis",
+          "unsupported_scope": [
+            "Competitor artwork/style, small logos/cursive and visual clutter are not observable in this text feed",
+            "Buyer needs, appeal, unique value and comparative advantages are hypotheses",
+            "Legibility, print suitability and quality require actual artwork testing",
+            "Amazon demand, sales, trends, seasonality and rights remain unknown"
+          ],
+          "model_text_unchanged": true,
+          "research_verified": false
+        },
+        "auto_run_path": "C:\\Users\\<user>\\Documents\\Codex\\2026-10-12\\task\\auto-research-review\\pilot-20261013-235720\\isolated-state\\MerchForge\\research-runs-v1\\run-bf4e2537a903436db07adc3d9d5fec0d"
+      },
+      "authority": {
+        "server_concept": false,
+        "backend_mutation": false,
+        "generation_authorized": false,
+        "paid_provider_authorized": false,
+        "accept_authorized": false,
+        "publication_authorized": false,
+        "external_submission_authorized": false
+      }
+    },
+    {
+      "schema": "forge.research_concept_draft.v1",
+      "concept_key": "rd-80ef0ccbe738470aaa4a49dc",
+      "status": "draft",
+      "created_at": "2026-10-13T23:58:42.0982341Z",
+      "updated_at": "2026-10-13T23:58:42.0982341Z",
+      "current_revision_no": 1,
+      "current_revision_id": "rdrev-80ef0ccbe738470aaa4a49dc-1-e7832519c033",
+      "current_revision_hash": "e7832519c0330143d6d32a5a43efa51a5003e5ada5758642d4fefc05b50480c2",
+      "revisions": [
+        {
+          "revision_no": 1,
+          "revision_id": "rdrev-80ef0ccbe738470aaa4a49dc-1-e7832519c033",
+          "revision_hash": "e7832519c0330143d6d32a5a43efa51a5003e5ada5758642d4fefc05b50480c2",
+          "created_at": "2026-10-13T23:58:42.0982341Z",
+          "reason": "local_ai_draft_unapproved",
+          "title": "Night Sky Observation Tee Hypothesis",
+          "hook": "LOOKING UP, NOT DOWN",
+          "concept_text": "The design utilizes a deep Void Black garment to simulate the night sky. The text 'LOOKING UP' and 'NOT DOWN' is rendered in Electric Lime Green using a thick, sans-serif font for maximum legibility from a distance or in dim light. A bright cyan outline defines a telescope silhouette on the left side of the chest, contrasting sharply against the dark fabric. The starburst element on the right uses solid flat Cyan ink without any white highlights, ensuring the design remains simple and durable. All areas surrounding the artwork and the entire back of the garment remain explicitly transparent (alpha zero), allowing the dark fabric color to show through completely.",
+          "target_buyer": "Amateur Astronomy Hobbyists seeking a shirt for their next backyard telescope session or local star party.",
+          "purchase_reason": "A bold statement to wear while pointing a telescope at the night sky, distinguishing serious observation from casual looking.",
+          "differentiation": "Uses high-contrast neon inks on a dark garment to ensure readability in low-light conditions, unlike standard white-on-black designs.",
+          "visual_direction_text": "The proposed artwork is printed on a deep Void Black crew-neck t-shirt. The ink palette consists of flat Electric Lime Green for the primary text and bright Cyan for the secondary graphics. The composition places the bold lettering centrally on the chest with high contrast against the dark background. All unprinted areas, including the sleeves, collar, and back panel, are explicitly transparent (alpha zero), revealing the full depth of the black fabric without any white underbase or light ink overlays.",
+          "production_spec": {
+            "avoid": [
+              "No competitor style references",
+              "No character illustrations",
+              "No complex line art"
+            ],
+            "composition": "Centered chest layout featuring large, block-style lettering. The text 'LOOKING UP' is stacked directly above 'NOT DOWN'. To the left of the stack is a simple, bold outline of a refractor telescope pointing upward, and to the right is a simplified starburst shape. All graphical elements are flat shapes with no gradients or textures.",
+            "illustration": "Flat ink outlines and fills for the telescope, starburst, and text. High contrast flat ink on the chosen garment.",
+            "ink_palette": [
+              "Bright Cyan",
+              "Electric Lime Green"
+            ]
+          }
+        }
+      ],
+      "provenance": {
+        "origin": "local_ai",
+        "contract": "forge.local_ai_draft.v1",
+        "niche_name": "Night Sky Observation Tee Hypothesis",
+        "model": "qwen3.5:9b",
+        "endpoint": "127.0.0.1:11434",
+        "prompt_sha256": "a3fbb11732b41dee47b68a98d3c9a2273b1391d8a90aa97e82ab30b60a358860",
+        "evidence_notes": [],
+        "snapshot_sources": [],
+        "research_verified": false,
+        "research_packet": {
+          "schema": "forge.research_evidence_packet.v1",
+          "adapter_key": "public_observations_v1",
+          "niche_key": "rss_a0fc2b355db1fa2fc0f16f8d",
+          "niche_name": "Zazzle listing sample: stargazing tshirt",
+          "audience": "Audience not verified; keywords describe this sample only",
+          "source_sha256": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f",
+          "collected_at": "2026-10-13T23:58:10.4444809Z",
+          "freshness_policy": {
+            "max_age_days": 1,
+            "basis": "Conservative pilot application policy, not a market guarantee"
+          },
+          "synthetic": false,
+          "research_verified": false,
+          "rows": [
+            {
+              "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:1",
+              "citation_label": "E1",
+              "niche_key": "rss_a0fc2b355db1fa2fc0f16f8d",
+              "source_url": "https://www.zazzle.com/funny_jesus_stargazing_stargaze_t_shirt-256148619188219407",
+              "source": "permitted_public_export",
+              "source_sha256": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f",
+              "observed_at": "2026-10-13T23:58:10.4444809Z",
+              "collected_at": "2026-10-13T23:58:10.4444809Z",
+              "freshness": "within_application_age_policy",
+              "observation_kind": "marketplace_listing",
+              "observation_text": "Observed listing titled Funny Jesus Stargazing Stargaze T-Shirt by creator Smilestore123. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+              "marketplace": "zazzle.com",
+              "product_id": "https://www.zazzle.com/funny_jesus_stargazing_stargaze_t_shirt-256148619188219407",
+              "price": null,
+              "currency": null,
+              "title": "Funny Jesus Stargazing Stargaze T-Shirt",
+              "creator": "Smilestore123",
+              "guid": "https://www.zazzle.com/funny_jesus_stargazing_stargaze_t_shirt-256148619188219407",
+              "pub_date": "Thu, 29 Jun 2023 16:59:04 GMT",
+              "price_display": "$24.10",
+              "query": "stargazing tshirt",
+              "fetched_at": "2026-10-13T23:58:10.4444809Z",
+              "price_observed_at": "2026-10-13T23:58:10.4444809Z",
+              "feed_source_url": "https://feed.zazzle.com/rss?qs=stargazing%20tshirt&st=popularity&sp=30&ps=5",
+              "missing_flags": [
+                "sales_unknown",
+                "amazon_competition_unknown",
+                "currency_code_not_supplied"
+              ],
+              "synthetic": false,
+              "research_verified": false
+            },
+            {
+              "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:2",
+              "citation_label": "E2",
+              "niche_key": "rss_a0fc2b355db1fa2fc0f16f8d",
+              "source_url": "https://www.zazzle.com/wine_drinker_stargazing_stargaze_t_shirt-256216138853229620",
+              "source": "permitted_public_export",
+              "source_sha256": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f",
+              "observed_at": "2026-10-13T23:58:10.4444809Z",
+              "collected_at": "2026-10-13T23:58:10.4444809Z",
+              "freshness": "within_application_age_policy",
+              "observation_kind": "marketplace_listing",
+              "observation_text": "Observed listing titled Wine Drinker Stargazing Stargaze T-Shirt by creator happymoments123. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+              "marketplace": "zazzle.com",
+              "product_id": "https://www.zazzle.com/wine_drinker_stargazing_stargaze_t_shirt-256216138853229620",
+              "price": null,
+              "currency": null,
+              "title": "Wine Drinker Stargazing Stargaze T-Shirt",
+              "creator": "happymoments123",
+              "guid": "https://www.zazzle.com/wine_drinker_stargazing_stargaze_t_shirt-256216138853229620",
+              "pub_date": "Thu, 03 Aug 2023 14:54:49 GMT",
+              "price_display": "$24.10",
+              "query": "stargazing tshirt",
+              "fetched_at": "2026-10-13T23:58:10.4444809Z",
+              "price_observed_at": "2026-10-13T23:58:10.4444809Z",
+              "feed_source_url": "https://feed.zazzle.com/rss?qs=stargazing%20tshirt&st=popularity&sp=30&ps=5",
+              "missing_flags": [
+                "sales_unknown",
+                "amazon_competition_unknown",
+                "currency_code_not_supplied"
+              ],
+              "synthetic": false,
+              "research_verified": false
+            },
+            {
+              "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:3",
+              "citation_label": "E3",
+              "niche_key": "rss_a0fc2b355db1fa2fc0f16f8d",
+              "source_url": "https://www.zazzle.com/orion_constellation_astronomy_lover_stargazing_t_shirt-256143949299669131",
+              "source": "permitted_public_export",
+              "source_sha256": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f",
+              "observed_at": "2026-10-13T23:58:10.4444809Z",
+              "collected_at": "2026-10-13T23:58:10.4444809Z",
+              "freshness": "within_application_age_policy",
+              "observation_kind": "marketplace_listing",
+              "observation_text": "Observed listing titled Orion Constellation Astronomy Lover Stargazing T-Shirt by creator Rachel_Elfreda. Price displayed: $24.75. Publication date is listing metadata, not sale date.",
+              "marketplace": "zazzle.com",
+              "product_id": "https://www.zazzle.com/orion_constellation_astronomy_lover_stargazing_t_shirt-256143949299669131",
+              "price": null,
+              "currency": null,
+              "title": "Orion Constellation Astronomy Lover Stargazing T-Shirt",
+              "creator": "Rachel_Elfreda",
+              "guid": "https://www.zazzle.com/orion_constellation_astronomy_lover_stargazing_t_shirt-256143949299669131",
+              "pub_date": "Tue, 25 Feb 2025 21:24:08 GMT",
+              "price_display": "$24.75",
+              "query": "stargazing tshirt",
+              "fetched_at": "2026-10-13T23:58:10.4444809Z",
+              "price_observed_at": "2026-10-13T23:58:10.4444809Z",
+              "feed_source_url": "https://feed.zazzle.com/rss?qs=stargazing%20tshirt&st=popularity&sp=30&ps=5",
+              "missing_flags": [
+                "sales_unknown",
+                "amazon_competition_unknown",
+                "currency_code_not_supplied"
+              ],
+              "synthetic": false,
+              "research_verified": false
+            },
+            {
+              "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:4",
+              "citation_label": "E4",
+              "niche_key": "rss_a0fc2b355db1fa2fc0f16f8d",
+              "source_url": "https://www.zazzle.com/funny_warning_stargazing_stargaze_t_shirt-256611216752940555",
+              "source": "permitted_public_export",
+              "source_sha256": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f",
+              "observed_at": "2026-10-13T23:58:10.4444809Z",
+              "collected_at": "2026-10-13T23:58:10.4444809Z",
+              "freshness": "within_application_age_policy",
+              "observation_kind": "marketplace_listing",
+              "observation_text": "Observed listing titled Funny Warning Stargazing Stargaze T-Shirt by creator Myhappysoul. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+              "marketplace": "zazzle.com",
+              "product_id": "https://www.zazzle.com/funny_warning_stargazing_stargaze_t_shirt-256611216752940555",
+              "price": null,
+              "currency": null,
+              "title": "Funny Warning Stargazing Stargaze T-Shirt",
+              "creator": "Myhappysoul",
+              "guid": "https://www.zazzle.com/funny_warning_stargazing_stargaze_t_shirt-256611216752940555",
+              "pub_date": "Tue, 01 Aug 2023 07:07:48 GMT",
+              "price_display": "$24.10",
+              "query": "stargazing tshirt",
+              "fetched_at": "2026-10-13T23:58:10.4444809Z",
+              "price_observed_at": "2026-10-13T23:58:10.4444809Z",
+              "feed_source_url": "https://feed.zazzle.com/rss?qs=stargazing%20tshirt&st=popularity&sp=30&ps=5",
+              "missing_flags": [
+                "sales_unknown",
+                "amazon_competition_unknown",
+                "currency_code_not_supplied"
+              ],
+              "synthetic": false,
+              "research_verified": false
+            },
+            {
+              "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:5",
+              "citation_label": "E5",
+              "niche_key": "rss_a0fc2b355db1fa2fc0f16f8d",
+              "source_url": "https://www.zazzle.com/solar_eclipse_astronomy_event_2026_t_shirt-256970260886637007",
+              "source": "permitted_public_export",
+              "source_sha256": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f",
+              "observed_at": "2026-10-13T23:58:10.4444809Z",
+              "collected_at": "2026-10-13T23:58:10.4444809Z",
+              "freshness": "within_application_age_policy",
+              "observation_kind": "marketplace_listing",
+              "observation_text": "Observed listing titled Solar Eclipse Astronomy Event 2026 T-Shirt by creator CelestialTidings. Price displayed: $22.70. Publication date is listing metadata, not sale date.",
+              "marketplace": "zazzle.com",
+              "product_id": "https://www.zazzle.com/solar_eclipse_astronomy_event_2026_t_shirt-256970260886637007",
+              "price": null,
+              "currency": null,
+              "title": "Solar Eclipse Astronomy Event 2026 T-Shirt",
+              "creator": "CelestialTidings",
+              "guid": "https://www.zazzle.com/solar_eclipse_astronomy_event_2026_t_shirt-256970260886637007",
+              "pub_date": "Sun, 15 Feb 2026 01:38:05 GMT",
+              "price_display": "$22.70",
+              "query": "stargazing tshirt",
+              "fetched_at": "2026-10-13T23:58:10.4444809Z",
+              "price_observed_at": "2026-10-13T23:58:10.4444809Z",
+              "feed_source_url": "https://feed.zazzle.com/rss?qs=stargazing%20tshirt&st=popularity&sp=30&ps=5",
+              "missing_flags": [
+                "sales_unknown",
+                "amazon_competition_unknown",
+                "currency_code_not_supplied"
+              ],
+              "synthetic": false,
+              "research_verified": false
+            }
+          ],
+          "summary": "Imported 0 audience-context and 5 listing observations. These records do not establish Amazon US sales, market size, profitability or seasonality. No numeric niche score is inferred.",
+          "limitations": [
+            "Imported observations are not independent authenticity verification",
+            "Occupation size/tasks describe audience context, not apparel demand",
+            "Listing/search result counts are not sales and are source-specific",
+            "Missing prices, reviews and sales remain unknown",
+            "Freshness is an explicit application policy, not a source guarantee",
+            "No copying of third-party design imagery or wording is authorized"
+          ]
+        },
+        "citation_map": [
+          {
+            "citation": "E1",
+            "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:1",
+            "kind": "marketplace_listing",
+            "source_url": "https://www.zazzle.com/funny_jesus_stargazing_stargaze_t_shirt-256148619188219407",
+            "observed_at": "2026-10-13T23:58:10.4444809Z",
+            "fact": "Observed listing titled Funny Jesus Stargazing Stargaze T-Shirt by creator Smilestore123. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+            "marketplace": "zazzle.com",
+            "price": null,
+            "currency": null,
+            "creator": "Smilestore123",
+            "product_link": "https://www.zazzle.com/funny_jesus_stargazing_stargaze_t_shirt-256148619188219407",
+            "price_display": "$24.10"
+          },
+          {
+            "citation": "E2",
+            "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:2",
+            "kind": "marketplace_listing",
+            "source_url": "https://www.zazzle.com/wine_drinker_stargazing_stargaze_t_shirt-256216138853229620",
+            "observed_at": "2026-10-13T23:58:10.4444809Z",
+            "fact": "Observed listing titled Wine Drinker Stargazing Stargaze T-Shirt by creator happymoments123. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+            "marketplace": "zazzle.com",
+            "price": null,
+            "currency": null,
+            "creator": "happymoments123",
+            "product_link": "https://www.zazzle.com/wine_drinker_stargazing_stargaze_t_shirt-256216138853229620",
+            "price_display": "$24.10"
+          },
+          {
+            "citation": "E3",
+            "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:3",
+            "kind": "marketplace_listing",
+            "source_url": "https://www.zazzle.com/orion_constellation_astronomy_lover_stargazing_t_shirt-256143949299669131",
+            "observed_at": "2026-10-13T23:58:10.4444809Z",
+            "fact": "Observed listing titled Orion Constellation Astronomy Lover Stargazing T-Shirt by creator Rachel_Elfreda. Price displayed: $24.75. Publication date is listing metadata, not sale date.",
+            "marketplace": "zazzle.com",
+            "price": null,
+            "currency": null,
+            "creator": "Rachel_Elfreda",
+            "product_link": "https://www.zazzle.com/orion_constellation_astronomy_lover_stargazing_t_shirt-256143949299669131",
+            "price_display": "$24.75"
+          },
+          {
+            "citation": "E4",
+            "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:4",
+            "kind": "marketplace_listing",
+            "source_url": "https://www.zazzle.com/funny_warning_stargazing_stargaze_t_shirt-256611216752940555",
+            "observed_at": "2026-10-13T23:58:10.4444809Z",
+            "fact": "Observed listing titled Funny Warning Stargazing Stargaze T-Shirt by creator Myhappysoul. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+            "marketplace": "zazzle.com",
+            "price": null,
+            "currency": null,
+            "creator": "Myhappysoul",
+            "product_link": "https://www.zazzle.com/funny_warning_stargazing_stargaze_t_shirt-256611216752940555",
+            "price_display": "$24.10"
+          },
+          {
+            "citation": "E5",
+            "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:5",
+            "kind": "marketplace_listing",
+            "source_url": "https://www.zazzle.com/solar_eclipse_astronomy_event_2026_t_shirt-256970260886637007",
+            "observed_at": "2026-10-13T23:58:10.4444809Z",
+            "fact": "Observed listing titled Solar Eclipse Astronomy Event 2026 T-Shirt by creator CelestialTidings. Price displayed: $22.70. Publication date is listing metadata, not sale date.",
+            "marketplace": "zazzle.com",
+            "price": null,
+            "currency": null,
+            "creator": "CelestialTidings",
+            "product_link": "https://www.zazzle.com/solar_eclipse_astronomy_event_2026_t_shirt-256970260886637007",
+            "price_display": "$22.70"
+          }
+        ],
+        "model_observation_citations": [
+          "E1"
+        ],
+        "claim_review": {
+          "schema": "forge.research_claim_review.v1",
+          "revision_hash": "e7832519c0330143d6d32a5a43efa51a5003e5ada5758642d4fefc05b50480c2",
+          "source_facts": [
+            {
+              "citation": "E1",
+              "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:1",
+              "source_url": "https://www.zazzle.com/funny_jesus_stargazing_stargaze_t_shirt-256148619188219407",
+              "creator": "Smilestore123",
+              "observation": "Observed listing titled Funny Jesus Stargazing Stargaze T-Shirt by creator Smilestore123. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+              "checked_scope": "Captured textual listing metadata only; no images or sales"
+            },
+            {
+              "citation": "E2",
+              "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:2",
+              "source_url": "https://www.zazzle.com/wine_drinker_stargazing_stargaze_t_shirt-256216138853229620",
+              "creator": "happymoments123",
+              "observation": "Observed listing titled Wine Drinker Stargazing Stargaze T-Shirt by creator happymoments123. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+              "checked_scope": "Captured textual listing metadata only; no images or sales"
+            },
+            {
+              "citation": "E3",
+              "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:3",
+              "source_url": "https://www.zazzle.com/orion_constellation_astronomy_lover_stargazing_t_shirt-256143949299669131",
+              "creator": "Rachel_Elfreda",
+              "observation": "Observed listing titled Orion Constellation Astronomy Lover Stargazing T-Shirt by creator Rachel_Elfreda. Price displayed: $24.75. Publication date is listing metadata, not sale date.",
+              "checked_scope": "Captured textual listing metadata only; no images or sales"
+            },
+            {
+              "citation": "E4",
+              "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:4",
+              "source_url": "https://www.zazzle.com/funny_warning_stargazing_stargaze_t_shirt-256611216752940555",
+              "creator": "Myhappysoul",
+              "observation": "Observed listing titled Funny Warning Stargazing Stargaze T-Shirt by creator Myhappysoul. Price displayed: $24.10. Publication date is listing metadata, not sale date.",
+              "checked_scope": "Captured textual listing metadata only; no images or sales"
+            },
+            {
+              "citation": "E5",
+              "evidence_id": "319dbcc94c3e779e813fffae0f43b140d7ad7ac0b94a394d3e975f20ad9e096f:5",
+              "source_url": "https://www.zazzle.com/solar_eclipse_astronomy_event_2026_t_shirt-256970260886637007",
+              "creator": "CelestialTidings",
+              "observation": "Observed listing titled Solar Eclipse Astronomy Event 2026 T-Shirt by creator CelestialTidings. Price displayed: $22.70. Publication date is listing metadata, not sale date.",
+              "checked_scope": "Captured textual listing metadata only; no images or sales"
+            }
+          ],
+          "model_claims_verified": false,
+          "model_text_role": "Unapproved creative hypothesis, not factual competitor/demand/advantage analysis",
+          "unsupported_scope": [
+            "Competitor artwork/style, small logos/cursive and visual clutter are not observable in this text feed",
+            "Buyer needs, appeal, unique value and comparative advantages are hypotheses",
+            "Legibility, print suitability and quality require actual artwork testing",
+            "Amazon demand, sales, trends, seasonality and rights remain unknown"
+          ],
+          "model_text_unchanged": true,
+          "research_verified": false
+        },
+        "auto_run_path": "C:\\Users\\<user>\\Documents\\Codex\\2026-10-12\\task\\auto-research-review\\pilot-20261013-235720\\isolated-state\\MerchForge\\research-runs-v1\\run-bf4e2537a903436db07adc3d9d5fec0d"
+      },
+      "authority": {
+        "server_concept": false,
+        "backend_mutation": false,
+        "generation_authorized": false,
+        "paid_provider_authorized": false,
+        "accept_authorized": false,
+        "publication_authorized": false,
+        "external_submission_authorized": false
+      }
+    }
+  ]
+}

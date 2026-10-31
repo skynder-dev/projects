@@ -1,0 +1,15 @@
+{
+  "schema": "forge.local_generation_brief.v2",
+  "created_at": "2026-10-03T09:25:00Z",
+  "concept_key": "v4_av_black_cloud",
+  "title": "Avionics — technician black cloud",
+  "hook": "I DON'T BREAK IT. I FIND WHAT WAS ALREADY BROKEN.",
+  "niche_name": "Avionics Technician",
+  "concept": "Celebrate the tech who touches a simple job and discovers the much worse hidden problem.",
+  "visual_direction": "Storm cloud over a generic aircraft wiring bundle, with hidden fault revealed.",
+  "source_revision_id": "30563cf9-0722-4622-b845-f43fbdc4872b",
+  "source_revision_hash": "e9969acf78ac492591cdfe8b66efd25fb407d16bfa5be0d9ff2b27731496d684",
+  "provider_mode": "manual_artwork_bridge",
+  "external_generation_authorized": false,
+  "note": "Creative brief only. Import the finished image back into Merch Forge; exact SHA/revision binding is required before acceptance."
+}

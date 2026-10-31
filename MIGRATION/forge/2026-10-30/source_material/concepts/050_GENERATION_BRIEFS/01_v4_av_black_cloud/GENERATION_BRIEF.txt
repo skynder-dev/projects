@@ -1,0 +1,16 @@
+MERCH FORGE — GENERATION BRIEF
+
+Title: Avionics — technician black cloud
+Hook: I DON'T BREAK IT. I FIND WHAT WAS ALREADY BROKEN.
+Niche: Avionics Technician
+
+Revision: 30563cf9-0722-4622-b845-f43fbdc4872b
+Revision SHA256: e9969acf78ac492591cdfe8b66efd25fb407d16bfa5be0d9ff2b27731496d684
+
+Concept:
+Celebrate the tech who touches a simple job and discovers the much worse hidden problem.
+
+Visual direction:
+Storm cloud over a generic aircraft wiring bundle, with hidden fault revealed.
+
+Boundary: creative brief only; no provider dispatch or publishing was authorized.
