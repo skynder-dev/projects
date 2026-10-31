@@ -77,6 +77,7 @@ def main() -> int:
     os.environ.update(ARCHIVIST_HOME=str(work / "home"), ARCHIVIST_PORT=str(PORT), MEDIAENGINE_NO_BROWSER="1",
                       MEDIAENGINE_UPDATE_URL=url, MEDIAENGINE_UPDATE_NO_SWITCH="1")
     os.environ.pop("MEDIAENGINE_UPDATES", None)
+    os.environ.pop("MEDIAENGINE_AUTO_UPDATE", None)      # (CI turns them off for the running builds)
     sys.path.insert(0, str(ROOT / "app"))
     import logging
     logging.getLogger("werkzeug").setLevel(logging.ERROR)
@@ -102,6 +103,45 @@ def main() -> int:
             time.sleep(0.2)
         return s
 
+    # automatic updates: on by default, the switch on the page, one tick installs a newer build of the same runtime
+    code, page = text()
+    check("automatic updates: on by default, said on the page", up.auto_on() and "Automatic updates are on." in page
+          and "Turn automatic updates off" in page and up.STATE["state"] == "idle", page[-1500:])
+    c.post("/auto/update/auto", data={"on": "0"}, headers=H)
+    code, page = text()
+    check("automatic updates: turned off on the page (and remembered)", not up.auto_on() and "Automatic updates are off." in page
+          and (up.DATA / "update_auto.json").is_file() and up.auto_tick() == "off" and up.STATE["state"] == "idle", page[-1500:])
+    os.environ["MEDIAENGINE_UPDATES"] = "off"
+    c.post("/auto/update/auto", data={"on": "1"}, headers=H)
+    check("automatic updates: nothing happens where updates are turned off", up.auto_tick() == "cannot" and up.STATE["state"] == "idle")
+    os.environ.pop("MEDIAENGINE_UPDATES")
+    import archivist.updater as _upm
+    real_busy = _upm._busy
+    _upm._busy = lambda: "A reel is being made. Switch when it is ready."
+    r1 = up.auto_tick()
+    _upm._busy = real_busy
+    check("automatic updates: work running - not installed, tried again later", r1 == "busy" and up.STATE["state"] == "checked"
+          and not (base / "MediaEngine-3.13.0-rc1-b200").exists(), (r1, up.STATE))
+    os.environ["MEDIAENGINE_UPDATE_URL"] = "http://127.0.0.1:9/"
+    reset()
+    r2 = up.auto_tick()
+    check("automatic updates: no answer from GitHub changes nothing on the page", r2 == "check_failed" and up.STATE["state"] == "idle"
+          and "No connection" in up.AUTO["detail"], (r2, up.STATE, up.AUTO))
+    os.environ["MEDIAENGINE_UPDATE_URL"] = url
+    code, page = text()
+    check("automatic updates: the last check is said on the page", "Last automatic check:" in page
+          and "No answer from GitHub: it tries again in a few minutes." in page, page[-1500:])
+    reset()
+    r3 = up.auto_tick()
+    s = wait_done()
+    auto_tgt = base / "MediaEngine-3.13.0-rc1-b200"
+    check("automatic updates: a newer build of the same runtime is installed by itself", r3 == "started" and s["state"] == "ready"
+          and (auto_tgt / "app" / "main.py").read_text() == "NEW\n", (r3, s))
+    log = (up.DATA / "logs" / "update_auto.log").read_text(encoding="utf-8")
+    check("automatic updates: each attempt in its log", all(w in log for w in ("busy", "check_failed", "started")), log)
+    shutil.rmtree(auto_tgt, ignore_errors=True)
+    reset()
+    up.set_auto(False)
     code, page = text()
     check("page: nothing is asked online before the button", code == 200 and "Check for updates" in page and up.STATE["state"] == "idle", code)
     nav = c.get("/auto", headers=H).get_data(as_text=True)
@@ -228,6 +268,8 @@ def main() -> int:
     i18n.set_ui_language("ru")
     keep = {"MediaEngine", "Social", "Lab", "GitHub", "logs", "Setup", "ZIP", "Python", "MB", "KB", "rc", "MEDIAENGINE_UPDATE_URL", "b200", "b300", "HTTP"}
     left = []
+    up.set_auto(True)          # the automatic-updates card with its last check, in every state below
+    up.AUTO.update(last=time.time(), result="busy", detail="")
     man = bundle(nxt_src)
     states = [("idle", None), ("checked-new", "b200"), ("checked-runtime", "b300"), ("checked-newest", "b050"), ("check_failed", ""),
               ("error", "")]

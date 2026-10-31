@@ -220,6 +220,11 @@ def main():
                 return
             time.sleep(0.5)
     threading.Thread(target=_shortcuts_when_up,daemon=True,name="shortcuts").start()
+    try:     # automatic updates (Updates page: on unless turned off; only installed builds, only when idle)
+        from archivist.updater import start_auto
+        start_auto()
+    except Exception:
+        pass
     try:     # the icon in the notification area: Open / Quit (closing the window does not stop MediaEngine)
         from archivist import tray
         from archivist.config import BUILD

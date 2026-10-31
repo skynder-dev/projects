@@ -590,6 +590,18 @@ PHRASES = {
     "MediaEngine looks for a newer version on GitHub only when you press this button; it goes online for nothing else.":
         "MediaEngine ищет новую версию на GitHub, только когда ты нажимаешь эту кнопку; больше он ни за чем в интернет не выходит.",
     "Updates are turned off here.": "Обновления здесь выключены.",
+    "Automatic updates: MediaEngine installs a newer version by itself when nothing is being made (every 30 minutes, no window opens). Turn it off on the Updates page.":
+        "Автообновление: MediaEngine сам ставит новую версию, когда ничего не делается (каждые 30 минут, без окон). Выключается на странице «Обновления».",
+    "Press the button to look for a newer version right now.": "Нажми кнопку, чтобы проверить новую версию прямо сейчас.",
+    "Automatic updates are on.": "Автообновление включено.", "Automatic updates are off.": "Автообновление выключено.",
+    "Every 30 minutes MediaEngine looks for a newer version on GitHub and installs it by itself when nothing is being made. No window opens; open pages follow the new version.":
+        "Каждые 30 минут MediaEngine ищет новую версию на GitHub и сам ставит её, когда ничего не делается. Окна не открываются; открытые страницы переходят на новую версию.",
+    "Turn automatic updates off": "Выключить автообновление", "Turn automatic updates on": "Включить автообновление",
+    "Last automatic check:": "Последняя автопроверка:", "A new version is being installed.": "Ставится новая версия.",
+    "A newer version needs the full installer (see Check for updates).":
+        "Новой версии нужен полный установщик (см. «Проверить обновления»).",
+    "Work was running: it tries again in a few minutes.": "Шла работа: попробует снова через несколько минут.",
+    "No answer from GitHub: it tries again in a few minutes.": "GitHub не ответил: попробует снова через несколько минут.",
     "Only an installed MediaEngine (Setup or ZIP) updates itself.": "Сам обновляется только установленный MediaEngine (Setup или ZIP).",
     "This version cannot update itself yet. Install the new version once with its Setup.":
         "Эта версия ещё не умеет обновляться сама. Один раз установи новую версию её установщиком (Setup).",

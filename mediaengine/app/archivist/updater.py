@@ -1,6 +1,11 @@
-"""In-app update (the "Update" button): a newer build of this MediaEngine from the owner's GitHub.
+"""In-app update (the "Update" button, and by itself): a newer build of this MediaEngine from the owner's GitHub.
 
-Only when the button is pressed does MediaEngine go online (nothing is checked at start or in the background). Windows
+Automatic updates (on unless the owner turns them off on the Updates page; asked for by the owner 2026-10-30, so that
+fixes reach his PC without him): a few minutes after the start and then every 30 minutes MediaEngine asks GitHub for
+the newest build and installs it the same way as the button - only when nothing is being made (app_busy), only when
+the runtime is the same (no full installer), never an older build; the switch opens no window (MEDIAENGINE_NO_BROWSER).
+A failed automatic check changes nothing on the page; it is tried again later. Turned off: GitHub is asked only when
+the button is pressed. Windows
 CI publishes the program of every fully green build to the branch `mediaengine-update` of skynder-dev/projects
 (tools/make_update_bundle.py): `latest.json` (what it is, size, SHA-256, what is new) and the program files as one ZIP
 of a few MB - the app, its launcher and texts, WITHOUT the runtime (.venv: Python and its libraries, ~400 MB).
@@ -166,6 +171,104 @@ def check() -> dict:
             raise UpdateError("An update is being installed right now.")
         STATE.update(state="checked", found=m, error="", detail="", checked_at=time.time(), done=0, total=0, target="")
     return m
+
+
+AUTO_FIRST_S = 240                  # the first automatic check after the start (the start itself first)
+AUTO_EVERY_S = 30 * 60
+AUTO_RETRY_S = 5 * 60               # work was running or GitHub did not answer: again sooner
+AUTO: dict = {"last": 0.0, "result": "", "detail": ""}
+_AUTO_STARTED = threading.Event()
+
+
+def _auto_file() -> Path:
+    return DATA / "update_auto.json"
+
+
+def auto_on() -> bool:
+    """Automatic updates are on unless the owner turned them off (or MEDIAENGINE_AUTO_UPDATE=off)."""
+    if os.environ.get("MEDIAENGINE_AUTO_UPDATE") == "off":
+        return False
+    try:
+        return bool(json.loads(_auto_file().read_text(encoding="utf-8")).get("on", True))
+    except Exception:
+        return True
+
+
+def set_auto(on: bool) -> None:
+    f = _auto_file()
+    f.parent.mkdir(parents=True, exist_ok=True)
+    tmp = f.with_name(f.name + ".tmp")
+    tmp.write_text(json.dumps({"on": bool(on), "at": time.strftime("%Y-%m-%d %H:%M:%S")}), encoding="utf-8")
+    os.replace(tmp, f)
+
+
+def _auto_log(line: str) -> None:
+    try:
+        p = DATA / "logs" / "update_auto.log"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        old = p.read_text(encoding="utf-8").splitlines()[-199:] if p.is_file() else []
+        p.write_text("\n".join(old + [time.strftime("%Y-%m-%d %H:%M:%S ") + line]) + "\n", encoding="utf-8")
+    except Exception:
+        pass
+
+
+def auto_tick() -> str:
+    """One automatic attempt. Returns what happened: off / cannot / installing / newest / needs_installer / busy /
+    check_failed / started (an install began)."""
+    detail = ""
+    if not auto_on():
+        r = "off"
+    elif why_not():
+        r, detail = "cannot", why_not()
+    elif STATE["state"] in _BUSY_STATES or _APPLY.is_set():
+        r = "installing"
+    else:
+        try:
+            m = check()
+        except UpdateError as exc:      # the page keeps what it showed: this was not asked for
+            r, detail = "check_failed", f"{exc} {exc.detail}".strip()
+        else:
+            if not m.get("newer"):
+                r = "newest"
+            elif not m.get("same_runtime"):
+                r, detail = "needs_installer", str(m.get("pkg") or "")
+            else:
+                busy = _busy()
+                if busy:
+                    r, detail = "busy", busy
+                else:
+                    try:
+                        start_apply()
+                        r, detail = "started", str(m.get("pkg") or "")
+                    except UpdateError as exc:
+                        r, detail = "busy", str(exc)
+    AUTO.update(last=time.time(), result=r, detail=detail[:300])
+    if r != "off":
+        _auto_log(r + (f" {detail}" if detail else ""))
+    return r
+
+
+def start_auto() -> None:
+    """The background loop of automatic updates (once per process; it does nothing while they are off)."""
+    if _AUTO_STARTED.is_set():
+        return
+    _AUTO_STARTED.set()
+    try:
+        first = float(os.environ.get("MEDIAENGINE_AUTO_UPDATE_FIRST") or AUTO_FIRST_S)
+        every = float(os.environ.get("MEDIAENGINE_AUTO_UPDATE_EVERY") or AUTO_EVERY_S)
+    except ValueError:
+        first, every = AUTO_FIRST_S, AUTO_EVERY_S
+
+    def loop():
+        time.sleep(first)
+        while True:
+            try:
+                r = auto_tick()
+            except Exception as exc:
+                r = "check_failed"
+                _auto_log(f"error {type(exc).__name__}: {exc}")
+            time.sleep(min(every, AUTO_RETRY_S) if r in ("busy", "check_failed") else every)
+    threading.Thread(target=loop, daemon=True, name="update-auto").start()
 
 
 def installing() -> bool:

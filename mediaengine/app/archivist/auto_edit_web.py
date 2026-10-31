@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 import urllib.parse
 from pathlib import Path
 
@@ -47,6 +48,11 @@ window.addEventListener('pageshow',ev=>{if(ev.persisted)document.querySelectorAl
 
 _UPDATE_STEP = {"downloading": "Downloading the new version…", "preparing": "Putting the new version next to this one…",
                 "switching": "Starting the new version…"}
+_AUTO_RESULT = {"newest": "This is the newest version.", "started": "A new version is being installed.",
+                "installing": "A new version is being installed.",
+                "needs_installer": "A newer version needs the full installer (see Check for updates).",
+                "busy": "Work was running: it tries again in a few minutes.",
+                "check_failed": "No answer from GitHub: it tries again in a few minutes."}
 
 
 def _recent_failure(dl: dict) -> bool:
@@ -732,11 +738,30 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                               f"<button class='ae-big'>Update now</button></form></div>")
         else:
             body_state = (f"<div class='card'><div>MediaEngine looks for a newer version on GitHub only when you press this button; "
-                          f"it goes online for nothing else.</div><div style='margin-top:12px'>{check_btn.format(cls='')}</div></div>")
+                          f"it goes online for nothing else.</div><div style='margin-top:12px'>{check_btn.format(cls='')}</div></div>"
+                          if not up.auto_on() else
+                          f"<div class='card'><div>Press the button to look for a newer version right now.</div>"
+                          f"<div style='margin-top:12px'>{check_btn.format(cls='')}</div></div>")
         if why and st not in ("downloading", "preparing", "switching"):
             body_state = f"<div class='card'><div class='errbox'>{e(why)}</div></div>"
+        auto_card = ""
+        if not why:
+            if up.auto_on():
+                said = _AUTO_RESULT.get(up.AUTO.get("result") or "", "")
+                last = (f"<div class='muted' style='margin-top:6px'><span>Last automatic check:</span> "
+                        f"<span translate='no'>{e(time.strftime('%H:%M', time.localtime(up.AUTO['last'])))}</span> "
+                        f"<span>{e(said)}</span></div>") if up.AUTO.get("last") and said else ""
+                auto_card = (f"<div class='card' style='margin-top:14px'><b>Automatic updates are on.</b>"
+                             f"<div style='margin-top:6px'>Every 30 minutes MediaEngine looks for a newer version on GitHub and installs "
+                             f"it by itself when nothing is being made. No window opens; open pages follow the new version.</div>{last}"
+                             f"<form method='post' action='/auto/update/auto' style='margin-top:10px'><input type='hidden' name='on' value='0'>"
+                             f"<button class='btn2'>Turn automatic updates off</button></form></div>")
+            else:
+                auto_card = (f"<div class='card' style='margin-top:14px'><b>Automatic updates are off.</b>"
+                             f"<form method='post' action='/auto/update/auto' style='margin-top:10px'><input type='hidden' name='on' value='1'>"
+                             f"<button class='btn2'>Turn automatic updates on</button></form></div>")
         body = (f"<div class='pagehead'><div class='eyebrow'>MediaEngine</div><h1>Updates</h1>"
-                f"<div class='lead'><span>This version:</span> <b translate='no'>{e(here)}</b></div></div>{body_state}"
+                f"<div class='lead'><span>This version:</span> <b translate='no'>{e(here)}</b></div></div>{body_state}{auto_card}"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         script = ""
         if st in ("downloading", "preparing", "switching"):
@@ -764,6 +789,12 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
             up.check()
         except up.UpdateError as exc:
             up.check_failed(exc)
+        return redirect("/auto/update")
+
+    @app.post("/auto/update/auto")
+    def ae_update_auto():
+        from . import updater as up
+        up.set_auto(request.form.get("on") == "1")
         return redirect("/auto/update")
 
     @app.post("/auto/update/apply")

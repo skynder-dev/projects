@@ -43,6 +43,7 @@ jobs:
     timeout-minutes: 190      # a slow runner took 150 min before the large-footage step had finished (run 39050990426)
     env:
       PYTHONUTF8: '1'
+      MEDIAENGINE_AUTO_UPDATE: 'off'     # the builds CI starts never look for an update on their own
     steps:
       - uses: actions/checkout@v4
         with:
