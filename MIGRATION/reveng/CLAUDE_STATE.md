@@ -22,6 +22,11 @@
 - Без новых расходов, модельных вызовов, установки зависимостей (bs4!), контактов, публикаций — без согласия владельца.
 - Ручной поиск ассистента не выдавать за автономный результат RevEng.
 
+### Первый нативный прогон (31.10, GitHub Windows, `reveng-windows.yml`)
+- Исходники ResearchLocal 28.10 перенесены в `reveng/ResearchLocal` и `reveng/tests` байт в байт (манифест 122/122), `reveng/.gitattributes` держит байты на любой ОС.
+- **Всё приложение компилируется** (`csc` .NET Framework 4, 30 файлов → wrapper.exe 377 КБ) и **все 5 нативных C#-проб проходят** (TestOutcome, TestPriceExperimentPresentation, TestOwnerPreferencePresentation, TestPortableRuntimeDrain, TestOperationOutcome) — раньше это было NOT_RUN.
+- Python-проверки на Windows (3.11, обычный и -O): проходят 4 из 12 (capability, price_ui_contract, saved_analysis_context, task_routing); падают 8 (answer_cache_integrity, collection_integrity, hypothesis_contract, identity_portable, owner_preference_overlay, price_cache_integrity, price_experiment_projection, researchlocal_offline). На Linux (3.13) те же наборы проходят, кроме одного хеша AST, зависящего от версии Python. Значит, есть именно Windows-расхождения; их надо разобрать до встраивания «Конкурсов», потому что программа работает на Windows у владельца.
+
 ### План
 1. Windows CI в GitHub: сборка ResearchLocal (28.10) и её stdlib-проверки — воспроизводимо.
 2. «Конкурсы» внутри ResearchLocal (см. выше), с проверками.
