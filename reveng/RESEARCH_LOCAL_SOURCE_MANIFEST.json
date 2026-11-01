@@ -20,7 +20,7 @@
       "no external writes or model/live capture"
     ]
   },
-  "application_files": 102,
+  "application_files": 103,
   "buyer_normalization_repair": {
     "publication_status": "not_published",
     "base_source_context_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
@@ -504,9 +504,9 @@
     },
     {
       "path": "reveng/ResearchLocal/contest_terms.py",
-      "bytes": 26073,
-      "sha256": "07503d300b091eeb2cf23b14dda874247cab9845edfd7ff2ffe49a62a1284de7",
-      "change": "new_contest_terms_collector_2026-10-31+aggregator_leads_stdlib_html_view_file_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates+link_text_date"
+      "bytes": 26390,
+      "sha256": "30c7f56f21e8ada07313b099eb3b2792a946ab25c21e96af842829f0c287ecf0",
+      "change": "new_contest_terms_collector_2026-10-31+aggregator_leads_stdlib_html_view_file_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates+link_text_date+phone_cards_hook"
     },
     {
       "path": "reveng/ResearchLocal/contract_v2.py",
@@ -742,6 +742,12 @@
       "source_path": ".ci/test-only/production/reveng028/ResearchLocal/offline_entry.py",
       "source_sha256": "1f7a8d29b72bd6774d8d71f075ba0d610cea7e0d2c73b54b8092b7f3c0bfd25e",
       "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/phone_cards.py",
+      "bytes": 6881,
+      "sha256": "a4ac7e149376d2a832ea75155329c0a4a294602172f2d3298a025852e2ad2ded",
+      "change": "new_phone_cards_2026-11-01"
     },
     {
       "path": "reveng/ResearchLocal/plan_mapping.py",
@@ -1141,6 +1147,12 @@
       "sha256": "77f7335129fc20b78f9f9606ebc8e020d571aa6c37f21c21af0c81e9274118b0",
       "owner_preference_base_sha256": null,
       "change": "unpublished_separate_owner_preference_overlay_or_qualification"
+    },
+    {
+      "path": "reveng/tests/test_phone_cards.py",
+      "bytes": 4730,
+      "sha256": "7f315d5e6578de6b2767fb61955881883a690e694d8d3d194e2a10010161d0dc",
+      "change": "new_phone_cards_offline_contracts_2026-11-01"
     },
     {
       "path": "reveng/tests/test_price_cache_integrity.py",
@@ -1605,5 +1617,6 @@
     "qualification": "Independent66 source-context cases were unguarded in-memory checks; original guarded wording withdrawn. Integrated guarded test results must be read from the separate local seal, not inferred from input-stage passes.",
     "native": "NOT_RUN; probe source/wiring only"
   },
-  "deal_economics": "2026-11-01: first slice of the money side: deal_economics.py computes a resale deal (landed cost, fees, profit per unit, capital, return, break-even) only from figures marked quoted/owner_stated/assumption; missing required figures make it not_computable; no window yet; test_deal_economics.py 7 offline contracts"
+  "deal_economics": "2026-11-01: first slice of the money side: deal_economics.py computes a resale deal (landed cost, fees, profit per unit, capital, return, break-even) only from figures marked quoted/owner_stated/assumption; missing required figures make it not_computable; no window yet; test_deal_economics.py 7 offline contracts",
+  "phone_cards": "2026-11-01: phone_cards.py writes RevEng's cards (open contests with stated terms, resale deals) into Forge's phone folder as reveng-cards.json; the Forge phone app (0.4.0) shows them on its RevEng screen (tap the title to switch); decisions come back in decisions.json under rv_* ids; contest_terms.py calls it after each collection"
 }

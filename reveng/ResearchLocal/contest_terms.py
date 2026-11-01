@@ -444,6 +444,12 @@ def main():
         for l in rows:
             print('  ', l.get('status'), l['url'], '|', l['text'], '|', l.get('listed_deadline'))
     print('source_requests', result['source_requests'], 'model_requests', result['model_requests'])
+    try:   # the phone's RevEng screen gets the new cards (only when Forge's phone folder exists on this PC)
+        import phone_cards
+        n, where = phone_cards.write(root)
+        print('phone cards', n, '->', where)
+    except Exception as ex:
+        print('phone cards not written:', m.error_text(ex, 160))
 
 
 if __name__ == '__main__':
