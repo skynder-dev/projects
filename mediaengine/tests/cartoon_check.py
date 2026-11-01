@@ -223,6 +223,52 @@ def main() -> int:
           and min(face_d) > 1.0 and [w_[0] or w_[1] for w_ in words] == ["thumbs_up", "hips", "phone", "money", "sit", "laugh", "scared"]
           and F.seated(s0) == {"rick"} and seat_d > 1.0,
           (differ, round(float(np.abs(pp - fist_img).mean()), 2), green, lower, face_d, words, F.seated(s0), round(seat_d, 2)))
+    # picture characters and backgrounds (stage 2): pictures in the art folder are used instead of the drawn ones - the
+    # background cut to fit, the figure cut from its light background (also between the legs, not the shirt), the
+    # gesture's picture, the mouth open on a word; without pictures nothing changes
+    import cv2
+    from archivist.cartoon import art as A
+    art_dir = work / "art"
+    (art_dir / "backgrounds").mkdir(parents=True, exist_ok=True)
+    (art_dir / "characters" / "rick").mkdir(parents=True, exist_ok=True)
+    bgp = np.zeros((1344, 768, 3), np.uint8)
+    bgp[:] = (40, 160, 40)
+    cv2.imwrite(str(art_dir / "backgrounds" / "office.png"), bgp)
+    def figure(col, mouth):
+        im = np.full((1344, 768, 3), 250, np.uint8)
+        cv2.rectangle(im, (284, 200), (484, 700), col, -1)            # the body
+        cv2.rectangle(im, (334, 260), (434, 360), (250, 250, 250), -1)  # a white shirt inside: kept
+        cv2.rectangle(im, (284, 700), (364, 1250), col, -1)           # the legs, closed by shoes: the gap cut
+        cv2.rectangle(im, (404, 700), (484, 1250), col, -1)
+        cv2.rectangle(im, (284, 1250), (484, 1300), (20, 20, 20), -1)
+        if mouth:
+            cv2.circle(im, (384, 160), 30, (0, 0, 200), -1)
+        cv2.circle(im, (384, 140), 60, col, -1) if not mouth else None
+        return im
+    for name_, col_, mo_ in (("base", (200, 60, 120), False), ("talk_open", (200, 60, 120), True), ("point", (60, 60, 220), False)):
+        cv2.imwrite(str(art_dir / "characters" / "rick" / (name_ + ".png")), figure(col_, mo_))
+    alpha = A.cut(figure((200, 60, 120), False))
+    cut_ok = alpha[300, 384] > 0.9 and alpha[900, 384] < 0.1 and alpha[50, 50] < 0.1 and alpha[900, 320] > 0.9
+    folder = A.character("Rick", art_dir)
+    picks = [A.pose_picture(folder, p_, o_).stem for p_, o_ in (("idle", False), ("talk", True), ("point_up", False), ("shrug", False))]
+    real_root = A.root
+    A.root = lambda: art_dir
+    try:
+        fp = F.check_script(SHORT)
+        sp = F.timeline(fp)["scenes"][0]
+        cva = Canvas(270, 480, 1080)
+        F.draw_frame(cva, fp, sp, sp["s"] + 0.3, {})
+        green_bg = float(((cva.img[:, :, 1].astype(int) - cva.img[:, :, 2]) > 60).mean())
+        fq = F.check_script(dict(SHORT, pictures=False))
+        cvb = Canvas(270, 480, 1080)
+        F.draw_frame(cvb, fq, sp, sp["s"] + 0.3, {})
+        off = float(((cvb.img[:, :, 1].astype(int) - cvb.img[:, :, 2]) > 60).mean() < 0.1) and not F.pictures(fq)["cast"]
+    finally:
+        A.root = real_root
+    check("pictures: backgrounds and characters drawn once (an AI model on this PC or a person) are used in a film - "
+          "cut from their background, the gesture's picture, the mouth open on a word; off when a script says so",
+          cut_ok and picks == ["base", "talk_open", "point", "base"] and green_bg > 0.3 and bool(off),
+          (cut_ok, picks, round(green_bg, 2), off))
     from archivist.cartoon.voices import spoken
     sp = (spoken("The city pays $4.8M, the crew gets $300K - 30% of it.", "en"),
           spoken("Город платит 480 млн ₽, бригада получает 1,2 млн. Это $300 и 21 млн рублей.", "ru"))

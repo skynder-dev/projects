@@ -21,7 +21,7 @@ from pathlib import Path
 
 import numpy as np
 
-from . import bgs, chars as ch, props as P
+from . import art, bgs, chars as ch, props as P
 from .draw import INK, STYLES, Canvas, back, ease, lerp, rounded
 
 FPS = 30
@@ -97,7 +97,26 @@ def check_script(sc: dict) -> dict:
     out["pace"] = sc.get("pace") if isinstance(sc.get("pace"), str) and sc.get("pace") in PACES else ""
     out["drawing"] = sc.get("drawing") if isinstance(sc.get("drawing"), str) and sc.get("drawing") in STYLES else "flat"
     out["language"] = str(sc.get("language") or "en")[:5]
+    out["pictures"] = sc.get("pictures") is not False         # (pictures drawn once, when there are: art.py)
     return out
+
+
+def pictures(film: dict) -> dict:
+    """The film's picture backgrounds and characters (art.py): {"bg": {name: path}, "cast": {key: folder}}, found once."""
+    got = film.get("_pictures")
+    if got is None:
+        got = {"bg": {}, "cast": {}}
+        if film.get("pictures", True):
+            for s in film.get("scenes") or []:
+                b = art.background(s.get("bg") or "")
+                if b:
+                    got["bg"][s["bg"]] = str(b)
+            for key, c in (film.get("cast") or {}).items():
+                f = art.character(c.get("name") or key)
+                if f:
+                    got["cast"][key] = str(f)
+        film["_pictures"] = got
+    return got
 
 
 def keep_cast(new: dict, old: dict) -> dict:
@@ -482,7 +501,10 @@ def _camera(cv: Canvas, film: dict, scene: dict, t: float, names: list, xs: list
     where = film.get("caption_at") or ""                   # (the face kept clear of the captions' band)
     f = ({"middle": 0.18, "bottom": 0.25, "top": 0.32} if tall else {"middle": 0.12, "bottom": 0.2, "top": 0.3}).get(
         where, 0.25 if tall else 0.2)                      # where the top of the head comes, a share of the height
-    top = bgs.ground_y(cv) - 530 * sc + (ch.sit_drop(film["cast"][who]) * sc if who in seated(scene) else 0.0)
+    if who in pictures(film)["cast"]:                       # (a picture character: as tall as its pictures are drawn)
+        top = bgs.ground_y(cv) - art.HEIGHT * float(film["cast"][who].get("height") or 1.0) * sc * 0.97
+    else:
+        top = bgs.ground_y(cv) - 530 * sc + (ch.sit_drop(film["cast"][who]) * sc if who in seated(scene) else 0.0)
     x, y = xs[names.index(who)], top - (f - 0.5) * cv.SH / z
     hw, hh = cv.SW / (2 * z), cv.SH / (2 * z)
     return min(max(x, hw), cv.SW - hw), min(max(y, hh), cv.SH - hh), z
@@ -498,9 +520,14 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
     xs, sc, box = _layout(cv, len(names), bool(scene.get("visual")))
     cam_x, cam_y, zoom = _camera(cv, film, scene, t, names, xs, sc)
     cv.lens = zoom
+    pics = pictures(film)
     with cv.at(cv.SW / 2, cv.SH / 2, 0, zoom):
         with cv.at(-cam_x, -cam_y):
-            gy = bgs.draw(cv, scene["bg"], t)
+            if scene["bg"] in pics["bg"]:
+                art.draw_background(cv, Path(pics["bg"][scene["bg"]]))
+                gy = bgs.ground_y(cv)
+            else:
+                gy = bgs.draw(cv, scene["bg"], t)
             if scene.get("visual") and box:
                 if scene["bg"] not in DARK and (scene["visual"].get("kind") not in ("road", "title")
                                                  or (scene["visual"].get("kind") == "title" and scene["bg"] in INDOOR)):
@@ -542,7 +569,7 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                         nod, brow = -0.7 * f_, 0.9 * f_
                 walk = None
                 sit = 0.0
-                if key in sitting:                         # (on a chair or a bench; one who walks in sits down)
+                if key in sitting and key not in pics["cast"]:     # (on a chair or a bench; one who walks in sits down)
                     ch.seat(cv, c, xs[k], gy, sc, "bench" if scene["bg"] in OUTDOOR else "chair")
                     sit = ease(min(1.0, max(0.0, (st - WALK_IN) / SIT_DOWN))) if key in (scene.get("enter") or []) else 1.0
                     hop = 0.0
@@ -551,8 +578,14 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                     x += side * (1 - ease(st / WALK_IN)) * (cv.SW * 0.55)
                     walk, look, pose, pose2, emo = st * 9.0, -side, "idle", None, emo
                     gzx, nod, brow, hop = 0.6 * look, 0.0, 0.0, 0.0
-                ch.draw(cv, c, x, gy - hop, sc, turn if walk is None else look, pose, pose2, mix, emo, mouths.get(key, 0.0) if speaker == key else 0.0,
-                        blink, t + k, walk, (gzx, gzy), nod=nod, brow=brow, snap=snap, sit=sit)
+                if key in pics["cast"]:                    # (a picture character: its gesture's picture, the mouth)
+                    art.draw_character(cv, Path(pics["cast"][key]), x, gy - hop, sc, turn if walk is None else look,
+                                       pose2 if pose2 and mix >= 0.5 else pose, mouths.get(key, 0.0) if speaker == key else 0.0,
+                                       t + k, walk, nod, float(c.get("height") or 1.0))
+                else:
+                    ch.draw(cv, c, x, gy - hop, sc, turn if walk is None else look, pose, pose2, mix, emo,
+                            mouths.get(key, 0.0) if speaker == key else 0.0, blink, t + k, walk, (gzx, gzy), nod=nod, brow=brow,
+                            snap=snap, sit=sit)
                 if speaker == key and ln.get("bubble"):
                     _bubble_for(cv, ln, x, gy - 600 * sc + ch.sit_drop(c) * sc * sit, t)
 
