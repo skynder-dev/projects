@@ -115,6 +115,17 @@ class LeadTests(unittest.TestCase):
             chosen = ct.choose(ct.leads(LISTING, AGG)[0], '2026-10-31', {URL})
         self.assertEqual(chosen[-1]['url'], 'https://three.example/')   # a passed listing date only lowers the order; the organizer page decides
 
+    def test_closed_host_leads_do_not_use_the_budget(self):
+        listing = LISTING.replace(b'https://two.example/contest?x=1#top', b'https://filmfreeway.com/SomeFest')
+        found, _ = ct.leads(listing, AGG)
+        chosen = ct.choose(found, '2026-10-31', {URL})
+        self.assertNotIn('https://filmfreeway.com/SomeFest', [l['url'] for l in chosen])
+        self.assertEqual([l['status'] for l in found if l['url'] == 'https://filmfreeway.com/SomeFest'], ['not_checked_host_closed_to_robots'])
+    def test_mismatched_canonical_names_the_declared_address(self):
+        with self.assertRaises(ValueError) as e:
+            ct.body_text(html(PAGE, canonical='https://example.org/other'), URL)
+        self.assertIn('mismatched', str(e.exception)); self.assertIn('https://example.org/other', str(e.exception))
+
 class CollectTests(unittest.TestCase):
     def setUp(self):
         self.t = tempfile.TemporaryDirectory(); self.root = Path(self.t.name).resolve(); self.run = self.root / 'runs' / 'r'; self.run.mkdir(parents=True)

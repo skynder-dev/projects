@@ -47,6 +47,9 @@ AGGREGATORS = {
 IGNORE_HOSTS = {'linkedin.com', 'x.com', 'twitter.com', 'facebook.com', 'instagram.com', 'youtube.com', 'youtu.be', 'tiktok.com',
                 'discord.gg', 'discord.com', 't.me', 'threads.net', 'reddit.com', 'medium.com', 'github.com', 'ruminatex.com',
                 'google.com', 'apple.com', 'wikipedia.org', 'patreon.com', 'buymeacoffee.com', 'ko-fi.com', 'substack.com'}
+# organizer hosts that answered HTTP 403 to this transport on every live run (2026-10-31, 2026-11-01): their leads are
+# listed as not checked instead of spending the run's request budget; the organizer page stays the only source of terms
+CLOSED_HOSTS = {'filmfreeway.com': 'HTTP 403 to RevEng on the live runs of 2026-10-31 and 2026-11-01'}
 MAX_LEADS = 8
 MAX_QUOTE_WORDS = 14
 MONTHS = {k: i + 1 for i, k in enumerate(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'])}
@@ -216,7 +219,12 @@ def identity(raw, url):
     text = raw.decode('utf-8') if isinstance(raw, bytes) else raw
     meta = hid.Metadata(); meta.feed(text)
     if meta.urls or hid.denied(meta):
-        hid.validate(url, text)
+        try:
+            hid.validate(url, text)
+        except ValueError as ex:
+            if 'mismatched' in str(ex):   # say which address the page claims, so the owner can open it by hand
+                raise ValueError(str(ex) + '; the page declares ' + ', '.join(str(u) for u in meta.urls)[:160]) from None
+            raise
         return text, 'declared_canonical_matches'
     return text, 'exact_url_no_redirect_no_canonical_declared'
 
@@ -265,7 +273,8 @@ def choose(found, today, seeded):
     """Which leads to read this run: not already a seed, at most MAX_LEADS. Order: leads whose listing shows a full date
     that has not passed, soonest first; then leads without a date, in page order; then leads whose listed date has
     passed (the listing's date is a hint, not a term). Every lead gets a status the window can show."""
-    fresh = [l for l in found if l['url'] not in seeded]
+    closed = lambda l: any(l['organizer_host'] == h or l['organizer_host'].endswith('.' + h) for h in CLOSED_HOSTS)
+    fresh = [l for l in found if l['url'] not in seeded and not closed(l)]
     ahead = sorted([l for l in fresh if l['listed_deadline'] and l['listed_deadline'] >= today], key=lambda l: l['listed_deadline'])
     undated = [l for l in fresh if not l['listed_deadline']]
     passed = sorted([l for l in fresh if l['listed_deadline'] and l['listed_deadline'] < today], key=lambda l: l['listed_deadline'], reverse=True)
@@ -273,6 +282,8 @@ def choose(found, today, seeded):
     for lead in found:
         if lead['url'] in seeded:
             lead['status'] = 'already_seeded'
+        elif closed(lead):
+            lead['status'] = 'not_checked_host_closed_to_robots'
         elif any(l is lead for l in chosen):
             lead['status'] = 'checked_on_organizer_page'; lead['record_key'] = lead_key(lead['url'])
         else:
