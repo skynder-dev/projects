@@ -6,6 +6,7 @@ the snapshot file and the JSON field it came from.
 from __future__ import annotations
 
 import json
+import copy
 import re
 import time
 import urllib.request
@@ -149,23 +150,59 @@ def top_agency(code: str | None) -> str | None:
     return None
 
 
-def normalize(hit: dict, detail: dict | None) -> dict:
+def normalize(hit: dict, detail: dict | None, *, search_snapshot=None, detail_snapshot=None) -> dict:
     """Map search hit + detail into one flat record. `fields` records where each value came from."""
     detail = detail or {}
+    # Different API records must never form one hybrid opportunity. Preserve the
+    # selected ID spelling; ordinary integer/string forms compare by numeric ID.
+    hit_id, detail_id = hit.get("id"), detail.get("id")
+    def comparable_id(value):
+        if value is None or value == "":
+            return None
+        if isinstance(value, bool) or not isinstance(value, (str, int)):
+            raise PipelineError("Invalid Grants.gov opportunity ID type")
+        text = str(value).strip()
+        if not text:
+            return None
+        return (text.lstrip('0') or '0') if re.fullmatch(r"[0-9]+", text) else text
+    hit_identity, detail_identity = comparable_id(hit_id), comparable_id(detail_id)
+    if hit_identity is not None and detail_identity is not None and hit_identity != detail_identity:
+        raise PipelineError("Grants.gov search/detail opportunity IDs differ; no hybrid record")
     syn = detail.get("synopsis") or {}
     fc = detail.get("forecast") or {}
     src = syn or fc
     srcname = "synopsis" if syn else ("forecast" if fc else None)
     fields: dict[str, str] = {}
+    provenance = {}
+    source_text_fields = {}
+    bind_receipts = search_snapshot is not None or detail_snapshot is not None
+
+    def bind(key, path):
+        if bind_receipts:
+            receipt = search_snapshot if path.startswith("hit.") else detail_snapshot
+            if not isinstance(receipt, dict):
+                raise PipelineError("Missing originating snapshot for normalized field: " + key)
+            provenance[key] = copy.deepcopy(receipt)
 
     def pick(key, *cands):
         for path, val in cands:
             if val not in (None, "", []):
                 fields[key] = path
+                bind(key, path)
+                if key in ("description", "applicant_eligibility_desc"):
+                    if not isinstance(val, str):
+                        raise PipelineError("Source condition field must be text: " + key)
+                    source_text_fields[key] = val
                 return val
         return None
 
-    oid = str(hit.get("id") or detail.get("id") or "").strip()
+    oid = str(hit_id if hit_identity is not None else detail_id if detail_identity is not None else "").strip()
+    if detail_identity is not None:
+        fields["opportunity_id"] = "detail.id"
+        bind("opportunity_id", "detail.id")
+    elif hit_identity is not None and search_snapshot is not None:
+        fields["opportunity_id"] = "hit.id"
+        bind("opportunity_id", "hit.id")
     rec = {
         "opportunity_id": oid,
         "number": pick("number", ("detail.opportunityNumber", detail.get("opportunityNumber")), ("hit.number", hit.get("number"))),
@@ -192,13 +229,18 @@ def normalize(hit: dict, detail: dict | None) -> dict:
         "cost_sharing": _bool(pick("cost_sharing", (f"{srcname}.costSharing", src.get("costSharing")))),
         "detail_fetched": bool(detail),
     }
-    rec["top_agency"] = clean_agency(rec.get("top_agency_name")) or top_agency(rec["agency_code"])
-    if not rec.get("top_agency_name") and rec["top_agency"]:
+    named_top = clean_agency(rec.get("top_agency_name"))
+    rec["top_agency"] = named_top or top_agency(rec["agency_code"])
+    if not named_top and rec["top_agency"]:
         fields["top_agency"] = "agency_code prefix map"
+        if bind_receipts:provenance["top_agency"] = copy.deepcopy(provenance["agency_code"])
     elif rec["top_agency"]:
         fields["top_agency"] = fields.get("top_agency_name", "")
+        if bind_receipts:provenance["top_agency"] = copy.deepcopy(provenance["top_agency_name"])
     rec["source_url"] = PUBLIC_URL.format(id=oid)
     rec["fields"] = fields
+    if bind_receipts:rec["field_provenance"] = provenance
+    if source_text_fields:rec["source_text_fields"] = source_text_fields
     return rec
 
 

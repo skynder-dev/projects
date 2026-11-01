@@ -59,16 +59,18 @@ def score_record(rec: dict, today: dt.date, min_days: int) -> tuple[int, list[st
 def discover_live(cfg: dict, src_dir: Path, today: dt.date, seen: set, forced: str | None):
     client = grants.GrantsGovClient(src_dir)
     hits = {}
+    search_snapshots = {}
     sc = cfg["search"]
     if forced:
         hits[forced] = {"id": forced}
     else:
         for kw in sc["keywords"]:
-            hs, _ = client.search(kw, int(sc.get("rows", 25)), sc.get("statuses", "posted"))
+            hs, search_snapshot = client.search(kw, int(sc.get("rows", 25)), sc.get("statuses", "posted"))
             for h in hs:
                 hid = str(h.get("id") or "")
                 if hid and hid not in hits:
                     hits[hid] = h
+                    search_snapshots[hid] = search_snapshot
     # pre-filter on search-hit fields before spending detail calls
     pre = []
     for hid, h in hits.items():
@@ -82,7 +84,7 @@ def discover_live(cfg: dict, src_dir: Path, today: dt.date, seen: set, forced: s
     recs, considered = [], []
     for h in pre[: int(sc.get("max_detail_fetch", 14))]:
         det, meta = client.detail(str(h["id"]))
-        rec = grants.normalize(h, det)
+        rec = grants.normalize(h, det, search_snapshot=search_snapshots.get(str(h["id"])), detail_snapshot=meta)
         s, why = score_record(rec, today, int(cfg["selection"]["min_days_left"]))
         recs.append((s, rec, meta))
         considered.append({"opportunity_id": rec["opportunity_id"], "title": rec["title"], "score": s, "why": why})
@@ -144,8 +146,8 @@ def run(cfg: dict, out_root: Path, fixture: Path | None = None, opportunity: str
 
     # 2. claims
     claims = build_claims(rec, snap, today)
-    for c in claims:
-        c["observed_at"] = snap.get("fetched_at") or log["started_at"]
+    # build_claims carries each originating receipt time. A newer detail fetch
+    # (or this build's clock) is not the observation time of search-hit fields.
     write_json(tmp / "claims.json", {"contract": CONTRACT, "opportunity_id": rec["opportunity_id"],
                                       "built_from": snap, "claims": claims,
                                       "rule": "claims are copied from official fields only; writers can cite, never add"})

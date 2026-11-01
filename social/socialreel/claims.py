@@ -6,9 +6,10 @@ number, amount or date in the script that is not carried by a cited claim.
 from __future__ import annotations
 
 import datetime as dt
+import copy
 import re
 
-from .common import human_date, money, parse_date
+from .common import PipelineError, human_date, money, parse_date, sha256_bytes, stable_json
 
 BROAD_APPLICANTS = ("small business", "nonprofit", "individual", "city", "county", "township",
                     "tribal", "independent school", "public housing", "special district",
@@ -16,12 +17,31 @@ BROAD_APPLICANTS = ("small business", "nonprofit", "individual", "city", "county
 
 
 def _src(rec, snap, *keys):
-    return {
-        "url": rec["source_url"],
-        "snapshot_file": snap.get("file"),
-        "snapshot_sha256": snap.get("sha256"),
-        "fields": [rec.get("fields", {}).get(k, k) for k in keys],
-    }
+    groups = {}
+    fields = []
+    for key in keys:
+        locator = rec.get("fields", {}).get(key, key)
+        fields.append(locator)
+        if "field_provenance" in rec:
+            if not isinstance(rec["field_provenance"], dict):
+                raise PipelineError("Claim field provenance must be a mapping")
+            receipt = rec["field_provenance"].get(key)
+            if not isinstance(receipt, dict):
+                raise PipelineError("Missing originating snapshot for claim field: " + key)
+        else:
+            # Legacy normalized fixtures explicitly supply one snapshot. Live
+            # discovery now always supplies field_provenance; never fallback there.
+            receipt = snap
+        group = groups.setdefault(stable_json(receipt), {
+            "url": rec["source_url"], "snapshot_file": receipt.get("file"),
+            "snapshot_sha256": receipt.get("sha256"), "fields": []})
+        group["fields"].append(locator)
+        if receipt.get("fetched_at") is not None:
+            group["observed_at"] = copy.deepcopy(receipt["fetched_at"])
+    if len(groups) == 1:
+        return next(iter(groups.values()))
+    return {"kind": "multi_snapshot_fields", "url": rec["source_url"],
+            "fields": fields, "supporting_sources": list(groups.values())}
 
 
 BOILERPLATE = re.compile(r"notice of funding|\bNOFO\b|funding opportunity announcement|announces the availability|"
@@ -56,20 +76,25 @@ def build_claims(rec: dict, snap: dict, today: dt.date) -> list[dict]:
     display_agency = agency or top or ""
 
     def add(key, statement, values, *fields):
-        C.append({"key": key, "statement": statement, "values": values, "source": _src(rec, snap, *fields)})
+        source = _src(rec, snap, *fields)
+        claim = {"key": key, "statement": statement, "values": values, "source": source}
+        if "observed_at" in source:claim["observed_at"] = source["observed_at"]
+        C.append(claim)
 
-    agency_fields = ("agency_name", "agency_code") if agency else ("top_agency",)
+    agency_fields = tuple(key for key in ("agency_name", "agency_code", "top_agency")
+                          if rec.get(key)) if agency else ("top_agency",)
     add("identity",
         f"Grants.gov lists \"{rec['title']}\" as funding opportunity {rec.get('number') or rec['opportunity_id']}.",
         {"title": rec["title"], "number": rec.get("number"), "opportunity_id": rec["opportunity_id"]},
-        "title", "number")
+        *(('title', 'number', 'opportunity_id') if rec.get('number') else ('title', 'opportunity_id')))
     if display_agency:
         add("agency", f"The listing agency is {display_agency}.",
             {"agency": display_agency, "agency_code": rec.get("agency_code"), "parent_agency": top},
             *agency_fields)
     if top and top != display_agency:
         add("parent_agency", f"The listing agency is part of the {top}.",
-            {"parent_agency": top, "agency_code": rec.get("agency_code")}, "top_agency")
+            {"parent_agency": top, "agency_code": rec.get("agency_code")},
+            *(("top_agency", "agency_code") if rec.get("agency_code") else ("top_agency",)))
     if rec.get("status"):
         add("status", f"The opportunity status on Grants.gov is \"{rec['status']}\".",
             {"status": rec["status"]}, "status")
@@ -126,6 +151,26 @@ def build_claims(rec: dict, snap: dict, today: dt.date) -> list[dict]:
     q = first_sentence(rec.get("description") or "", title=rec.get("title", ""))
     if q:
         add("purpose_quote", f"The official synopsis says: \"{q}\"", {"quote": q}, "description")
+    # The list-based ledger has no separate envelope. Carry record-wide source
+    # context once, on its identity row, separately from that row's statement and
+    # values. The concept consumer moves it into source_context, not factual_core.
+    context = []
+    originals = rec.get("source_text_fields", {})
+    if not isinstance(originals, dict):
+        raise PipelineError("Source text fields must be a mapping")
+    for field in ("description", "applicant_eligibility_desc"):
+        text = originals[field] if field in originals else rec.get(field)
+        if text in (None, ""):
+            continue
+        if not isinstance(text, str):
+            raise PipelineError("Source condition field must be text: " + field)
+        try:text_raw = text.encode("utf-8")
+        except UnicodeEncodeError as error:raise PipelineError("Source condition field contains invalid Unicode") from error
+        context.append({"field": field, "text": text,
+                        "text_sha256": sha256_bytes(text_raw),
+                        "representation": "raw_source_field" if field in originals else "normalized_record_field",
+                        "source": _src(rec, snap, field)})
+    if context:C[0]["source_context"] = context
     return C
 
 
