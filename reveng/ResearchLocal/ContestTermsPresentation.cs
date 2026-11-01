@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Linq;using System.Text;using System.Collections;using System.Collections.Generic;using System.Globalization;
+using System;using System.IO;using System.Linq;using System.Text;using System.Collections;using System.Collections.Generic;using System.Globalization;using System.Text.RegularExpressions;
 // Contests (owner's idea, 31.10.2026) in the window: the sealed collector result as contest_terms.py wrote it to
 // contest-terms-view.json (payload_json + payload_sha256), shown as quoted terms only. Read-only: no network, no model,
 // no ranking, no candidate; a hash mismatch or unknown schema shows a refusal, never partial data.
@@ -20,6 +20,11 @@ public static class ContestTermsPresentation {
  static string Deadline(string status){switch(status){case "open":return "открыт";case "closed":return "закрыт";default:return "не найден";}}
  static string Identity(string how){switch(how){case "declared_canonical_matches":return "объявленный canonical совпадает";case "exact_url_no_redirect_no_canonical_declared":return "точный адрес без редиректов, canonical не объявлен";case "":return "не установлена";default:return how;}}
  static string Origin(Dictionary<string,object>r){if(S(r,"origin")=="aggregator_lead"){var lead=D(r,"lead");var listed=new List<string>();if(S(lead,"listed_deadline")!="")listed.Add("срок "+S(lead,"listed_deadline"));string prize=Money(D(lead,"listed_prize"));if(prize!="")listed.Add("приз "+prize);return "лид из вторичного списка ("+S(r,"seed")+")"+(listed.Count>0?"; в списке: "+String.Join(", ",listed)+" - подсказка списка, не условие":"");}return "ручной поиск ассистента ("+S(r,"seed")+"), не автономная находка RevEng";}
+ // The owner's swipes on RevEng's phone cards, as Forge's phone sync records them (card id -> like/now/nope); read-only,
+ // empty when the phone link is not on this PC or the file cannot be read.
+ public static Dictionary<string,string> PhoneDecisions(){var o=new Dictionary<string,string>();try{string f=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"MerchForge","phone-sync","decisions.json");if(!File.Exists(f))return o;foreach(var p in LocalJson.ReadObject(f))if(p.Key.StartsWith("rv_",StringComparison.Ordinal))o[p.Key]=S(D(p.Value),"verdict");}catch(Exception ex){if(ex is OutOfMemoryException)throw;}return o;}
+ public static string CardId(string key){string id="rv_c_"+Regex.Replace(key??"","[^A-Za-z0-9_.-]","_");return id.Length>79?id.Substring(0,79):id;}
+ static string Verdict(string v){switch(v){case "like":return "копать";case "now":return "отложено";case "nope":return "убрано";default:return "";}}
  public static string Describe(string root){
   string path=Path.Combine(root,FileName);
   if(!File.Exists(path))return "КОНКУРСЫ: сохранённого сбора нет.\r\nНажмите «Собрать условия конкурсов»: программа прочитает страницы организаторов и вторичный список своим ограниченным способом (robots.txt, HTTPS, без редиректов, без модели) и покажет процитированные условия здесь. Сеть сейчас не включалась.";
@@ -27,10 +32,11 @@ public static class ContestTermsPresentation {
    var wrap=LocalJson.ReadObject(path);if(S(wrap,"schema")!=Schema)throw new InvalidDataException("Unknown contest view schema: "+S(wrap,"schema"));
    string payload=S(wrap,"payload_json");if(payload==""||payload.Length>LocalJson.Limit||ProvenanceAudit.Sha(payload)!=S(wrap,"payload_sha256"))throw new InvalidDataException("Contest view payload hash mismatch");
    var data=LocalJson.ParseObject(payload);if(S(data,"schema")!=PayloadSchema)throw new InvalidDataException("Unknown contest payload schema: "+S(data,"schema"));
-   return Render(data);
+   return Render(data,PhoneDecisions());
   }catch(Exception ex){if(ex is OutOfMemoryException)throw;return "КОНКУРСЫ: сохранённый сбор не прочитан: "+ex.Message+"\r\nПоказывать нечего; старые данные не подменяются. Сеть и модель не запускались.";}
  }
- public static string Render(Dictionary<string,object>data){
+ public static string Render(Dictionary<string,object>data){return Render(data,null);}
+ public static string Render(Dictionary<string,object>data,Dictionary<string,string>decisions){
   var b=new StringBuilder("КОНКУРСЫ: условия, процитированные со страниц организаторов\r\n");
   b.AppendLine("Это возможности с призом и сроком, не оценка и не кандидат: вне общего рейтинга. Участие, допуск, судейство и выплата не подтверждены. Ничего не отправлялось и не публиковалось.");
   var records=Rows(data,"records").ToList();
@@ -39,6 +45,7 @@ public static class ContestTermsPresentation {
   int n=0;
   foreach(var r in records){n++;b.AppendLine();
    b.AppendLine(n+". "+S(r,"title")+(S(r,"organizer")!=""?" - "+S(r,"organizer"):"")+" ["+S(r,"key")+"]");
+   string mine;if(decisions!=null&&decisions.TryGetValue(CardId(S(r,"key")),out mine)&&Verdict(mine)!="")b.AppendLine("Ваше решение с телефона: "+Verdict(mine));
    b.AppendLine("Откуда: "+Origin(r));
    b.AppendLine("Страница: "+S(r,"source_url"));
    b.AppendLine("Статус: "+Classification(r));

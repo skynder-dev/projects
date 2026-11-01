@@ -112,9 +112,9 @@
     },
     {
       "path": "reveng/ResearchLocal/ContestTermsPresentation.cs",
-      "bytes": 12483,
-      "sha256": "5a7afd9459ef369b3aa926fe102056f8a8e93e808f42157c0694b617315d2975",
-      "change": "new_contest_terms_window_presentation_2026-11-01"
+      "bytes": 13819,
+      "sha256": "0863c3805a7264e14cd6bd1ced717ba178f0ee6d50b3c81c911a12395ea6e980",
+      "change": "new_contest_terms_window_presentation_2026-11-01+phone_decisions"
     },
     {
       "path": "reveng/ResearchLocal/CorroborationPresentation.cs",
@@ -1022,9 +1022,9 @@
     },
     {
       "path": "reveng/tests/TestContestTermsPresentation.cs",
-      "bytes": 14343,
-      "sha256": "eca95b61074255a5e4057196c7b4653f42a33267a2eba79c5258170af2e2bc7a",
-      "change": "new_contest_terms_window_native_probe_2026-11-01"
+      "bytes": 14986,
+      "sha256": "958468cb2659d09080beff50ba83e05999533d7f39be7c243bc56fbe09e756a3",
+      "change": "new_contest_terms_window_native_probe_2026-11-01+phone_decisions"
     },
     {
       "path": "reveng/tests/TestOperationOutcome.cs",

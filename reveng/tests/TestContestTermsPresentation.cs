@@ -71,6 +71,9 @@ public static class TestContestTermsPresentation {
    Check(rendered.Contains("Отправка работы, оплата взноса, регистрация и публикация этим экраном не выполняются и не разрешаются."),"no action authorized");
    Check(!rendered.Contains("рекоменд")&&!rendered.Contains("победител")&&!rendered.Contains("балл"),"no recommendation, winner or score vocabulary");
    Check(Json.Serialize(payload)==text,"payload object unchanged by rendering");
+   string swiped=ContestTermsPresentation.Render(payload,new Dictionary<string,string>{{"rv_c_billion_ai_film_2027","like"},{"rv_c_old_contest","nope"}});
+   Check(swiped.Contains("[billion_ai_film_2027]\r\nВаше решение с телефона: копать")&&swiped.Contains("Ваше решение с телефона: убрано")&&!rendered.Contains("Ваше решение с телефона"),"phone decisions shown next to their contest only");
+   Check(ContestTermsPresentation.CardId("lead-0123456789ab")=="rv_c_lead-0123456789ab"&&ContestTermsPresentation.CardId("a b/c")=="rv_c_a_b_c","card ids match phone_cards.py");
    Write(root,payload,"contest-terms-view-v1",new string('0',64));string refused=ContestTermsPresentation.Describe(root);
    Check(refused.StartsWith("КОНКУРСЫ: сохранённый сбор не прочитан: Contest view payload hash mismatch",StringComparison.Ordinal)&&!refused.Contains("AI Film Award")&&refused.Contains("старые данные не подменяются"),"hash mismatch shows refusal only");
    Write(root,payload,"contest-terms-view-v0");refused=ContestTermsPresentation.Describe(root);
