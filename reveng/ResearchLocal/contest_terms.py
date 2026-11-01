@@ -135,8 +135,18 @@ def compatible(records):
 
 
 def body_text(raw, url):
-    import direct_alternatives
-    return direct_alternatives.body_text(raw, url)
+    """The page text and how its identity was established. A declared canonical/og:url must match (the shared HTML
+    identity rule); many organizer pages declare none, and then the identity is the exact requested HTTPS URL, which the
+    app's transport fetched without following any redirect. Challenge/access-denied pages are refused either way."""
+    import direct_alternatives, html_document_identity as hid
+    meta = hid.Metadata(); meta.feed(raw.decode('utf-8') if isinstance(raw, bytes) else raw)
+    if meta.urls or hid.denied(meta):
+        return direct_alternatives.body_text(raw, url), 'declared_canonical_matches'
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(raw.decode('utf-8'), 'html.parser')
+    for node in soup.select('script,style,nav,footer'):
+        node.decompose()
+    return (soup.select_one('main') or soup).get_text(' ', strip=True), 'exact_url_no_redirect_no_canonical_declared'
 
 
 async def collect(root, run, stats, offline=False):
@@ -159,7 +169,8 @@ async def collect(root, run, stats, offline=False):
                 raise ValueError('robots.txt denied')
             raw = await asyncio.to_thread(m.read_http, spec['url'], stats)
             archive = root / 'contest-payloads'; archive.mkdir(exist_ok=True); (archive / (m.sha(raw) + '.raw')).write_bytes(raw)
-            record = parse(key, body_text(raw, spec['url']), m.now(), m.sha(raw))
+            text, identity = body_text(raw, spec['url'])
+            record = parse(key, text, m.now(), m.sha(raw)); record['source_identity'] = identity
             m.dump(path, dict(record, integrity_sha256=m.sha(json.dumps(record, sort_keys=True, ensure_ascii=False).encode())))
         except asyncio.CancelledError:
             raise

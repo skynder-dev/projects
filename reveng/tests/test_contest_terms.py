@@ -100,6 +100,17 @@ class CollectTests(unittest.TestCase):
         with patch.object(m, 'read_http', side_effect=self.fake(html(PAGE, canonical='https://example.org/other'))):
             r = asyncio.run(ct.collect(self.root, self.run, {'source_requests': 0}))
         self.assertEqual(r['records'][0]['classification'], 'source_unavailable'); self.assertIn('canonical', r['records'][0]['error'])
+    def test_page_without_canonical_is_identified_by_exact_url_and_denials_refused(self):
+        bare = ('<html><head><title>SYNTHETIC</title></head><body><main><p>' + PAGE + '</p></main></body></html>').encode()
+        with patch.object(m, 'read_http', side_effect=self.fake(bare)):
+            r = asyncio.run(ct.collect(self.root, self.run, {'source_requests': 0}))
+        self.assertEqual(r['records'][0]['classification'], 'contest_terms_found')
+        self.assertEqual(r['records'][0]['source_identity'], 'exact_url_no_redirect_no_canonical_declared')
+        for f in (self.root / 'contest-cache').iterdir(): f.unlink()
+        wall = b'<html><head><title>Access denied</title></head><body>SYNTHETIC blocked</body></html>'
+        with patch.object(m, 'read_http', side_effect=self.fake(wall)):
+            r = asyncio.run(ct.collect(self.root, self.run, {'source_requests': 0}))
+        self.assertEqual(r['records'][0]['classification'], 'source_unavailable')
 
 if __name__ == '__main__':
     result = unittest.main(argv=[sys.argv[0], '-v'], exit=False).result
