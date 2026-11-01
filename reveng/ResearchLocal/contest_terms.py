@@ -240,7 +240,29 @@ def host_of(url):
     return host[4:] if host.startswith('www.') else host
 
 
-def leads(raw, url):
+def listed_date(near, today):
+    """The listing's date next to a link: a full date when it shows one, else a month and day without a year
+    ('Nov 20'), taken as the next such day on or after the collection day minus 30 days (the listing shows upcoming
+    deadlines). Returns (iso date or None, year_assumed)."""
+    full = re.search(DATE, near, re.I)
+    if full:
+        return parse_date(full.group(0)), False
+    short = re.search(r'\b(' + MON + r')\s+(\d{1,2})\b(?!\s*,?\s*\d{4})', near, re.I)
+    mo = MONTHS.get(short.group(1).lower()[:3]) if short else None
+    if not mo:
+        return None, False
+    base = date.fromisoformat(today)
+    for year in (base.year, base.year + 1):
+        try:
+            d = date(year, mo, int(short.group(2)))
+        except ValueError:
+            return None, False
+        if (d - base).days >= -30:
+            return d.isoformat(), True
+    return None, False
+
+
+def leads(raw, url, today=None):
     """Outgoing HTTPS links of a listing page as leads: the link text as the quoted title, the listing's own date and
     amount next to it as 'listed' hints (never terms). The listing's own pages, fragments and social/credit links are
     skipped; one lead per organizer URL, in page order."""
@@ -257,9 +279,9 @@ def leads(raw, url):
         if target in seen:
             continue
         seen.add(target); near = page.around(link)
-        listed_date = re.search(DATE, near, re.I); listed_money = re.search(MONEY, near, re.I)
+        when, assumed = listed_date(near, today or datetime.now(timezone.utc).date().isoformat()); listed_money = re.search(MONEY, near, re.I)
         out.append({'url': target, 'organizer_host': host, 'text': ' '.join(link['text'].split()[:MAX_QUOTE_WORDS]),
-                    'listed_deadline': parse_date(listed_date.group(0)) if listed_date else None,
+                    'listed_deadline': when, 'listed_year_assumed': assumed,
                     'listed_prize': parse_money(listed_money.group(0)) if listed_money else None,
                     'listed_status': 'listed_by_aggregator_unverified'})
     return out, how
@@ -359,7 +381,7 @@ async def terms(cache, transport, key, spec, run):
         return unavailable(key, spec, ex)
 
 
-async def listing(cache, transport, key, spec, run):
+async def listing(cache, transport, key, spec, run, today=None):
     """One aggregator listing: its leads (sealed cache when fresh), else source_unavailable with no leads."""
     m.cancelled(run)
     path = cache / (m.sha((SCHEMA + '|aggregator|' + spec['url']).encode()) + '.json')
@@ -368,7 +390,7 @@ async def listing(cache, transport, key, spec, run):
         if saved:
             transport.stats['source_cache_hits'] = transport.stats.get('source_cache_hits', 0) + 1; return saved
         raw = await transport.read(spec['url'])
-        found, how = leads(raw, spec['url'])
+        found, how = leads(raw, spec['url'], today)
         record = {'schema': SCHEMA, 'kind': 'aggregator_listing', 'key': key, 'title': spec['title'], 'source_url': spec['url'],
                   'seed': spec['seed'], 'role': spec['role'], 'observed_at': m.now(), 'response_sha256': m.sha(raw),
                   'expires': time.time() + 43200, 'source_identity': how, 'classification': 'listing_read' if found else 'no_outgoing_links_found',
@@ -387,7 +409,7 @@ async def collect(root, run, stats, offline=False, today=None):
         out.append(await terms(cache, transport, key, spec, run))
     listings = {}; seeded = {spec['url'] for spec in CONTESTS.values()}
     for key, spec in AGGREGATORS.items():
-        listings[key] = await listing(cache, transport, key, spec, run)
+        listings[key] = await listing(cache, transport, key, spec, run, today)
     for key, item in listings.items():
         for lead in choose(item['leads'], today, seeded):
             spec = {'organizer': lead['organizer_host'], 'title': lead['text'] or lead['url'], 'url': lead['url'],

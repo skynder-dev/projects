@@ -115,6 +115,13 @@ class LeadTests(unittest.TestCase):
             chosen = ct.choose(ct.leads(LISTING, AGG)[0], '2026-10-31', {URL})
         self.assertEqual(chosen[-1]['url'], 'https://three.example/')   # a passed listing date only lowers the order; the organizer page decides
 
+    def test_listing_dates_without_a_year(self):
+        self.assertEqual(ct.listed_date('Wandura Drama Challenge today Oct 31', '2026-11-01'), ('2026-10-31', True))
+        self.assertEqual(ct.listed_date('NEXTALE Award 43d Dec 14', '2026-11-01'), ('2026-12-14', True))
+        self.assertEqual(ct.listed_date('Chroma 67d Jan 7', '2026-11-01'), ('2027-01-07', True))
+        self.assertEqual(ct.listed_date('Deadline Nov 20, 2026', '2026-11-01'), ('2026-11-20', False))
+        self.assertEqual(ct.listed_date('no date here', '2026-11-01'), (None, False))
+        self.assertEqual(ct.listed_date('Feb 30', '2026-11-01'), (None, False))
     def test_closed_host_leads_do_not_use_the_budget(self):
         listing = LISTING.replace(b'https://two.example/contest?x=1#top', b'https://filmfreeway.com/SomeFest')
         found, _ = ct.leads(listing, AGG)

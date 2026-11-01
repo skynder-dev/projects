@@ -1,5 +1,5 @@
 {
-  "contest_terms": "2026-10-31 owner idea: contests as opportunities; contest_terms.py reads organizer pages with the existing bounded transport, robots and HTML identity checks, quoted terms only, kept out of candidates and the global ranking; test_contest_terms.py offline contracts. 2026-11-01: the aggregator listing aifilmcontests.com is a secondary lead list (its outgoing links are read, every lead is then read on the organizer page, at most 8 leads per run, listing dates/amounts kept apart as hints); HTML is read with the standard library (no bs4); contest-terms-view.json (payload_json+payload_sha256) feeds the window: ContestTermsPresentation.cs, buttons \"Конкурсы\" and \"Собрать условия конкурсов\" in RevEngLocalResearch.cs, native probe TestContestTermsPresentation.cs; 18 offline Python contracts; leads on hosts that refused every live run (filmfreeway.com) are listed as not checked without spending requests; a mismatched canonical names the address the page declares",
+  "contest_terms": "2026-10-31 owner idea: contests as opportunities; contest_terms.py reads organizer pages with the existing bounded transport, robots and HTML identity checks, quoted terms only, kept out of candidates and the global ranking; test_contest_terms.py offline contracts. 2026-11-01: the aggregator listing aifilmcontests.com is a secondary lead list (its outgoing links are read, every lead is then read on the organizer page, at most 8 leads per run, listing dates/amounts kept apart as hints); HTML is read with the standard library (no bs4); contest-terms-view.json (payload_json+payload_sha256) feeds the window: ContestTermsPresentation.cs, buttons \"Конкурсы\" and \"Собрать условия конкурсов\" in RevEngLocalResearch.cs, native probe TestContestTermsPresentation.cs; 19 offline Python contracts; listing dates shown without a year (\"Nov 20\") are read as the next such day, marked listed_year_assumed; leads on hosts that refused every live run (filmfreeway.com) are listed as not checked without spending requests; a mismatched canonical names the address the page declares",
   "answer_context_cache_repair": {
     "publication_status": "not_published",
     "base_seal_sha256": "465632e56d45c7c6f5ff6bfa011c6e14b77fb48bc407624acb3dad8dee4033b8",
@@ -504,9 +504,9 @@
     },
     {
       "path": "reveng/ResearchLocal/contest_terms.py",
-      "bytes": 24890,
-      "sha256": "401f50f1b09e232c9c3ebf8c26866a5df185e26cee283c6df94ff8296b51c841",
-      "change": "new_contest_terms_collector_2026-10-31+aggregator_leads_stdlib_html_view_file_2026-11-01+closed_hosts_declared_canonical_2026-11-01"
+      "bytes": 25869,
+      "sha256": "76690a8029e4799b0add7b623b42288eb3e06a6a2a9c3c307a872963331c6f17",
+      "change": "new_contest_terms_collector_2026-10-31+aggregator_leads_stdlib_html_view_file_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates"
     },
     {
       "path": "reveng/ResearchLocal/contract_v2.py",
@@ -1090,9 +1090,9 @@
     },
     {
       "path": "reveng/tests/test_contest_terms.py",
-      "bytes": 21144,
-      "sha256": "a0fdf0c1173f808fa63ac3da59509f5f841e07e3da9d511d0de02451795e3fc7",
-      "change": "new_contest_terms_offline_contracts_2026-10-31+lead_and_view_contracts_2026-11-01+closed_hosts_declared_canonical_2026-11-01"
+      "bytes": 21781,
+      "sha256": "4cea1f1e540823f677296bc55c1ed49dc2d5563e3a0e1c5499e88962712793d9",
+      "change": "new_contest_terms_offline_contracts_2026-10-31+lead_and_view_contracts_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates"
     },
     {
       "path": "reveng/tests/test_hypothesis_contract.py",
