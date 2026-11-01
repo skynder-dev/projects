@@ -13,6 +13,8 @@ from datetime import date
 from pathlib import Path
 
 SCHEMA = 'reveng-phone-cards-v1'
+# the card front keeps only what decides: a missing deadline or prize is said, the rest of the unknown stays on the PC
+KEY_UNKNOWN = {'deadline': ('срок подачи', 'deadline'), 'prize': ('приз', 'prize')}
 KIND_RU = {'deadline': 'срок', 'prize': 'приз', 'fee': 'взнос', 'length': 'длина', 'tools': 'инструмент', 'eligibility': 'кто может',
            'exclusivity': 'права', 'format': 'формат'}
 
@@ -48,21 +50,23 @@ def contest_cards(root, today):
     for r in json.loads(wrap['payload_json'])['records']:
         if r.get('classification') not in ('contest_terms_found', 'partial_terms') or r.get('deadline_status') == 'closed':
             continue
-        lines = []
+        ru, en = [], []
         if r.get('declared_deadline'):
-            days = (date.fromisoformat(r['declared_deadline']) - date.fromisoformat(today)).days
-            lines.append('Подать до ' + date.fromisoformat(r['declared_deadline']).strftime('%d.%m.%Y') + ' (осталось ' + str(days) + ' дн.)')
+            d = date.fromisoformat(r['declared_deadline']); days = (d - date.fromisoformat(today)).days
+            ru.append('Подать до ' + d.strftime('%d.%m.%Y') + ' (осталось ' + str(days) + ' дн.)'); en.append('Deadline ' + d.strftime('%b %d, %Y') + ' (' + str(days) + ' days left)')
         if money(r.get('prize')):
-            lines.append('Приз: ' + money(r['prize']) + ' (как на странице)')
+            ru.append('Приз: ' + money(r['prize'])); en.append('Prize: ' + money(r['prize']))
         fee = r.get('fee')
         if fee:
-            lines.append('Взнос: бесплатно' if fee.get('amount') == 0 else 'Взнос: ' + (money(fee) or '?'))
+            ru.append('Взнос: бесплатно' if fee.get('amount') == 0 else 'Взнос: ' + (money(fee) or '?')); en.append('Entry: free' if fee.get('amount') == 0 else 'Entry fee: ' + (money(fee) or '?'))
         if r.get('length_minutes'):
-            lo, hi = r['length_minutes']
-            lines.append('Длина: ' + (str(lo) if lo == hi else str(lo) + '-' + str(hi)) + ' мин' + ('; инструмент: ' + r['required_tool'] if r.get('required_tool') else ''))
-        missing = [KIND_RU.get(k, k) for k in r.get('unproven', [])]
-        out.append(finish({'id': card_id('c', r['key']), 'kind': 'reveng', 'prof': 'конкурс', 'text': r['title'][:70], 'lines': lines,
-                           'unknown': ('На странице не найдено: ' + ', '.join(missing) + '. ' if missing else '') + 'Условия - со страницы организатора, не проверены.',
+            lo, hi = r['length_minutes']; span = str(lo) if lo == hi else str(lo) + '-' + str(hi)
+            ru.append('Длина: ' + span + ' мин' + ('; программа: ' + r['required_tool'] if r.get('required_tool') else ''))
+            en.append('Length: ' + span + ' min' + ('; tool: ' + r['required_tool'] if r.get('required_tool') else ''))
+        miss = [KEY_UNKNOWN[k] for k in ('deadline', 'prize') if k in r.get('unproven', [])]
+        out.append(finish({'id': card_id('c', r['key']), 'kind': 'reveng', 'prof': 'конкурс', 'prof_en': 'contest', 'text': r['title'][:70], 'lines': ru, 'lines_en': en,
+                           'unknown': ('Не указан ' + ' и '.join(x[0] for x in miss) + '.') if miss else '',
+                           'unknown_en': ('No ' + ' or '.join(x[1] for x in miss) + ' stated.') if miss else '',
                            'url': r['source_url']}))
     return out
 
@@ -83,9 +87,18 @@ def deal_cards(root):
                      'Остаётся с партии: ' + money({'amount': r['profit_total'], 'currency': c}) + ' (' + str(r['return_on_capital_pct']) + '% на вложенное)',
                      'В ноль при цене продажи: ' + money({'amount': r['break_even_sell_price'], 'currency': c}),
                      'Оборот денег: ' + (str(int(r['cash_cycle_days'])) + ' дн.' if r.get('cash_cycle_days') else 'не указан')]
-        unknown = ('Догадки в расчёте: ' + ', '.join(r['assumptions_used']) + '. ' if r.get('assumptions_used') else '') + 'Цены - предложения, не продажи; покупатель не найден.'
-        out.append(finish({'id': card_id('d', f.stem), 'kind': 'reveng', 'prof': 'перепродажа', 'text': (r.get('title') or f.stem)[:70],
-                           'lines': lines, 'unknown': unknown}))
+        if r['status'] == 'not_computable':
+            en = ['Cannot compute: missing ' + ', '.join(r['missing_required'] or ['valid figures'])]
+        else:
+            en = ['Capital for the batch: ' + money({'amount': r['capital_needed'], 'currency': c}),
+                  'Left from the batch: ' + money({'amount': r['profit_total'], 'currency': c}) + ' (' + str(r['return_on_capital_pct']) + '% on capital)',
+                  'Break-even sell price: ' + money({'amount': r['break_even_sell_price'], 'currency': c}),
+                  'Cash cycle: ' + (str(int(r['cash_cycle_days'])) + ' days' if r.get('cash_cycle_days') else 'not given')]
+        guess = r.get('assumptions_used') or []
+        out.append(finish({'id': card_id('d', f.stem), 'kind': 'reveng', 'prof': 'перепродажа', 'prof_en': 'resale', 'text': (r.get('title') or f.stem)[:70],
+                           'lines': lines, 'lines_en': en,
+                           'unknown': ('Догадки: ' + ', '.join(guess) + '. ' if guess else '') + 'Покупатель не найден.',
+                           'unknown_en': ('Guesses: ' + ', '.join(guess) + '. ' if guess else '') + 'No buyer found yet.'}))
     return out
 
 

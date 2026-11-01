@@ -31,10 +31,11 @@ class Tests(unittest.TestCase):
         cards = json.loads((self.phone / 'reveng-cards.json').read_text(encoding='utf-8'))['cards']
         self.assertEqual(n, 3); self.assertEqual([c['id'] for c in cards], ['rv_c_open', 'rv_d_half', 'rv_d_sheet'])
         for c in cards: self.assertRegex(c['id'], r'^rv_[A-Za-z0-9_.-]{1,76}$'); self.assertEqual(c['kind'], 'reveng'); self.assertEqual(len(c['rev']), 12)
-        self.assertEqual(cards[0]['lines'][:2], ['Подать до 20.11.2026 (осталось 19 дн.)', 'Приз: 1 000 000 USD (как на странице)'])
-        self.assertIn('кто может', cards[0]['unknown'])
+        self.assertEqual(cards[0]['lines'][:2], ['Подать до 20.11.2026 (осталось 19 дн.)', 'Приз: 1 000 000 USD'])
+        self.assertEqual(cards[0]['lines_en'][:2], ['Deadline Nov 20, 2026 (19 days left)', 'Prize: 1 000 000 USD'])
+        self.assertEqual(cards[0]['unknown'], ''); self.assertEqual(cards[0]['prof_en'], 'contest')
         self.assertEqual(cards[1]['lines'], ['Посчитать нельзя: не хватает sell_price, quantity'])
-        self.assertEqual(cards[2]['lines'][0], 'Вложить на партию: 1 000 USD'); self.assertIn('Догадки в расчёте: sell_price', cards[2]['unknown'])
+        self.assertEqual(cards[2]['lines'][0], 'Вложить на партию: 1 000 USD'); self.assertIn('Догадки: sell_price', cards[2]['unknown']); self.assertEqual(cards[2]['lines_en'][0], 'Capital for the batch: 1 000 USD')
     def test_tampered_view_writes_nothing(self):
         p = self.root / 'contest-terms-view.json'; w = json.loads(p.read_text(encoding='utf-8')); w['payload_sha256'] = '0' * 64; p.write_text(json.dumps(w), encoding='utf-8')
         with self.assertRaises(ValueError): pc.write(self.root, self.phone)
