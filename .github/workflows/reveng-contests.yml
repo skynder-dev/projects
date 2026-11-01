@@ -21,7 +21,7 @@ jobs:
       - name: Collect
         run: |
           mkdir -p "$RUNNER_TEMP/research"
-          cd reveng/ResearchLocal && python -I -B contest_terms.py --root "$RUNNER_TEMP/research" | while IFS= read -r l; do echo "::notice::$l"; done
+          cd reveng/ResearchLocal && python -B contest_terms.py --root "$RUNNER_TEMP/research" | while IFS= read -r l; do echo "::notice::$l"; done
           python -c "import json,sys;d=json.load(open(sys.argv[1]));print(json.dumps({'compatible':d['compatible'],'records':[{k:r.get(k) for k in ('key','classification','declared_deadline','deadline_status','prize','fee','length_minutes','required_tool','error')} for r in d['records']]},ensure_ascii=False,indent=1))" "$RUNNER_TEMP/research/contest-terms.json"
       - uses: actions/upload-artifact@v4
         with:
