@@ -24,6 +24,10 @@ CONTESTS = {
     'billion_ai_film_2027': {'organizer': '1 Billion Followers Summit', 'title': 'AI Film Award 2027',
                              'url': 'https://www.1billionsummit.com/ai-film-award',
                              'seed': 'assistant manual web search 2026-10-31'},
+    'waiff_cannes_2027': {'organizer': 'World AI Film Festival (WAIFF)', 'title': 'WAIFF Cannes 2027 (FilmFreeway listing)',
+                          'url': 'https://filmfreeway.com/WAIFF', 'seed': 'assistant manual web search 2026-10-31'},
+    'chroma_awards_s2': {'organizer': 'ElevenLabs Chroma Awards', 'title': 'Chroma Awards, season 2 (announcement)',
+                         'url': 'https://elevenlabs.io/blog/chroma-awards-season-two-announcement', 'seed': 'assistant manual web search 2026-10-31'},
 }
 MAX_QUOTE_WORDS = 14
 MONTHS = {k: i + 1 for i, k in enumerate(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'])}

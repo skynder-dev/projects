@@ -1,0 +1,30 @@
+name: reveng-contests
+# A live run of RevEng's contest collector (reveng/ResearchLocal/contest_terms.py) on GitHub's machine: organizer pages
+# read with the app's own bounded transport (robots.txt, HTTPS, no redirects, request budget), terms quoted. Started by
+# hand. The result (public contest terms only) is kept as the run's artifact for 14 days. No model calls.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check -q beautifulsoup4==4.12.3 lxml==5.3.0
+      - name: Collect
+        run: |
+          mkdir -p "$RUNNER_TEMP/research"
+          cd reveng/ResearchLocal && python -I -B contest_terms.py --root "$RUNNER_TEMP/research" | while IFS= read -r l; do echo "::notice::$l"; done
+          python -c "import json,sys;d=json.load(open(sys.argv[1]));print(json.dumps({'compatible':d['compatible'],'records':[{k:r.get(k) for k in ('key','classification','declared_deadline','deadline_status','prize','fee','length_minutes','required_tool','error')} for r in d['records']]},ensure_ascii=False,indent=1))" "$RUNNER_TEMP/research/contest-terms.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: contest-terms
+          path: ${{ runner.temp }}/research/contest-terms.json
+          retention-days: 14

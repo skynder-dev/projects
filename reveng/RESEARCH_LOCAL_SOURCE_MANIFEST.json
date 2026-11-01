@@ -498,8 +498,8 @@
     },
     {
      "path": "reveng/ResearchLocal/contest_terms.py",
-     "bytes": 11428,
-     "sha256": "7f87b8d398b86ec5184bf4a831d4b2ab9f4e0a80a587ab4f98a94f9392111cff",
+     "bytes": 11938,
+     "sha256": "191d1fb568c24e67feb98f769c065277302d0d9d19a50f58022f5f5f7f76135f",
      "change": "new_contest_terms_collector_2026-10-31"
     },
     {
