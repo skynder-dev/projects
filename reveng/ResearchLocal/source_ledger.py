@@ -175,7 +175,7 @@ def verify_portable(fetch,names):
   return
  cat=unseal(json.loads(fetch('source-ledger-catalog.json')))
  with tempfile.TemporaryDirectory(prefix='reveng-ledger-verify-') as folder:
-  root=Path(folder)
+  root=Path(folder).resolve()
   for n,h in cat['inputs'].items():
    p=(root/n).resolve()
    if h is None:

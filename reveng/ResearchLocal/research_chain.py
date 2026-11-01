@@ -66,7 +66,7 @@ def verify_portable(fetch,names):
  expected=l.unseal(json.loads(fetch('research-chain.json')))
  # Recompute from bounded, already path/checksum-validated export data; never trust a new hash alone.
  with tempfile.TemporaryDirectory(prefix='reveng-chain-') as folder:
-  root=Path(folder)
+  root=Path(folder).resolve()
   for name in names:
    if (name.endswith('.json') and name!='manifest.json') or re.fullmatch(r'buyer-source-payloads/[0-9a-f]{64}\.raw',name):
     p=(root/name).resolve()

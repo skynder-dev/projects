@@ -62,11 +62,11 @@ jobs:
           $fail = 0
           foreach ($t in Get-ChildItem reveng/tests -Filter 'test_*.py') {
             if ($t.BaseName -eq 'test_integrated_ci_contract') { "::notice::$($t.BaseName) skipped: needs the .ci harness that is not in the package"; continue }
-            $a = switch ($t.BaseName) {
+            $a = @(switch ($t.BaseName) {
               'test_identity_portable' { @('reveng/ResearchLocal') }
               'test_researchlocal_offline' { @('--source', 'reveng/ResearchLocal', '--include-existing-tests') }
               default { @('--source', 'reveng/ResearchLocal') }
-            }
+            })   # @() keeps a one-item list a list
             foreach ($mode in @(@('-I', '-B'), @('-I', '-B', '-O'))) {
               $log = python @mode $t.FullName @a 2>&1
               if ($LASTEXITCODE) { "::error::$($t.BaseName) $($mode -join ' ') failed"; $log | Select-Object -Last 25; $fail++ }

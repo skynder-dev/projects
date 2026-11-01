@@ -786,11 +786,11 @@
     },
     {
       "path": "reveng/ResearchLocal/research_chain.py",
-      "bytes": 7613,
-      "sha256": "8301db3285c4949a8db16b5c222ff32964f0fa17586c37f885f7dfd36a24a78e",
+      "bytes": 7623,
+      "sha256": "a843b9622057a62610ba8c04bb3de65534b0c67409b524b36ff5336559961407",
       "source_path": ".ci/test-only/production/reveng028/ResearchLocal/research_chain.py",
       "source_sha256": "8301db3285c4949a8db16b5c222ff32964f0fa17586c37f885f7dfd36a24a78e",
-      "change": "exact_public_source_import"
+      "change": "exact_public_source_import+windows_resolved_temp_root_2026-10-31"
     },
     {
       "path": "reveng/ResearchLocal/research_export.py",
@@ -927,11 +927,11 @@
     },
     {
       "path": "reveng/ResearchLocal/source_ledger.py",
-      "bytes": 13576,
-      "sha256": "60695e744edbc1b20c6e71d13eb8d61450691b9bafd47daaacaa52523a5c4957",
+      "bytes": 13586,
+      "sha256": "af01f3edbac6529ac51f4d53e0d8db14c50bb9d4530a7cede39c2da7fbc87f6e",
       "source_path": ".ci/test-only/production/reveng028/ResearchLocal/source_ledger.py",
       "source_sha256": "60695e744edbc1b20c6e71d13eb8d61450691b9bafd47daaacaa52523a5c4957",
-      "change": "exact_public_source_import"
+      "change": "exact_public_source_import+windows_resolved_temp_root_2026-10-31"
     },
     {
       "path": "reveng/ResearchLocal/source_proposals.py",
