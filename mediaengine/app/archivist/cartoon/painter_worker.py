@@ -45,12 +45,16 @@ def flux(job):
         kw = dict(prompt=p["prompt"], height=p["h"], width=p["w"], num_inference_steps=4,
                   generator=torch.Generator("cuda").manual_seed(int(p.get("seed") or 7)))
         if p.get("ref") and os.path.isfile(p["ref"]):
-            kw["image"] = [Image.open(p["ref"]).convert("RGB")]
+            ref = Image.open(p["ref"]).convert("RGB")
+            ref.thumbnail((448, 784))   # (a full-size reference doubles what the card holds: on 12 GB it spills to slow memory)
+            kw["image"] = [ref]
         _save(pipe(**kw).images[0], p["out"])
         print(f"PIC {n} {p.get('what') or ''}", flush=True)
 
 
 def main():
+    import faulthandler
+    faulthandler.enable()                  # (a crash in the graphics card's code: where it was, in the log)
     with open(sys.argv[1], encoding="utf-8") as f:
         job = json.load(f)
     (standin if job.get("standin") else flux)(job)

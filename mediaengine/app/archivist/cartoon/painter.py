@@ -329,33 +329,44 @@ def cancel_paint() -> None:
 
 
 def _paint(todo: list) -> None:
+    """The worker draws the pictures; if it stops on its own (the graphics card's driver, memory), it is started again
+    for the pictures not drawn yet - up to three times - so one bad moment does not lose the rest."""
     from .. import auto_edit as ae, voice as vo
     work = ROOT / "work"
+    left, done, tries, log = list(todo), 0, 0, []
     try:
         work.mkdir(parents=True, exist_ok=True)
-        req = work / f"paint-{int(time.time())}.json"
-        req.write_text(json.dumps({"model": str(MODEL), "pictures": todo, "standin": standin()}), "utf-8")
-        env = dict(os.environ, PYTHONNOUSERSITE="1", PYTHONPATH=str(SITE), HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
-        cmd = [sys.executable if standin() else vo._python(), str(WORKER), str(req)]
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, text=True,
-                                encoding="utf-8", errors="replace", env=env, **process_kwargs(below_normal=True))
-        ae._attach_job_object(proc)
-        tail = []
-        for line in proc.stdout:
-            tail = (tail + [line.rstrip()])[-20:]
-            m = re.match(r"PIC (\d+) (.*)", line)
-            if m:
-                PAINT.update(done=int(m.group(1)), what=m.group(2).strip()[:80])
+        while left:
+            req = work / f"paint-{int(time.time())}.json"
+            req.write_text(json.dumps({"model": str(MODEL), "pictures": left, "standin": standin()}), "utf-8")
+            env = dict(os.environ, PYTHONNOUSERSITE="1", PYTHONPATH=str(SITE), HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
+            cmd = [sys.executable if standin() else vo._python(), str(WORKER), str(req)]
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, text=True,
+                                    encoding="utf-8", errors="replace", env=env, **process_kwargs(below_normal=True))
+            ae._attach_job_object(proc)
+            got = 0
+            for line in proc.stdout:
+                log = (log + [line.rstrip()])[-40:]
+                m = re.match(r"PIC (\d+) (.*)", line)
+                if m:
+                    got = int(m.group(1))
+                    PAINT.update(done=done + got, what=m.group(2).strip()[:80])
+                if _PSTOP.is_set():
+                    proc.kill()
+                    break
+            proc.wait()
+            log.append(f"(the worker ended with {proc.returncode})")
+            (work / "last.log").write_text("\n".join(log), "utf-8")
             if _PSTOP.is_set():
-                proc.kill()
+                raise PainterError("Stopped. The pictures drawn so far are kept.")
+            done += got
+            left = left[got:]
+            if proc.returncode == 0 and not left:
                 break
-        proc.wait()
-        (work / "last.log").write_text("\n".join(tail), "utf-8")
-        if _PSTOP.is_set():
-            raise PainterError("Stopped. The pictures drawn so far are kept.")
-        if proc.returncode != 0:
-            raise PainterError("The picture model stopped (details for support: work/last.log in the add-on folder).")
-        PAINT.update(state="done")
+            tries += 1
+            if tries > 3 or (got == 0 and tries > 1):
+                raise PainterError("The picture model stopped (details for support: work/last.log in the add-on folder).")
+        PAINT.update(state="done", done=done)
     except Exception as exc:
         PAINT.update(state="failed", error=str(exc)[:300])
     finally:
