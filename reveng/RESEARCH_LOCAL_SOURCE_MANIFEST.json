@@ -1,0 +1,1571 @@
+{
+  "answer_context_cache_repair": {
+    "publication_status": "not_published",
+    "base_seal_sha256": "465632e56d45c7c6f5ff6bfa011c6e14b77fb48bc407624acb3dad8dee4033b8",
+    "changed_paths": [
+      "reveng/ResearchLocal/README.md",
+      "reveng/ResearchLocal/answer_context.py",
+      "reveng/ResearchLocal/observation_history.py",
+      "reveng/ResearchLocal/reveng_local_research.py",
+      "reveng/tests/test_answer_cache_integrity.py",
+      "reveng/tests/test_collection_integrity.py"
+    ],
+    "scope": "Preserve damaged answer checkpoints, keep primary questions, report partial enrichment limitations; distinct summary counts",
+    "unchanged_boundaries": [
+      "article/question relations",
+      "semantic revision policy and migration",
+      "saved-context token admission",
+      "pricing and WordPress caches",
+      "no external writes or model/live capture"
+    ]
+  },
+  "application_files": 99,
+  "buyer_normalization_repair": {
+    "publication_status": "not_published",
+    "base_source_context_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
+    "source_context_qualification_correction_sha256": "d241e3ef132352a77fe3f4a1daaa1d1abf8321f2110683c0e004c369bcef46fb",
+    "scope": "Consistent versioned buyer original-post normalization; explicit raw-HTML versus normalized-plain handling; preserve historical reports, no automatic migration",
+    "production_changed_paths": [
+      "reveng/ResearchLocal/buyer_evidence.py"
+    ],
+    "qualification": "Offline guarded Python tests; synthetic transport; real WordPress parser/identity seam unqualified without bs4; no live/model/native/hosted tests"
+  },
+  "canonical_root": "reveng/ResearchLocal",
+  "collection_integrity_repairs": {
+    "base_seal_sha256": "91ca41116379f50527916610ac064724b216a85ca6d992195d4c79faffc284a2",
+    "publication_status": "not_published",
+    "application_files_unchanged_from_saved_context_stage": 95,
+    "production_changed": [
+      "observation_history.py",
+      "reveng_local_research.py",
+      "candidate_queue.py"
+    ],
+    "history_policy": "model_packet_semantics_v2",
+    "migration": "derived verified replay only; immutable original hashes/policies and job/snapshot IDs retained in revision_references",
+    "source_cache_scope": "top-level discovery cache only; invalid bytes preserved, no corruption-triggered refetch",
+    "queue_scope": "publish finished business review, retain research paused_budget and resumable signatures",
+    "token_admission": "TokenAdmissionRequired unchanged; no execution permission",
+    "verification": "20 new + 103 nearby stdlib contracts, normal and optimized; separate capability suite failed missing bs4 prerequisite; native publisher/GUI/live/model never run"
+  },
+  "excluded": [
+    "runtime settings",
+    "captured source material",
+    "model request/response data",
+    "saved workspace data",
+    "logs",
+    "archives",
+    "executables",
+    "model weights"
+  ],
+  "files": [
+    {
+      "path": "reveng/ResearchLocal/.gitignore",
+      "bytes": 205,
+      "sha256": "9ccd26f2332c639c0231d9f40ca78a921846f360fdaab91144ff0e1fa5020f98",
+      "change": "source_only_runtime_exclusions"
+    },
+    {
+      "path": "reveng/ResearchLocal/AnalysisOutcomePresentation.cs",
+      "bytes": 15129,
+      "sha256": "a2bb68e77e971c939ca7f059b4aebc5a9517350a463377b6c535cebd240eb03f",
+      "change": "native_source_plus_bounded_snapshot_reparse_handle_hardening",
+      "source_blobs": [
+        {
+          "label": "N/AnalysisOutcomePresentation.cs",
+          "git_blob_sha": "e443a2322cf52a4e1325bffba85abc6911963c5c",
+          "sha256": "93cf49563dea5b588c7052685cec7671e05fbc583531cbe5687831da2300df16"
+        }
+      ]
+    },
+    {
+      "path": "reveng/ResearchLocal/AnalysisReadiness.cs",
+      "bytes": 8727,
+      "sha256": "ac8dcbbe10e9de475be3bb4f7763297dc17fd29384ea25b226b1faee0da6f99b",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/AnalysisReadiness.cs",
+      "source_sha256": "ac8dcbbe10e9de475be3bb4f7763297dc17fd29384ea25b226b1faee0da6f99b",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/ArchivePreview.cs",
+      "bytes": 5822,
+      "sha256": "875e56c5f2b85ad3a8ca291a810ee5465be0e2f2a3f1143492f9ad8d054410d3",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/ArchivePreview.cs",
+      "source_sha256": "875e56c5f2b85ad3a8ca291a810ee5465be0e2f2a3f1143492f9ad8d054410d3",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/AttemptPublication.cs",
+      "bytes": 8627,
+      "sha256": "2da980b18f340a54a0107a7cb85196e9fb72cf2d0f046c02a6ecb278027eeb53",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/AttemptPublication.cs",
+      "source_sha256": "2da980b18f340a54a0107a7cb85196e9fb72cf2d0f046c02a6ecb278027eeb53",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/BuyerSourcePresentation.cs",
+      "bytes": 1255,
+      "sha256": "ce20f0cf01c5b28a51e64e8744633bd58d708aba6e2fb1c3322615504dc7f024",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/BuyerSourcePresentation.cs",
+      "source_sha256": "ce20f0cf01c5b28a51e64e8744633bd58d708aba6e2fb1c3322615504dc7f024",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/CorroborationPresentation.cs",
+      "bytes": 2871,
+      "sha256": "db3f4f7b33b192b27047eaa5f836f624aede1bbada8133fc06491e62d37fd76c",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/CorroborationPresentation.cs",
+      "source_sha256": "db3f4f7b33b192b27047eaa5f836f624aede1bbada8133fc06491e62d37fd76c",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/DecisionStore.cs",
+      "bytes": 10499,
+      "sha256": "476360b7c5e4ec1c124ae9d059b6f23e41d81d516d989c4dba68848e86cbd3b2",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/DecisionStore.cs",
+      "source_sha256": "476360b7c5e4ec1c124ae9d059b6f23e41d81d516d989c4dba68848e86cbd3b2",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/EvidenceBindings.cs",
+      "bytes": 5837,
+      "sha256": "3a2d4f7129505753bc75ef68c2866d9ae35413333e903856cf4adace800ab5af",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/EvidenceBindings.cs",
+      "source_sha256": "3a2d4f7129505753bc75ef68c2866d9ae35413333e903856cf4adace800ab5af",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/EvidenceComparison.cs",
+      "bytes": 32180,
+      "sha256": "f4a344ebde5958ce76a8b5409f1dbc407eac3e9bf31c2ae9965da853ed570824",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/EvidenceComparison.cs",
+      "source_sha256": "3d4cae763c39a817dfe115e8e39eb4e6ddca995416cb4a47e4ae02579a839f69",
+      "change": "unpublished_separate_owner_preference_overlay_or_qualification",
+      "price_ui_base_sha256": "3d4cae763c39a817dfe115e8e39eb4e6ddca995416cb4a47e4ae02579a839f69",
+      "owner_preference_base_sha256": "d8362781550f32dd7b4879c82771b011b56dbb7a364eda22c8693f9b6793db5d"
+    },
+    {
+      "path": "reveng/ResearchLocal/EvidenceDates.cs",
+      "bytes": 1295,
+      "sha256": "584b79fc27e48869e3e9615b9a55ccf6f6bf371f2236b67bc5c915abcc7c340e",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/EvidenceDates.cs",
+      "source_sha256": "584b79fc27e48869e3e9615b9a55ccf6f6bf371f2236b67bc5c915abcc7c340e",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/EvidenceWorkbench.cs",
+      "bytes": 22025,
+      "sha256": "581b2c61baca7b6f55dfc6262b7581541d1a4f837801c8c1224a1b6c0cf31ced",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/EvidenceWorkbench.cs",
+      "source_sha256": "581b2c61baca7b6f55dfc6262b7581541d1a4f837801c8c1224a1b6c0cf31ced",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/FactualObservationPresentation.cs",
+      "bytes": 8087,
+      "sha256": "da6b7bf357a7867bb6e02c53193caa39b94082baeb1c8068ee7b340e6e643819",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/FactualObservationPresentation.cs",
+      "source_sha256": "da6b7bf357a7867bb6e02c53193caa39b94082baeb1c8068ee7b340e6e643819",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/LegacyCandidateReviews.cs",
+      "bytes": 10909,
+      "sha256": "4f7bf66747007240c2ad5cc72a04cffcee24f07aa1640d21db74e20be956ade7",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/LegacyCandidateReviews.cs",
+      "source_sha256": "4f7bf66747007240c2ad5cc72a04cffcee24f07aa1640d21db74e20be956ade7",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/LocalJson.cs",
+      "bytes": 6603,
+      "sha256": "c462297b1d27375903ef27ecb8ec4242ae405ce5fe5b6d4fe506ec386b326999",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/LocalJson.cs",
+      "source_sha256": "c462297b1d27375903ef27ecb8ec4242ae405ce5fe5b6d4fe506ec386b326999",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/ManualDraftRecovery.cs",
+      "bytes": 5400,
+      "sha256": "c623b312eb44e7668ec31637360e99511049cb432f75ba93af5b5dc7215f7a05",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/ManualDraftRecovery.cs",
+      "source_sha256": "c623b312eb44e7668ec31637360e99511049cb432f75ba93af5b5dc7215f7a05",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/ManualHypotheses.cs",
+      "bytes": 11987,
+      "sha256": "f0803008d3e659c79ecc7a3c01f8847fa5e01b11f40127de36887b93f6d12a7c",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/ManualHypotheses.cs",
+      "source_sha256": "f0803008d3e659c79ecc7a3c01f8847fa5e01b11f40127de36887b93f6d12a7c",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/ManualHypothesisEditor.cs",
+      "bytes": 10130,
+      "sha256": "410344327c15ae244231e7859c5926ee8d857589c49d580539719f4ec5a2761a",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/ManualHypothesisEditor.cs",
+      "source_sha256": "410344327c15ae244231e7859c5926ee8d857589c49d580539719f4ec5a2761a",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/OfficialObservationPresentation.cs",
+      "bytes": 3168,
+      "sha256": "e0e3e388d09da8a1a54f502fe595483b5f8ba8564cec221c5b238c239bfbe707",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/OfficialObservationPresentation.cs",
+      "source_sha256": "e0e3e388d09da8a1a54f502fe595483b5f8ba8564cec221c5b238c239bfbe707",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/PortableRuntime.cs",
+      "bytes": 14543,
+      "sha256": "79e24e553d9be207bd6146ebeb58ea926c95f3fefb71fcdb56c853344c5a7fa8",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/PortableRuntime.cs",
+      "source_sha256": "8c887714db55dee853db378f6095d8ff1641c69317c2cec6abb49955a147c4d0",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/PriceExperimentPresentation.cs",
+      "bytes": 2468,
+      "sha256": "1286913e67d989734789796ab658a723993bcc63e638b6cea27c51ca8ba1ee18",
+      "price_ui_base_sha256": null,
+      "change": "unpublished_native_offer_presentation_or_qualification"
+    },
+    {
+      "path": "reveng/ResearchLocal/PriorityExplanation.cs",
+      "bytes": 8561,
+      "sha256": "26f058631641c734bab51eeb863e3f335c718caa6e8ff224669ad68251f3c41a",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/PriorityExplanation.cs",
+      "source_sha256": "26f058631641c734bab51eeb863e3f335c718caa6e8ff224669ad68251f3c41a",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/ProductLayout.cs",
+      "bytes": 3029,
+      "sha256": "d76c6999e4b965cb00144bc3b5ee60a43b6a2d34db17cf10344e1e80a40245d1",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/ProductLayout.cs",
+      "source_sha256": "d76c6999e4b965cb00144bc3b5ee60a43b6a2d34db17cf10344e1e80a40245d1",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/ProvenanceAudit.cs",
+      "bytes": 17446,
+      "sha256": "75e0c4108056a3f2d2dbbcb6053189648e833585459b7cf9ec4df24527da3433",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/ProvenanceAudit.cs",
+      "source_sha256": "75e0c4108056a3f2d2dbbcb6053189648e833585459b7cf9ec4df24527da3433",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/PublicResearchAudit.cs",
+      "bytes": 4838,
+      "sha256": "f8a7b6b1b4322b0904b03201b1f409b27d6d460f15819047b25a4b72528ec3a8",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/PublicResearchAudit.cs",
+      "source_sha256": "f8a7b6b1b4322b0904b03201b1f409b27d6d460f15819047b25a4b72528ec3a8",
+      "change": "exact_public_source_import"
+    },
+    {
+      "answer_cache_base_sha256": "83cb5d9b2f5cd1d19c29a78ffd44293b6da49ba06835307446c34d77e54a04fc",
+      "answer_cache_change": "unpublished_answer_cache_tests_or_documentation",
+      "bytes": 42982,
+      "change": "local_buyer_normalization_repair_not_published",
+      "collection_integrity_base_sha256": "44c585b4098e83f3bb16c7d6c3adc65acf566177beb033676fc42a000d03ba7f",
+      "collection_integrity_previous_change": "unpublished_saved_context_preparation_proposal",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "2929c91a4bccca7764c12c0624519ce917e1e9c2ded752c3a110e08363730f79",
+      "path": "reveng/ResearchLocal/README.md",
+      "price_cache_base_sha256": "7f0db900a6889bf43b8dec596ae91236c06f154789459aa27b19c140148c00e5",
+      "price_cache_change": "unpublished_pricing_cache_tests_or_documentation",
+      "quotation_budget_base_sha256": "1740c7464daebf0f28cc288a6909909759f195a499bf4a6b886de9535a505c44",
+      "quotation_budget_change": "unpublished_quotation_regressions_or_documentation",
+      "saved_context_base_seal_sha256": "0a6ffea8cef6e8b05d26a456a7ca3eac2600bced249f6ad4c73f2f912472f3be",
+      "saved_context_base_sha256": "7b38e5a99f42eea46f849c27ad51bd06986e7b9d38f166942a5706b5a85550d2",
+      "sha256": "70618f0a9d0a944e44db363912c257e91ef755fbfda3cb5b424d0f96d46dd01f"
+    },
+    {
+      "path": "reveng/ResearchLocal/ResearchRunPresentation.cs",
+      "bytes": 6028,
+      "sha256": "70a46024b2e660e953c9de72b683cd9c64fd9007b21cfd59a5a52aa5d1dafe07",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/ResearchRunPresentation.cs",
+      "source_sha256": "70a46024b2e660e953c9de72b683cd9c64fd9007b21cfd59a5a52aa5d1dafe07",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/RevEngLocalResearch.cs",
+      "bytes": 80802,
+      "sha256": "f37bbf063facfb7784ac50b5d6763d6c2ceb8827bd58a8fedf22227efedbb94e",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/RevEngLocalResearch.cs",
+      "source_sha256": "bd4673a48eba403a8fbea57938ab120ad418f1ec4666d43c29b81ea02fed54bb",
+      "change": "unpublished_native_offer_presentation_or_qualification",
+      "source_blobs": [
+        {
+          "label": "N/RevEngLocalResearch.cs",
+          "git_blob_sha": "6fe0b3739d4d6a4392da989ef8fbc0a73d80cbb3",
+          "sha256": "e29592baf43cf88b1e07d94043a5fcc22146bbb2b21c849f3c8f8e80b13214e8"
+        }
+      ],
+      "price_ui_base_sha256": "e29592baf43cf88b1e07d94043a5fcc22146bbb2b21c849f3c8f8e80b13214e8"
+    },
+    {
+      "path": "reveng/ResearchLocal/ScenarioIdentity.cs",
+      "bytes": 987,
+      "sha256": "1c4e347c7ae9e3e13a02cdc4acaf6e0cfc36d2ea0b48c5270bea9cfed1813659",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/ScenarioIdentity.cs",
+      "source_sha256": "1c4e347c7ae9e3e13a02cdc4acaf6e0cfc36d2ea0b48c5270bea9cfed1813659",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/SourceLedgerComparison.cs",
+      "bytes": 23746,
+      "sha256": "45202257ab9bf761bf7bca16b41b1f07a6346027b30d3b81f65246c65de10739",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/SourceLedgerComparison.cs",
+      "source_sha256": "4526b64d8e12860cab99a2d4f410f39a1719a988ad4c31ac0216386aa2ee4c23",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/SourceProposalPresentation.cs",
+      "bytes": 1640,
+      "sha256": "0837b16daf2f98b4c13b1cfd97afd50abdf2d0ef9b1b7ad62781bdc4dc076750",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/SourceProposalPresentation.cs",
+      "source_sha256": "0837b16daf2f98b4c13b1cfd97afd50abdf2d0ef9b1b7ad62781bdc4dc076750",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/SourceTaskPresentation.cs",
+      "bytes": 2322,
+      "sha256": "c391a4035b69f637203a65561dce46f7be96ef183f8a95172b7ae36f2d791926",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/SourceTaskPresentation.cs",
+      "source_sha256": "c391a4035b69f637203a65561dce46f7be96ef183f8a95172b7ae36f2d791926",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/analysis_jobs.py",
+      "bytes": 8001,
+      "sha256": "b170e535c2e4f0ce58e691cbdc54e493c68dc849d624690227443626ab03af72",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/analysis_jobs.py",
+      "source_sha256": "8926bdce4f8f881adc42d1521281ee2a88de523d32e991369c1ab1bb05a44331",
+      "change": "unpublished_saved_context_preparation_proposal",
+      "saved_context_base_seal_sha256": "0a6ffea8cef6e8b05d26a456a7ca3eac2600bced249f6ad4c73f2f912472f3be",
+      "saved_context_base_sha256": "8926bdce4f8f881adc42d1521281ee2a88de523d32e991369c1ab1bb05a44331"
+    },
+    {
+      "path": "reveng/ResearchLocal/analysis_lineage.py",
+      "bytes": 4805,
+      "sha256": "ef1aa384e6594498eb50e33aea3b93476e9b1ea03cdbd03b878012435611f259",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/analysis_lineage.py",
+      "source_sha256": "ef1aa384e6594498eb50e33aea3b93476e9b1ea03cdbd03b878012435611f259",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/analysis_quality.py",
+      "bytes": 2704,
+      "sha256": "eefbe92e1552d1bc61a1f7743223b239d4b5ff9b87d4aa37e2b9454a7eb3101f",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/analysis_quality.py",
+      "source_sha256": "eefbe92e1552d1bc61a1f7743223b239d4b5ff9b87d4aa37e2b9454a7eb3101f",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/analysis_readiness.py",
+      "bytes": 3541,
+      "sha256": "dbf4aceb09ebcf8a80b94741b32776c4d0912e0c8930f678414c4154ef97bff4",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/analysis_readiness.py",
+      "source_sha256": "dbf4aceb09ebcf8a80b94741b32776c4d0912e0c8930f678414c4154ef97bff4",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/answer_context.py",
+      "bytes": 7799,
+      "sha256": "110f3aa17e2e2c02fc2c252369c66135467a6d98a26a487f05ba8a1b2af38cf9",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/answer_context.py",
+      "source_sha256": "d76d64f7eb231892759c9c4765f9374cea2070272d2d004c940ac4f125a599fe",
+      "change": "exact_public_source_import",
+      "answer_cache_base_sha256": "d76d64f7eb231892759c9c4765f9374cea2070272d2d004c940ac4f125a599fe",
+      "answer_cache_change": "unpublished_enrichment_local_cache_repair"
+    },
+    {
+      "path": "reveng/ResearchLocal/api_capability.py",
+      "bytes": 7452,
+      "sha256": "dc1f39cdb5524293a94042ed9ecad147630037087d14e9ee42e61785e7a806c6",
+      "change": "api_source_adapted_to_current_body_text_identity_and_bounded_single_raw_read",
+      "source_blobs": [
+        {
+          "label": "C/api_capability.py",
+          "git_blob_sha": "e2540117d87747a1ced2fee821007748558972f7",
+          "sha256": "1320abca95945f784a83972ea2ca89468b79b8643e821fbd00d27b65965f8447"
+        }
+      ]
+    },
+    {
+      "path": "reveng/ResearchLocal/archive_preview.py",
+      "bytes": 4925,
+      "sha256": "cbe354e346b45b0c1c3a36704c1471ea74537ff504cdcf5abb68ecf6ca1ecb61",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/archive_preview.py",
+      "source_sha256": "cbe354e346b45b0c1c3a36704c1471ea74537ff504cdcf5abb68ecf6ca1ecb61",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/buyer_evidence.py",
+      "bytes": 22844,
+      "sha256": "3b3e844f0ad8afa3f8e2f564f3c836b1e10b8ccc91d7327fa44187fb42585767",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/buyer_evidence.py",
+      "source_sha256": "d00b1dc2f38e25ed15068c3940a12a7d010b4820a265cf36a60237f110421711",
+      "change": "local_buyer_normalization_repair_not_published"
+    },
+    {
+      "path": "reveng/ResearchLocal/candidate_publication.py",
+      "bytes": 4435,
+      "sha256": "1d9887d7dd4fa4e645611b78efc182ee6b29f9e5d55d2e4c29275cdfb1c33657",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/candidate_publication.py",
+      "source_sha256": "1d9887d7dd4fa4e645611b78efc182ee6b29f9e5d55d2e4c29275cdfb1c33657",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/candidate_queue.py",
+      "bytes": 9532,
+      "sha256": "29680515fe4ea5bd3fa31d143d0a2153cfd47ea6d0dd83b6d207d1319873a511",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/candidate_queue.py",
+      "source_sha256": "fcf518b29a3e530c833cd3908a8ab13f41f68594585b02c0a64132068dc80eb1",
+      "change": "unpublished_collection_history_queue_integrity_repair",
+      "collection_integrity_previous_change": "exact_public_source_import",
+      "collection_integrity_base_sha256": "fcf518b29a3e530c833cd3908a8ab13f41f68594585b02c0a64132068dc80eb1"
+    },
+    {
+      "path": "reveng/ResearchLocal/capture_dates.py",
+      "bytes": 757,
+      "sha256": "d9af4577073fc61c9be593a13df15d12bb1d7c8e69826341ee364a3b91efc6b9",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/capture_dates.py",
+      "source_sha256": "d9af4577073fc61c9be593a13df15d12bb1d7c8e69826341ee364a3b91efc6b9",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/collection_attempts.py",
+      "bytes": 4975,
+      "sha256": "d5bc544536b4e86dec9bd1f6b7b9d71c1568c007a0bdde8cbfb2d39a31ef8f33",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/collection_attempts.py",
+      "source_sha256": "d5bc544536b4e86dec9bd1f6b7b9d71c1568c007a0bdde8cbfb2d39a31ef8f33",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/collection_versions.py",
+      "bytes": 8203,
+      "sha256": "57abda422b4cfcf03609e26099a0e9590a9b85c7b4670fc2a63f2009a878f708",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/collection_versions.py",
+      "source_sha256": "57abda422b4cfcf03609e26099a0e9590a9b85c7b4670fc2a63f2009a878f708",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/collector_capabilities.py",
+      "bytes": 868,
+      "sha256": "72cbd16d8278662ed9c4fc621105041be599ecb94513833de88bfa9d7a13dde8",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/collector_capabilities.py",
+      "source_sha256": "72cbd16d8278662ed9c4fc621105041be599ecb94513833de88bfa9d7a13dde8",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/commercial_review.py",
+      "bytes": 25140,
+      "sha256": "2f0f0e9b89c4287f31d8aac81807ec132450dd4c01296f0f2ef9fec3e851a1ec",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/commercial_review.py",
+      "source_sha256": "093620c5bdcabd23edcb872e266b3696b367bb12b9e0a6f22bc149fc85fc0ce1",
+      "change": "reviewed_unpublished_followon_core_change",
+      "source_blobs": [
+        {
+          "label": "N/commercial_review.py",
+          "git_blob_sha": "90293d871677e4be26adbb1a1081f53fd165d272",
+          "sha256": "b916d2bdda7ec91c6235403fcb9508916918ee65856437f8f25341611ee94b06"
+        }
+      ],
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "b916d2bdda7ec91c6235403fcb9508916918ee65856437f8f25341611ee94b06"
+    },
+    {
+      "path": "reveng/ResearchLocal/comparison_data.py",
+      "bytes": 12725,
+      "sha256": "d10e0540b91827303b6f41f77b694658cea85313cf81b5507ae04dc4200f85c9",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/comparison_data.py",
+      "source_sha256": "f6823fc45cca2baa91a1dd35c31cdb9a4486d043276033de61831f24042daf58",
+      "change": "unpublished_separate_owner_preference_overlay_or_qualification",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "f6823fc45cca2baa91a1dd35c31cdb9a4486d043276033de61831f24042daf58",
+      "owner_preference_base_sha256": "715b706dab0f6c145986ffd911d70d78523bed636a67fbb5a3da48d4d181edf0"
+    },
+    {
+      "path": "reveng/ResearchLocal/competitor_match.py",
+      "bytes": 12453,
+      "sha256": "28a559ce705ed670c5c9b031b224da88ea2cc4ca54b46e28222d6dfb7bcf9274",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/competitor_match.py",
+      "source_sha256": "28a559ce705ed670c5c9b031b224da88ea2cc4ca54b46e28222d6dfb7bcf9274",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v2.py",
+      "bytes": 8998,
+      "sha256": "334a2ab96276d86fa42b50dbcedcee2bdf4b2bc51297af68c838ca3045ae89b3",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/contract_v2.py",
+      "source_sha256": "334a2ab96276d86fa42b50dbcedcee2bdf4b2bc51297af68c838ca3045ae89b3",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v3.py",
+      "bytes": 13565,
+      "sha256": "ef927617ee511605ea5eddc505352580cd7774f44c4494f21a7170e5f06c822f",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/contract_v3.py",
+      "source_sha256": "ef927617ee511605ea5eddc505352580cd7774f44c4494f21a7170e5f06c822f",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v3_legacy.py",
+      "bytes": 10537,
+      "sha256": "c1d74881f6ffa30798d1ff37651e0884621f7b8ca38edbc29bd71ef4af7033ac",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/contract_v3_legacy.py",
+      "source_sha256": "c1d74881f6ffa30798d1ff37651e0884621f7b8ca38edbc29bd71ef4af7033ac",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v3_legacy32.py",
+      "bytes": 12378,
+      "sha256": "f6c321a2c5c739b2185a2b6911aa3780e9e5220208308c4106b62ec8c046d6f6",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/contract_v3_legacy32.py",
+      "source_sha256": "f6c321a2c5c739b2185a2b6911aa3780e9e5220208308c4106b62ec8c046d6f6",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v3_legacy33.py",
+      "bytes": 12743,
+      "sha256": "51f4f9a8a2f347ad9050b4d90149c5b55c58c49ae955ce75472ee9104d5e0d80",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/contract_v3_legacy33.py",
+      "source_sha256": "51f4f9a8a2f347ad9050b4d90149c5b55c58c49ae955ce75472ee9104d5e0d80",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/contract_v4.py",
+      "bytes": 7510,
+      "sha256": "02a2bc32e9be50767ee5124da9758858e25907de988d0050a8718045869d0c97",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/contract_v4.py",
+      "source_sha256": "02a2bc32e9be50767ee5124da9758858e25907de988d0050a8718045869d0c97",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/decision_recovery.py",
+      "bytes": 4654,
+      "sha256": "e9f535d788f82f432653e856d97a7bc43437442b06f7455d8547bfe88dd8b79f",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/decision_recovery.py",
+      "source_sha256": "28f4e37bd28a7d1a1d4da17ac578d779bdc60a13badf32eef920bd34511a6820",
+      "change": "unpublished_separate_owner_preference_overlay_or_qualification",
+      "owner_preference_base_sha256": "28f4e37bd28a7d1a1d4da17ac578d779bdc60a13badf32eef920bd34511a6820"
+    },
+    {
+      "path": "reveng/ResearchLocal/diagnostic_route.py",
+      "bytes": 16695,
+      "sha256": "4823576069dab234e4a5a057c9154bb78bb6565e8c6ed861d603bd4086251686",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/diagnostic_route.py",
+      "source_sha256": "4823576069dab234e4a5a057c9154bb78bb6565e8c6ed861d603bd4086251686",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/direct_alternatives.py",
+      "bytes": 11523,
+      "sha256": "819eed4aaa3c5600c70bafe64d3e35c01612e1c3c3126f4c60ae85b75bf371b7",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/direct_alternatives.py",
+      "source_sha256": "fc4a0c732bf68093da76c3ece62b658530509d4e271741549353d0b9e09bc31d",
+      "change": "reviewed_unpublished_followon_core_change",
+      "source_blobs": [
+        {
+          "label": "B/direct_alternatives.py",
+          "git_blob_sha": "7d3b4e3cbd20943afa12bc73a1d8573134ba2482",
+          "sha256": "f8449e696bd468b5ebcd246d572bf46a0d775e6c8e2dd15fca92b99b84ef9a77"
+        },
+        {
+          "label": "C/direct_alternatives.py",
+          "git_blob_sha": "80587cf02e3db518a71b1ed22913bc836a5b78fe",
+          "sha256": "5eeeef3afe3ba0a7e7274df6c892161818026066b83f5c0285ab0de69c69635a"
+        }
+      ],
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "21ec30b9523d37e266e9778076195f805c60856cb37cee12b85d4c0dc70033c0"
+    },
+    {
+      "path": "reveng/ResearchLocal/discovery_plan.py",
+      "bytes": 1695,
+      "sha256": "d95af13d32ca2bd02532cd3e4882891994500ff8764373acbbfefd6c3326ea66",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/discovery_plan.py",
+      "source_sha256": "d95af13d32ca2bd02532cd3e4882891994500ff8764373acbbfefd6c3326ea66",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/editor_recovery.py",
+      "bytes": 2081,
+      "sha256": "6d1240e9711d22721497383725b2c394070167864822a61a011aaa78c043b08b",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/editor_recovery.py",
+      "source_sha256": "6d1240e9711d22721497383725b2c394070167864822a61a011aaa78c043b08b",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/evidence_workspace.py",
+      "bytes": 24938,
+      "sha256": "fc439452d2902e36c884db9d1bab4104d75174b3e10df581f21ba79fc1640c6c",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/evidence_workspace.py",
+      "source_sha256": "fc439452d2902e36c884db9d1bab4104d75174b3e10df581f21ba79fc1640c6c",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/executor_exchange.py",
+      "bytes": 5127,
+      "sha256": "6bab2760f0bd3a3d1a46c7a55cf572017875de194aa89338e498d5555579c57e",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/executor_exchange.py",
+      "source_sha256": "6bab2760f0bd3a3d1a46c7a55cf572017875de194aa89338e498d5555579c57e",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/field_references.py",
+      "bytes": 3736,
+      "sha256": "ab1807c3618c6c4703ffc2473c593d4ca229fb10a4edccb54a1727441e222405",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/field_references.py",
+      "source_sha256": "ab1807c3618c6c4703ffc2473c593d4ca229fb10a4edccb54a1727441e222405",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/html_document_identity.py",
+      "bytes": 3265,
+      "sha256": "89b6a42cbea00174a558cbdafeba3e1a4c8984d75dfc638d9aa2442105341305",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/html_document_identity.py",
+      "source_sha256": "89b6a42cbea00174a558cbdafeba3e1a4c8984d75dfc638d9aa2442105341305",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/html_references.py",
+      "bytes": 1730,
+      "sha256": "2acf0196687e955f094024a9fa34137b2c6438685be1670bd00090e1feb3477b",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/html_references.py",
+      "source_sha256": "2acf0196687e955f094024a9fa34137b2c6438685be1670bd00090e1feb3477b",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/json_contract.py",
+      "bytes": 3991,
+      "sha256": "9805d1c84afb83f11b20b6059be0a304512186dd05b37e10f401eb211f588d31",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/json_contract.py",
+      "source_sha256": "9805d1c84afb83f11b20b6059be0a304512186dd05b37e10f401eb211f588d31",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/legacy_candidate_reviews.py",
+      "bytes": 4489,
+      "sha256": "db047c0baf13457656a768f5d5eae2e3b3b5ff0b872a35377c891f8c7f7eb856",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/legacy_candidate_reviews.py",
+      "source_sha256": "db047c0baf13457656a768f5d5eae2e3b3b5ff0b872a35377c891f8c7f7eb856",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/manual_hypotheses.py",
+      "bytes": 6141,
+      "sha256": "f5810fb5a315d7c09f071b911a54f85d21bd96434917efdc706bc42da9f1e307",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/manual_hypotheses.py",
+      "source_sha256": "f5810fb5a315d7c09f071b911a54f85d21bd96434917efdc706bc42da9f1e307",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/model_contract.py",
+      "bytes": 7000,
+      "sha256": "cf5623a3838ce80256aa6bfc9cbed77a5323714cb05351a9284ab85e6d78a15c",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/model_contract.py",
+      "source_sha256": "cf5623a3838ce80256aa6bfc9cbed77a5323714cb05351a9284ab85e6d78a15c",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/model_packet.py",
+      "bytes": 2154,
+      "sha256": "a64287d7c4aab754b2ab0e07edf7683a372392e01e42bedf7fa950b89894fea5",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/model_packet.py",
+      "source_sha256": "3360be65c7d0b9a77d136420d348f1bc09d4a8b4e8e9b6e54c49c92da88b6461",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/monetary_utterances.py",
+      "bytes": 5084,
+      "sha256": "84c0da497aab2b77490dc198177587b85b3b3e06c143ad17fc675b274f331be3",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/monetary_utterances.py",
+      "source_sha256": "84c0da497aab2b77490dc198177587b85b3b3e06c143ad17fc675b274f331be3",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/observation_history.py",
+      "bytes": 7312,
+      "sha256": "fb005209f2665b4fc27fc049b0c7b3cbf41acf2a3a77ca3b38f754838729215f",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/observation_history.py",
+      "source_sha256": "f2377245177ce4a358174a6416b09ee6f4cbd892b8223f1b7e3629119cf3a532",
+      "change": "unpublished_collection_history_queue_integrity_repair",
+      "collection_integrity_previous_change": "exact_public_source_import",
+      "collection_integrity_base_sha256": "f2377245177ce4a358174a6416b09ee6f4cbd892b8223f1b7e3629119cf3a532",
+      "answer_cache_base_sha256": "163e9b52505f28d34b084861b3a68e9ec8581730bbff965f90589e3b7cd7af01",
+      "answer_cache_change": "unpublished_enrichment_local_cache_repair"
+    },
+    {
+      "path": "reveng/ResearchLocal/official_html.py",
+      "bytes": 3418,
+      "sha256": "efae3b7e1c4bc69534fc7ec5912e090fb6fa15672e6953669b474040a4bb1562",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/official_html.py",
+      "source_sha256": "28f4f50595bee2e13a395d651cb34e5769d6d2f44a48baf86d1959aec58a7bce",
+      "change": "exact_public_source_import",
+      "price_cache_base_sha256": "28f4f50595bee2e13a395d651cb34e5769d6d2f44a48baf86d1959aec58a7bce",
+      "price_cache_change": "unpublished_pricing_cache_evidence_preservation"
+    },
+    {
+      "path": "reveng/ResearchLocal/official_observations.py",
+      "bytes": 7435,
+      "sha256": "ccd610f247d8f0238948026db9b6b5d727f4b0929422d4fb9a4962c44f62b52d",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/official_observations.py",
+      "source_sha256": "ccd610f247d8f0238948026db9b6b5d727f4b0929422d4fb9a4962c44f62b52d",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/offline_entry.py",
+      "bytes": 2882,
+      "sha256": "1f7a8d29b72bd6774d8d71f075ba0d610cea7e0d2c73b54b8092b7f3c0bfd25e",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/offline_entry.py",
+      "source_sha256": "1f7a8d29b72bd6774d8d71f075ba0d610cea7e0d2c73b54b8092b7f3c0bfd25e",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/plan_mapping.py",
+      "bytes": 8912,
+      "sha256": "6334ca96c0606cf85fe4bbec7d8c687bd04f954232b83bc54f785c7af0198774",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/plan_mapping.py",
+      "source_sha256": "6334ca96c0606cf85fe4bbec7d8c687bd04f954232b83bc54f785c7af0198774",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/portable_paths.py",
+      "bytes": 901,
+      "sha256": "bf39c3f09e6f36208497518115e4600a502828f4386f33542ddfc62435392694",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/portable_paths.py",
+      "source_sha256": "bf39c3f09e6f36208497518115e4600a502828f4386f33542ddfc62435392694",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/price_experiments.py",
+      "bytes": 2461,
+      "sha256": "56ae9089d2036d5e91f7915c073407a2c516b6918d4b49c4dc2b52f848a43a56",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": null,
+      "change": "new_unpublished_followon_source_or_tests"
+    },
+    {
+      "path": "reveng/ResearchLocal/proposal_quality.py",
+      "bytes": 3743,
+      "sha256": "86004391adc4bcf54d277cf73c0c11709dc5d42ed71ce29a67fe8c7e65a59d89",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/proposal_quality.py",
+      "source_sha256": "86004391adc4bcf54d277cf73c0c11709dc5d42ed71ce29a67fe8c7e65a59d89",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/proposal_replay.py",
+      "bytes": 5553,
+      "sha256": "bbc3f5efd865ea081a4c9a810e8309719b8869f96a181a764ca73d5f5d6aab36",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/proposal_replay.py",
+      "source_sha256": "bbc3f5efd865ea081a4c9a810e8309719b8869f96a181a764ca73d5f5d6aab36",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/quote_contract.py",
+      "bytes": 5329,
+      "sha256": "bc92e03071878a7be8a03b7704d7ba8a51dabd5cc0ee7bc5bc7465b0da3df682",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/quote_contract.py",
+      "source_sha256": "bf0ed7e49fb943e3375a016dde4fc07d6702629a8ab15f33f3dbeb9a103cfc99",
+      "change": "exact_public_source_import",
+      "quotation_budget_base_sha256": "bf0ed7e49fb943e3375a016dde4fc07d6702629a8ab15f33f3dbeb9a103cfc99",
+      "quotation_budget_change": "unpublished_shared_source_budget_repair"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_candidate_review.py",
+      "bytes": 15182,
+      "sha256": "100627b662b41d97f89395042ddbd24d27ae48d252a2f214065a8267e0560845",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/research_candidate_review.py",
+      "source_sha256": "b59113110e13ea4da717ec95d0a9d3a86e310ff4da652f8e72c8243c4350ebcd",
+      "change": "reviewed_unpublished_followon_core_change",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "b59113110e13ea4da717ec95d0a9d3a86e310ff4da652f8e72c8243c4350ebcd"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_chain.py",
+      "bytes": 7613,
+      "sha256": "8301db3285c4949a8db16b5c222ff32964f0fa17586c37f885f7dfd36a24a78e",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/research_chain.py",
+      "source_sha256": "8301db3285c4949a8db16b5c222ff32964f0fa17586c37f885f7dfd36a24a78e",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_export.py",
+      "bytes": 33837,
+      "sha256": "7286219a64fb0de6626220035f660c4d9021c35f1d568b5475983b5d46dad464",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/research_export.py",
+      "source_sha256": "191077e697331b24e78001d3efaac57ba59144e28b6de4f0c5d28d16ddf696c6",
+      "change": "reviewed_unpublished_followon_core_change",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "191077e697331b24e78001d3efaac57ba59144e28b6de4f0c5d28d16ddf696c6"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_review.py",
+      "bytes": 10284,
+      "sha256": "4d074017da075c16c4d0ed8415da2ece2bf29dae08e2410fa0e4710752238c08",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/research_review.py",
+      "source_sha256": "4d074017da075c16c4d0ed8415da2ece2bf29dae08e2410fa0e4710752238c08",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_reviews.py",
+      "bytes": 11797,
+      "sha256": "e6951591e441060b9f1d2ca2dbc012b135d11c47c7b9a816f904dad0756062ec",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/research_reviews.py",
+      "source_sha256": "e6951591e441060b9f1d2ca2dbc012b135d11c47c7b9a816f904dad0756062ec",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/research_tasks.py",
+      "bytes": 4627,
+      "sha256": "e3caedfb3571606127d77a349b416e006944188a8f67507714e580d16ce689fb",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/research_tasks.py",
+      "source_sha256": "eb363207373eec6a133357b6655821e91231237fd00e81c06db0f11fbe5cd5e6",
+      "change": "reviewed_unpublished_followon_core_change",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "eb363207373eec6a133357b6655821e91231237fd00e81c06db0f11fbe5cd5e6"
+    },
+    {
+      "path": "reveng/ResearchLocal/response_diagnostics.py",
+      "bytes": 9018,
+      "sha256": "2a6c49f85f95cff94d8aaca73b3321e5336ec85e0bb6d4dea421b3a54859da2e",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/response_diagnostics.py",
+      "source_sha256": "2a6c49f85f95cff94d8aaca73b3321e5336ec85e0bb6d4dea421b3a54859da2e",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/restore_difference.py",
+      "bytes": 3167,
+      "sha256": "62b2096ca98e4f665694ae694437b8a23bf7dcf2ce9ce5731675d62715c160ce",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/restore_difference.py",
+      "source_sha256": "62b2096ca98e4f665694ae694437b8a23bf7dcf2ce9ce5731675d62715c160ce",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/reveng_buyer_worker.py",
+      "bytes": 5414,
+      "sha256": "0a687196f4ffab47f16ca1e50ceefdc46dcb69e8daa530f5a46009a8ce398e22",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/reveng_buyer_worker.py",
+      "source_sha256": "0a687196f4ffab47f16ca1e50ceefdc46dcb69e8daa530f5a46009a8ce398e22",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/reveng_competitor_worker.py",
+      "bytes": 10303,
+      "sha256": "03eecc864a1e0dae51a886cbbae8f4c218f41a7baf20011a2aaa730b6d04c710",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/reveng_competitor_worker.py",
+      "source_sha256": "801b54aceca0db0ee48f614101b2aadf0ecf49b0990e1562c5fc5c26c0de426a",
+      "change": "reviewed_unpublished_followon_core_change",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "801b54aceca0db0ee48f614101b2aadf0ecf49b0990e1562c5fc5c26c0de426a"
+    },
+    {
+      "path": "reveng/ResearchLocal/reveng_local_research.py",
+      "bytes": 41029,
+      "sha256": "423773b42181e0eecdbaabe97c3d6a798c1cd2de7dd4d3e8eaa58bd598bbb91a",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/reveng_local_research.py",
+      "source_sha256": "527a89cf4aca85c247797c73ca4f961ac56fcda7737c2fa82e64e228320f0732",
+      "change": "unpublished_collection_history_queue_integrity_repair",
+      "source_blobs": [
+        {
+          "label": "B/reveng_local_research.py",
+          "git_blob_sha": "17b8d8c219bc208f0010bf714c0c5555c1491985",
+          "sha256": "a27698767e64cd9df29752ed141c1f66501e657bfddc8811d78081386661b6e6"
+        },
+        {
+          "label": "C/reveng_local_research.py",
+          "git_blob_sha": "fb47841220e1a3284dd72d8bde5989bc4c15ef80",
+          "sha256": "99de3577cead62315997995a0765d6a5ead6061e692044ef2878b4d582345785"
+        }
+      ],
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "b3823f9057bef6a6604987c3fedcef20fc24d707ed8062978a73cdd66b81c34f",
+      "collection_integrity_previous_change": "reviewed_unpublished_followon_core_change",
+      "collection_integrity_base_sha256": "4c1f5aa01cc1a6ba882a2bf64d67d94b5abc8ba80e1d977dc5879d0297a38ca9",
+      "answer_cache_base_sha256": "9d2cdd8f63c1fc080004ee4fcac54189ebb84b32b878346b8834e974065e6956",
+      "answer_cache_change": "unpublished_enrichment_local_cache_repair",
+      "price_cache_base_sha256": "231d4906a14812081528dbcfaff67259910574389b556823987879c435ff89f3",
+      "price_cache_change": "unpublished_pricing_cache_evidence_preservation"
+    },
+    {
+      "path": "reveng/ResearchLocal/runtime_diagnostics.py",
+      "bytes": 5104,
+      "sha256": "f721bc74cc320a8d30c469bc6e771e7c7f1af79e6cc048c9164676ea7b2f5c18",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/runtime_diagnostics.py",
+      "source_sha256": "f721bc74cc320a8d30c469bc6e771e7c7f1af79e6cc048c9164676ea7b2f5c18",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/saved_analysis_context.py",
+      "bytes": 13628,
+      "sha256": "61a23797db4035654f65f98d70b17f67a660c120b1fc6f3ef1e3f05f4ba35cca",
+      "saved_context_base_seal_sha256": "0a6ffea8cef6e8b05d26a456a7ca3eac2600bced249f6ad4c73f2f912472f3be",
+      "saved_context_base_sha256": null,
+      "change": "new_unpublished_saved_context_source_or_tests"
+    },
+    {
+      "path": "reveng/ResearchLocal/social_idea_preview.py",
+      "bytes": 7137,
+      "sha256": "cd6192da3013288cf33ca86bf47258b9d8476e03f45f8e77e61caec95fa47cda",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/social_idea_preview.py",
+      "source_sha256": "751fef1886da8e03733206aa416e01631348231949373343b59e554c7a055cdb",
+      "change": "unpublished_separate_owner_preference_overlay_or_qualification",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "751fef1886da8e03733206aa416e01631348231949373343b59e554c7a055cdb",
+      "owner_preference_base_sha256": "be710d4638e9fd572e1039bf6d076ba269ba86ac6ea2a8835d3c71ceb22bd916"
+    },
+    {
+      "path": "reveng/ResearchLocal/source_context.py",
+      "bytes": 16472,
+      "sha256": "43d961cba0f45868c5f7e74e7f1638cd9b91f08915dbe87b6aa29291da552db8",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/source_context.py",
+      "source_sha256": "126b5a5f680359f73fecdd0800514c8a91822b40cc65354872e74e62ba72eecc",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/source_ledger.py",
+      "bytes": 13576,
+      "sha256": "60695e744edbc1b20c6e71d13eb8d61450691b9bafd47daaacaa52523a5c4957",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/source_ledger.py",
+      "source_sha256": "60695e744edbc1b20c6e71d13eb8d61450691b9bafd47daaacaa52523a5c4957",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/source_proposals.py",
+      "bytes": 16459,
+      "sha256": "7e9f1361e9477fb63b048726cf2fedfbe53238b4c294f013021dbb1d0d270ae0",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/source_proposals.py",
+      "source_sha256": "7e9f1361e9477fb63b048726cf2fedfbe53238b4c294f013021dbb1d0d270ae0",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/source_rules.py",
+      "bytes": 15762,
+      "sha256": "8cd3e4ac835188343334f408da44dd958516ed28b6c0ac511281f061c19ef9cd",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/source_rules.py",
+      "source_sha256": "4e0ebd7d72ef02e66edf15370c0356a3088e6e4beba7e69071b6701fee0a2ec7",
+      "change": "reviewed_unpublished_followon_core_change",
+      "source_blobs": [
+        {
+          "label": "B/source_rules.py",
+          "git_blob_sha": "1ea6c59ffe58c9a7edd485bf71e1401e13a7fcc5",
+          "sha256": "4cd8558bb9a16eee1885cf905520cb49af170bd4f95a77955bcc5d68c67e75d1"
+        },
+        {
+          "label": "C/source_rules.py",
+          "git_blob_sha": "f72e0593fc8d53a6e59a3f3a921cab8086006655",
+          "sha256": "3b9043287a525a76c388afe7928e191a5a03f1cd8c5eaecf6f36de7399bae478"
+        }
+      ],
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "2c8ec2ca2b6821a80a1669031de5672d50fbceb72545526d9d3a9761b5536889"
+    },
+    {
+      "path": "reveng/ResearchLocal/test_commercial.py",
+      "bytes": 4710,
+      "sha256": "f6f8ddc76225b77376dbdb0edf9471f316022683d6aca1af88a329327928d9f6",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/test_commercial.py",
+      "source_sha256": "ccb24742be4cb88b2609eaa7c25f9015faccb2198a35a64776e894309ba9f1c1",
+      "change": "existing_url_expectation_updated_for_saved_variants_plus_exact_duplicate_regression"
+    },
+    {
+      "path": "reveng/ResearchLocal/test_local_research.py",
+      "bytes": 5507,
+      "sha256": "539c7ab5732f611c8a772a17b6ddf43bed6c73862ddbbe17ab26e09f020672ae",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/test_local_research.py",
+      "source_sha256": "0b8e6c43cccec8546d0b3172d10446bbf21f04c035bc0fb6780e4dc4bbe279b2",
+      "change": "existing_positive_fixture_exact_synthetic_title_quote"
+    },
+    {
+      "path": "reveng/ResearchLocal/wordpress_identity.py",
+      "bytes": 1473,
+      "sha256": "a85fba46e5145f23292d9fb1ef08d40cfec22ffc4304baeb8bb586341d760664",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/wordpress_identity.py",
+      "source_sha256": "a85fba46e5145f23292d9fb1ef08d40cfec22ffc4304baeb8bb586341d760664",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/wp_context_checkpoint.py",
+      "bytes": 1680,
+      "sha256": "96dea9070ceae4ea985272a8bf4671c23a161f9856509272d07a203a33f3e1e2",
+      "source_path": ".ci/test-only/production/reveng028/ResearchLocal/wp_context_checkpoint.py",
+      "source_sha256": "96dea9070ceae4ea985272a8bf4671c23a161f9856509272d07a203a33f3e1e2",
+      "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/tests/TestOperationOutcome.cs",
+      "bytes": 6771,
+      "sha256": "d781e1af0545deb05867b401b75e6cd690362a9dd105f48793b349b3a4ec51a4"
+    },
+    {
+      "path": "reveng/tests/TestOutcome.cs",
+      "bytes": 12894,
+      "sha256": "f25901c4707350649df6e3cf73f0376eafe667d8cc52653a7d699f89eb324d5f",
+      "change": "original_32_checks_plus_eight_owned_negative_snapshot_containment_checks",
+      "source_blobs": [
+        {
+          "label": "NT/TestOutcome.cs",
+          "git_blob_sha": "d790819e27eb626dce22e8b56b99313b05f0ea68",
+          "sha256": "731da907089119f351c40710b13b7ecba9d9db7dd304da41d101a148aa5ef80e"
+        }
+      ]
+    },
+    {
+      "path": "reveng/tests/TestOwnerPreferencePresentation.cs",
+      "bytes": 3092,
+      "sha256": "bca4467aeb8a2e4d0308e4328402cd5134f0700e09905db5f73b6c3d5740149f",
+      "owner_preference_base_sha256": null,
+      "change": "unpublished_separate_owner_preference_overlay_or_qualification"
+    },
+    {
+      "path": "reveng/tests/TestPortableRuntimeDrain.cs",
+      "bytes": 8489,
+      "sha256": "2c762ca45e0573e9729e8818e7dc1f099ad0138eb7f2f1cfa3e3ca5f374305bb"
+    },
+    {
+      "path": "reveng/tests/TestPriceExperimentPresentation.cs",
+      "bytes": 5280,
+      "sha256": "265b24f227a946423793520e9e4198942dbee604b2830b795e2ed590b4c81943",
+      "price_ui_base_sha256": null,
+      "change": "unpublished_native_offer_presentation_or_qualification"
+    },
+    {
+      "path": "reveng/tests/price_ui_vectors.json",
+      "bytes": 7059,
+      "sha256": "c155f2636f36b57d5a22f42bb34d88b6b3dc15423e3a42e5e27d6dde6f37d570",
+      "price_ui_base_sha256": null,
+      "change": "unpublished_native_offer_presentation_or_qualification"
+    },
+    {
+      "path": "reveng/tests/test_answer_cache_integrity.py",
+      "bytes": 13825,
+      "sha256": "f91066ac824f0bfde4623906d2f4bea5feb08931437c613efb079983622b1c13",
+      "answer_cache_base_sha256": null,
+      "answer_cache_change": "unpublished_answer_cache_tests_or_documentation"
+    },
+    {
+      "path": "reveng/tests/test_capability_portable.py",
+      "bytes": 11547,
+      "sha256": "9fba4cb6b268dc58627ef1d1ed227bb4be22e4bcd5dccd6c0d797ac9f964eb4a",
+      "change": "reviewed_unpublished_followon_core_change",
+      "source_blobs": [
+        {
+          "label": "T/test_capability_portable.py",
+          "git_blob_sha": "06e26631724dce480cb8bbb212a8fb3bcea2126b",
+          "sha256": "5eb9c3045c0cee5abc3171a23c7ccff8339c70cc0330f4d6d85706cd34e0971c"
+        }
+      ],
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": "06d17140d646fa533ab4bf82d4a87eea25a07340f47c33dd3913ace4eb574fbd"
+    },
+    {
+      "path": "reveng/tests/test_collection_integrity.py",
+      "bytes": 56966,
+      "sha256": "03e5ab70b585e8cf151679c9c391e8d1bc4683a38c05cad6690129531c06ef7b",
+      "change": "local_buyer_normalization_repair_not_published",
+      "answer_cache_base_sha256": "0ebee266675466512f456c0948e4c762e9b73c82af66bcf2d348e1c408b80782",
+      "answer_cache_change": "unpublished_answer_cache_tests_or_documentation"
+    },
+    {
+      "path": "reveng/tests/test_hypothesis_contract.py",
+      "bytes": 20620,
+      "sha256": "56a16e1d3a02fc5d4104187c7a908fde357d85d00a949df6c955c3c79d8567a7",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": null,
+      "change": "new_unpublished_followon_source_or_tests",
+      "quotation_budget_base_sha256": "68e938a23c20ffcb07c0e425b78387af5c9b0640d76daa182bd0d4280625b006",
+      "quotation_budget_change": "unpublished_quotation_regressions_or_documentation"
+    },
+    {
+      "path": "reveng/tests/test_identity_portable.py",
+      "bytes": 5478,
+      "sha256": "d86b9e236394b8fccbbbff2ad21f7a736cc040c9b7db5c487d1c2c05dae6bcc7",
+      "change": "original_nine_identity_checks_explicit_source_path_no_fallback_and_offline_guard",
+      "source_blobs": [
+        {
+          "label": "NT/test_identity_portable.py",
+          "git_blob_sha": "b6d17b84845e58f6baf71869b6af4295a98f1053",
+          "sha256": "a37c78a548f7b1cdbd18e78b74ca9de3aee243eb7290cb141a646384f589399b"
+        }
+      ]
+    },
+    {
+      "path": "reveng/tests/test_integrated_ci_contract.py",
+      "bytes": 10717,
+      "sha256": "9fbe7e845413f7f7c9f9f5b0a5f0192a5e16229a656fbdcba1ba648af6041665",
+      "change": "RevEng-only CI orchestration contracts; actual native proof remains separate"
+    },
+    {
+      "path": "reveng/tests/test_owner_preference_overlay.py",
+      "bytes": 14003,
+      "sha256": "77f7335129fc20b78f9f9606ebc8e020d571aa6c37f21c21af0c81e9274118b0",
+      "owner_preference_base_sha256": null,
+      "change": "unpublished_separate_owner_preference_overlay_or_qualification"
+    },
+    {
+      "path": "reveng/tests/test_price_cache_integrity.py",
+      "bytes": 13917,
+      "sha256": "29913ce138a4bee7ba5cec5ab47f7e473eebf2195cbc5ddf6e1d058808406f92",
+      "price_cache_base_sha256": null,
+      "price_cache_change": "unpublished_pricing_cache_tests_or_documentation"
+    },
+    {
+      "path": "reveng/tests/test_price_experiment_projection.py",
+      "bytes": 8540,
+      "sha256": "8e2635c3c64f45d78a2465067190b3541fa0a6f935079dbeb61814207ef29890",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": null,
+      "change": "new_unpublished_followon_source_or_tests"
+    },
+    {
+      "path": "reveng/tests/test_price_ui_contract.py",
+      "bytes": 2216,
+      "sha256": "f721e7b5816cf944d3bb1b8cd352545e25e10637284e2b7de9a33a00117174d8",
+      "price_ui_base_sha256": null,
+      "change": "unpublished_native_offer_presentation_or_qualification"
+    },
+    {
+      "path": "reveng/tests/test_researchlocal_offline.py",
+      "bytes": 13201,
+      "sha256": "895df7c543d573fe5e50dbe1005bf0153e902ddbec8cd89e4469ab6b26937b40",
+      "change": "new_16_portable_contracts_and_strict_no_socket_event_loop"
+    },
+    {
+      "path": "reveng/tests/test_saved_analysis_context.py",
+      "bytes": 16604,
+      "sha256": "231c7035295663e60d907114d229e055df26a334522596f2f1e252e23cb7989a",
+      "saved_context_base_seal_sha256": "0a6ffea8cef6e8b05d26a456a7ca3eac2600bced249f6ad4c73f2f912472f3be",
+      "saved_context_base_sha256": null,
+      "change": "new_unpublished_saved_context_source_or_tests"
+    },
+    {
+      "path": "reveng/tests/test_task_routing.py",
+      "bytes": 8803,
+      "sha256": "73f3c7d3bc779d8280f2f2b27645e309341b25576bf05efb67bfe9786d5b03e1",
+      "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+      "followon_base_sha256": null,
+      "change": "new_unpublished_followon_source_or_tests"
+    }
+  ],
+  "followon": {
+    "base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+    "publication_status": "not_published",
+    "scope": [
+      "typed optional proposed test offers and narrow uncertainty clauses",
+      "explicit unverified local comparison/preview/CSV projection",
+      "specific task routing and cache-policy invalidation"
+    ],
+    "unchanged_public_baseline_application_files": 86,
+    "limits": [
+      "No model-quality or general semantic-negation claim",
+      "No new source capture, installation or external transfer",
+      "No new Windows/GUI qualification",
+      "Three-letter currency syntax only; no currency validity or exchange-rate inference"
+    ]
+  },
+  "integrated_ci_preparation": {
+    "public_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+    "core_seal_sha256": "465632e56d45c7c6f5ff6bfa011c6e14b77fb48bc407624acb3dad8dee4033b8",
+    "answer_seal_sha256": "ad3d877686081fe7f7f820530f759bb62452efe7ccf979bee0f1391bccb54d52",
+    "price_cache_seal_sha256": "d32a20e381ebffb19c6fcf23d3da7699c88293bb8a780a9806d629ebb11471f5",
+    "overlays": [
+      {
+        "stage": "native_price_presentation",
+        "stage_seal_sha256": "ce07863f4d160a7c30f180b979a92eb4382cb79d302f0d86251925378d0495dc",
+        "changed_paths": [
+          "reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json",
+          "reveng/ResearchLocal/EvidenceComparison.cs",
+          "reveng/ResearchLocal/PriceExperimentPresentation.cs",
+          "reveng/ResearchLocal/README.md",
+          "reveng/ResearchLocal/RevEngLocalResearch.cs",
+          "reveng/tests/TestPriceExperimentPresentation.cs",
+          "reveng/tests/price_ui_vectors.json",
+          "reveng/tests/test_price_ui_contract.py"
+        ]
+      },
+      {
+        "stage": "owner_preference",
+        "stage_seal_sha256": "fc82cb8cf5a9c166416298161103c9882971dbc1348aae1f82e203e135782841",
+        "changed_paths": [
+          "reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json",
+          "reveng/ResearchLocal/EvidenceComparison.cs",
+          "reveng/ResearchLocal/README.md",
+          "reveng/ResearchLocal/comparison_data.py",
+          "reveng/ResearchLocal/decision_recovery.py",
+          "reveng/ResearchLocal/social_idea_preview.py",
+          "reveng/tests/TestOwnerPreferencePresentation.cs",
+          "reveng/tests/test_owner_preference_overlay.py"
+        ]
+      }
+    ],
+    "publication_status": "not_published",
+    "qualification": "Exact local source composition; native and hosted qualification must come from this exact integrated commit, never inherited from separate stage passes",
+    "exclusions": [
+      "owner records",
+      "source captures",
+      "working logs",
+      "model weights",
+      "secrets",
+      "Social/Forge denied payloads"
+    ],
+    "harness": {
+      "path": ".ci/test-only/harness/reveng_followon.py",
+      "python_suites": 13,
+      "modes": [
+        "normal",
+        "optimized"
+      ],
+      "native_probes": [
+        "TestPriceExperimentPresentation",
+        "TestOwnerPreferencePresentation",
+        "TestPortableRuntimeDrain",
+        "TestOperationOutcome"
+      ],
+      "native_target": "Actual all-source application wrapper.exe; static methods only, no GUI",
+      "per_check_timeout_seconds": 90,
+      "job_timeout_minutes": 15,
+      "workflows_modified": false,
+      "local_partial_mode_forbidden_in_actions": true,
+      "hosted_results": "Not run at local preparation time"
+    }
+  },
+  "later_delta_scope": "Only the 19 verified published original blobs listed here and reviewed reconciliation; not a claim about unrelated or unpublished local work.",
+  "later_local_delta_included": true,
+  "operation_outcome_repair": {
+    "publication_status": "not_published",
+    "base_seal_sha256": "c783086daa2bc6780a4f8792fa1c151c5efcce5681fc04d639eb74388c1f39e5",
+    "scope": "Three existing caller files: post-tool receipt uncertainty, saved/rejected result plus refresh warnings, best-effort owned staging cleanup",
+    "native_probe": "TestOperationOutcome; actual pure methods only, no Forms/Process",
+    "native_execution": "NOT_RUN",
+    "persistence_source_changed": false,
+    "automatic_retry": false,
+    "workflow_changed": false
+  },
+  "original_blob_roles": {
+    "N": "native source",
+    "NT": "native tests",
+    "C": "API candidate/reference",
+    "B": "API before-patch reference",
+    "T": "API tests"
+  },
+  "owner_preference_overlay": {
+    "base_seal_sha256": "ce07863f4d160a7c30f180b979a92eb4382cb79d302f0d86251925378d0495dc",
+    "publication_status": "not_published",
+    "production_changed": [
+      "decision_recovery.py",
+      "comparison_data.py",
+      "social_idea_preview.py",
+      "EvidenceComparison.cs"
+    ],
+    "source_and_owner_state": "No source/card/decision mutation; main Keep/Reject editor unchanged; raw archive notes preserved",
+    "identity_boundary": "Consistent primary/protected preference update changes only separate preference snapshot; conflicting primary-only changes remain non-current; evidence inputs/rows/review hashes unchanged",
+    "readiness": "Keep/Reject preference separate from evidence review and never payment/demand/execution approval",
+    "qualification": "17 synthetic actual-function/static contracts normal and optimized; 40 offline core +7 projection +3 price UI checks; native compile/probe/GUI NOT_RUN"
+  },
+  "portable_runtime_deadline_repair": {
+    "publication_status": "not_published",
+    "base_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
+    "base_qualification_correction_sha256": "d241e3ef132352a77fe3f4a1daaa1d1abf8321f2110683c0e004c369bcef46fb",
+    "scope": "Bounded owned-process output/cleanup and six actual caller unknown-outcome messages; staged proposal retained only when result is unconfirmed",
+    "new_native_probe": "TestPortableRuntimeDrain",
+    "native_probe_registered": true,
+    "native_execution": "NOT_RUN; no compiler/runtime in restricted workspace",
+    "workflow_changed": false,
+    "unchanged": "No automatic retry, descendant/global kill, output deletion, model/live calls or frozen publication delta edits",
+    "new_native_probe_execution_scope": "In-process managed helper only; even a future pass will not qualify actual Process or GUI behavior"
+  },
+  "preserved_separate_subsystems": [
+    "reveng/src",
+    "reveng/vendor",
+    "reveng/app_overlay_g281"
+  ],
+  "price_ui_presentation": {
+    "base_seal_sha256": "465632e56d45c7c6f5ff6bfa011c6e14b77fb48bc407624acb3dad8dee4033b8",
+    "publication_status": "not_published",
+    "production_changed": [
+      "PriceExperimentPresentation.cs",
+      "RevEngLocalResearch.cs",
+      "EvidenceComparison.cs"
+    ],
+    "source_and_owner_state": "read only; no persisted records or Python application code changed",
+    "scope": "visible proposed offer in the existing main card and manual comparison panes; no payment/demand/profit assertion",
+    "native_display_bound": "finite nonnegative CLR number, invariant representation <=64 characters, magnitude <1e64; greater magnitudes withheld conservatively",
+    "qualification": "18 shared vectors checked in real Python projection; 2 native call sites statically verified; existing 7 projection/ZIP/CSV tests pass; native compile/probe/GUI never run",
+    "zero_meaning": "Displayed zero may reflect native rounding; free test only if original offer exactly zero; never inferred from parsed zero alone",
+    "native_probe": "Prepared but unrun: 18 shared cases plus 6 actual JSON-reader precision cases and CLR edge values"
+  },
+  "pricing_cache_repair": {
+    "publication_status": "not_published",
+    "base_seal_sha256": "ad3d877686081fe7f7f820530f759bb62452efe7ccf979bee0f1391bccb54d52",
+    "changed_paths": [
+      "reveng/ResearchLocal/README.md",
+      "reveng/ResearchLocal/official_html.py",
+      "reveng/ResearchLocal/reveng_local_research.py",
+      "reveng/tests/test_price_cache_integrity.py"
+    ],
+    "scope": "Preserve damaged positive/negative price checkpoints, explicit source limitations and unknown economics; maintain intact old-policy refresh",
+    "unchanged_boundaries": [
+      "HTML extraction parser",
+      "price interpretation",
+      "answer cache repair",
+      "question/article relations",
+      "semantic revision policy and migration",
+      "saved-context token admission",
+      "no external writes or model/live capture"
+    ]
+  },
+  "qualification": "Offline synthetic tests only; separate dependency and Windows native gates; no live collection, API capture/replay, model, semantic quality, demand or GUI qualification",
+  "quotation_budget_identity_repair": {
+    "publication_status": "not_published",
+    "base_seal_sha256": "59da1ea3ceaeea2cb239aebd7101003ca1726bbdf00b028f273bb96fdaddefb8",
+    "changed_paths": [
+      "reveng/ResearchLocal/README.md",
+      "reveng/ResearchLocal/quote_contract.py",
+      "reveng/tests/test_hypothesis_contract.py"
+    ],
+    "scope": "Preserve generic canonical budget groups; add only existing resolver-confirmed question alias equivalence; no evidence merge or rewrite",
+    "tests": "30 hypothesis/quotation contracts under existing guard, normal and optimized",
+    "unchanged_boundaries": [
+      "commercial report identity resolver",
+      "separate saved evidence rows and original URLs",
+      "export policy and byte-preserved historical inputs/results",
+      "no repeat model dispatch or admission",
+      "no clipping bridge or remote operation"
+    ]
+  },
+  "saved_context_proposal": {
+    "base_followon_seal_sha256": "0a6ffea8cef6e8b05d26a456a7ca3eac2600bced249f6ad4c73f2f912472f3be",
+    "public_ancestor_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
+    "publication_status": "not_published",
+    "stage": "Opt-in actual prepare API, exact request proposal only; always stops before writes/token admission",
+    "application_files_unchanged_from_followon": 96,
+    "bounds": {
+      "input_files_including_current": 4,
+      "bytes_per_input": 8388608,
+      "selected_rows_before_deduplication": 12,
+      "exact_proposal_bytes": 65536
+    },
+    "token_admission": "NOT_PERFORMED; no tokenizer, estimate, fallback or caller count accepted",
+    "expiry": "Minimum verified sealed input expiry; expired selection has no request",
+    "limitations": [
+      "No automatic relatedness selection or corpus search",
+      "No execution authorization, queue update, GUI or model dispatch",
+      "No new capture or renewal of source dates/TTL",
+      "No independence, customer, payment or demand proof",
+      "No native Windows filesystem-race qualification"
+    ]
+  },
+  "schema": "reveng-researchlocal-canonical-reconciliation-v2",
+  "source_commit": "3270642235a529a85187cf0e0fdf1e778482d204",
+  "source_context_repair": {
+    "publication_status": "not_published",
+    "base_seal_sha256": "fd937c6fbd98058d95610f8541da404b4ea90fd7963fb173e77ca8fce134d609",
+    "scope": "Row-isolated bounded API collection with known question identity and explicit partial diagnostics; versioned inline HTML normalization preserving old captured text",
+    "changed_paths": [
+      "reveng/ResearchLocal/README.md",
+      "reveng/ResearchLocal/answer_context.py",
+      "reveng/ResearchLocal/model_packet.py",
+      "reveng/ResearchLocal/observation_history.py",
+      "reveng/ResearchLocal/reveng_local_research.py",
+      "reveng/ResearchLocal/source_context.py",
+      "reveng/tests/test_collection_integrity.py"
+    ],
+    "tests": "50 collection/history tests plus existing guarded suites, normal and optimized; no live/model/native qualification",
+    "historical_policy": "Stable cache keys, legacy raw-answer parser retained, normalized old caches and immutable inputs/snapshots unchanged",
+    "workflow_changed": false
+  },
+  "source_repository": "skynder-dev/projects",
+  "source_snapshot_role": "historical public baseline; canonical import plus explicit later sanitized source reconciliation",
+  "unchanged_application_files": 82,
+  "verified_original_blobs": [
+    {
+      "label": "N/commercial_review.py",
+      "git_blob_sha": "90293d871677e4be26adbb1a1081f53fd165d272",
+      "bytes": 24961,
+      "sha256": "b916d2bdda7ec91c6235403fcb9508916918ee65856437f8f25341611ee94b06",
+      "role": "original_native_delta"
+    },
+    {
+      "label": "N/RevEngLocalResearch.cs",
+      "git_blob_sha": "6fe0b3739d4d6a4392da989ef8fbc0a73d80cbb3",
+      "bytes": 79665,
+      "sha256": "e29592baf43cf88b1e07d94043a5fcc22146bbb2b21c849f3c8f8e80b13214e8",
+      "role": "original_native_delta"
+    },
+    {
+      "label": "N/AnalysisOutcomePresentation.cs",
+      "git_blob_sha": "e443a2322cf52a4e1325bffba85abc6911963c5c",
+      "bytes": 11811,
+      "sha256": "93cf49563dea5b588c7052685cec7671e05fbc583531cbe5687831da2300df16",
+      "role": "original_native_delta"
+    },
+    {
+      "label": "NT/test_identity_portable.py",
+      "git_blob_sha": "b6d17b84845e58f6baf71869b6af4295a98f1053",
+      "bytes": 4668,
+      "sha256": "a37c78a548f7b1cdbd18e78b74ca9de3aee243eb7290cb141a646384f589399b",
+      "role": "original_native_tests"
+    },
+    {
+      "label": "NT/TestOutcome.cs",
+      "git_blob_sha": "d790819e27eb626dce22e8b56b99313b05f0ea68",
+      "bytes": 8634,
+      "sha256": "731da907089119f351c40710b13b7ecba9d9db7dd304da41d101a148aa5ef80e",
+      "role": "original_native_tests"
+    },
+    {
+      "label": "C/api_capability.py",
+      "git_blob_sha": "e2540117d87747a1ced2fee821007748558972f7",
+      "bytes": 7156,
+      "sha256": "1320abca95945f784a83972ea2ca89468b79b8643e821fbd00d27b65965f8447",
+      "role": "api_candidate_reference"
+    },
+    {
+      "label": "C/direct_alternatives.py",
+      "git_blob_sha": "80587cf02e3db518a71b1ed22913bc836a5b78fe",
+      "bytes": 9478,
+      "sha256": "5eeeef3afe3ba0a7e7274df6c892161818026066b83f5c0285ab0de69c69635a",
+      "role": "api_candidate_reference"
+    },
+    {
+      "label": "C/source_rules.py",
+      "git_blob_sha": "f72e0593fc8d53a6e59a3f3a921cab8086006655",
+      "bytes": 7985,
+      "sha256": "3b9043287a525a76c388afe7928e191a5a03f1cd8c5eaecf6f36de7399bae478",
+      "role": "api_candidate_reference"
+    },
+    {
+      "label": "C/reveng_local_research.py",
+      "git_blob_sha": "fb47841220e1a3284dd72d8bde5989bc4c15ef80",
+      "bytes": 28976,
+      "sha256": "99de3577cead62315997995a0765d6a5ead6061e692044ef2878b4d582345785",
+      "role": "api_candidate_reference"
+    },
+    {
+      "label": "C/source_context.py",
+      "git_blob_sha": "09435d58970cfe269a63aa0335d77cf5713bd90c",
+      "bytes": 7869,
+      "sha256": "7f0da8e9338c78eaa29302783eab246d291878ae58045229ef0810e148a30fad",
+      "role": "older_variant_preserved_as_blob_not_overwritten_into_canonical"
+    },
+    {
+      "label": "C/html_references.py",
+      "git_blob_sha": "07766b3d9e2d697857bf48a9e0ec4ae26e212b87",
+      "bytes": 1730,
+      "sha256": "2acf0196687e955f094024a9fa34137b2c6438685be1670bd00090e1feb3477b",
+      "role": "exact_dependency_match_to_public97fc_baseline"
+    },
+    {
+      "label": "C/quote_contract.py",
+      "git_blob_sha": "ff0083f9f7ad9962e85f5e563cfea2bd838b51f2",
+      "bytes": 3429,
+      "sha256": "8663158440a47ab8b78d09c572d5d896818b887d52fe314a0fdc3fd5958a1512",
+      "role": "older_variant_preserved_as_blob_not_overwritten_into_canonical"
+    },
+    {
+      "label": "C/commercial_review.py",
+      "git_blob_sha": "210a4ecb2ce87bb183f60d3c93a7a67e7b788140",
+      "bytes": 10770,
+      "sha256": "77f2b99fe82c1af89927c40f7ea6262b7070994b05c90e113b2d589d7cee6076",
+      "role": "older_variant_preserved_as_blob_not_overwritten_into_canonical"
+    },
+    {
+      "label": "C/model_packet.py",
+      "git_blob_sha": "0660e15c9b541385dbbef0ecb6962c9da3333989",
+      "bytes": 1884,
+      "sha256": "3360be65c7d0b9a77d136420d348f1bc09d4a8b4e8e9b6e54c49c92da88b6461",
+      "role": "exact_dependency_match_to_public97fc_baseline"
+    },
+    {
+      "label": "C/research_tasks.py",
+      "git_blob_sha": "f40638034e97c2d12d7a1d080271567a33322e8e",
+      "bytes": 4067,
+      "sha256": "eb363207373eec6a133357b6655821e91231237fd00e81c06db0f11fbe5cd5e6",
+      "role": "exact_dependency_match_to_public97fc_baseline"
+    },
+    {
+      "label": "B/direct_alternatives.py",
+      "git_blob_sha": "7d3b4e3cbd20943afa12bc73a1d8573134ba2482",
+      "bytes": 9229,
+      "sha256": "f8449e696bd468b5ebcd246d572bf46a0d775e6c8e2dd15fca92b99b84ef9a77",
+      "role": "api_before_patch_reference"
+    },
+    {
+      "label": "B/source_rules.py",
+      "git_blob_sha": "1ea6c59ffe58c9a7edd485bf71e1401e13a7fcc5",
+      "bytes": 7785,
+      "sha256": "4cd8558bb9a16eee1885cf905520cb49af170bd4f95a77955bcc5d68c67e75d1",
+      "role": "api_before_patch_reference"
+    },
+    {
+      "label": "B/reveng_local_research.py",
+      "git_blob_sha": "17b8d8c219bc208f0010bf714c0c5555c1491985",
+      "bytes": 28692,
+      "sha256": "a27698767e64cd9df29752ed141c1f66501e657bfddc8811d78081386661b6e6",
+      "role": "api_before_patch_reference"
+    },
+    {
+      "label": "T/test_capability_portable.py",
+      "git_blob_sha": "06e26631724dce480cb8bbb212a8fb3bcea2126b",
+      "bytes": 4956,
+      "sha256": "5eb9c3045c0cee5abc3171a23c7ccff8339c70cc0330f4d6d85706cd34e0971c",
+      "role": "original_api_tests"
+    }
+  ],
+  "local_source_integration": {
+    "scope": "Local-only coherent source candidate; no publication or hosted qualification",
+    "base_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
+    "base_qualification_correction_sha256": "d241e3ef132352a77fe3f4a1daaa1d1abf8321f2110683c0e004c369bcef46fb",
+    "overlays": [
+      {
+        "stage": "buyer_normalization",
+        "seal_sha256": "dbe9c9238a3adae08575afcfc23bb804ce8eccdf1ae4d11e7fc8a0d8c933f01d",
+        "parent_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
+        "changed_paths": [
+          "FILE_MANIFEST.json",
+          "reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json",
+          "reveng/ResearchLocal/README.md",
+          "reveng/ResearchLocal/buyer_evidence.py",
+          "reveng/tests/test_collection_integrity.py"
+        ]
+      },
+      {
+        "stage": "runtime_timeout",
+        "seal_sha256": "c783086daa2bc6780a4f8792fa1c151c5efcce5681fc04d639eb74388c1f39e5",
+        "parent_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
+        "changed_paths": [
+          ".ci/test-only/harness/reveng_followon.py",
+          "reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json",
+          "reveng/ResearchLocal/EvidenceComparison.cs",
+          "reveng/ResearchLocal/PortableRuntime.cs",
+          "reveng/ResearchLocal/README.md",
+          "reveng/ResearchLocal/RevEngLocalResearch.cs",
+          "reveng/ResearchLocal/SourceLedgerComparison.cs",
+          "reveng/tests/TestPortableRuntimeDrain.cs",
+          "reveng/tests/test_integrated_ci_contract.py"
+        ]
+      },
+      {
+        "stage": "caller_phase",
+        "seal_sha256": "1484166db2ec63ef95882010ed9a73396be818f059a7e55434e18c7f61c35a48",
+        "parent_seal_sha256": "c783086daa2bc6780a4f8792fa1c151c5efcce5681fc04d639eb74388c1f39e5",
+        "changed_paths": [
+          ".ci/test-only/harness/reveng_followon.py",
+          "reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json",
+          "reveng/ResearchLocal/EvidenceComparison.cs",
+          "reveng/ResearchLocal/README.md",
+          "reveng/ResearchLocal/RevEngLocalResearch.cs",
+          "reveng/ResearchLocal/SourceLedgerComparison.cs",
+          "reveng/tests/TestOperationOutcome.cs",
+          "reveng/tests/test_integrated_ci_contract.py",
+          "reveng/tests/test_owner_preference_overlay.py"
+        ]
+      }
+    ],
+    "qualification": "Independent66 source-context cases were unguarded in-memory checks; original guarded wording withdrawn. Integrated guarded test results must be read from the separate local seal, not inferred from input-stage passes.",
+    "native": "NOT_RUN; probe source/wiring only"
+  }
+}

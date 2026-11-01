@@ -1,0 +1,82 @@
+name: reveng-windows
+# RevEng ResearchLocal (sources of 28.10.2026 from the handover, reveng/ResearchLocal) on GitHub's Windows machine:
+# the whole-application compile with the .NET Framework compiler, the native probes the README names, and every offline
+# Python suite in normal and optimized (-O) mode. No live sources, no model calls, no GUI, no install anywhere.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['reveng/ResearchLocal/**', 'reveng/tests/**', 'reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json', '.github/workflows/reveng-windows.yml']
+permissions:
+  contents: read
+concurrency:
+  group: reveng-windows
+  cancel-in-progress: true
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      REVENG_OFFLINE_REPLAY: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Python dependency named by the capability contracts
+        shell: pwsh
+        run: python -m pip install --disable-pip-version-check -q beautifulsoup4==4.12.3 lxml==5.3.0
+      - name: Whole-application compile (csc, .NET Framework 4)
+        shell: pwsh
+        run: |
+          $csc = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
+          $out = Join-Path $env:RUNNER_TEMP 'build'; New-Item -ItemType Directory -Force $out | Out-Null
+          $cs = Get-ChildItem reveng/ResearchLocal -Filter *.cs | ForEach-Object FullName
+          & $csc /nologo /target:winexe /main:LocalEntry "/out:$out\wrapper.exe" /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Web.Extensions.dll @cs
+          if ($LASTEXITCODE) { throw "application compile failed ($LASTEXITCODE)" }
+          "compiled $($cs.Count) files -> wrapper.exe $((Get-Item "$out\wrapper.exe").Length) bytes"
+      - name: Native probes
+        shell: pwsh
+        run: |
+          $csc = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
+          $out = Join-Path $env:RUNNER_TEMP 'build'; $fail = 0
+          function Probe($name, [string[]]$refs, [string[]]$files, [string[]]$runArgs) {
+            & $csc /nologo /target:exe "/main:$name" "/out:$out\$name.exe" @refs @files
+            if ($LASTEXITCODE) { "::error::$name did not compile"; $script:fail++; return }
+            & "$out\$name.exe" @runArgs
+            if ($LASTEXITCODE) { "::error::$name failed ($LASTEXITCODE)"; $script:fail++ } else { "::notice::$name passed" }
+          }
+          $fix = Join-Path $env:RUNNER_TEMP 'fixture-outcome'; New-Item -ItemType Directory -Force $fix | Out-Null
+          Probe TestOutcome @("/r:$out\wrapper.exe", '/r:System.Web.Extensions.dll') @('reveng/tests/TestOutcome.cs') @($fix)
+          Probe TestPriceExperimentPresentation @('/r:System.Web.Extensions.dll') @('reveng/ResearchLocal/PriceExperimentPresentation.cs', 'reveng/tests/TestPriceExperimentPresentation.cs') @('reveng/tests/price_ui_vectors.json')
+          Probe TestOwnerPreferencePresentation @("/r:$out\wrapper.exe", '/r:System.Windows.Forms.dll', '/r:System.Drawing.dll', '/r:System.Web.Extensions.dll') @('reveng/tests/TestOwnerPreferencePresentation.cs') @()
+          Probe TestPortableRuntimeDrain @("/r:$out\wrapper.exe", '/r:System.Web.Extensions.dll') @('reveng/tests/TestPortableRuntimeDrain.cs') @()
+          Probe TestOperationOutcome @("/r:$out\wrapper.exe", '/r:System.Windows.Forms.dll', '/r:System.Drawing.dll', '/r:System.Web.Extensions.dll') @('reveng/tests/TestOperationOutcome.cs') @()
+          if ($fail) { throw "$fail native probe(s) failed" }
+      - name: Offline Python suites (normal and -O)
+        shell: pwsh
+        run: |
+          $fail = 0
+          foreach ($t in Get-ChildItem reveng/tests -Filter 'test_*.py') {
+            if ($t.BaseName -eq 'test_integrated_ci_contract') { "::notice::$($t.BaseName) skipped: needs the .ci harness that is not in the package"; continue }
+            $a = switch ($t.BaseName) {
+              'test_identity_portable' { @('reveng/ResearchLocal') }
+              'test_researchlocal_offline' { @('--source', 'reveng/ResearchLocal', '--include-existing-tests') }
+              default { @('--source', 'reveng/ResearchLocal') }
+            }
+            foreach ($mode in @(@('-I', '-B'), @('-I', '-B', '-O'))) {
+              $log = python @mode $t.FullName @a 2>&1
+              if ($LASTEXITCODE) { "::error::$($t.BaseName) $($mode -join ' ') failed"; $log | Select-Object -Last 25; $fail++ }
+              else { "::notice::$($t.BaseName) $($mode -join ' ') ok: $(($log | Select-Object -Last 1))" }
+            }
+          }
+          if ($fail) { throw "$fail suite run(s) failed" }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: researchlocal-build
+          path: ${{ runner.temp }}/build
+          retention-days: 7
+          if-no-files-found: ignore
