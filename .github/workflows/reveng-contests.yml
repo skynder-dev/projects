@@ -22,7 +22,18 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/research"
           cd reveng/ResearchLocal && python -B contest_terms.py --root "$RUNNER_TEMP/research" | while IFS= read -r l; do echo "::notice::$l"; done
-          python -c "import json,sys;d=json.load(open(sys.argv[1]));print(json.dumps({'compatible':d['compatible'],'records':[{k:r.get(k) for k in ('key','classification','declared_deadline','deadline_status','prize','fee','length_minutes','required_tool','error')} for r in d['records']]},ensure_ascii=False,indent=1))" "$RUNNER_TEMP/research/contest-terms.json"
+          python -c "import json,sys;d=json.load(open(sys.argv[1]));print(json.dumps({'compatible':d['compatible'],'records':[{k:r.get(k) for k in ('key','classification','declared_deadline','deadline_status','prize','fee','length_minutes','required_tool','facts','error')} for r in d['records']]},ensure_ascii=False,indent=1))" "$RUNNER_TEMP/research/contest-terms.json"
+      - name: Where do refused redirects point (diagnostics only, not used by the app)
+        run: |
+          python - "$RUNNER_TEMP/research/contest-terms.json" <<'PY'
+          import json, sys, urllib.request
+          for r in json.load(open(sys.argv[1]))['records']:
+              if 'Redirect' in (r.get('error') or ''):
+                  class N(urllib.request.HTTPRedirectHandler):
+                      def redirect_request(self, *a, **k): return None
+                  try: urllib.request.build_opener(N).open(urllib.request.Request(r['source_url'], method='HEAD'), timeout=20)
+                  except urllib.error.HTTPError as e: print('::notice::' + r['key'] + ' -> ' + str(e.headers.get('Location')))
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: contest-terms
