@@ -1,4 +1,5 @@
 {
+  "contest_terms": "2026-10-31 owner idea: contests as opportunities; contest_terms.py reads organizer pages with the existing bounded transport, robots and HTML identity checks, quoted terms only, kept out of candidates and the global ranking; test_contest_terms.py 8 offline contracts",
   "answer_context_cache_repair": {
     "publication_status": "not_published",
     "base_seal_sha256": "465632e56d45c7c6f5ff6bfa011c6e14b77fb48bc407624acb3dad8dee4033b8",
@@ -19,7 +20,7 @@
       "no external writes or model/live capture"
     ]
   },
-  "application_files": 99,
+  "application_files": 100,
   "buyer_normalization_repair": {
     "publication_status": "not_published",
     "base_source_context_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
@@ -494,6 +495,12 @@
       "source_path": ".ci/test-only/production/reveng028/ResearchLocal/competitor_match.py",
       "source_sha256": "28a559ce705ed670c5c9b031b224da88ea2cc4ca54b46e28222d6dfb7bcf9274",
       "change": "exact_public_source_import"
+    },
+    {
+     "path": "reveng/ResearchLocal/contest_terms.py",
+     "bytes": 11428,
+     "sha256": "7f87b8d398b86ec5184bf4a831d4b2ab9f4e0a80a587ab4f98a94f9392111cff",
+     "change": "new_contest_terms_collector_2026-10-31"
     },
     {
       "path": "reveng/ResearchLocal/contract_v2.py",
@@ -1068,6 +1075,12 @@
       "change": "local_buyer_normalization_repair_not_published",
       "answer_cache_base_sha256": "0ebee266675466512f456c0948e4c762e9b73c82af66bcf2d348e1c408b80782",
       "answer_cache_change": "unpublished_answer_cache_tests_or_documentation"
+    },
+    {
+     "path": "reveng/tests/test_contest_terms.py",
+     "bytes": 8080,
+     "sha256": "3c88aa0441c143926b5a18047ae3ebe1e0c3782eff2485174b7e6af880d8edce",
+     "change": "new_contest_terms_offline_contracts_2026-10-31"
     },
     {
       "path": "reveng/tests/test_hypothesis_contract.py",
