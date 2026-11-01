@@ -43,6 +43,9 @@ jobs:
           $csc = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
           $out = Join-Path $env:RUNNER_TEMP 'build'; $fail = 0
           function Probe($name, [string[]]$refs, [string[]]$files, [string[]]$runArgs) {
+            # csc reads a/b/c.cs badly (forward slashes): give it full Windows paths
+            $files = @($files | ForEach-Object { (Resolve-Path $_).Path })
+            $runArgs = @($runArgs | ForEach-Object { if (Test-Path $_) { (Resolve-Path $_).Path } else { $_ } })
             & $csc /nologo /target:exe "/main:$name" "/out:$out\$name.exe" @refs @files
             if ($LASTEXITCODE) { "::error::$name did not compile"; $script:fail++; return }
             & "$out\$name.exe" @runArgs
