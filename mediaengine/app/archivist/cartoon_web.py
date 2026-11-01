@@ -89,11 +89,13 @@ BG_LABELS = {"city": "City street", "office": "Office", "city_hall": "City hall"
              "school": "School", "shop": "Shop", "home": "Block of flats",
              "site": "Building site"}
 EMO_LABELS = {"": "—", "neutral": "calm", "happy": "happy", "angry": "angry", "sad": "sad", "surprised": "surprised",
-              "sly": "sly", "worried": "worried"}
+              "sly": "sly", "worried": "worried", "laugh": "laughing", "scared": "scared"}
 POSE_LABELS = {"": "—", "talk": "talking", "explain": "explaining", "point": "pointing", "point_up": "finger up",
                "shrug": "shrugging", "cross": "arms crossed", "think": "thinking", "wave": "waving", "hands_up": "hands up",
                "count": "rubbing hands", "present": "presenting", "facepalm": "hand to face", "fist": "fist",
-               "sneaky": "sneaky", "idle": "standing"}
+               "sneaky": "sneaky", "thumbs_up": "thumbs up", "hips": "hands on hips",
+               "scratch": "scratching head", "phone": "on the phone", "money": "showing money", "paper": "showing a paper",
+               "sit": "sitting", "idle": "standing"}
 LEN_LABELS = (("60", "about 1 minute"), ("75", "about 75 seconds"), ("90", "about 1.5 minutes"))
 STORY_LABELS = {"road_contract": "How a City Loses Millions on a Simple Road Contract (example, 10 scenes)"}
 
@@ -107,7 +109,8 @@ HELP_EN = ("First lines: <code>Title:</code>, <code>Format: vertical</code> or <
            "<code>percent: 30% kickback</code>, <code>timeline: 2021 contract; 2023 holes back</code>. "
            "A line: <code>Name (gesture, feeling): words</code>; <code>[bubble]</code> shows it in a speech bubble. "
            "Gestures: talk, explain, point, point up, shrug, cross, think, wave, hands up, rubs hands, present, facepalm, fist, "
-           "sneaky. Feelings: calm, happy, angry, sad, surprised, sly, worried. English or Russian.")
+           "sneaky, thumbs up, hands on hips, scratches head, phone, shows money, shows paper, sits (on a chair or a bench, the whole scene). "
+           "Feelings: calm, happy, angry, sad, surprised, sly, worried, laughing, scared. English or Russian.")
 HELP_RU = ("Первые строки: <code>Название:</code>, <code>Формат: вертикальный</code> или <code>широкий</code>, "
            "<code>Рассказчик: Имя (женщина)</code>, потом персонажи — <code>Имя (мужчина, мэр)</code>. Сцена начинается с "
            "<code>==</code> и фона (Улица, Офис, Мэрия, Дорога, Банк, Ночь, Доска, Бумага, Больница, Школа, Магазин, Дом, Стройка); после <code>|</code> — что в ней "
@@ -117,7 +120,9 @@ HELP_RU = ("Первые строки: <code>Название:</code>, <code>Ф�
            "<code>процент: 30% откат</code>, <code>хронология: 2021 договор; 2023 ямы снова</code>. Реплика: "
            "<code>Имя (жест, настроение): слова</code>; <code>[пузырь]</code> — показать её в облачке. Жесты: говорит, объясняет, "
            "показывает, палец вверх, пожимает плечами, руки скрещены, думает, машет, руки вверх, потирает руки, представляет, "
-           "рука у лица, кулак, крадётся. Настроения: спокойно, радостно, сердито, грустно, удивлённо, хитро, тревожно. "
+           "рука у лица, кулак, крадётся, класс, руки в боки, чешет затылок, по телефону, показывает деньги, показывает бумагу, "
+           "сидит (на стуле или скамейке, всю сцену). Настроения: спокойно, радостно, сердито, грустно, удивлённо, хитро, тревожно, "
+           "смеётся, испуганно. "
            "По-русски или по-английски.")
 
 

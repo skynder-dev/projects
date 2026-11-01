@@ -592,8 +592,9 @@ Narrator: <name> (woman or man, narrator)
 Every scene starts with a line "== <Background> | <visual>" (or "== <Background>" alone).
 Backgrounds (exactly one of): City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home, Building site
   (Home is a block of flats; a court or a ministry: City hall; a pharmacy: Shop; numbers and schemes: Board)
-Gestures (one of): talk, explain, point, point up, shrug, cross, think, wave, hands up, rubs hands, present, facepalm, fist, sneaky
-Feelings (one of): neutral, happy, angry, sad, surprised, sly, worried
+Gestures (one of): talk, explain, point, point up, shrug, cross, think, wave, hands up, rubs hands, present, facepalm, fist, sneaky,
+  thumbs up, hands on hips, scratches head, phone, shows money, shows paper, sits (sits on a chair or a bench the whole scene)
+Feelings (one of): neutral, happy, angry, sad, surprised, sly, worried, laughing, scared
 
 Visuals - what appears on the screen in that scene, written after "|" (a scene may have none):
   title: <main title> / <subtitle>                          (the first scene only)

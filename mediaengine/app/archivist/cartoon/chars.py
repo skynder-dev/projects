@@ -40,8 +40,29 @@ POSES = {
     "facepalm": dict(a=(-60, -120), b=(-10, -8), lean=4, tilt=12),
     "fist": dict(a=(60, 100), b=(-30, -40), lean=-3, tilt=-3),
     "sneaky": dict(a=(-6, -78), b=(6, 78), lean=8, tilt=6),
+    "thumbs_up": dict(a=(22, 118), b=(-8, -6), lean=2, tilt=4),
+    "hips": dict(a=(40, -98), b=(-40, 98), lean=-2, tilt=-3),
+    "scratch": dict(a=(150, 82), b=(-8, -6), lean=0, tilt=-7),
+    "phone": dict(a=(128, 91), b=(-10, -8), lean=0, tilt=6),
+    "money": dict(a=(62, 52), b=(-10, -8), lean=3, tilt=3),
+    "paper": dict(a=(52, 78), b=(-10, -8), lean=2, tilt=2),
+    "sit": dict(a=(4, -30), b=(-4, 30), lean=0, tilt=0),
 }
-EMOTIONS = ["neutral", "happy", "angry", "sad", "surprised", "sly", "worried"]
+# a gesture's hands: (the hand on the side it looks to, the other one, a thing held in the first one, the first arm in
+# front of the face). Hands: "rest" (relaxed), "open" (fingers apart), "fist", "point" (the index finger out), "thumb"
+# (a thumb up), "hold" (closed round what it holds). Things held: "phone" (at the ear), "money" (a fan of notes),
+# "paper" (a sheet shown).
+HANDS = {
+    "idle": ("rest", "rest"), "talk": ("open", "rest"), "explain": ("open", "open"), "point": ("point", "rest"),
+    "point_up": ("point", "rest"), "shrug": ("open", "open"), "cross": ("fist", "fist"), "think": ("fist", "rest"),
+    "wave": ("open", "rest"), "hands_up": ("open", "open"), "count": ("fist", "fist"), "present": ("open", "rest"),
+    "facepalm": ("open", "rest", None, True), "fist": ("fist", "fist"), "sneaky": ("rest", "rest"),
+    "thumbs_up": ("thumb", "rest"), "hips": ("fist", "fist"), "scratch": ("open", "rest"),
+    "phone": ("hold", "rest", "phone", True), "money": ("hold", "rest", "money"), "paper": ("hold", "rest", "paper"),
+    "sit": ("rest", "rest"),
+}
+SEAT = 0.56                    # a seat's height, a share of the legs' length (sitting: the hips that low)
+EMOTIONS = ["neutral", "happy", "angry", "sad", "surprised", "sly", "worried", "laugh", "scared"]
 
 
 def make(name: str, role: str = "", seed: str | None = None, **over) -> dict:
@@ -91,50 +112,144 @@ def _body(c: dict) -> dict:
                 neck=16)
 
 
+def _hands(pose: str, pose2: str | None, m: float) -> tuple:
+    """(hand a, hand b, the thing held, how far it has come 0..1, the arm in front of the face) halfway between poses."""
+    def of(p):
+        h = HANDS.get(p or "idle", HANDS["idle"])
+        return h[0], h[1], (h[2] if len(h) > 2 else None), bool(h[3]) if len(h) > 3 else False
+    one = of(pose)
+    if not pose2 or m <= 0:
+        return one[0], one[1], one[2], 1.0, one[3]
+    two = of(pose2)
+    now = two if m >= 0.5 else one
+    if one[2] == two[2]:
+        k = 1.0
+    elif now is two:
+        k = min(1.0, (m - 0.5) * 2.5)                      # (a thing taken: it comes into the hand)
+    else:
+        k = max(0.0, 1.0 - m * 2.5)
+    return now[0], now[1], (two[2] if now is two else one[2]) or (one[2] if now is two else two[2]), k, now[3]
+
+
+def sit_drop(c: dict) -> float:
+    """How much lower a sitting character's head is (its units)."""
+    return (1 - SEAT) * _body(c)["leg_h"]
+
+
 def draw(cv: Canvas, c: dict, x: float, y: float, scale: float = 1.0, look: int = 1, pose: str = "idle",
          pose2: str | None = None, mix_t: float = 0.0, emotion: str = "neutral", mouth: float = 0.0, blink: float = 0.0,
          t: float = 0.0, walk: float | None = None, gaze: tuple = (0.0, 0.0), alpha_shadow: float = 0.2,
-         nod: float = 0.0, brow: float = 0.0, snap: bool = False):
+         nod: float = 0.0, brow: float = 0.0, snap: bool = False, sit: float | None = None):
     """A character with its feet at stage (x, y). look: 1 right, -1 left. pose2/mix_t: halfway between two poses
     (snap: a new gesture - it swings a little past and settles). mouth: 0 closed .. 1 wide open, or (opening, the
     sound's shape: SHAPES). t: seconds (breathing, shifting the weight). walk: the step's phase (None: standing).
-    nod: the head dips (0..1); brow: the brows go up (0..1)."""
+    nod: the head dips (0..1); brow: the brows go up (0..1). sit: 0 standing .. 1 sitting (None: the "sit" pose sits);
+    hands, a thing held and the arm in front of the face come with the pose (HANDS)."""
     b = _body(c)
     p = dict(POSES.get(pose, POSES["idle"]))
+    m = 0.0
     if pose2 and mix_t > 0:
         q = POSES.get(pose2, POSES["idle"])
         m = back(mix_t, 1.25) if snap else ease(mix_t)
         p = {key: (tuple(lerp(u, v, m) for u, v in zip(p[key], q[key])) if isinstance(p[key], tuple) else lerp(p[key], q[key], m))
              for key in p}
+    hand_a, hand_b, held, held_k, front = _hands(pose, pose2, min(1.0, max(0.0, mix_t)) if pose2 else 0.0)
+    if sit is None:
+        sit = 1.0 if pose == "sit" and not (pose2 and mix_t >= 0.5 and pose2 != "sit") else 0.0
+    sit = max(0.0, min(1.0, float(sit)))
     breath = math.sin(t * 2.2) * 2.5
+    shake = 0.0
+    if emotion == "laugh":                                 # (laughing: the shoulders bounce, the head goes back)
+        shake = abs(math.sin(t * 13.0)) * 6
+    elif emotion == "scared":                              # (scared: a small tremble)
+        x += math.sin(t * 47.0) * 1.6 * scale
     cv.shadow(x, y + 4 * scale, 120 * scale * b["wide"], 18 * scale, alpha_shadow)
     with cv.at(x, y, 0, scale * look, scale):
         legs = b["leg_h"]
-        hip_y = -legs
-        _legs(cv, c, b, walk)
+        hip_y = -legs + (1 - SEAT) * legs * sit
+        _legs(cv, c, b, walk, sit)
         lean = p["lean"] + (math.sin(walk * 2) * 2 if walk is not None else math.sin(t * 0.8) * 1.1)   # (the weight shifts)
-        bob = -abs(math.sin(walk)) * 8 if walk is not None else breath * 0.4
+        if emotion == "laugh":
+            lean -= 3
+        elif emotion == "scared":
+            lean -= 4
+        bob = -abs(math.sin(walk)) * 8 if walk is not None else breath * 0.4 - shake
         with cv.at(0, hip_y + bob, lean):
             top = -b["torso_h"]
             sh_y = top + 26
             sh_x = b["torso_w"] / 2 - 10
             swing = math.sin(walk) * 22 if walk is not None else 0
-            # the body, the arm away from the look, the arm on its side (in front)
+            # the body, the arm away from the look, the arm on its side (in front; in front of the face too: a hand
+            # on the face, a phone at the ear)
             _torso(cv, c, b, breath)
-            _arm(cv, c, b, -sh_x, sh_y, p["b"][0] - swing, p["b"][1], back=True)
-            _arm(cv, c, b, sh_x, sh_y, p["a"][0] + swing, p["a"][1], back=False)
-            with cv.at(0, top - b["neck"] + breath * 0.3 + nod * 7, p["tilt"] + math.sin(t * 1.3) * 1.2 + nod * 2.5):
+            _arm(cv, c, b, -sh_x, sh_y, p["b"][0] - swing, p["b"][1], back=True, hand=hand_b)
+            arm_a = lambda: _arm(cv, c, b, sh_x, sh_y, p["a"][0] + swing, p["a"][1], back=False, hand=hand_a, held=held,
+                                 held_k=held_k)
+            if not front:
+                arm_a()
+            tilt = p["tilt"] + math.sin(t * 1.3) * 1.2 + nod * 2.5 - (4 if emotion == "laugh" else 0)
+            with cv.at(0, top - b["neck"] + breath * 0.3 + nod * 7 - shake * 0.5, tilt):
                 _head(cv, c, b, emotion, mouth, blink, gaze, brow)
+            if front:
+                arm_a()
 
 
-def _legs(cv: Canvas, c: dict, b: dict, walk):
+def seat(cv: Canvas, c: dict, x: float, y: float, scale: float = 1.0, kind: str = "chair"):
+    """What a character sits on, drawn before the character (it is behind): a chair indoors, a bench outdoors; seen
+    from the front, so it stays the same whichever way the character looks. Its feet at stage (x, y)."""
+    b = _body(c)
+    h = SEAT * b["leg_h"]
+    w = b["torso_w"] + 64
+    with cv.at(x, y - 6 * scale, 0, scale, scale):
+        if kind == "bench":
+            wood, dark = "#b07c45", "#7d5530"
+            for sx in (-w * 0.78, w * 0.78):               # the posts, the back's planks, the seat
+                cv.rect(sx - 9, -h - 170, 18, h + 170, dark, INK, 3)
+            for yy in (-h - 160, -h - 104):
+                cv.rect(-w * 0.95, yy, w * 1.9, 36, wood, INK, 3.5, 7)
+            cv.rect(-w, -h - 8, w * 2, 28, wood, INK, 3.5, 7)
+        else:
+            col = "#5b6475"
+            for sx in (-w / 2 + 10, w / 2 - 24):           # the legs, the back, the seat
+                cv.rect(sx, -h, 14, h, shade(col, -0.25), INK, 3)
+            cv.rect(-w / 2 + 10, -h - 210, w - 20, 172, col, INK, 4, 30)
+            cv.rect(-w / 2 + 34, -h - 44, 14, 40, shade(col, -0.25), INK, 3)
+            cv.rect(w / 2 - 48, -h - 44, 14, 40, shade(col, -0.25), INK, 3)
+            cv.rect(-w / 2, -h - 12, w, 28, shade(col, 0.15), INK, 4, 12)
+
+
+def _capsule(x0, y0, x1, y1, r, n: int = 7) -> list:
+    """A rounded bar from (x0, y0) to (x1, y1), r wide each side (a finger, a bent leg)."""
+    a = math.atan2(y1 - y0, x1 - x0)
+    pts = [(x1 + r * math.cos(a - math.pi / 2 + math.pi * k / n), y1 + r * math.sin(a - math.pi / 2 + math.pi * k / n))
+           for k in range(n + 1)]
+    return pts + [(x0 + r * math.cos(a + math.pi / 2 + math.pi * k / n), y0 + r * math.sin(a + math.pi / 2 + math.pi * k / n))
+                  for k in range(n + 1)]
+
+
+def _legs(cv: Canvas, c: dict, b: dict, walk, sit: float = 0.0):
     L = b["leg_h"]
     sp = 24 * b["wide"]
     pants, shoe = c.get("pants", "#2c2f3d"), c.get("shoes", "#1f1d22")
+    dress = c.get("outfit") == "dress"
+    if sit > 0:                                            # sitting, seen from the front: the thighs come towards us
+        hip = -L + (1 - SEAT) * L * sit                    # (shorter), the shins go down to the floor
+        thigh = lerp(L * 0.5, L * 0.24, sit)
+        lw = 34 * b["wide"] ** 0.4 if not dress else 22
+        col = c.get("skin") if dress else pants
+        for side in (-1, 1):
+            kx, ky = side * sp * (1 + 0.6 * sit), hip + thigh
+            fx = side * sp * (1 + 0.2 * sit)
+            cv.poly(_capsule(kx, ky, fx, -16, lw / 2), col, INK, 3.5)
+            cv.poly(rounded(fx - 12, -22, 50, 24, 11), shoe, INK, 3.5)
+        for side in (-1, 1):
+            kx, ky = side * sp * (1 + 0.6 * sit), hip + thigh
+            cv.poly(_capsule(side * sp, hip, kx, ky, lw / 2 + (6 if not dress else 2) * sit), col, INK, 3.5)
+        return
     for side, ph in ((-1, 0.0), (1, math.pi)):
         a = math.sin((walk or 0) + ph) * (24 if walk is not None else 0)
         with cv.at(side * sp, -L, a):
-            if c.get("outfit") == "dress":
+            if dress:
                 cv.rect(-11, 0, 22, L - 14, c.get("skin"), INK, 3, 8)
             else:
                 cv.rect(-17 * b["wide"] ** 0.4, -6, 34 * b["wide"] ** 0.4, L - 8, pants, INK, 3.5, 10)
@@ -200,9 +315,10 @@ def _torso(cv: Canvas, c: dict, b: dict, breath: float):
             cv.circle(0, yy, 4, shade(cloth, -0.35))
 
 
-def _arm(cv: Canvas, c: dict, b: dict, sx: float, sy: float, a_up: float, bend: float, back: bool):
+def _arm(cv: Canvas, c: dict, b: dict, sx: float, sy: float, a_up: float, bend: float, back: bool, hand: str = "rest",
+         held: str | None = None, held_k: float = 1.0):
     """An arm from the shoulder (sx, sy): the upper arm a_up degrees from straight down (towards the look), the
-    forearm turned bend degrees more."""
+    forearm turned bend degrees more; its hand (HANDS) and what it holds."""
     side = 1 if sx > 0 else -1
     cloth = c.get("cloth", "#2f4a7a")
     col = shade(cloth, -0.12) if back else cloth
@@ -213,8 +329,56 @@ def _arm(cv: Canvas, c: dict, b: dict, sx: float, sy: float, a_up: float, bend: 
         cv.rect(-thick / 2, -8, thick, b["arm_u"] + 14, col, INK, 3.5, thick / 2)
         with cv.at(0, b["arm_u"], -bend):
             cv.rect(-thick / 2 + 2, -8, thick - 4, b["arm_l"] + 6, col, INK, 3.5, thick / 2)
-            cv.circle(0, b["arm_l"] + 12, 19, c.get("skin"), INK, 3.5)
-            cv.circle(side * 12, b["arm_l"] + 2, 7, c.get("skin"), INK, 2.5)
+            hy = b["arm_l"] + 12
+            if held and held_k > 0:
+                _held(cv, held, 0, hy, held_k)
+            _hand(cv, c, hand, 0, hy, side)
+
+
+def _hand(cv: Canvas, c: dict, kind: str, x: float, y: float, side: int):
+    """A hand at the forearm's end (the forearm comes from -y): three fingers and a thumb, as cartoons draw them."""
+    skin = c.get("skin")
+    if kind == "open":                                     # fingers apart, the palm over their roots
+        for ang in (-30, 0, 30):
+            r = math.radians(ang)
+            cv.poly(_capsule(x, y, x + math.sin(r) * 31, y + math.cos(r) * 31, 7.5), skin, INK, 2.5)
+        cv.poly(_capsule(x, y - 4, x + side * 27, y - 12, 7.5), skin, INK, 2.5)
+        cv.ellipse(x, y, 18, 17, skin, INK, 3)
+        return
+    if kind in ("fist", "hold", "point", "thumb"):
+        if kind == "point":                                # the index finger out, along the arm
+            cv.poly(_capsule(x - side * 4, y, x - side * 4, y + 44, 7.5), skin, INK, 2.5)
+        if kind == "thumb":                                # the thumb up, whichever way the arm goes
+            with cv.upright(x, y):
+                cv.poly(_capsule(0, -4, 0, -40, 8.5), skin, INK, 2.5)
+        cv.circle(x, y, 19, skin, INK, 3.5)
+        dark = shade(skin, -0.3)
+        for k in (-1, 1):                                  # (the fingers folded)
+            cv.line([(x + k * 7, y + 7), (x + k * 7, y + 16)], dark, 2.5)
+        if kind != "thumb":
+            cv.poly(_capsule(x + side * 12, y - 6, x - side * 2, y + 2, 6.5), skin, INK, 2.5)
+        return
+    cv.circle(x, y, 19, skin, INK, 3.5)                    # (relaxed)
+    cv.circle(x + side * 12, y - 10, 7, skin, INK, 2.5)
+
+
+def _held(cv: Canvas, kind: str, x: float, y: float, k: float = 1.0):
+    """A thing in a hand, upright whatever the arm does (drawn before the hand: the fingers close over it)."""
+    with cv.upright(x, y):
+        with cv.at(0, 0, 0, max(0.01, back(k, 1.4) if k < 1 else 1.0)):
+            if kind == "phone":                            # held to the ear
+                cv.poly(rounded(-15, -40, 30, 66, 8), "#262b36", INK, 3.5)
+                cv.rect(-10, -34, 20, 50, "#78aee6", None, 0, 4)
+            elif kind == "money":                          # a fan of notes
+                for rot in (-26, -8, 10):
+                    with cv.at(0, 6, rot):
+                        cv.poly(rounded(-19, -84, 38, 82, 5), "#86c97f", INK, 3)
+                        cv.ellipse(0, -44, 10, 14, "#5ea85a")
+                        cv.rect(-13, -78, 26, 6, "#5ea85a", None, 0, 2)
+            elif kind == "paper":                          # a sheet shown, held at its lower corner
+                cv.poly([(-14, -168), (96, -168), (96, -4), (-14, -4)], "#ffffff", INK, 3.5)
+                for j in range(6):
+                    cv.line([(2, -146 + 24 * j), (80 - (34 if j == 5 else 0), -146 + 24 * j)], "#9aa4b2", 4)
 
 
 def _head(cv: Canvas, c: dict, b: dict, emotion: str, mouth, blink: float, gaze: tuple, brow: float = 0.0):
@@ -304,11 +468,13 @@ def _hair_front(cv, c, hw, hh, cy, hair, style):
 
 def _eyes(cv, emotion, blink, gaze, hw, hh, cy, c, brow: float = 0.0):
     ey = cy - hh * 0.04
-    big = 1.25 if emotion == "surprised" else 1.0
+    big = 1.25 if emotion == "surprised" else 1.3 if emotion == "scared" else 1.0
     gx, gy = gaze
     for side in (-1, 1):
         ex = side * hw * 0.2
-        if blink > 0.5:
+        if emotion == "laugh":                             # (laughing: the eyes squeezed shut, smiling)
+            cv.line(arc(ex, ey + 6, 16, 12, 195, 345, 10), INK, 5)
+        elif blink > 0.5:
             cv.line(arc(ex, ey + 2, 15, 7, 10, 170, 10), INK, 4)
         else:
             open_k = 1.0 - blink * 1.6
@@ -317,19 +483,20 @@ def _eyes(cv, emotion, blink, gaze, hw, hh, cy, c, brow: float = 0.0):
             elif emotion in ("angry",):
                 open_k *= 0.8
             cv.ellipse(ex, ey, 16 * big, 21 * big * max(0.15, open_k), "#ffffff", INK, 3)
-            cv.circle(ex + 5 + gx * 6, ey + 2 + gy * 6, 8.5 * big * max(0.4, min(1, open_k + 0.2)), "#20232e")
+            cv.circle(ex + 5 + gx * 6, ey + 2 + gy * 6, (5.0 if emotion == "scared" else 8.5 * big) * max(0.4, min(1, open_k + 0.2)),
+                      "#20232e")
             cv.circle(ex + 8 + gx * 6, ey - 2 + gy * 6, 3, "#ffffff")
         # brows
         by = ey - 30 * big - 9 * max(0.0, min(1.0, brow))
         if emotion == "angry":
             pts = [(ex - 22, by - 6 if side < 0 else by + 10), (ex + 20, by + 10 if side < 0 else by - 6)]
-        elif emotion in ("sad", "worried"):
+        elif emotion in ("sad", "worried", "scared"):
             pts = [(ex - 20, by + 6 if side < 0 else by - 8), (ex + 20, by - 8 if side < 0 else by + 6)]
         elif emotion == "surprised":
             pts = [(ex - 20, by - 8), (ex, by - 16), (ex + 20, by - 8)]
         elif emotion == "sly":
             pts = [(ex - 20, by - (12 if side > 0 else 0)), (ex + 20, by - (16 if side > 0 else -4))]
-        elif emotion == "happy":
+        elif emotion in ("happy", "laugh"):
             pts = [(ex - 20, by - 2), (ex, by - 9), (ex + 20, by - 2)]
         else:
             pts = [(ex - 20, by), (ex, by - 4), (ex + 20, by)]
@@ -343,9 +510,13 @@ def _mouth(cv, emotion, mouth, hw, hh, cy, skin, lips=None):
     if isinstance(mouth, (tuple, list)):
         mouth, shape = (mouth[0], mouth[1]) if len(mouth) > 1 else (mouth[0], "")
     o = max(0.0, min(1.0, float(mouth or 0.0)))
-    curve = {"happy": 10, "sly": 6, "angry": -6, "sad": -9, "worried": -5, "surprised": 0}.get(emotion, 3)
+    curve = {"happy": 10, "laugh": 12, "sly": 6, "angry": -6, "sad": -9, "worried": -5, "scared": -7, "surprised": 0}.get(emotion, 3)
     if emotion == "surprised":
         o = max(o, 0.45)
+    elif emotion == "laugh":                               # (a laugh: the mouth wide open, whatever the sound)
+        o, shape = max(o, 0.75), ""
+    elif emotion == "scared":
+        o = max(o, 0.3)
     line_c, line_w = lips or INK, (5.5 if lips else 4.5)
     if shape == "M" and o >= 0.08:                       # lips pressed together (m, b, p)
         cv.line(bezier((-w * 0.42, my - curve * 0.15), (-w / 5, my + 2 + curve * 0.4), (w / 5, my + 2 + curve * 0.4),
@@ -379,14 +550,14 @@ def _mouth(cv, emotion, mouth, hw, hh, cy, skin, lips=None):
             cv.line(bezier((-w / 2, my - curve * 0.2), (-w / 4, my + curve), (w / 4, my + curve), (w / 2, my - curve * 0.2), 12),
                     lips or INK, 5.5 if lips else 4.5)
         return
-    ow = w * (0.7 + 0.3 * (1 - o)) * (1.15 if emotion == "happy" else 1.0)
+    ow = w * (0.7 + 0.3 * (1 - o)) * (1.15 if emotion in ("happy", "laugh") else 0.8 if emotion == "scared" else 1.0)
     oh = 6 + 30 * o
     pts = bezier((-ow / 2, my - curve * 0.25), (-ow / 3, my - oh * 0.25), (ow / 3, my - oh * 0.25), (ow / 2, my - curve * 0.25), 8) + \
         bezier((ow / 2, my - curve * 0.25), (ow / 3, my + oh), (-ow / 3, my + oh), (-ow / 2, my - curve * 0.25), 12)[1:]
     cv.poly(pts, "#6b2430", lips or INK, 4.5 if lips else 4)
     if o > 0.35:
         cv.ellipse(0, my + oh * 0.62, ow * 0.26, oh * 0.22, "#e2737c")
-    if emotion == "happy" or o > 0.5:
+    if emotion in ("happy", "laugh") or o > 0.5:
         cv.rect(-ow * 0.32, my - oh * 0.2, ow * 0.64, max(4, oh * 0.22), "#ffffff", None, 0, 3)
 
 

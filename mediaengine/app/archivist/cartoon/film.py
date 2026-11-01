@@ -244,7 +244,15 @@ def _line_at(scene: dict, t: float) -> int:
     return k
 
 
-SWAY = {"talk": "explain", "explain": "talk", "idle": "talk", "present": "explain", "point": "explain"}
+SWAY = {"talk": "explain", "explain": "talk", "idle": "talk", "present": "explain", "point": "explain", "sit": "talk"}
+OUTDOOR = {"city", "road", "night", "site", "home"}   # (sitting there: on a bench; elsewhere on a chair)
+SIT_DOWN = 0.45                # seconds a character takes to sit down after walking in
+
+
+def seated(scene: dict) -> set:
+    """Who sits in a scene: the scene's gesture for them, or any of their lines, is "sit" (they sit through it)."""
+    out = {k for k, v in (scene.get("pose") or {}).items() if v == "sit"}
+    return out | {ln["who"] for ln in scene.get("lines") or [] if ln.get("pose") == "sit"}
 BLEND = 0.35                   # seconds a gesture takes to become the next one
 
 
@@ -474,7 +482,7 @@ def _camera(cv: Canvas, film: dict, scene: dict, t: float, names: list, xs: list
     where = film.get("caption_at") or ""                   # (the face kept clear of the captions' band)
     f = ({"middle": 0.18, "bottom": 0.25, "top": 0.32} if tall else {"middle": 0.12, "bottom": 0.2, "top": 0.3}).get(
         where, 0.25 if tall else 0.2)                      # where the top of the head comes, a share of the height
-    top = bgs.ground_y(cv) - 530 * sc
+    top = bgs.ground_y(cv) - 530 * sc + (ch.sit_drop(film["cast"][who]) * sc if who in seated(scene) else 0.0)
     x, y = xs[names.index(who)], top - (f - 0.5) * cv.SH / z
     hw, hh = cv.SW / (2 * z), cv.SH / (2 * z)
     return min(max(x, hw), cv.SW - hw), min(max(y, hh), cv.SH - hh), z
@@ -501,6 +509,7 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                     cv.blend("#ffffff", 0.78 * a, rounded(bx - bw_ / 2 + 10, by - bh_ / 2 + 10, bw_ - 20, bh_ - 20, 36))
                 draw_visual(cv, scene["visual"], scene, t, box, cast)
             last = scene["lines"][_line_at(scene, t)] if _line_at(scene, t) >= 0 else None
+            sitting = seated(scene)
             for k, key in enumerate(names):
                 c = cast[key]
                 x = xs[k]
@@ -532,15 +541,20 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                         f_ = math.sin(math.pi * (t - ln["s"]) / 0.45)
                         nod, brow = -0.7 * f_, 0.9 * f_
                 walk = None
+                sit = 0.0
+                if key in sitting:                         # (on a chair or a bench; one who walks in sits down)
+                    ch.seat(cv, c, xs[k], gy, sc, "bench" if scene["bg"] in OUTDOOR else "chair")
+                    sit = ease(min(1.0, max(0.0, (st - WALK_IN) / SIT_DOWN))) if key in (scene.get("enter") or []) else 1.0
+                    hop = 0.0
                 if key in (scene.get("enter") or []) and st < WALK_IN:     # walking in from the nearer side
                     side = -1 if x < cv.SW / 2 else 1
                     x += side * (1 - ease(st / WALK_IN)) * (cv.SW * 0.55)
                     walk, look, pose, pose2, emo = st * 9.0, -side, "idle", None, emo
                     gzx, nod, brow, hop = 0.6 * look, 0.0, 0.0, 0.0
                 ch.draw(cv, c, x, gy - hop, sc, turn if walk is None else look, pose, pose2, mix, emo, mouths.get(key, 0.0) if speaker == key else 0.0,
-                        blink, t + k, walk, (gzx, gzy), nod=nod, brow=brow, snap=snap)
+                        blink, t + k, walk, (gzx, gzy), nod=nod, brow=brow, snap=snap, sit=sit)
                 if speaker == key and ln.get("bubble"):
-                    _bubble_for(cv, ln, x, gy - 600 * sc, t)
+                    _bubble_for(cv, ln, x, gy - 600 * sc + ch.sit_drop(c) * sc * sit, t)
 
 
 # ------------------------------------------------------------------------------------------------- sound

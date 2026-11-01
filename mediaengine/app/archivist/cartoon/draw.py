@@ -226,6 +226,19 @@ class Canvas:
         """with canvas.at(...): shapes in a part's own units."""
         return self.push(x, y, rot, sx, sy)
 
+    def upright(self, x: float = 0, y: float = 0, rot: float = 0):
+        """with canvas.upright(x, y): shapes at (x, y) of the current part but not turned with it (a thing held in a hand
+        stays upright whatever the arm does); its size and mirroring kept, then turned by rot degrees."""
+        m = self._m[-1]
+        o = m[:, :2] @ np.array([x, y], np.float64) + m[:, 2]
+        flip = -1.0 if m[0, 0] * m[1, 1] - m[0, 1] * m[1, 0] < 0 else 1.0
+        s = self._scale()
+        self._m.append(np.array([[s * flip, 0, o[0]], [0, s, o[1]]], np.float64))
+        if rot:
+            self._m[-1] = self._m[-1] @ np.array([[math.cos(math.radians(rot)), -math.sin(math.radians(rot)), 0],
+                                                  [math.sin(math.radians(rot)), math.cos(math.radians(rot)), 0], [0, 0, 1]])
+        return self
+
     def _px(self, pts) -> np.ndarray:
         p = np.asarray(pts, np.float64).reshape(-1, 2)
         m = self._m[-1]

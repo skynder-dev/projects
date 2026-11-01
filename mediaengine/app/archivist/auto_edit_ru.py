@@ -1130,7 +1130,9 @@ PHRASES = {
     "worried": "тревожно", "talking": "говорит", "explaining": "объясняет", "pointing": "показывает", "finger up": "палец вверх",
     "shrugging": "пожимает плечами", "arms crossed": "руки скрещены", "thinking": "думает", "waving": "машет",
     "hands up": "руки вверх", "rubbing hands": "потирает руки", "presenting": "представляет", "hand to face": "рука у лица",
-    "fist": "кулак", "sneaky": "крадётся", "standing": "стоит",
+    "fist": "кулак", "sneaky": "крадётся", "standing": "стоит", "thumbs up": "класс", "hands on hips": "руки в боки",
+    "scratching head": "чешет затылок", "on the phone": "по телефону", "showing money": "показывает деньги",
+    "showing a paper": "показывает бумагу", "sitting": "сидит", "laughing": "смеётся", "scared": "испуганно",
     "The script has no scenes.": "В сценарии нет сцен.", "The script has no characters.": "В сценарии нет персонажей.",
     "The script is not valid JSON.": "Сценарий — не правильный JSON.",
     "The voices need the voice add-on: install it on the Voice-over page, or make a preview without voices.":
