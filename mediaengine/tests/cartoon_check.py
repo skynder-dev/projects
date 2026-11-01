@@ -196,7 +196,7 @@ def main() -> int:
     idle = pic("idle")
     new_poses = ["thumbs_up", "hips", "scratch", "phone", "money", "paper", "sit"]
     differ = {p_: round(float(np.abs(pic(p_) - idle).mean()), 2) for p_ in new_poses}
-    pp, ff = pic("point"), pic("fist")
+    pp, fist_img = pic("point"), pic("fist")
     money = pic("money")
     green = int(((money[..., 1] - money[..., 2] > 40) & (money[..., 1] - money[..., 0] > 30)).sum())
     def head_top(img):
@@ -219,10 +219,10 @@ def main() -> int:
     seat_d = float(np.abs(cvs.img.astype(np.int16) - cvn.img.astype(np.int16)).mean())
     check("animation: hands (open, a fist, a pointing finger, a thumb up), a phone, notes and a paper held, sitting on a "
           "chair or a bench, seven new gestures and two new faces (laughing, scared), read from the text in both languages",
-          min(differ.values()) > 1.5 and float(np.abs(pp - ff).mean()) > 0.5 and green > 200 and lower > 15
+          min(differ.values()) > 1.5 and float(np.abs(pp - fist_img).mean()) > 0.5 and green > 200 and lower > 15
           and min(face_d) > 1.0 and [w_[0] or w_[1] for w_ in words] == ["thumbs_up", "hips", "phone", "money", "sit", "laugh", "scared"]
           and F.seated(s0) == {"rick"} and seat_d > 1.0,
-          (differ, round(float(np.abs(pp - ff).mean()), 2), green, lower, face_d, words, F.seated(s0), round(seat_d, 2)))
+          (differ, round(float(np.abs(pp - fist_img).mean()), 2), green, lower, face_d, words, F.seated(s0), round(seat_d, 2)))
     from archivist.cartoon.voices import spoken
     sp = (spoken("The city pays $4.8M, the crew gets $300K - 30% of it.", "en"),
           spoken("Город платит 480 млн ₽, бригада получает 1,2 млн. Это $300 и 21 млн рублей.", "ru"))
