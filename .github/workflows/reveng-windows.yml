@@ -55,6 +55,7 @@ jobs:
           Probe TestOwnerPreferencePresentation @("/r:$out\wrapper.exe", '/r:System.Windows.Forms.dll', '/r:System.Drawing.dll', '/r:System.Web.Extensions.dll') @('reveng/tests/TestOwnerPreferencePresentation.cs') @()
           Probe TestPortableRuntimeDrain @("/r:$out\wrapper.exe", '/r:System.Web.Extensions.dll') @('reveng/tests/TestPortableRuntimeDrain.cs') @()
           Probe TestOperationOutcome @("/r:$out\wrapper.exe", '/r:System.Windows.Forms.dll', '/r:System.Drawing.dll', '/r:System.Web.Extensions.dll') @('reveng/tests/TestOperationOutcome.cs') @()
+          Probe TestContestTermsPresentation @("/r:$out\wrapper.exe", '/r:System.Web.Extensions.dll') @('reveng/tests/TestContestTermsPresentation.cs') @()
           if ($fail) { throw "$fail native probe(s) failed" }
       - name: Offline Python suites (normal and -O)
         shell: pwsh

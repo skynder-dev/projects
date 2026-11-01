@@ -1,5 +1,5 @@
 {
-  "contest_terms": "2026-10-31 owner idea: contests as opportunities; contest_terms.py reads organizer pages with the existing bounded transport, robots and HTML identity checks, quoted terms only, kept out of candidates and the global ranking; test_contest_terms.py 9 offline contracts",
+  "contest_terms": "2026-10-31 owner idea: contests as opportunities; contest_terms.py reads organizer pages with the existing bounded transport, robots and HTML identity checks, quoted terms only, kept out of candidates and the global ranking; test_contest_terms.py offline contracts. 2026-11-01: the aggregator listing aifilmcontests.com is a secondary lead list (its outgoing links are read, every lead is then read on the organizer page, at most 8 leads per run, listing dates/amounts kept apart as hints); HTML is read with the standard library (no bs4); contest-terms-view.json (payload_json+payload_sha256) feeds the window: ContestTermsPresentation.cs, buttons \"Конкурсы\" and \"Собрать условия конкурсов\" in RevEngLocalResearch.cs, native probe TestContestTermsPresentation.cs; 16 offline Python contracts",
   "answer_context_cache_repair": {
     "publication_status": "not_published",
     "base_seal_sha256": "465632e56d45c7c6f5ff6bfa011c6e14b77fb48bc407624acb3dad8dee4033b8",
@@ -20,7 +20,7 @@
       "no external writes or model/live capture"
     ]
   },
-  "application_files": 100,
+  "application_files": 101,
   "buyer_normalization_repair": {
     "publication_status": "not_published",
     "base_source_context_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
@@ -109,6 +109,12 @@
       "source_path": ".ci/test-only/production/reveng028/ResearchLocal/BuyerSourcePresentation.cs",
       "source_sha256": "ce20f0cf01c5b28a51e64e8744633bd58d708aba6e2fb1c3322615504dc7f024",
       "change": "exact_public_source_import"
+    },
+    {
+      "path": "reveng/ResearchLocal/ContestTermsPresentation.cs",
+      "bytes": 12483,
+      "sha256": "5a7afd9459ef369b3aa926fe102056f8a8e93e808f42157c0694b617315d2975",
+      "change": "new_contest_terms_window_presentation_2026-11-01"
     },
     {
       "path": "reveng/ResearchLocal/CorroborationPresentation.cs",
@@ -291,11 +297,11 @@
     },
     {
       "path": "reveng/ResearchLocal/RevEngLocalResearch.cs",
-      "bytes": 80802,
-      "sha256": "f37bbf063facfb7784ac50b5d6763d6c2ceb8827bd58a8fedf22227efedbb94e",
+      "bytes": 84578,
+      "sha256": "db5edb0abb9e4e90c77980b9efb95f3658687be2db3d998392c51ddedc69244d",
       "source_path": ".ci/test-only/production/reveng028/ResearchLocal/RevEngLocalResearch.cs",
       "source_sha256": "bd4673a48eba403a8fbea57938ab120ad418f1ec4666d43c29b81ea02fed54bb",
-      "change": "unpublished_native_offer_presentation_or_qualification",
+      "change": "unpublished_native_offer_presentation_or_qualification+contest_terms_window_buttons_2026-11-01",
       "source_blobs": [
         {
           "label": "N/RevEngLocalResearch.cs",
@@ -497,10 +503,10 @@
       "change": "exact_public_source_import"
     },
     {
-     "path": "reveng/ResearchLocal/contest_terms.py",
-     "bytes": 12853,
-     "sha256": "21cdf1c15473df9d0e255ccf576ba580b68df001e516ca507c8889ef21081d08",
-     "change": "new_contest_terms_collector_2026-10-31"
+      "path": "reveng/ResearchLocal/contest_terms.py",
+      "bytes": 24020,
+      "sha256": "b3b8fd98c2193eb3db7df394eefcc761b285dfab00f534f7eda17494c6da7fe1",
+      "change": "new_contest_terms_collector_2026-10-31+aggregator_leads_stdlib_html_view_file_2026-11-01"
     },
     {
       "path": "reveng/ResearchLocal/contract_v2.py",
@@ -1003,6 +1009,12 @@
       "change": "exact_public_source_import"
     },
     {
+      "path": "reveng/tests/TestContestTermsPresentation.cs",
+      "bytes": 14343,
+      "sha256": "eca95b61074255a5e4057196c7b4653f42a33267a2eba79c5258170af2e2bc7a",
+      "change": "new_contest_terms_window_native_probe_2026-11-01"
+    },
+    {
       "path": "reveng/tests/TestOperationOutcome.cs",
       "bytes": 6771,
       "sha256": "d781e1af0545deb05867b401b75e6cd690362a9dd105f48793b349b3a4ec51a4"
@@ -1077,10 +1089,10 @@
       "answer_cache_change": "unpublished_answer_cache_tests_or_documentation"
     },
     {
-     "path": "reveng/tests/test_contest_terms.py",
-     "bytes": 9260,
-     "sha256": "5c546f5250b9d11e303ea7ed3d470a6e1e44ab77d30f267ba9ed7a190ad3a1fd",
-     "change": "new_contest_terms_offline_contracts_2026-10-31"
+      "path": "reveng/tests/test_contest_terms.py",
+      "bytes": 20328,
+      "sha256": "c1a7215153489bbf72fd8efb2523e5096df8167cfcd5a7b3674abc5fac800bd8",
+      "change": "new_contest_terms_offline_contracts_2026-10-31+lead_and_view_contracts_2026-11-01"
     },
     {
       "path": "reveng/tests/test_hypothesis_contract.py",

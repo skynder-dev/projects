@@ -74,6 +74,8 @@ public sealed class LocalResearchController {
   toolbar.Controls.Add(Button("Отменить","LocalResearchCancel",Cancel));
   toolbar.Controls.Add(Button("Ранние идеи","ComparePreviousIdeas",ShowComparison));
   toolbar.Controls.Add(Button("Публичные цены","PublicAlternativePrices",ShowPrices));
+  toolbar.Controls.Add(Button("Конкурсы","ContestTerms",ShowContests));
+  toolbar.Controls.Add(Button("Собрать условия конкурсов","ContestTermsCollect",StartContests));
   toolbar.Controls.Add(Button("Функции конкурентов","FunctionalComparison",()=>StartComparison()));
   toolbar.Controls.Add(Button("Покупатель и спрос","BuyerEvidence",()=>{if(last!=null&&last.ContainsKey("buyer_evidence"))ShowBuyer();else StartBuyer();}));
   toolbar.Controls.Add(Button("История","CandidateHistory",ShowHistory));
@@ -236,6 +238,24 @@ public sealed class LocalResearchController {
 
  void SaveDecision(string decision){if(cards.SelectedItem is AnalysisOutcomeRow){status.Text="Событие задания не является карточкой; решение владельца не записано.";return;}var selected=cards.SelectedItem as Card;if(selected==null)return;if(selected.Data.ContainsKey("output_review")){status.Text="AI-вывод удержан проверкой источников; решения не меняются.";return;}string id=S(selected.Data,"candidate_id"),revision=S(selected.Data,"review_revision_hash");try{if(decisionExpectedKey!=id+"@"+revision)throw new InvalidDataException("Сначала откройте текущую карточку и решение.");decisionExpectedPin=DecisionStore.Save(root,id,revision,decision,decisionExpectedPin);status.Text="Решение сохранено для точной ревизии; другие записи сохранены. Это не подтверждение спроса.";}catch(Exception ex){if(ex is OutOfMemoryException)throw;string recovered=DecisionStore.DescribeRecovery(root,id,revision);if(recovered!="")detail.Text=recovered;status.Text="Решение не сохранено: "+ex.Message+". Primary и защищённая копия сохранены. При конфликте требуется сравнение состояний, а не повторная запись.";}}
 
+ Process contestWorker;string contestRun;
+ // Contests (owner's idea, 31.10.2026): the saved collector result shown as quoted terms, outside candidates and the ranking.
+ void ShowContests(){if(detail==null||detail.IsDisposed)return;historyView=false;detail.Text=ContestTermsPresentation.Describe(root);if(status!=null&&!status.IsDisposed)status.Text="Конкурсы: показан сохранённый сбор условий со страниц организаторов. Вне кандидатов и общего рейтинга; сеть и модель сейчас не запускались."+(contestWorker!=null&&!contestWorker.HasExited?" Сбор ещё идёт.":"");}
+ // The collector is the app's own bounded transport (robots.txt, HTTPS, no redirects, request budget, no model); its
+ // result is shown when the process ends. Separate from the research worker, which keeps its own run and result.
+ void StartContests(){
+  if((worker!=null&&!worker.HasExited)||(contestWorker!=null&&!contestWorker.HasExited)){status.Text="Этот проход уже выполняется";return;}
+  string issue;var py=PortableRuntime.Python(root,"collect",out issue);var script=Path.Combine(root,"contest_terms.py");
+  if(py==null||!File.Exists(script)||!PortableRuntime.Check(root,py,"api",out issue)){status.Text="Инструменты сбора недоступны; сохранённые конкурсы можно смотреть без сети.";detail.Text=(issue==""?"contest_terms.py не найден рядом с программой.":issue)+"\r\nАвтоматических скачиваний и запуска AI нет.";return;}
+  contestRun=Path.Combine(root,"runs","contests-"+DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")+"-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(contestRun);string run=contestRun;
+  var info=new ProcessStartInfo(py,"-X utf8 \""+script+"\" --root \""+root+"\" --run \""+run+"\""+(forceOffline?" --offline":"")){UseShellExecute=false,CreateNoWindow=true,WorkingDirectory=root,RedirectStandardOutput=true,RedirectStandardError=true};
+  var process=new Process{StartInfo=info,EnableRaisingEvents=true,SynchronizingObject=Form};
+  process.OutputDataReceived+=(s,e)=>{if(e.Data!=null)try{File.AppendAllText(Path.Combine(run,"worker.log"),e.Data+Environment.NewLine,Encoding.UTF8);}catch{}};
+  process.ErrorDataReceived+=(s,e)=>{if(e.Data!=null)try{File.AppendAllText(Path.Combine(run,"worker-errors.log"),e.Data+Environment.NewLine,Encoding.UTF8);}catch{}};
+  process.Exited+=(s,e)=>{try{if(Form.IsDisposed||status==null||status.IsDisposed||detail==null||detail.IsDisposed)return;int code=process.ExitCode;ShowContests();status.Text=code==0?"Сбор условий конкурсов завершён; показан сохранённый результат. Вне кандидатов и общего рейтинга.":"Сбор условий конкурсов завершился с ошибкой (код "+code+"); журнал: "+run+". Показан прежний сохранённый сбор, если он был.";}catch(Exception ex){if(ex is OutOfMemoryException)throw;}};
+  contestWorker=process;process.Start();process.BeginOutputReadLine();process.BeginErrorReadLine();
+  status.Text="Начат ограниченный сбор условий конкурсов: страницы организаторов и вторичный список, robots.txt и HTTPS без редиректов, без модели. Результат появится здесь.";
+ }
  void ShowPrices(){if(last==null)return;var b=new StringBuilder("ПУБЛИЧНЫЕ ЦЕНЫ: это предложения поставщиков, не доказательство наших продаж.\r\n\r\n");foreach(var p in Items(last,"public_price_records"))AppendPrice(b,Obj(p));foreach(var e in Items(last,"source_errors")){var x=Obj(e);b.AppendLine("Неполный источник: "+S(x,"source")+" | "+S(x,"reason"));}detail.Text=b.ToString();}
  void ShowComparison(){if(last==null)return;var cmp=Obj(last.ContainsKey("comparison")?last["comparison"]:null);var b=new StringBuilder("ПОВТОРНАЯ ПРОВЕРКА РАННИХ ТРЁХ ИДЕЙ\r\nНи один источник не считается готовым покупателем.\r\n\r\n");foreach(var item in Items(cmp,"previous")){var c=Obj(item);var review=Obj(c["commercial_review"]);var cor=Obj(review["corroboration"]);b.AppendLine(S(c,"title")).AppendLine(S(review,"evidence_status")).AppendLine(CorroborationPresentation.Describe(cor));foreach(var x in Items(review,"unknowns"))b.AppendLine("• "+x);b.AppendLine();}b.AppendLine(S(cmp,"conclusion"));detail.Text=b.ToString();}
  string PendingAnalysis(){try{
@@ -305,7 +325,7 @@ public sealed class LocalResearchController {
   worker=new Process{StartInfo=info};worker.OutputDataReceived+=(s,e)=>Log("worker.log",e.Data);worker.ErrorDataReceived+=(s,e)=>Log("worker-errors.log",e.Data);worker.Start();workerStarts++;worker.BeginOutputReadLine();worker.BeginErrorReadLine();timer.Start();status.Text="Начат ограниченный проход; результаты и источники появятся здесь";
  }
  void Log(string file,string data){if(data!=null)try{File.AppendAllText(Path.Combine(runPath,file),data+Environment.NewLine,Encoding.UTF8);}catch{}}
- void Cancel(){if(worker!=null&&!worker.HasExited&&runPath!=null){File.WriteAllText(Path.Combine(runPath,"cancel.request"),"cancel");if(status!=null&&!status.IsDisposed)status.Text="Отмена запрошена; текущее чтение завершится по таймауту";}}
+ void Cancel(){if(worker!=null&&!worker.HasExited&&runPath!=null){File.WriteAllText(Path.Combine(runPath,"cancel.request"),"cancel");if(status!=null&&!status.IsDisposed)status.Text="Отмена запрошена; текущее чтение завершится по таймауту";}if(contestWorker!=null&&!contestWorker.HasExited&&contestRun!=null){try{File.WriteAllText(Path.Combine(contestRun,"cancel.request"),"cancel");}catch{}if(status!=null&&!status.IsDisposed)status.Text="Отмена сбора конкурсов запрошена; текущее чтение страницы завершится по таймауту";}}
  void Poll(){
   if(runPath==null){timer.Stop();return;}try{string path=Path.Combine(runPath,"result.json");if(File.Exists(path)){var r=Read(path);Display(r);if(S(r,"status")!="running"&&worker.HasExited){if(S(r,"status")=="completed"&&!r.ContainsKey("discovery_summary")&&!comparisonWorker&&!forceOffline){StartComparison();return;}if(S(r,"status")=="completed"&&comparisonWorker&&!buyerWorker&&!forceOffline&&(!transitionTest||buyerTransitionTest)&&!r.ContainsKey("buyer_evidence")){StartBuyer();return;}timer.Stop();return;}}if(worker.HasExited){status.Text="Процесс завершился без итогового результата; журнал сохранён";timer.Stop();}}catch(IOException){}catch(Exception ex){status.Text="Ошибка чтения результата: "+ex.Message;timer.Stop();}
  }
