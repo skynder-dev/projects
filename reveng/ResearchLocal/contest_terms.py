@@ -22,7 +22,7 @@ RULES_VERSION = 'contest-terms-rules-v1'
 KIND = 'official_contest_terms'
 CONTESTS = {
     'billion_ai_film_2027': {'organizer': '1 Billion Followers Summit', 'title': 'AI Film Award 2027',
-                             'url': 'https://www.1billionsummit.com/ai-film-award',
+                             'url': 'https://www.1billionsummit.com/ai-award-2027',
                              'seed': 'assistant manual web search 2026-10-31'},
     'waiff_cannes_2027': {'organizer': 'World AI Film Festival (WAIFF)', 'title': 'WAIFF Cannes 2027 (FilmFreeway listing)',
                           'url': 'https://filmfreeway.com/WAIFF', 'seed': 'assistant manual web search 2026-10-31'},
