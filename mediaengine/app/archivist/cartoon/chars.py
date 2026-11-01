@@ -40,12 +40,12 @@ POSES = {
     "facepalm": dict(a=(-60, -120), b=(-10, -8), lean=4, tilt=12),
     "fist": dict(a=(60, 100), b=(-30, -40), lean=-3, tilt=-3),
     "sneaky": dict(a=(-6, -78), b=(6, 78), lean=8, tilt=6),
-    "thumbs_up": dict(a=(22, 118), b=(-8, -6), lean=2, tilt=4),
+    "thumbs_up": dict(a=(18, 72), b=(-8, -6), lean=2, tilt=4),
     "hips": dict(a=(40, -98), b=(-40, 98), lean=-2, tilt=-3),
     "scratch": dict(a=(150, 82), b=(-8, -6), lean=0, tilt=-7),
-    "phone": dict(a=(128, 91), b=(-10, -8), lean=0, tilt=6),
-    "money": dict(a=(62, 52), b=(-10, -8), lean=3, tilt=3),
-    "paper": dict(a=(52, 78), b=(-10, -8), lean=2, tilt=2),
+    "phone": dict(a=(118, 100), b=(-10, -8), lean=0, tilt=-4),
+    "money": dict(a=(30, 78), b=(-10, -8), lean=3, tilt=3),
+    "paper": dict(a=(22, 96), b=(-10, -8), lean=2, tilt=2),
     "sit": dict(a=(4, -30), b=(-4, 30), lean=0, tilt=0),
 }
 # a gesture's hands: (the hand on the side it looks to, the other one, a thing held in the first one, the first arm in
@@ -348,9 +348,14 @@ def _hand(cv: Canvas, c: dict, kind: str, x: float, y: float, side: int):
     if kind in ("fist", "hold", "point", "thumb"):
         if kind == "point":                                # the index finger out, along the arm
             cv.poly(_capsule(x - side * 4, y, x - side * 4, y + 44, 7.5), skin, INK, 2.5)
-        if kind == "thumb":                                # the thumb up, whichever way the arm goes
-            with cv.upright(x, y):
-                cv.poly(_capsule(0, -4, 0, -40, 8.5), skin, INK, 2.5)
+        if kind == "thumb":                                # a fist turned sideways, the thumb up (upright, whatever
+            with cv.upright(x, y):                         # the arm does): curled fingers stacked, a short thick thumb
+                cv.poly(_capsule(-6, -14, 4, -44, 9.5), skin, INK, 3)
+                cv.poly(rounded(-20, -18, 38, 40, 14), skin, INK, 3.5)
+                dark = shade(skin, -0.3)
+                for yy in (-6, 4, 13):
+                    cv.line([(4, yy), (17, yy)], dark, 2.5)
+            return
         cv.circle(x, y, 19, skin, INK, 3.5)
         dark = shade(skin, -0.3)
         for k in (-1, 1):                                  # (the fingers folded)
@@ -367,8 +372,11 @@ def _held(cv: Canvas, kind: str, x: float, y: float, k: float = 1.0):
     with cv.upright(x, y):
         with cv.at(0, 0, 0, max(0.01, back(k, 1.4) if k < 1 else 1.0)):
             if kind == "phone":                            # held to the ear
-                cv.poly(rounded(-15, -40, 30, 66, 8), "#262b36", INK, 3.5)
-                cv.rect(-10, -34, 20, 50, "#78aee6", None, 0, 4)
+                with cv.at(4, -6, 12):
+                    cv.poly(rounded(-20, -62, 40, 96, 10), "#262b36", INK, 4)
+                    cv.rect(-14, -50, 28, 70, "#8cc3f2", None, 0, 4)
+                    cv.rect(-7, -58, 14, 4, "#5a6070", None, 0, 2)
+                    cv.circle(0, 27, 3.5, "#5a6070")
             elif kind == "money":                          # a fan of notes
                 for rot in (-26, -8, 10):
                     with cv.at(0, 6, rot):
