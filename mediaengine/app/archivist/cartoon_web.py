@@ -11,7 +11,7 @@ from pathlib import Path
 from flask import jsonify, redirect, request, send_file
 
 from . import voice as vo
-from .cartoon import bgs, chars as ch, film as F, jobs as cj, library as L, reference as R, stories, textscript as T, writer as W
+from .cartoon import bgs, chars as ch, film as F, jobs as cj, library as L, painter as PT, reference as R, stories, textscript as T, writer as W
 from .cartoon.draw import STYLES
 
 CSS = """<style>
@@ -497,6 +497,53 @@ def register(app, page, err_page, e, human_bytes):
                     + "</form>")
         return out
 
+    def _pictures_card(jid: str, film: dict) -> tuple[str, str]:
+        """(the card "Pictures drawn by AI" of a film's page, the script that refreshes it while something runs)."""
+        s = PT.status()
+        head = "<div class='card' id='pictures' style='margin-top:14px'><h2 style='margin-top:0'>Pictures drawn by AI</h2>"
+        again = "setTimeout(()=>location.reload(),5000);"
+        if s["state"] == "running":
+            pct = int(100 * s["done"] / s["total"]) if s.get("total") else 3
+            return (head + f"<div><span>Installing the picture add-on</span></div><div class='ae-bar'><i style='width:{max(3, pct)}%'></i></div>"
+                    f"<div class='muted ae-path' translate='no'>{e(s.get('detail') or '')}</div>"
+                    f"<form method='post' action='/auto/cartoon/pictures/cancel' style='margin-top:10px'><button class='btn2'>Cancel</button></form></div>", again)
+        if not s["installed"]:
+            err = f"<div class='errbox' style='margin-bottom:10px'>{e(s.get('error') or '')}</div>" if s["state"] == "failed" else ""
+            why = PT.why_not_install()
+            return (head + err + "<div>A free picture model on this PC (FLUX.2 klein, Apache-2.0) draws this cartoon's characters "
+                    "(standing, talking, pointing, shrugging - the same person in every picture) and its places once; the "
+                    "cartoon then moves them instead of the program's own drawings.</div>"
+                    f"<div class='muted' style='font-size:13px;margin-top:6px'><span>It is downloaded once into the data folder (about</span> "
+                    f"<span translate='no'>{PT.SIZE_GB}</span> <span>GB) and runs on the NVIDIA graphics card, about 20 seconds a picture. "
+                    f"MediaEngine goes online for it only when you press Install (pypi.org, download.pytorch.org, huggingface.co).</span></div>"
+                    + (f"<div class='muted' style='margin-top:8px'>{e(why)}</div>" if why else
+                       "<form method='post' action='/auto/cartoon/pictures/install' style='margin-top:10px'><button>Install the picture add-on</button></form>")
+                    + "</div>", "")
+        pt = s["paint"]
+        if pt["state"] == "running":
+            mine = pt.get("job") == jid
+            return (head + (f"<div><span>Drawing</span> <span translate='no'>{pt['done']} / {pt['total']}</span>"
+                            f" <span class='muted' translate='no'>{e(pt.get('what') or '')}</span></div>"
+                            f"<div class='ae-bar'><i style='width:{max(3, int(100 * pt['done'] / max(1, pt['total'])))}%'></i></div>"
+                            f"<form method='post' action='/auto/cartoon/pictures/stop' style='margin-top:10px'><button class='btn2'>Stop</button></form>"
+                            if mine else "<div class='muted'>Pictures are being drawn for another cartoon.</div>") + "</div>", again)
+        err = f"<div class='errbox' style='margin-bottom:10px'>{e(pt.get('error') or '')}</div>" if pt["state"] == "failed" and pt.get("job") == jid else ""
+        todo, every = len(PT.plan(film)), len(PT.plan(film, again=True))
+        mins = max(1, round(todo * 25 / 60))
+        body = head + err
+        if todo:
+            body += (f"<form method='post' action='/auto/cartoon/{jid}/pictures'><button>Draw the characters and places</button> "
+                     f"<span class='muted' style='font-size:13px'><span translate='no'>{todo}</span> <span>pictures, about</span> "
+                     f"<span translate='no'>{mins}</span> <span>min on the graphics card.</span></span></form>")
+        if todo < every:
+            body += (f"<div style='margin-top:8px'><span>This cartoon has pictures drawn by AI. Press Make it again to use new ones.</span></div>"
+                     f"<div class='ct-row' style='margin-top:8px'><form method='post' action='/auto/cartoon/{jid}/pictures'>"
+                     f"<input type='hidden' name='again' value='1'><button class='btn2'>Draw them again</button></form>"
+                     f"<form method='post' action='/auto/cartoon/{jid}/pictures/remove'><button class='btn2'>Use the program's own drawings</button></form></div>")
+        if todo == every:
+            body += "<div class='muted' style='font-size:13px;margin-top:6px'>Then press Make it again: the cartoon is made with them.</div>"
+        return body + "</div>", ""
+
     @app.get("/auto/cartoon")
     def cartoon_home():
         mine = cj.films()
@@ -647,12 +694,13 @@ def register(app, page, err_page, e, human_bytes):
         res = j.get("result") or {}
         video = (f"<div class='ct-big'><video controls preload='metadata' src='/auto/cartoon/{jid}/film.mp4'></video></div>"
                  if j["state"] == "done" else _block(j, _state_html(j)))
+        pic_card, pic_js = _pictures_card(jid, film)
         body = (f"{CSS}<div class='pagehead'><div class='eyebrow'><a href='/auto/cartoon'>Cartoon Studio</a></div>"
                 f"<h1 translate='no'>{e(j.get('title') or film['title'])}</h1></div>{_READY}"
                 f"<div class='card'>{video}"
                 + (f"<div class='muted' style='font-size:13px;margin-top:6px'><span>Saved in</span> <span class='ae-path' translate='no'>"
                    f"{e(res.get('saved') or '')}</span></div>" if res.get("saved") else "")
-                + f"</div><div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Change and make again</h2>{lang_box}"
+                + f"</div>{pic_card}<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Change and make again</h2>{lang_box}"
                 f"<form method='post' action='/auto/cartoon/{jid}/again' data-dirty-watch "
                 f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<div class='ct-row' style='margin-top:10px'><b>Title</b><input name='title' value='{e(film['title'])}' maxlength='120' "
@@ -677,7 +725,7 @@ def register(app, page, err_page, e, human_bytes):
                 + f"<details style='margin-top:8px'><summary>The whole script (JSON)</summary>"
                 f"<textarea readonly rows='12' style='width:100%' translate='no'>{e(json.dumps(cj.script_of(jid), ensure_ascii=False, indent=1))}</textarea>"
                 f"</details></div>")
-        return page("Cartoon Studio", body, _POLL_JS + _MUSIC_JS + _EDIT_JS)
+        return page("Cartoon Studio", body, _POLL_JS + _MUSIC_JS + _EDIT_JS + pic_js)
 
     def _story_page(j: dict):
         jid, res = j["id"], j.get("result") or {}
@@ -1119,6 +1167,44 @@ def register(app, page, err_page, e, human_bytes):
         except (W.WriterError, vo.VoiceError) as exc:
             return err_page(str(exc), f"/auto/cartoon/{jid}")
         return redirect(f"/auto/cartoon/{new}")
+
+    @app.post("/auto/cartoon/pictures/install")
+    def cartoon_pictures_install():
+        try:
+            PT.start_install()
+        except PT.PainterError as exc:
+            return err_page(str(exc), "/auto/cartoon")
+        return redirect(request.referrer or "/auto/cartoon")
+
+    @app.post("/auto/cartoon/pictures/cancel")
+    def cartoon_pictures_cancel():
+        PT.cancel_install()
+        return redirect(request.referrer or "/auto/cartoon")
+
+    @app.post("/auto/cartoon/pictures/stop")
+    def cartoon_pictures_stop():
+        PT.cancel_paint()
+        return redirect(request.referrer or "/auto/cartoon")
+
+    @app.post("/auto/cartoon/<jid>/pictures")
+    def cartoon_pictures_draw(jid):
+        if not re.fullmatch(_JOB_ID, jid):
+            return err_page("No such job.", "/auto/cartoon")
+        try:
+            PT.start_paint(F.check_script(cj.script_of(jid)), jid, again=request.form.get("again") == "1")
+        except (PT.PainterError, F.FilmError, vo.VoiceError, OSError) as exc:
+            return err_page(str(exc), f"/auto/cartoon/{jid}")
+        return redirect(f"/auto/cartoon/{jid}#pictures")
+
+    @app.post("/auto/cartoon/<jid>/pictures/remove")
+    def cartoon_pictures_remove(jid):
+        if not re.fullmatch(_JOB_ID, jid):
+            return err_page("No such job.", "/auto/cartoon")
+        try:
+            PT.remove_pictures(F.check_script(cj.script_of(jid)))
+        except (F.FilmError, vo.VoiceError, OSError) as exc:
+            return err_page(str(exc), f"/auto/cartoon/{jid}")
+        return redirect(f"/auto/cartoon/{jid}#pictures")
 
     @app.post("/auto/cartoon/writer/install")
     def cartoon_writer_install():

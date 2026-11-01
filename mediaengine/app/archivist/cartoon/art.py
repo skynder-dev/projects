@@ -45,10 +45,11 @@ def _find(folder: Path, stem: str) -> Path | None:
     return None
 
 
-def background(name: str, base: Path | None = None) -> Path | None:
-    """The picture for a background name, if there is one."""
+def background(name: str, base: Path | None = None, wide: bool = False) -> Path | None:
+    """The picture for a background name, if there is one (for a wide film its wide picture first)."""
     try:
-        return _find((base or root()) / "backgrounds", str(name))
+        d = (base or root()) / "backgrounds"
+        return (_find(d, str(name) + "_wide") if wide else None) or _find(d, str(name))
     except OSError:
         return None
 
@@ -61,6 +62,14 @@ def character(name: str, base: Path | None = None) -> Path | None:
         return d if _find(d, "base") else None
     except OSError:
         return None
+
+
+def forget() -> None:
+    """Pictures changed on disk: read them again."""
+    with _lock:
+        _cache.clear()
+        _sized.clear()
+        _order.clear()
 
 
 def pose_picture(folder: Path, pose: str, open_mouth: bool) -> Path:

@@ -646,6 +646,31 @@ def main() -> int:
         st = c.get(f"/api/cartoon/status?ids={jid},{nid},x", headers=H).get_json() or {}
         check("pages: how far the films are, for the page to ask", st.get(jid, {}).get("state") == "done" and st.get("x", {}).get("state") == "gone", st)
         c.post("/lang", data={"lang": "ru"}, headers=H)
+        # the picture add-on (a stand-in that draws plain figures: no graphics card or model here): a film's page offers it,
+        # draws its people and places into the art folder, the film made again uses them, and they can be taken away
+        from archivist.cartoon import painter as PT, art as A2
+        os.environ["MEDIAENGINE_PAINTER"] = "standin"
+        try:
+            p1 = c.get(f"/auto/cartoon/{jid}", headers=H).get_data(as_text=True)
+            need = len(PT.plan(F.check_script(cj.script_of(jid))))
+            dr = c.post(f"/auto/cartoon/{jid}/pictures", headers=H)
+            t0 = time.time()
+            while PT.PAINT["state"] == "running" and time.time() - t0 < 120:
+                time.sleep(0.2)
+            drawn = sorted(x.name for x in (A2.root() / "characters").rglob("*.png"))
+            p2 = c.get(f"/auto/cartoon/{jid}", headers=H).get_data(as_text=True)
+            fp2 = F.check_script(cj.script_of(jid))
+            used = F.pictures(fp2)
+            gone = c.post(f"/auto/cartoon/{jid}/pictures/remove", headers=H)
+            left = list((A2.root() / "characters").rglob("*.png")) + list((A2.root() / "backgrounds").glob("*.png"))
+        finally:
+            os.environ.pop("MEDIAENGINE_PAINTER", None)
+        check("pictures: a film's page offers the picture add-on, it draws the film's people (5 pictures each) and places, "
+              "the film uses them, and the program's own drawings come back on a button",
+              "Draw the characters and places" in p1 and need == 2 * 5 + 1 and dr.status_code == 302
+              and PT.PAINT["state"] == "done" and drawn.count("base.png") == 2 and "talk_open.png" in drawn
+              and "Draw them again" in p2 and set(used["cast"]) == {"kate", "rick"} and used["bg"]
+              and gone.status_code == 302 and not left, (need, PT.PAINT, drawn, used, left))
         ru = (c.get("/auto/cartoon", headers=H).get_data(as_text=True) + c.get(f"/auto/cartoon/{jid}", headers=H).get_data(as_text=True)
               + c.get("/auto/cartoon/characters", headers=H).get_data(as_text=True)
               + c.get("/auto/cartoon/characters/rick", headers=H).get_data(as_text=True))

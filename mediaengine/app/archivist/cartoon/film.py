@@ -108,7 +108,7 @@ def pictures(film: dict) -> dict:
         got = {"bg": {}, "cast": {}}
         if film.get("pictures", True):
             for s in film.get("scenes") or []:
-                b = art.background(s.get("bg") or "")
+                b = art.background(s.get("bg") or "", wide=film.get("format") == "horizontal")
                 if b:
                     got["bg"][s["bg"]] = str(b)
             for key, c in (film.get("cast") or {}).items():
