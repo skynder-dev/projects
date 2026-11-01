@@ -122,6 +122,11 @@ class LeadTests(unittest.TestCase):
         self.assertEqual(ct.listed_date('Deadline Nov 20, 2026', '2026-11-01'), ('2026-11-20', False))
         self.assertEqual(ct.listed_date('no date here', '2026-11-01'), (None, False))
         self.assertEqual(ct.listed_date('Feb 30', '2026-11-01'), (None, False))
+    def test_date_inside_the_link_wins_over_a_neighbour(self):
+        page = (b'<html><head><title>T</title></head><body><main><div><a href="https://a.example/">A Fest 9d Nov 10</a></div>'
+                b'<div><a href="https://b.example/">B Fest 19d Nov 20</a></div></main></body></html>')
+        found, _ = ct.leads(page, AGG, '2026-11-01')
+        self.assertEqual([(l['url'], l['listed_deadline']) for l in found], [('https://a.example/', '2026-11-10'), ('https://b.example/', '2026-11-20')])
     def test_closed_host_leads_do_not_use_the_budget(self):
         listing = LISTING.replace(b'https://two.example/contest?x=1#top', b'https://filmfreeway.com/SomeFest')
         found, _ = ct.leads(listing, AGG)

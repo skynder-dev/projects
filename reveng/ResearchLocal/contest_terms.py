@@ -279,7 +279,11 @@ def leads(raw, url, today=None):
         if target in seen:
             continue
         seen.add(target); near = page.around(link)
-        when, assumed = listed_date(near, today or datetime.now(timezone.utc).date().isoformat()); listed_money = re.search(MONEY, near, re.I)
+        day = today or datetime.now(timezone.utc).date().isoformat()
+        when, assumed = listed_date(link['text'], day)   # a date inside the link's own text belongs to that link
+        if not when:
+            when, assumed = listed_date(near, day)
+        listed_money = re.search(MONEY, link['text'], re.I) or re.search(MONEY, near, re.I)
         out.append({'url': target, 'organizer_host': host, 'text': ' '.join(link['text'].split()[:MAX_QUOTE_WORDS]),
                     'listed_deadline': when, 'listed_year_assumed': assumed,
                     'listed_prize': parse_money(listed_money.group(0)) if listed_money else None,
