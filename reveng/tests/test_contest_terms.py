@@ -66,7 +66,9 @@ class ParseTests(unittest.TestCase):
 class CollectTests(unittest.TestCase):
     def setUp(self):
         self.t = tempfile.TemporaryDirectory(); self.root = Path(self.t.name).resolve(); self.run = self.root / 'runs' / 'r'; self.run.mkdir(parents=True)
-    def tearDown(self): self.t.cleanup()
+        one = {'billion_ai_film_2027': ct.CONTESTS['billion_ai_film_2027']}   # one organizer page per collect test
+        self.only = patch.object(ct, 'CONTESTS', one); self.only.start()
+    def tearDown(self): self.only.stop(); self.t.cleanup()
     def fake(self, page):
         def read(url, stats, cap=1048576):
             stats['source_requests'] += 1

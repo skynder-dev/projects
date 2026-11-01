@@ -1078,8 +1078,8 @@
     },
     {
      "path": "reveng/tests/test_contest_terms.py",
-     "bytes": 8080,
-     "sha256": "3c88aa0441c143926b5a18047ae3ebe1e0c3782eff2485174b7e6af880d8edce",
+     "bytes": 8287,
+     "sha256": "2c136af0b99b0202dc1233da20363100836429872ecee0cab49a4c3aea66258d",
      "change": "new_contest_terms_offline_contracts_2026-10-31"
     },
     {
