@@ -27,7 +27,12 @@
 - **Всё приложение компилируется** (`csc` .NET Framework 4, 30 файлов → wrapper.exe 377 КБ) и **все 5 нативных C#-проб проходят** (TestOutcome, TestPriceExperimentPresentation, TestOwnerPreferencePresentation, TestPortableRuntimeDrain, TestOperationOutcome) — раньше это было NOT_RUN.
 - Python-проверки на Windows (3.11, обычный и -O): проходят 4 из 12 (capability, price_ui_contract, saved_analysis_context, task_routing); падают 8 (answer_cache_integrity, collection_integrity, hypothesis_contract, identity_portable, owner_preference_overlay, price_cache_integrity, price_experiment_projection, researchlocal_offline). На Linux (3.13) те же наборы проходят, кроме одного хеша AST, зависящего от версии Python. Значит, есть именно Windows-расхождения; их надо разобрать до встраивания «Конкурсов», потому что программа работает на Windows у владельца.
 
+### Windows зелёный (31.10, позже в тот же вечер)
+- Из 8 падений 5 были от моей настройки CI (принудительный `REVENG_OFFLINE_REPLAY=1` ломал проверки, которые подменяют `read_http`; одной проверке PowerShell передавал аргумент не одним списком).
+- Настоящая ошибка Windows: `source_ledger.verify_portable` и `research_chain` сравнивали развёрнутый путь (`resolve()`) с неразвёрнутой временной папкой; на Windows временная папка бывает в коротком виде 8.3 (`RUNNER~1`), и каждый проверенный экспорт падал с «Ledger input missing/unsafe in export». Исправлено: `root=Path(folder).resolve()`; записи манифеста обновлены (изменение `+windows_resolved_temp_root_2026-10-31`).
+- Итог `reveng-windows.yml`: приложение компилируется, 5/5 нативных проб, 11/11 Python-наборов в обычном и `-O` режимах (12-й требует `.ci`-обвязку, которой нет в пакете). Это проверено на GitHub Windows; на ПК владельца не установлено, владельцем не принято.
+
 ### План
-1. Windows CI в GitHub: сборка ResearchLocal (28.10) и её stdlib-проверки — воспроизводимо.
+1. ~~Windows CI в GitHub~~ — сделано, зелёное.
 2. «Конкурсы» внутри ResearchLocal (см. выше), с проверками.
 3. Установка рядом со старой на ПК (старая не трогается), после согласия владельца.
