@@ -49,8 +49,9 @@ def rows(pages):
             except (TypeError, ValueError):
                 continue
             if usd > 0 and eur > 0 and str(c.get('scryfall_uri', '')).startswith('https://'):
+                buy = c.get('purchase_uris') or {}
                 out.append({'id': c.get('id', ''), 'name': c.get('name', ''), 'set': c.get('set', '').upper(), 'uri': c['scryfall_uri'].split('?')[0],
-                            'usd': usd, 'eur': eur})
+                            'usd': usd, 'eur': eur, 'links': {k: str(buy[k]).split('?')[0] for k in ('tcgplayer', 'cardmarket') if str(buy.get(k, '')).startswith('https://')}})
     return out
 
 
@@ -78,23 +79,54 @@ def gaps(cards, rate, rate_day):
     return out[:MAX_DEALS]
 
 
+def deal_name(d):
+    """Stable per printing (Scryfall id), so a swipe on the phone stays with the same card from run to run."""
+    return 'mtg-' + re.sub(r'[^0-9a-f]', '', str(d['id']).lower())[:12]
+
+
+def check(d, pages, rate):
+    """'Dig in' for one deal: every paper printing of the same card name with both prices. If most printings show the
+    gap in the same direction, the gap is less likely to be one odd listing; if only this printing shows it, likely noise."""
+    same = total = 0
+    for c in rows(pages):
+        if c['name'] != d['name']:
+            continue
+        total += 1; eu = c['eur'] * rate
+        if (d['buy'] == 'EU' and c['usd'] > eu * 1.15) or (d['buy'] == 'US' and eu > c['usd'] * 1.15):
+            same += 1
+    verdict = 'consistent' if total >= 2 and same * 2 > total else 'only_this_printing' if same <= 1 else 'mixed'
+    return {'printings_with_both_prices': total, 'same_direction_gap_over_15pct': same, 'verdict': verdict, 'checked_at': m.now()}
+
+
 def deal_file(d):
     """A deal_economics input: prices quoted from Scryfall's figures (with the ECB rate for euros), the rest assumptions."""
     eur_q = 'Scryfall eur ' + format(d['eur'], '.2f') + ' x ECB ' + str(d['rate']) + ' USD/EUR (' + str(d['rate_day']) + ')'
     usd_q = 'Scryfall usd ' + format(d['usd'], '.2f')
     buy_q, sell_q = (eur_q, usd_q) if d['buy'] == 'EU' else (usd_q, eur_q)
     where = {'EU': ('в Европе (Cardmarket)', 'in Europe (Cardmarket)'), 'US': ('в США (TCGplayer)', 'in the USA (TCGplayer)')}
+    ru_check, en_check = [], []
+    if d.get('check'):
+        k = d['check']; n, same = k['printings_with_both_prices'], k['same_direction_gap_over_15pct']
+        word = {'consistent': ('похоже на настоящую разницу рынков', 'looks like a real market gap'), 'only_this_printing': ('разница только у этого издания - похоже на шум', 'gap in this printing only - likely noise'),
+                'mixed': ('неоднозначно', 'mixed')}[k['verdict']]
+        ru_check = ['Проверка по всем изданиям: ' + str(same) + ' из ' + str(n) + ' в ту же сторону - ' + word[0]]
+        en_check = ['Check across printings: ' + str(same) + ' of ' + str(n) + ' the same way - ' + word[1]]
     return {'schema': 'reveng-resale-deal-v1', 'title': 'MTG: ' + d['name'] + ' (' + d['set'] + ')', 'currency': 'USD', 'source': d['uri'],
+            'scryfall_id': d['id'], 'links': d.get('links', {}), 'check': d.get('check'),
             'origin': 'card_arbitrage trial: Scryfall daily prices, not sales',
             'lines_ru': ['Купить ' + where[d['buy']][0] + ': ~$' + format(d['buy_usd'], '.2f'), 'Продать ' + where[d['sell']][0] + ': ~$' + format(d['sell_usd'], '.2f'),
-                         'Остаётся ~$' + format(d['left'], '.2f') + ' с карты (комиссии ' + str(SELL_FEE_PCT[d['sell']]) + '% и доставка $' + format(SHIPPING_USD, '.0f') + ' - допущения)'],
+                         'Остаётся ~$' + format(d['left'], '.2f') + ' с карты (комиссии ' + str(SELL_FEE_PCT[d['sell']]) + '% и доставка $' + format(SHIPPING_USD, '.0f') + ' - допущения)'] + ru_check,
             'lines_en': ['Buy ' + where[d['buy']][1] + ': ~$' + format(d['buy_usd'], '.2f'), 'Sell ' + where[d['sell']][1] + ': ~$' + format(d['sell_usd'], '.2f'),
-                         '~$' + format(d['left'], '.2f') + ' left per card (fees ' + str(SELL_FEE_PCT[d['sell']]) + '% and shipping $' + format(SHIPPING_USD, '.0f') + ' assumed)'],
+                         '~$' + format(d['left'], '.2f') + ' left per card (fees ' + str(SELL_FEE_PCT[d['sell']]) + '% and shipping $' + format(SHIPPING_USD, '.0f') + ' assumed)'] + en_check,
             'figures': {'buy_price': {'value': d['buy_usd'], 'status': 'quoted', 'quote': buy_q, 'url': d['uri']},
                         'sell_price': {'value': d['sell_usd'], 'status': 'quoted', 'quote': sell_q, 'url': d['uri']},
                         'quantity': {'value': 1, 'status': 'assumption'},
                         'shipping_per_unit': {'value': SHIPPING_USD, 'status': 'assumption'},
                         'sales_fees_pct_of_sell': {'value': SELL_FEE_PCT[d['sell']], 'status': 'assumption'}}}
+
+
+def budget(stats):
+    return stats.get('source_requests', 0) < 22
 
 
 def allowed(url, stats, read, robots):
@@ -105,7 +137,17 @@ def allowed(url, stats, read, robots):
         raise ValueError('robots.txt denied ' + host)
 
 
-def collect(root, stats, offline=False, read=None):
+def liked(decisions=None):
+    if decisions is None:
+        try:
+            import phone_cards
+            decisions = phone_cards.decisions()
+        except Exception:
+            decisions = {}
+    return {k[len('rv_d_'):] for k, v in decisions.items() if k.startswith('rv_d_mtg-') and v == 'like'}
+
+
+def collect(root, stats, offline=False, read=None, decisions=None):
     """Reads the ECB rate and the search pages (or nothing offline), writes deals/mtg-*.json (old ones replaced) and a
     sealed card-arbitrage.json with what was read and why each step ended."""
     read = read or m.read_http
@@ -123,12 +165,33 @@ def collect(root, stats, offline=False, read=None):
             if not page.get('has_more') or not str(page.get('next_page', '')).startswith('https://api.scryfall.com/'):
                 break
             url = page['next_page']; time.sleep(0.15)   # Scryfall asks for 50-100 ms between requests
-        cards = rows(pages); deals = gaps(cards, rate, day)
+        cards = rows(pages); deals = gaps(cards, rate, day); keep = liked(decisions)
+        # deals the owner marked "dig in" stay even when today's list no longer has them, and get the check across printings
+        for name in keep:
+            if not any(deal_name(d) == name for d in deals) and (folder / (name + '.json')).exists():
+                old = json.loads((folder / (name + '.json')).read_text(encoding='utf-8'))
+                hit = [c for c in cards if deal_name(c) == name]
+                if hit:
+                    c = hit[0]; eu = round(c['eur'] * rate, 2); buy = 'EU' if c['usd'] > eu else 'US'
+                    sell_usd, buy_usd = (c['usd'], eu) if buy == 'EU' else (eu, c['usd'])
+                    deals.append(dict(c, buy=buy, sell='US' if buy == 'EU' else 'EU', buy_usd=buy_usd, sell_usd=sell_usd, rate=rate, rate_day=day,
+                                      left=round(sell_usd * (1 - SELL_FEE_PCT['US' if buy == 'EU' else 'EU'] / 100) - buy_usd - SHIPPING_USD, 2)))
+                else:
+                    deals.append({'id': old.get('scryfall_id', ''), 'stale': old})
+        for d in deals:
+            if 'stale' in d or deal_name(d) not in keep or not budget(stats):
+                continue
+            allowed(SEARCH, stats, read, robots)
+            url = SEARCH + quote('!"' + d['name'] + '" -is:digital game:paper')
+            d['check'] = check(d, [json.loads(read(url, stats, 4194304).decode('utf-8'))], rate); time.sleep(0.15)
         for old in folder.glob('mtg-*.json'):
-            old.unlink()
-        for i, d in enumerate(deals, 1):
-            (folder / ('mtg-%02d.json' % i)).write_text(json.dumps(deal_file(d), ensure_ascii=False, indent=1), encoding='utf-8')
-        result.update(status='read', ecb_usd_per_eur=rate, ecb_day=day, printings_with_both_prices=len(cards), dropped_as_suspicious=suspicious(cards, rate), deals=[{k: d[k] for k in ('name', 'set', 'buy', 'sell', 'buy_usd', 'sell_usd', 'left', 'uri')} for d in deals])
+            if old.stem not in keep:
+                old.unlink()
+        for d in deals:
+            if 'stale' not in d:
+                (folder / (deal_name(d) + '.json')).write_text(json.dumps(deal_file(d), ensure_ascii=False, indent=1), encoding='utf-8')
+        result.update(status='read', ecb_usd_per_eur=rate, ecb_day=day, printings_with_both_prices=len(cards), dropped_as_suspicious=suspicious(cards, rate),
+                      dig_in=sorted(keep), deals=[dict({k: d[k] for k in ('name', 'set', 'buy', 'sell', 'buy_usd', 'sell_usd', 'left', 'uri')}, file=deal_name(d), check=d.get('check')) for d in deals if 'stale' not in d])
     except Exception as ex:
         result.update(status='source_unavailable', error=m.error_text(ex, 200), deals=[])
     result['source_requests'] = stats.get('source_requests', 0); result['model_requests'] = 0

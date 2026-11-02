@@ -444,9 +444,9 @@
     },
     {
       "path": "reveng/ResearchLocal/card_arbitrage.py",
-      "bytes": 9568,
-      "sha256": "ecac48140949fc4808d282ab8c358e398f08281465dcc42234836d762a245eb1",
-      "change": "new_card_arbitrage_trial_2026-11-02"
+      "bytes": 13610,
+      "sha256": "0e09977dc298a51ea88647bce3a47ff66c87031af2d8cea01e43d2b8e1560d06",
+      "change": "new_card_arbitrage_trial_2026-11-02+stable_dig_in"
     },
     {
       "path": "reveng/ResearchLocal/collection_attempts.py",
@@ -1100,9 +1100,9 @@
     },
     {
       "path": "reveng/tests/test_card_arbitrage.py",
-      "bytes": 4699,
-      "sha256": "d6186dd2600d805efd757c937390e47f85d0233237179a7bc67bb869d0f4d698",
-      "change": "new_card_arbitrage_offline_contracts_2026-11-02"
+      "bytes": 6470,
+      "sha256": "6c5ce1f29901a674c0a607349d117634f295cd44d046e551859d3404c2a6ad2a",
+      "change": "new_card_arbitrage_offline_contracts_2026-11-02+stable_dig_in"
     },
     {
       "path": "reveng/tests/test_collection_integrity.py",

@@ -12,7 +12,8 @@ sys.addaudithook(audit)
 import card_arbitrage as ca, deal_economics as de, phone_cards as pc
 
 ECB = b"<gesmes:Envelope><Cube><Cube time='2026-10-30'><Cube currency='USD' rate='1.1000'/><Cube currency='JPY' rate='160'/></Cube></Cube></gesmes:Envelope>"
-def card(name, setc, usd, eur): return {'id': name + setc, 'name': name, 'set': setc, 'scryfall_uri': 'https://scryfall.com/card/' + setc + '/1?utm=x', 'prices': {'usd': usd, 'eur': eur}}
+IDS = {'aaa': 'a1a1a1a1a1a1-0001', 'bbb': 'b2b2b2b2b2b2-0002', 'ccc': 'c3c3c3c3c3c3-0003', 'ddd': 'd4d4d4d4d4d4-0004', 'eee': 'e5e5e5e5e5e5-0005', 'fff': 'f6f6f6f6f6f6-0006'}
+def card(name, setc, usd, eur): return {'id': IDS[setc], 'name': name, 'set': setc, 'scryfall_uri': 'https://scryfall.com/card/' + setc + '/1?utm=x', 'prices': {'usd': usd, 'eur': eur}}
 PAGE = {'data': [card('SYNTHETIC Alpha', 'aaa', '100.00', '50.00'), card('SYNTHETIC Alpha', 'bbb', '90.00', '50.00'), card('SYNTHETIC Beta', 'ccc', '20.00', '40.00'),
                  card('SYNTHETIC Even', 'ddd', '30.00', '27.00'), card('SYNTHETIC NoEur', 'eee', '40.00', None), card('SYNTHETIC Lone', 'fff', '150.00', '1.73')], 'has_more': False}
 class Tests(unittest.TestCase):
@@ -41,6 +42,22 @@ class Tests(unittest.TestCase):
         self.assertEqual(stats['source_requests'], 4)   # two robots files, the rate, one page
         r2 = ca.collect(self.root, {'source_requests': 0}, read=self.read())
         self.assertEqual(len(list((self.root / 'deals').glob('mtg-*.json'))), 2)   # replaced, not piled up
+    def test_names_are_stable_and_dig_in_checks_printings(self):
+        r = ca.collect(self.root, {'source_requests': 0}, read=self.read(), decisions={})
+        self.assertEqual(sorted(p.stem for p in (self.root / 'deals').glob('mtg-*.json')), ['mtg-a1a1a1a1a1a1', 'mtg-c3c3c3c3c3c3'])
+        stats = {'source_requests': 0}
+        r = ca.collect(self.root, stats, read=self.read(), decisions={'rv_d_mtg-a1a1a1a1a1a1': 'like', 'rv_d_mtg-c3c3c3c3c3c3': 'nope'})
+        alpha = [d for d in r['deals'] if d['file'] == 'mtg-a1a1a1a1a1a1'][0]
+        # Alpha printings with both prices: aaa (100 vs 55, US higher) and bbb (90 vs 55, US higher): 2 of 2 the same way
+        self.assertEqual(alpha['check']['verdict'], 'consistent'); self.assertEqual(alpha['check']['same_direction_gap_over_15pct'], 2)
+        self.assertIsNone([d for d in r['deals'] if d['file'] == 'mtg-c3c3c3c3c3c3'][0]['check'])
+        saved = json.loads((self.root / 'deals' / 'mtg-a1a1a1a1a1a1.json').read_text(encoding='utf-8'))
+        self.assertTrue(saved['lines_ru'][-1].startswith('Проверка по всем изданиям: 2 из 2')); self.assertEqual(stats['source_requests'], 5)
+        # a liked deal that drops out of today's list stays (its file is kept)
+        global PAGE; old = PAGE; PAGE = {'data': [card('SYNTHETIC Beta', 'ccc', '20.00', '40.00')], 'has_more': False}
+        try: ca.collect(self.root, {'source_requests': 0}, read=self.read(), decisions={'rv_d_mtg-a1a1a1a1a1a1': 'like'})
+        finally: PAGE = old
+        self.assertTrue((self.root / 'deals' / 'mtg-a1a1a1a1a1a1.json').exists())
     def test_robots_and_offline(self):
         r = ca.collect(self.root, {'source_requests': 0}, read=self.read(denied=True)); self.assertEqual(r['status'], 'source_unavailable'); self.assertIn('robots', r['error'])
         r = ca.collect(self.root, {'source_requests': 0}, offline=True, read=lambda *a: (_ for _ in ()).throw(AssertionError('HTTP offline')))
