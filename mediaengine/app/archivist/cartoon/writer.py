@@ -894,6 +894,8 @@ def do(jid: str, d: Path, job: dict) -> dict:
     if best_info.get("scenes", 0) < 3:
         return {"ok": False, "error": "The model did not write a usable story (" + (best_problem or problem or "no scenes") + "). "
                                       "Press Try again, or say the topic in other words."}
+    if job.get("site") and not re.search(r"(?im)^site\s*:", best):
+        best = f"Site: {job['site']}\n" + best             # (the page the story is about: shown in the film's scenes)
     (d / "story.txt").write_text(best, "utf-8")
     out = {"ok": True, "file": "story.txt", "title": best_info.get("title") or "", "scenes": best_info["scenes"],
            "words": best_info["words"], "lines": best_info["lines"], "attempts": used, "device": srv.device,
@@ -930,6 +932,8 @@ def _make_film(story: str, job: dict, title: str) -> dict:
     script = T.parse(story)
     script["format"] = job.get("format") or script.get("format") or "vertical"
     script["camera"] = m["camera"]
+    if job.get("site") and not script.get("site"):
+        script["site"] = {"url": job["site"]}
     script["drawing"] = m["drawing"]
     from . import reference as R
     script["pace"] = m.get("pace") or R.pace_of(job.get("style"))   # (the rhythm of a reference: the film's pauses too)
@@ -982,7 +986,7 @@ def _listen(d: Path, job: dict) -> dict:
 
 def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75, topic: str = "", source: str = "",
               country: str = "", title: str = "", video: str = "", style: dict | None = None,
-              make: dict | None = None, cast: dict | None = None) -> str:
+              make: dict | None = None, cast: dict | None = None, site: str = "") -> str:
     """A story to write (a job of the queue). Mode "translate": a film's story in another language (the same people);
     "adapt": retold for viewers in another country. cast: the film's own people ({"cast": ..., "narrator": ...}) - the
     new story's people get their looks and voices (in the same order)."""
@@ -1014,6 +1018,7 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
                        "secs": max(45, min(120, int(secs or 75))), "topic": topic, "source": source,
                        "country": str(country or "").strip()[:60], "title": name, "seed": secrets.randbelow(10 ** 6),
                        "video": video if mode == "video" else "",
+                       **({"site": site} if site and mode == "text" else {}),
                        **({"style": style} if isinstance(style, dict) and style and mode not in ("adapt", "translate") else {}),
                        **({"make": _make_settings(make)} if isinstance(make, dict) else {}),
                        **({"cast": cast} if isinstance(cast, dict) and isinstance(cast.get("cast"), dict) and mode in ("adapt", "translate")

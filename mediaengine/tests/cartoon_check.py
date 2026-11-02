@@ -269,6 +269,45 @@ def main() -> int:
           "cut from their background, the gesture's picture, the mouth open on a word; off when a script says so",
           cut_ok and picks == ["base", "talk_open", "point", "base"] and green_bg > 0.3 and bool(off),
           (cut_ok, picks, round(green_bg, 2), off))
+    # a web page in a cartoon: the browser on this PC (Edge / Chrome, headless) takes the page and its text; the scenes
+    # without a visual show it, scrolled further in each; the address is kept in the story's text
+    import http.server, socketserver, threading
+    from archivist.cartoon import site as S, textscript as TS2
+    page_dir = work / "page"
+    page_dir.mkdir(exist_ok=True)
+    (page_dir / "index.html").write_text("<html><body style='margin:40px;font-family:sans-serif'><h1>SYNTHETIC grant 2027</h1>"
+                                         "<p>Up to $7,500 a year for students.</p><div style='height:1600px;background:#2a6'>"
+                                         "</div><p>Deadline March 1, 2027</p></body></html>", "utf-8")
+    class Quiet(http.server.SimpleHTTPRequestHandler):
+        def __init__(self, *a, **k):
+            super().__init__(*a, directory=str(page_dir), **k)
+        def log_message(self, *a):
+            pass
+    srv = socketserver.TCPServer(("127.0.0.1", 0), Quiet)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    url = f"http://127.0.0.1:{srv.server_address[1]}/index.html"
+    try:
+        got = S.fetch(url)
+        sv = copy.deepcopy(SHORT)
+        sv["site"] = {"url": url}
+        sv["scenes"][1].pop("visual")
+        fs = F.check_script(sv)
+        fs["_site_img"] = got["image"]
+        tl_v = F.timeline(fs)
+        s1 = tl_v["scenes"][1]
+        cvs1 = Canvas(270, 480, 1080)
+        F.draw_frame(cvs1, fs, s1, s1["e"] - 0.1, {})
+        greenish = float(((cvs1.img[:, :, 1].astype(int) - cvs1.img[:, :, 2]) > 50).mean())
+        kept = TS2.parse(TS2.to_text(sv)).get("site", {}).get("url") == url
+        site_ok = ("SYNTHETIC grant 2027" in got["text"] and Path(got["image"]).is_file() and s1.get("site_part") == [0, 1]
+                   and greenish > 0.05 and kept)
+        detail = (len(got["text"]), s1.get("site_part"), round(greenish, 3), kept)
+    except S.SiteError as exc:
+        site_ok, detail = False, str(exc)
+    finally:
+        srv.shutdown()
+    check("web page: a page's picture and text taken by the browser on this PC, shown in the scenes without a visual "
+          "(scrolled further in each), the address kept in the story's text", site_ok, detail)
     from archivist.cartoon.voices import spoken
     sp = (spoken("The city pays $4.8M, the crew gets $300K - 30% of it.", "en"),
           spoken("Город платит 480 млн ₽, бригада получает 1,2 млн. Это $300 и 21 млн рублей.", "ru"))

@@ -340,7 +340,8 @@ def register(app, page, err_page, e, human_bytes):
                     f"<form method='post' action='/auto/cartoon/write' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                     f"<b>What is it about?</b><div class='muted' style='font-size:13px'>A topic in a few words - or paste a text (an "
                     f"article, notes, what is said in a video): the story retells it with its own characters. In any language, even "
-                    f"in translit; the story's language is chosen below.</div>"
+                    f"in translit; the story's language is chosen below. Or a web page's address (https://…): the characters "
+                    f"present the page, and the cartoon shows it.</div>"
                     f"<textarea name='about' rows='4' maxlength='5000' style='width:100%' "
                     f"placeholder='Why a city hospital pays three times more for the same medicine'>"
                     f"{e(str(request.args.get('about') or '')[:5000])}</textarea>"
@@ -1111,6 +1112,14 @@ def register(app, page, err_page, e, human_bytes):
     def cartoon_write():
         f = request.form
         about = str(f.get("about") or "").strip()
+        site_url = ""
+        if re.fullmatch(r"(?i)https?://\S+", about):        # (a web page: its text is the story's source, the film shows it)
+            from .cartoon import site as S
+            try:
+                page = S.fetch(about)
+            except S.SiteError as exc:
+                return err_page(str(exc), "/auto/cartoon")
+            site_url, about = about, page["text"]
         mode = (f.get("mode") if f.get("mode") == "adapt" else "video" if str(f.get("video") or "").strip()
                 else "text" if len(about) > 280 or about.count("\n") >= 2 else "topic")
         try:
@@ -1141,7 +1150,7 @@ def register(app, page, err_page, e, human_bytes):
                 style = _style_for_writer(f.get("ref"))
                 jid = W.new_write(mode, f.get("lang") or "en", f.get("format") or "vertical", secs,
                                   topic=about if mode == "topic" else "", source=about if mode == "text" else "",
-                                  country=f.get("country") or "", video=f.get("video") or "", style=style or None,
+                                  country=f.get("country") or "", video=f.get("video") or "", style=style or None, site=site_url,
                                   make=make)
         except (W.WriterError, vo.VoiceError) as exc:
             return err_page(str(exc), "/auto/cartoon")

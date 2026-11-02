@@ -98,7 +98,24 @@ def check_script(sc: dict) -> dict:
     out["drawing"] = sc.get("drawing") if isinstance(sc.get("drawing"), str) and sc.get("drawing") in STYLES else "flat"
     out["language"] = str(sc.get("language") or "en")[:5]
     out["pictures"] = sc.get("pictures") is not False         # (pictures drawn once, when there are: art.py)
+    site = sc.get("site") if isinstance(sc.get("site"), dict) else {}
+    if re.match(r"(?i)^https?://\S+$", str(site.get("url") or "")):
+        out["site"] = {"url": str(site["url"])[:500]}     # (a web page shown in the scenes without a visual: site.py)
+        free = [s for s in scenes if not s.get("visual")]
+        for k, s in enumerate(free):
+            s["site_part"] = [k, len(free)]
     return out
+
+
+def site_image(film: dict) -> str:
+    """The picture of the film's web page (fetched by render; a page already fetched otherwise), "" without one."""
+    if not film.get("site"):
+        return ""
+    if film.get("_site_img"):
+        return film["_site_img"]
+    from . import site as S
+    p = S.folder(film["site"]["url"]) / "page.png"
+    return str(p) if p.is_file() else ""
 
 
 def pictures(film: dict) -> dict:
@@ -473,7 +490,7 @@ def close_up(film: dict, scene: dict, t: float) -> str | None:
     second line of a scene - and on a line said with a strong feeling - as cartoons do; never while a picture is to be
     read (a scene with a visual), in a scene's first moments (its transition, someone walking in), on a short line or a
     line in a bubble. film["camera"] == "still": never."""
-    if film.get("camera") == "still" or scene.get("visual"):
+    if film.get("camera") == "still" or scene.get("visual") or scene.get("site_part"):
         return None
     j = _line_at(scene, t)
     if j < 0:
@@ -517,7 +534,8 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
     ln, j = _speaking(scene, t)
     speaker = ln["who"] if ln else None
     names = _shown(film, scene)                            # (nobody else there: the narrator presents it)
-    xs, sc, box = _layout(cv, len(names), bool(scene.get("visual")))
+    page = site_image(film) if scene.get("site_part") and not scene.get("visual") else ""
+    xs, sc, box = _layout(cv, len(names), bool(scene.get("visual")) or bool(page))
     cam_x, cam_y, zoom = _camera(cv, film, scene, t, names, xs, sc)
     cv.lens = zoom
     pics = pictures(film)
@@ -535,6 +553,11 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                     a = ease(min(1.0, (t - scene["s"]) / 0.4))
                     cv.blend("#ffffff", 0.78 * a, rounded(bx - bw_ / 2 + 10, by - bh_ / 2 + 10, bw_ - 20, bh_ - 20, 36))
                 draw_visual(cv, scene["visual"], scene, t, box, cast)
+            elif page and box:                             # (the web page, scrolled a part further in every scene)
+                from . import site as S
+                k, n = scene["site_part"]
+                S.draw(cv, page, box, k / max(1, n), (k + 1) / max(1, n),
+                       min(1.0, max(0.0, (t - scene["s"]) / max(0.5, scene["e"] - scene["s"]))))
             last = scene["lines"][_line_at(scene, t)] if _line_at(scene, t) >= 0 else None
             sitting = seated(scene)
             for k, key in enumerate(names):
@@ -856,6 +879,12 @@ def render(script: dict, out: Path, work: Path, voices: dict | None = None, capt
     program's own, "mood") or "file" ("path")} - quiet, lowered under the voices; None: none."""
     from .. import textfx as tf, voice as vo
     film = check_script(script)
+    if film.get("site"):                                   # (the page's picture now: a page that cannot be read says so)
+        from . import site as S
+        try:
+            film["_site_img"] = S.fetch(film["site"]["url"])["image"]
+        except S.SiteError as exc:
+            raise FilmError(str(exc))
     W, H = FORMATS[film["format"]]
     film["caption_at"] = (((captions or {}).get("position") or ("middle" if H > W else "bottom")) if captions is not None
                           else "")                         # (close-ups keep the faces out of the captions)

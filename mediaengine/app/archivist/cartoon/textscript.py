@@ -353,6 +353,10 @@ def parse(text: str) -> dict:
         s = re.sub(r"^(?:[-*•]|\d{1,2}[.)])\s+(?=\S)", "", raw.strip())     # ("- Lena (woman)", "1. Mayor (man)")
         if not s or s.startswith("//"):
             continue
+        m = re.match(r"(?i)^(site|сайт)\s*:\s*(https?://\S+)$", s)
+        if m and scene is None:                            # (a web page the film shows: site.py)
+            sc["site"] = {"url": m.group(2)[:500]}
+            continue
         m = re.match(r"(?i)^(title|название|titlu|format|формат|language|язык|limba|limbă)\s*:\s*(.+)$", s)
         if m and scene is None:
             key, val = m.group(1).lower(), m.group(2).strip()
@@ -474,6 +478,8 @@ def to_text(sc: dict) -> str:
     """A script back as plain text (to change it the same way)."""
     sc = sc if isinstance(sc, dict) else {}                # (a script of odd shapes: what can be read of it)
     out = [f"Title: {sc.get('title') or 'Cartoon'}", f"Format: {sc.get('format') or 'vertical'}"]
+    if isinstance(sc.get("site"), dict) and sc["site"].get("url"):
+        out.append(f"Site: {sc['site']['url']}")
     cast = {k: c for k, c in (sc.get("cast") or {}).items() if isinstance(c, dict)} if isinstance(sc.get("cast"), dict) else {}
     nar = sc.get("narrator") if isinstance(sc.get("narrator"), str) else None
     for k, c in cast.items():

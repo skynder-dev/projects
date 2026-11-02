@@ -1131,7 +1131,10 @@ PHRASES = {
     "shrugging": "пожимает плечами", "arms crossed": "руки скрещены", "thinking": "думает", "waving": "машет",
     "hands up": "руки вверх", "rubbing hands": "потирает руки", "presenting": "представляет", "hand to face": "рука у лица",
     "fist": "кулак", "sneaky": "крадётся", "standing": "стоит",
-    "Pictures drawn by AI": "Картинки от ИИ", "Installing the picture add-on": "Ставлю модуль картинок",
+    "Pictures drawn by AI": "Картинки от ИИ",
+    "Showing a web page needs Microsoft Edge or Google Chrome on this PC.": "Чтобы показать сайт, на ПК нужен Microsoft Edge или Google Chrome.",
+    "Give the page's full address (https://…).": "Дай полный адрес страницы (https://…).",
+    "The page could not be read (it may need signing in, or block programs).": "Страницу не удалось прочитать (может быть, нужен вход или она не пускает программы).", "Installing the picture add-on": "Ставлю модуль картинок",
     "A free picture model on this PC (FLUX.2 klein, Apache-2.0) draws this cartoon's characters (standing, talking, pointing, shrugging - the same person in every picture) and its places once; the cartoon then moves them instead of the program's own drawings.":
         "Бесплатная модель картинок на этом ПК (FLUX.2 klein, Apache-2.0) один раз рисует героев этого мультфильма (стоит, говорит, показывает, разводит руками — в каждой картинке один и тот же человек) и места действия; потом мультфильм двигает их вместо рисунков программы.",
     "It is downloaded once into the data folder (about": "Скачивается один раз в папку данных (около",
@@ -1196,8 +1199,8 @@ PHRASES = {
     "From a few minutes to half an hour, depending on the internet. You can use MediaEngine meanwhile; closing it stops the download (it continues where it stopped when you press Install again).":
         "От нескольких минут до получаса — зависит от интернета. Пока можно пользоваться MediaEngine; если его закрыть, загрузка остановится (и продолжится с того же места, когда снова нажмёшь «Установить»).",
     "Write a story": "Написать сюжет", "What is it about?": "О чём он?",
-    "A topic in a few words - or paste a text (an article, notes, what is said in a video): the story retells it with its own characters. In any language, even in translit; the story's language is chosen below.":
-        "Тема в нескольких словах — или вставь текст (статью, заметки, то, что говорят в видео): сюжет перескажет его со своими персонажами. На любом языке, можно и транслитом; язык сюжета выбирается ниже.",
+    "A topic in a few words - or paste a text (an article, notes, what is said in a video): the story retells it with its own characters. In any language, even in translit; the story's language is chosen below. Or a web page's address (https://…): the characters present the page, and the cartoon shows it.":
+        "Тема в нескольких словах — или вставь текст (статью, заметки, то, что говорят в видео): сюжет перескажет его со своими персонажами. На любом языке, можно и транслитом; язык сюжета выбирается ниже. Или адрес сайта (https://…): персонажи расскажут о странице, а мультфильм её покажет.",
     "Why a city hospital pays three times more for the same medicine": "Почему городская больница платит втрое больше за то же лекарство",
     "(a country, if it matters)": "(страна, если важно)", "Write the story": "Написать сюжет",
     "about a minute on a graphics card, several minutes on the processor. Then read it, change what you like and make the cartoon.":
