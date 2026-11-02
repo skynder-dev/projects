@@ -83,7 +83,8 @@ def deal_cards(root):
     import deal_economics as de
     out = []
     for f in sorted(folder.glob('*.json')):
-        r = de.compute(json.loads(f.read_text(encoding='utf-8')))
+        deal = json.loads(f.read_text(encoding='utf-8'))
+        r = de.compute(deal)
         c = r.get('currency') or ''
         if r['status'] == 'not_computable':
             lines = ['Посчитать нельзя: не хватает ' + ', '.join(r['missing_required'] or ['верных цифр'])]
@@ -99,6 +100,8 @@ def deal_cards(root):
                   'Left from the batch: ' + money({'amount': r['profit_total'], 'currency': c}) + ' (' + str(r['return_on_capital_pct']) + '% on capital)',
                   'Break-even sell price: ' + money({'amount': r['break_even_sell_price'], 'currency': c}),
                   'Cash cycle: ' + (str(int(r['cash_cycle_days'])) + ' days' if r.get('cash_cycle_days') else 'not given')]
+        if deal.get('lines_ru') and r['status'] != 'not_computable':   # a deal that says its own route in plain words
+            lines, en = list(deal['lines_ru']), list(deal.get('lines_en') or deal['lines_ru'])
         guess = r.get('assumptions_used') or []
         out.append(finish({'id': card_id('d', f.stem), 'kind': 'reveng', 'prof': 'перепродажа', 'prof_en': 'resale', 'text': (r.get('title') or f.stem)[:70],
                            'lines': lines, 'lines_en': en,

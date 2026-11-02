@@ -20,7 +20,7 @@
       "no external writes or model/live capture"
     ]
   },
-  "application_files": 103,
+  "application_files": 104,
   "buyer_normalization_repair": {
     "publication_status": "not_published",
     "base_source_context_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
@@ -443,6 +443,12 @@
       "change": "exact_public_source_import"
     },
     {
+      "path": "reveng/ResearchLocal/card_arbitrage.py",
+      "bytes": 9045,
+      "sha256": "c82ff38d5809a7b6a052576709dd05f104b89c1273eaff9640c9a2e2cbc00ee0",
+      "change": "new_card_arbitrage_trial_2026-11-02"
+    },
+    {
       "path": "reveng/ResearchLocal/collection_attempts.py",
       "bytes": 4975,
       "sha256": "d5bc544536b4e86dec9bd1f6b7b9d71c1568c007a0bdde8cbfb2d39a31ef8f33",
@@ -745,9 +751,9 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 9279,
-      "sha256": "d2c706ffe6acfb9a681c46219027a198428e7eee56a31de2cdfde27c3d393d93",
-      "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule"
+      "bytes": 9513,
+      "sha256": "882fa262ca840559c6227b45caba08ec311aa63b8fd0790fa5e27b9940eac400",
+      "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines"
     },
     {
       "path": "reveng/ResearchLocal/plan_mapping.py",
@@ -1091,6 +1097,12 @@
       ],
       "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
       "followon_base_sha256": "06d17140d646fa533ab4bf82d4a87eea25a07340f47c33dd3913ace4eb574fbd"
+    },
+    {
+      "path": "reveng/tests/test_card_arbitrage.py",
+      "bytes": 4581,
+      "sha256": "87fe59e0926cb0213f6ab206c1aa47760481f75904ab137f3b673807b789f168",
+      "change": "new_card_arbitrage_offline_contracts_2026-11-02"
     },
     {
       "path": "reveng/tests/test_collection_integrity.py",
@@ -1619,5 +1631,6 @@
   },
   "deal_economics": "2026-11-01: first slice of the money side: deal_economics.py computes a resale deal (landed cost, fees, profit per unit, capital, return, break-even) only from figures marked quoted/owner_stated/assumption; missing required figures make it not_computable; no window yet; test_deal_economics.py 7 offline contracts",
   "phone_cards": "2026-11-01: phone_cards.py writes RevEng's cards (open contests with stated terms, resale deals) into Forge's phone folder as reveng-cards.json; the Forge phone app (0.4.0) shows them on its RevEng screen (tap the title to switch); decisions come back in decisions.json under rv_* ids; contest_terms.py calls it after each collection",
-  "dig_in": "2026-11-01: contests the owner marks 'dig in' on the phone get their rules/FAQ pages read (same host, up to 3, inside the request budget), quoted facts kept per page, only empty main fields filled with the page named; liked leads stay in every run; research_export carries contest-terms.json (signed), contest-terms-view.json, phone-cards.json, phone-decisions.json"
+  "dig_in": "2026-11-01: contests the owner marks 'dig in' on the phone get their rules/FAQ pages read (same host, up to 3, inside the request budget), quoted facts kept per page, only empty main fields filled with the page named; liked leads stay in every run; research_export carries contest-terms.json (signed), contest-terms-view.json, phone-cards.json, phone-decisions.json",
+  "card_arbitrage": "2026-11-02 trial of the deal search: card_arbitrage.py takes Scryfall's daily Cardmarket (EUR) and TCGplayer (USD) prices of the same Magic card, converts at the ECB rate, subtracts assumed fees and shipping, keeps up to 8 gaps >= $5 as deals/mtg-*.json for deal_economics and the phone cards; prices are daily market figures, not sales"
 }
