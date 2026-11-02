@@ -58,6 +58,8 @@ public static class ContestTermsPresentation {
    var facts=Rows(r,"facts").ToList();if(facts.Count>0){b.AppendLine("Цитаты со страницы (не длиннее 14 слов):");foreach(var f in facts)b.AppendLine("  "+S(f,"id")+" ["+S(f,"kind")+"]: "+S(f,"quote"));}
    var unproven=A(r.ContainsKey("unproven")?r["unproven"]:null).Select(x=>Convert.ToString(x)).ToArray();if(unproven.Length>0)b.AppendLine("На странице не найдено: "+String.Join(", ",unproven));
    b.AppendLine("Проверено: "+S(r,"observed_at")+" | личность страницы: "+Identity(S(r,"source_identity"))+" | SHA256 ответа: "+S(r,"response_sha256"));
+   foreach(var fill in D(r,"filled_from"))b.AppendLine("Поле "+fill.Key+" взято со страницы правил: "+Convert.ToString(fill.Value));
+   var rules=Rows(r,"rules_pages").ToList();if(rules.Count>0){b.AppendLine("ПРАВИЛА, дочитаны по вашему «копать»:");foreach(var pg in rules){b.AppendLine("  "+S(pg,"url")+" - "+(S(pg,"classification")=="not_checked_this_run_budget"?"не прочитано: лимит запросов прохода, будет в следующий раз":Classification(pg)));foreach(var f in Rows(pg,"facts"))b.AppendLine("    "+S(f,"id")+" ["+S(f,"kind")+"]: "+S(f,"quote"));}}
   }
   var pairs=Rows(data,"compatible").ToList();b.AppendLine();
   b.AppendLine("ОДНА РАБОТА, НЕСКОЛЬКО КОНКУРСОВ (совпадение по длительности и инструменту; эксклюзивность и премьеру проверять вручную):");

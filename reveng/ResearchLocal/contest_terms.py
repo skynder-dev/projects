@@ -28,7 +28,7 @@ import html_document_identity as hid
 
 SCHEMA = 'contest-terms-v2'
 VIEW_SCHEMA = 'contest-terms-view-v1'
-RULES_VERSION = 'contest-terms-rules-v1'
+RULES_VERSION = 'contest-terms-rules-v2'   # v2: the page's own rules/FAQ links are kept for deep reading
 KIND = 'official_contest_terms'
 CONTESTS = {
     'billion_ai_film_2027': {'organizer': '1 Billion Followers Summit', 'title': 'AI Film Award 2027',
@@ -51,6 +51,10 @@ IGNORE_HOSTS = {'linkedin.com', 'x.com', 'twitter.com', 'facebook.com', 'instagr
 # listed as not checked instead of spending the run's request budget; the organizer page stays the only source of terms
 CLOSED_HOSTS = {'filmfreeway.com': 'HTTP 403 to RevEng on the live runs of 2026-10-31 and 2026-11-01'}
 MAX_LEADS = 8
+RULE_LINK = re.compile(r'rule|term|faq|guideline|eligib|submi|condition|regulation|reglement|regla|regolamento', re.I)
+MAX_RULE_PAGES = 3          # pages read per contest the owner marked "dig in"
+BUDGET_RESERVE = 2          # the transport allows 24 requests per run; stop starting new pages this close to it
+FILLABLE = ['declared_deadline', 'prize', 'fee', 'length_minutes', 'required_tool']
 MAX_QUOTE_WORDS = 14
 MONTHS = {k: i + 1 for i, k in enumerate(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'])}
 MON = r'(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?'
@@ -378,11 +382,55 @@ async def terms(cache, transport, key, spec, run):
         raw = await transport.read(spec['url'])
         text, how = body_text(raw, spec['url'])
         record = parse(key, text, m.now(), m.sha(raw), spec=spec); record['source_identity'] = how
+        record['rule_links'] = rule_links(raw, spec['url'])
         seal(path, record); return record
     except asyncio.CancelledError:
         raise
     except Exception as ex:
         return unavailable(key, spec, ex)
+
+
+def rule_links(raw, url):
+    """Links on the organizer's page to its own rules/terms/FAQ pages (same host, HTTPS, at most 6, page order)."""
+    try:
+        page = Page(); page.feed(raw.decode('utf-8') if isinstance(raw, bytes) else raw)
+    except Exception:
+        return []
+    own = host_of(url); out = []
+    for link in page.links:
+        href = link['href'].strip()
+        if href.startswith('/') and not href.startswith('//'):
+            href = 'https://' + urlsplit(url).netloc + href
+        p = urlsplit(href)
+        if p.scheme != 'https' or host_of(href) != own or not (RULE_LINK.search(p.path) or RULE_LINK.search(link['text'])):
+            continue
+        target = urlunsplit(('https', p.netloc.lower(), p.path or '/', p.query, ''))
+        if target != url and target not in out:
+            out.append(target)
+    return out[:6]
+
+
+def budget_left(stats):
+    return stats.get('source_requests', 0) < 24 - BUDGET_RESERVE
+
+
+async def deepen(cache, transport, record, run):
+    """For a contest the owner marked "dig in": read its rules/FAQ pages (same transport, cache and identity rules),
+    keep their quoted facts apart, and fill only the main fields the organizer's first page left empty, saying from where."""
+    pages = []
+    for i, url in enumerate(record.get('rule_links', [])[:MAX_RULE_PAGES]):
+        if not budget_left(transport.stats):
+            pages.append({'url': url, 'classification': 'not_checked_this_run_budget', 'facts': []}); continue
+        spec = {'organizer': record.get('organizer', ''), 'title': record.get('title', ''), 'url': url, 'seed': 'rules page of ' + record['source_url'], 'origin': 'rules_page'}
+        sub = await terms(cache, transport, record['key'] + '-rules' + str(i + 1), spec, run)
+        pages.append({'url': url, 'classification': sub['classification'], 'facts': sub.get('facts', []), 'error': sub.get('error', '')})
+        for field in FILLABLE:
+            if record.get(field) in (None, []) and sub.get(field) not in (None, []):
+                record[field] = sub[field]; record.setdefault('filled_from', {})[field] = url
+                if field == 'declared_deadline':
+                    record['deadline_status'] = sub['deadline_status']
+    record['rules_pages'] = pages; record['dig_in'] = True
+    return record
 
 
 async def listing(cache, transport, key, spec, run, today=None):
@@ -406,19 +454,40 @@ async def listing(cache, transport, key, spec, run, today=None):
         return dict(unavailable(key, spec, ex, kind='aggregator_listing'), role=spec['role'], leads=[])
 
 
-async def collect(root, run, stats, offline=False, today=None):
+def liked_keys(decisions=None):
+    """Contest keys the owner marked "dig in" (like) on the phone; the card id is rv_c_<key> (phone_cards.card_id)."""
+    if decisions is None:
+        try:
+            import phone_cards
+            decisions = phone_cards.decisions()
+        except Exception:
+            decisions = {}
+    return {k[len('rv_c_'):] for k, v in decisions.items() if k.startswith('rv_c_') and v == 'like'}
+
+
+async def collect(root, run, stats, offline=False, today=None, decisions=None):
     cache = root / 'contest-cache'; cache.mkdir(exist_ok=True); transport = Transport(root, stats, offline)
-    today = today or datetime.now(timezone.utc).date().isoformat(); out = []
+    today = today or datetime.now(timezone.utc).date().isoformat(); out = []; liked = liked_keys(decisions)
     for key, spec in CONTESTS.items():
-        out.append(await terms(cache, transport, key, spec, run))
+        record = await terms(cache, transport, key, spec, run)
+        out.append(await deepen(cache, transport, record, run) if key in liked else record)
     listings = {}; seeded = {spec['url'] for spec in CONTESTS.values()}
     for key, spec in AGGREGATORS.items():
         listings[key] = await listing(cache, transport, key, spec, run, today)
     for key, item in listings.items():
-        for lead in choose(item['leads'], today, seeded):
+        chosen = choose(item['leads'], today, seeded)
+        # leads the owner marked "dig in" stay in every run, outside the lead limit, and are read first
+        kept = [l for l in item['leads'] if lead_key(l['url']) in liked and not any(l is c for c in chosen) and l['status'] != 'already_seeded']
+        for l in kept:
+            l['status'] = 'checked_on_organizer_page'; l['record_key'] = lead_key(l['url'])
+        for lead in sorted(kept + chosen, key=lambda l: l['record_key'] not in liked):
+            if lead['record_key'] not in liked and not budget_left(stats):
+                lead['status'] = 'not_checked_this_run_budget'; continue
             spec = {'organizer': lead['organizer_host'], 'title': lead['text'] or lead['url'], 'url': lead['url'],
                     'seed': 'lead from ' + item['source_url'] + ' (secondary list)', 'origin': 'aggregator_lead'}
             record = await terms(cache, transport, lead['record_key'], spec, run)
+            if lead['record_key'] in liked:
+                record = await deepen(cache, transport, record, run)
             record['lead'] = {'aggregator': key, 'listed_deadline': lead['listed_deadline'], 'listed_prize': lead['listed_prize'], 'listed_text': lead['text']}
             out.append(record)
     result = {'schema': SCHEMA, 'collected_at': m.now(), 'today': today, 'records': out, 'compatible': compatible(out), 'listings': listings,

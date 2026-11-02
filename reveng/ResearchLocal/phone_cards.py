@@ -63,7 +63,10 @@ def contest_cards(root, today):
             lo, hi = r['length_minutes']; span = str(lo) if lo == hi else str(lo) + '-' + str(hi)
             ru.append('Длина: ' + span + ' мин' + ('; программа: ' + r['required_tool'] if r.get('required_tool') else ''))
             en.append('Length: ' + span + ' min' + ('; tool: ' + r['required_tool'] if r.get('required_tool') else ''))
-        miss = [KEY_UNKNOWN[k] for k in ('deadline', 'prize') if k in r.get('unproven', [])]
+        if r.get('dig_in'):
+            read = sum(1 for p in r.get('rules_pages', []) if p.get('classification') not in ('source_unavailable', 'not_checked_this_run_budget'))
+            ru.append('Правила дочитаны: страниц ' + str(read) + ' (подробно - на ПК)'); en.append('Rules read: ' + str(read) + ' page(s) (details on the PC)')
+        miss = [KEY_UNKNOWN[k] for k, f in (('deadline', 'declared_deadline'), ('prize', 'prize')) if not r.get(f)]
         out.append(finish({'id': card_id('c', r['key']), 'kind': 'reveng', 'prof': 'конкурс', 'prof_en': 'contest', 'text': r['title'][:70], 'lines': ru, 'lines_en': en,
                            'unknown': ('Не указан ' + ' и '.join(x[0] for x in miss) + '.') if miss else '',
                            'unknown_en': ('No ' + ' or '.join(x[1] for x in miss) + ' stated.') if miss else '',
@@ -115,6 +118,12 @@ def write(root, given_dir=None, today=None):
     cards = contest_cards(root, today) + deal_cards(root)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
+    try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export
+        got = decisions(given_dir)
+        if got:
+            (root / 'phone-decisions.json').write_text(json.dumps({'schema': 'reveng-phone-decisions-v1', 'decisions': got}, ensure_ascii=False, indent=1), encoding='utf-8')
+    except Exception:
+        pass
     target = phone_dir(given_dir)
     if not target or not target.is_dir():
         return len(cards), 'phone folder not found; cards kept in phone-cards.json only'

@@ -73,6 +73,10 @@ public static class TestContestTermsPresentation {
    Check(Json.Serialize(payload)==text,"payload object unchanged by rendering");
    string swiped=ContestTermsPresentation.Render(payload,new Dictionary<string,string>{{"rv_c_billion_ai_film_2027","like"},{"rv_c_old_contest","nope"}});
    Check(swiped.Contains("[billion_ai_film_2027]\r\nВаше решение с телефона: копать")&&swiped.Contains("Ваше решение с телефона: убрано")&&!rendered.Contains("Ваше решение с телефона"),"phone decisions shown next to their contest only");
+   seed["rules_pages"]=new object[]{new Dictionary<string,object>{{"url","https://organizer.example/rules"},{"classification","partial_terms"},{"facts",new object[]{new Dictionary<string,object>{{"id","K1"},{"kind","eligibility"},{"quote","Open to filmmakers worldwide"}}}}},new Dictionary<string,object>{{"url","https://organizer.example/faq"},{"classification","not_checked_this_run_budget"},{"facts",new object[0]}}};
+   seed["filled_from"]=new Dictionary<string,object>{{"length_minutes","https://organizer.example/rules"}};
+   string deep=ContestTermsPresentation.Render(payload,null);
+   Check(deep.Contains("ПРАВИЛА, дочитаны по вашему «копать»:")&&deep.Contains("K1 [eligibility]: Open to filmmakers worldwide")&&deep.Contains("faq - не прочитано: лимит запросов прохода")&&deep.Contains("Поле length_minutes взято со страницы правил: https://organizer.example/rules"),"rules pages and filled fields shown");
    Check(ContestTermsPresentation.CardId("lead-0123456789ab")=="rv_c_lead-0123456789ab"&&ContestTermsPresentation.CardId("a b/c")=="rv_c_a_b_c","card ids match phone_cards.py");
    Write(root,payload,"contest-terms-view-v1",new string('0',64));string refused=ContestTermsPresentation.Describe(root);
    Check(refused.StartsWith("КОНКУРСЫ: сохранённый сбор не прочитан: Contest view payload hash mismatch",StringComparison.Ordinal)&&!refused.Contains("AI Film Award")&&refused.Contains("старые данные не подменяются"),"hash mismatch shows refusal only");

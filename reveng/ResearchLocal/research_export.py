@@ -202,6 +202,10 @@ def _export_locked(root,output):
  add('research-chain.json',False)
  add('research-reviews.json',False)
  add('legacy-candidate-reviews.json',False)
+ add('contest-terms.json',False,True)
+ add('contest-terms-view.json',False)
+ add('phone-cards.json',False)
+ add('phone-decisions.json',False)
  recovery_inventory={p.name for p in (root/'manual-editor-recovery').glob('*.json')}
  for name in sorted(recovery_inventory):
   if not re.fullmatch('[0-9a-f]{32}\.json',name):raise ValueError('Invalid recovery filename')

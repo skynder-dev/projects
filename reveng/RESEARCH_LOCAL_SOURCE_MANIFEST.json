@@ -112,9 +112,9 @@
     },
     {
       "path": "reveng/ResearchLocal/ContestTermsPresentation.cs",
-      "bytes": 13819,
-      "sha256": "0863c3805a7264e14cd6bd1ced717ba178f0ee6d50b3c81c911a12395ea6e980",
-      "change": "new_contest_terms_window_presentation_2026-11-01+phone_decisions"
+      "bytes": 14476,
+      "sha256": "d6a124d79f9d5274aa86b99085bda5577171d945198c1fce10faea0b51ca3863",
+      "change": "new_contest_terms_window_presentation_2026-11-01+phone_decisions+dig_in_rules_export_2026-11-01"
     },
     {
       "path": "reveng/ResearchLocal/CorroborationPresentation.cs",
@@ -504,9 +504,9 @@
     },
     {
       "path": "reveng/ResearchLocal/contest_terms.py",
-      "bytes": 26390,
-      "sha256": "30c7f56f21e8ada07313b099eb3b2792a946ab25c21e96af842829f0c287ecf0",
-      "change": "new_contest_terms_collector_2026-10-31+aggregator_leads_stdlib_html_view_file_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates+link_text_date+phone_cards_hook"
+      "bytes": 30484,
+      "sha256": "66f9e6f1517b3ffc3ed6e341626425eeb20dbbb34f6bde646d92fddc523c1c2e",
+      "change": "new_contest_terms_collector_2026-10-31+aggregator_leads_stdlib_html_view_file_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates+link_text_date+phone_cards_hook+dig_in_rules_export_2026-11-01"
     },
     {
       "path": "reveng/ResearchLocal/contract_v2.py",
@@ -745,9 +745,9 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 8180,
-      "sha256": "aee79d962263f5e8dd7b9da00743629049bb5e80e4fbee460977bf2c8d8c3bd4",
-      "change": "new_phone_cards_2026-11-01+bilingual_short_unknown"
+      "bytes": 8930,
+      "sha256": "2a81f0aa8e38916c0f5fc5adf30c98ae2989c0815dcde86fafbaf4f88c997099",
+      "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01"
     },
     {
       "path": "reveng/ResearchLocal/plan_mapping.py",
@@ -819,11 +819,11 @@
     },
     {
       "path": "reveng/ResearchLocal/research_export.py",
-      "bytes": 33837,
-      "sha256": "7286219a64fb0de6626220035f660c4d9021c35f1d568b5475983b5d46dad464",
+      "bytes": 33584,
+      "sha256": "879d2e42916be74018442a963fb5229ca1ce465ffa77ff7c734821ec0b3a2572",
       "source_path": ".ci/test-only/production/reveng028/ResearchLocal/research_export.py",
       "source_sha256": "191077e697331b24e78001d3efaac57ba59144e28b6de4f0c5d28d16ddf696c6",
-      "change": "reviewed_unpublished_followon_core_change",
+      "change": "reviewed_unpublished_followon_core_change+dig_in_rules_export_2026-11-01",
       "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
       "followon_base_sha256": "191077e697331b24e78001d3efaac57ba59144e28b6de4f0c5d28d16ddf696c6"
     },
@@ -1022,9 +1022,9 @@
     },
     {
       "path": "reveng/tests/TestContestTermsPresentation.cs",
-      "bytes": 14986,
-      "sha256": "958468cb2659d09080beff50ba83e05999533d7f39be7c243bc56fbe09e756a3",
-      "change": "new_contest_terms_window_native_probe_2026-11-01+phone_decisions"
+      "bytes": 15990,
+      "sha256": "a6377804917bdd8f2afcae474db5f6ccb724aca31965cb8742ecf35277f4d592",
+      "change": "new_contest_terms_window_native_probe_2026-11-01+phone_decisions+dig_in_rules_export_2026-11-01"
     },
     {
       "path": "reveng/tests/TestOperationOutcome.cs",
@@ -1102,9 +1102,9 @@
     },
     {
       "path": "reveng/tests/test_contest_terms.py",
-      "bytes": 22281,
-      "sha256": "3cc51d288437e50972164aecb9559425d9461cba454c4b58ed53aedb9135022f",
-      "change": "new_contest_terms_offline_contracts_2026-10-31+lead_and_view_contracts_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates+link_text_date"
+      "bytes": 25664,
+      "sha256": "6c3fb264a80c080bf961e48bb2b4db4bdce4aa653447f618a2ebaa0b4fef2b5e",
+      "change": "new_contest_terms_offline_contracts_2026-10-31+lead_and_view_contracts_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates+link_text_date+dig_in_rules_export_2026-11-01"
     },
     {
       "path": "reveng/tests/test_deal_economics.py",
@@ -1618,5 +1618,6 @@
     "native": "NOT_RUN; probe source/wiring only"
   },
   "deal_economics": "2026-11-01: first slice of the money side: deal_economics.py computes a resale deal (landed cost, fees, profit per unit, capital, return, break-even) only from figures marked quoted/owner_stated/assumption; missing required figures make it not_computable; no window yet; test_deal_economics.py 7 offline contracts",
-  "phone_cards": "2026-11-01: phone_cards.py writes RevEng's cards (open contests with stated terms, resale deals) into Forge's phone folder as reveng-cards.json; the Forge phone app (0.4.0) shows them on its RevEng screen (tap the title to switch); decisions come back in decisions.json under rv_* ids; contest_terms.py calls it after each collection"
+  "phone_cards": "2026-11-01: phone_cards.py writes RevEng's cards (open contests with stated terms, resale deals) into Forge's phone folder as reveng-cards.json; the Forge phone app (0.4.0) shows them on its RevEng screen (tap the title to switch); decisions come back in decisions.json under rv_* ids; contest_terms.py calls it after each collection",
+  "dig_in": "2026-11-01: contests the owner marks 'dig in' on the phone get their rules/FAQ pages read (same host, up to 3, inside the request budget), quoted facts kept per page, only empty main fields filled with the page named; liked leads stay in every run; research_export carries contest-terms.json (signed), contest-terms-view.json, phone-cards.json, phone-decisions.json"
 }

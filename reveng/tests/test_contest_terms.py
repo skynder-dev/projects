@@ -247,6 +247,46 @@ class CollectTests(unittest.TestCase):
         # seed 2 + listing 2 + one.example robots (refused, 1) + two.example 2 + x.example 2 + three.example 2 = 11; the second one.example lead cost nothing
         self.assertEqual(stats['source_requests'], 11)
 
+class DigInTests(unittest.TestCase):
+    MAIN = ('<html><head><title>SYNTHETIC</title></head><body><main><p>SYNTHETIC festival. The grand prize is EUR 2,500.</p>'
+            '<a href="/rules">Official Rules</a> <a href="https://www.1billionsummit.com/faq?x=1#q">FAQ</a> <a href="/about">About us</a>'
+            '<a href="https://other.example/rules">elsewhere</a></main></body></html>').encode()
+    RULES = bare('SYNTHETIC rules. Submissions close on 30 November 2026. Films must be no longer than 10 minutes. Open to filmmakers worldwide.')
+    def setUp(self):
+        self.t = tempfile.TemporaryDirectory(); self.root = Path(self.t.name).resolve(); self.run = self.root / 'runs' / 'r'; self.run.mkdir(parents=True)
+        self.p = [patch.object(ct, 'CONTESTS', {'billion_ai_film_2027': ct.CONTESTS['billion_ai_film_2027']}), patch.object(ct, 'AGGREGATORS', {})]
+        for x in self.p: x.start()
+    def tearDown(self):
+        for x in self.p: x.stop()
+        self.t.cleanup()
+    def read(self, url, stats, cap=1048576):
+        stats['source_requests'] += 1
+        if url.endswith('/robots.txt'): return b'User-agent: *\nAllow: /\n'
+        return self.MAIN if url == URL else self.RULES
+    def test_rule_links_are_same_host_rules_pages(self):
+        self.assertEqual(ct.rule_links(self.MAIN, URL), ['https://www.1billionsummit.com/rules', 'https://www.1billionsummit.com/faq?x=1'])
+    def test_dig_in_reads_rules_and_fills_only_gaps(self):
+        stats = {'source_requests': 0}
+        with patch.object(m, 'read_http', side_effect=self.read):
+            r = asyncio.run(ct.collect(self.root, self.run, stats, today='2026-11-01', decisions={'rv_c_billion_ai_film_2027': 'like'}))
+        rec = r['records'][0]
+        self.assertTrue(rec['dig_in']); self.assertEqual([p['url'] for p in rec['rules_pages']], ['https://www.1billionsummit.com/rules', 'https://www.1billionsummit.com/faq?x=1'])
+        self.assertEqual(rec['prize']['amount'], 2500.0)                     # from the first page, not replaced
+        self.assertEqual(rec['declared_deadline'], '2026-11-30'); self.assertEqual(rec['deadline_status'], 'open')
+        self.assertEqual(rec['filled_from']['declared_deadline'], 'https://www.1billionsummit.com/rules'); self.assertEqual(rec['length_minutes'], [10, 10])
+        self.assertTrue(any(f['kind'] == 'eligibility' for f in rec['rules_pages'][0]['facts']))
+        self.assertEqual(stats['source_requests'], 4)                         # robots + page + two rules pages on the same host
+    def test_without_dig_in_nothing_more_is_read(self):
+        stats = {'source_requests': 0}
+        with patch.object(m, 'read_http', side_effect=self.read):
+            r = asyncio.run(ct.collect(self.root, self.run, stats, today='2026-11-01', decisions={'rv_c_billion_ai_film_2027': 'nope'}))
+        self.assertNotIn('rules_pages', r['records'][0]); self.assertEqual(stats['source_requests'], 2)
+    def test_budget_reserve_stops_new_pages(self):
+        stats = {'source_requests': 0}
+        with patch.object(m, 'read_http', side_effect=self.read), patch.object(ct, 'BUDGET_RESERVE', 22):
+            r = asyncio.run(ct.collect(self.root, self.run, stats, today='2026-11-01', decisions={'rv_c_billion_ai_film_2027': 'like'}))
+        self.assertEqual([p['classification'] for p in r['records'][0]['rules_pages']], ['not_checked_this_run_budget'] * 2)
+
 if __name__ == '__main__':
     result = unittest.main(argv=[sys.argv[0], '-v'], exit=False).result
     if inventory() != BEFORE: raise SystemExit('Source bytes changed during tests')
