@@ -18,7 +18,7 @@ import reveng_local_research as m
 
 SCHEMA = 'reveng-card-arbitrage-v1'
 SEARCH = 'https://api.scryfall.com/cards/search?order=usd&dir=desc&unique=prints&q='
-QUERY = 'usd>=8 eur>=1 -is:digital game:paper'
+QUERY = 'usd>=8 usd<=150 eur>=1 -is:digital game:paper'   # rare cards over $150 sell too seldom for a daily average to mean much
 PAGES = 3                                      # up to 175 printings a page
 ECB = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml'
 # labelled assumptions, never presented as found: a seller's total fees when selling on each market, and shipping one card
