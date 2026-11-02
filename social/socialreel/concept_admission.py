@@ -4,7 +4,9 @@ from pathlib import Path
 from .common import PipelineError,stable_json
 ASSETS=Path(__file__).resolve().parents[1]/'assets'/'concept-tokenizer'
 PINS={'qwen-tokenizer-resolved.json':'5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42','qwen-chat_template.jinja':'a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715'}
-BASE_BYTES=16384
+# 01.11.2026: 16 KiB/8192 tokens refused every live Grants.gov record (27.7 KB measured);
+# the exact token check below stays the real bound.
+BASE_BYTES=40960
 # Existing owner API: three fields *1000 Unicode characters. Two nested JSON
 # serializations need <=12 bytes/character (conservative including controls).
 # Technical owner revision envelope (without context) is separately bounded.
@@ -13,8 +15,8 @@ OWNER_CHARACTERS=3*1000
 OWNER_ENVELOPE_BYTES=1024
 OWNER_WIRE_SYNTAX_BYTES=256
 TRANSPORT_BYTES=BASE_BYTES+12*OWNER_CHARACTERS+2*OWNER_ENVELOPE_BYTES+OWNER_WIRE_SYNTAX_BYTES
-CONTEXT=8192
-OUTPUT=1500
+CONTEXT=16384
+OUTPUT=3000
 GUARD=64
 
 def fail(reason):raise PipelineError('Concept admission: '+reason+'; no model request')

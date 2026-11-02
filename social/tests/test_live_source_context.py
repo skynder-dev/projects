@@ -278,9 +278,10 @@ class FullConditionContext(unittest.TestCase):
         detail['synopsis'].pop('applicantEligibilityDesc')
         rec, rows, _ = record_and_claims(hit, detail, search, meta)
         body = inspect_request(rec, rows, config())['body']
-        self.assertGreater(len(stable_json(body).encode()), admission.BASE_BYTES)
+        oversized = dict(body, system=body['system'] + 'x' * admission.BASE_BYTES)
+        self.assertGreater(len(stable_json(oversized).encode()), admission.BASE_BYTES)
         with self.assertRaisesRegex(PipelineError, 'non_owner_envelope_exceeded'):
-            admission.admit(body)
+            admission.admit(oversized)
         self.assertEqual(json.loads(body['prompt'])['source_context']['condition_fields'][0]['text'], 'x' * core.SOURCE_CONTEXT_BYTES)
 
     def test_later_sentence_edits_change_identity_and_reject_stale_selection(self):

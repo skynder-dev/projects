@@ -316,8 +316,8 @@ def build_request(record,claims,cfg,*,source_evidence=None):
     body = {'model': model, 'stream': False, 'think': False, 'keep_alive': '5m',
             'system': system, 'prompt': prompt,
             'format': schema(reference_keys,data['language_contract'],reference_field='basis_excerpt_ids' if excerpt_mode else 'basis_claim_keys',result_contract=result_contract,input_identity=data['input_identity']),
-            'options': {'num_gpu': 0, 'num_thread': 4, 'num_ctx': 8192,
-                        'num_predict': 1500, 'temperature': .3, 'seed': 42}}
+            'options': {'num_gpu': 0, 'num_thread': 4, 'num_ctx': 16384,
+                        'num_predict': 3000, 'temperature': .3, 'seed': 42}}
     from .concept_admission import admit
     admit(body)
     return body,data
