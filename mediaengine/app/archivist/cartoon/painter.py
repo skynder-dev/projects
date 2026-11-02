@@ -338,9 +338,13 @@ def _paint(todo: list) -> None:
         work.mkdir(parents=True, exist_ok=True)
         while left:
             req = work / f"paint-{int(time.time())}.json"
-            req.write_text(json.dumps({"model": str(MODEL), "pictures": left, "standin": standin()}), "utf-8")
-            env = dict(os.environ, PYTHONNOUSERSITE="1", PYTHONPATH=str(SITE), HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
-            cmd = [sys.executable if standin() else vo._python(), str(WORKER), str(req)]
+            req.write_text(json.dumps({"model": str(MODEL), "pictures": left, "standin": standin(), "site": str(SITE)}), "utf-8")
+            env = dict(os.environ, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", HF_HUB_DISABLE_TELEMETRY="1")
+            env.pop("PYTHONPATH", None)
+            # (like the voice add-on's worker: without the program's own packages (-S), only the add-on's folder - a
+            # mix of the two crashed in the graphics card's code on the owner's PC)
+            cmd = ([sys.executable, str(WORKER), str(req)] if standin() else
+                   [vo._python(), "-S", "-E", "-B", "-X", "utf8", str(WORKER), str(req)])
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, text=True,
                                     encoding="utf-8", errors="replace", env=env, **process_kwargs(below_normal=True))
             ae._attach_job_object(proc)

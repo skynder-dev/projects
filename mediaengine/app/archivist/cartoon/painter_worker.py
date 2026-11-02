@@ -66,11 +66,22 @@ def flux(job):
         torch.cuda.empty_cache()
 
 
+_DLL: list = []
+
+
 def main():
     import faulthandler
     faulthandler.enable()                  # (a crash in the graphics card's code: where it was, in the log)
     with open(sys.argv[1], encoding="utf-8") as f:
         job = json.load(f)
+    if job.get("site") and not job.get("standin"):
+        import site
+        site.addsitedir(job["site"])
+        if os.name == "nt":                                # (torch's CUDA libraries made known to Windows)
+            lib = os.path.join(job["site"], "torch", "lib")
+            if os.path.isdir(lib):
+                _DLL.append(os.add_dll_directory(lib))
+                os.environ["PATH"] = lib + os.pathsep + os.environ.get("PATH", "")
     (standin if job.get("standin") else flux)(job)
 
 
