@@ -510,11 +510,14 @@ def _camera(cv: Canvas, film: dict, scene: dict, t: float, names: list, xs: list
     """(x, y, zoom) the camera looks at: a slow push-in through the scene, or a close-up of the one speaking."""
     st = t - scene["s"]
     z = 1.0 + 0.045 * min(1.0, st / max(1.0, scene["e"] - scene["s"]))
+    pics = pictures(film)
+    if pics["cast"] or scene["bg"] in pics["bg"]:
+        z = 1.0                                            # (pictures: no slow push-in - resized a pixel at a time they shivered)
     who = close_up(film, scene, t)
     if not who or who not in names:
         return cv.SW / 2, cv.SH / 2, z
     tall = cv.SH > cv.SW
-    z = CLOSE["vertical" if tall else "horizontal"] + 0.02 * min(1.0, st / 4.0)
+    z = CLOSE["vertical" if tall else "horizontal"] + (0.0 if pics["cast"] else 0.02 * min(1.0, st / 4.0))
     where = film.get("caption_at") or ""                   # (the face kept clear of the captions' band)
     f = ({"middle": 0.18, "bottom": 0.25, "top": 0.32} if tall else {"middle": 0.12, "bottom": 0.2, "top": 0.3}).get(
         where, 0.25 if tall else 0.2)                      # where the top of the head comes, a share of the height
@@ -886,6 +889,8 @@ def render(script: dict, out: Path, work: Path, voices: dict | None = None, capt
         except S.SiteError as exc:
             raise FilmError(str(exc))
     W, H = FORMATS[film["format"]]
+    if captions is not None and H > W and pictures(film)["cast"] and (captions.get("position") or "middle") == "middle":
+        captions = dict(captions, position="top")          # (picture characters are tall: the middle band is their chest)
     film["caption_at"] = (((captions or {}).get("position") or ("middle" if H > W else "bottom")) if captions is not None
                           else "")                         # (close-ups keep the faces out of the captions)
     tl = timeline(film, voices)

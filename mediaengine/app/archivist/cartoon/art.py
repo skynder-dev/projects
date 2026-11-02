@@ -172,19 +172,37 @@ def draw_background(cv, p: Path) -> None:
 HEIGHT = 700.0                                             # (a picture character as tall as a drawn one: its units)
 
 
+_MOUTH: dict = {}
+
+
+def _mouth_state(key: str, opening: float, t: float, hold: float = 0.11) -> bool:
+    """Open or shut, held at least a moment (a mouth flipping every picture looked like a twitch); open from 0.35,
+    shut under 0.15 (between: as it was)."""
+    was, since = _MOUTH.get(key, (False, -1.0))
+    if t < since or t - since > 5:                         # (a new film or a jump: start again)
+        was, since = False, t - hold
+    want = True if opening > 0.35 else False if opening < 0.15 else was
+    if want != was and t - since >= hold:
+        _MOUTH[key] = (want, t)
+        return want
+    _MOUTH[key] = (was, since)
+    return was
+
+
 def draw_character(cv, folder: Path, x: float, y: float, scale: float, look: float, pose: str, mouth: float, t: float,
                    walk: float | None = None, nod: float = 0.0, height: float = 1.0) -> None:
     """A picture character with its feet at stage (x, y): the gesture's picture, the mouth open on the loud parts of a
     word, breathing, a step's bounce when walking, turned by look (-1: mirrored; between: narrower while turning)."""
-    m_open = (mouth[0] if isinstance(mouth, (tuple, list)) else float(mouth or 0.0)) > 0.28
+    m_open = _mouth_state(str(folder), (mouth[0] if isinstance(mouth, (tuple, list)) else float(mouth or 0.0)), t)
     p = pose_picture(folder, pose, m_open)
     img, _a = _load(p, True)
     ih, iw = img.shape[:2]
     m = cv._m[-1]
     s = math.sqrt(abs(m[0, 0] * m[1, 1] - m[0, 1] * m[1, 0]))
-    breath = 1.0 + 0.008 * math.sin(t * 2.2)
-    bob = -abs(math.sin(walk)) * 10 if walk is not None else 0.0
-    h_px = max(4, int(round(HEIGHT * height * scale * s * breath * (1 - 0.012 * nod))))
+    # (the picture's size never changes from frame to frame - resizing by a pixel made it shiver; breathing and a nod
+    # are a small move up and down instead)
+    bob = -abs(math.sin(walk)) * 10 if walk is not None else 2.5 * math.sin(t * 2.2) + 6 * nod
+    h_px = max(4, int(round(HEIGHT * height * scale * s)))
     w_px = max(4, int(round(iw * h_px / ih * max(0.15, abs(look)))))
     pic, a = _sized_pic(p, w_px, h_px, True)
     if look < 0:

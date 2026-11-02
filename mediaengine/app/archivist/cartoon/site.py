@@ -1,4 +1,5 @@
-"""A web page in a cartoon: the page as one tall picture (Edge or Chrome on this PC, headless - nothing is installed)
+"""A web page in a cartoon (only the one page the person gives, only when the site's robots.txt allows programs to
+read it, never signed in; one visit, kept a day): the page as one tall picture (Edge or Chrome on this PC, headless - nothing is installed)
 and its text (for the story writer); a scene without a visual of its own then shows the page, scrolling down it from
 scene to scene while the characters talk about it.
 
@@ -55,6 +56,29 @@ def _text(dom: str) -> str:
     return "\n".join(x for x in lines if len(x) > 2)[:12000]
 
 
+AGENT = "MediaEngine"
+
+
+def allowed(url: str) -> bool:
+    """The site's rules for programs (robots.txt) followed: only the one page asked for, and only if they allow it.
+    A site without a readable robots.txt is treated as allowing it (the usual reading)."""
+    import urllib.parse
+    import urllib.request
+    import urllib.robotparser
+    u = urllib.parse.urlsplit(url)
+    rp = urllib.robotparser.RobotFileParser()
+    try:
+        req = urllib.request.Request(f"{u.scheme}://{u.netloc}/robots.txt", headers={"User-Agent": AGENT})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            if r.status >= 400:
+                return True
+            rp.parse(r.read(500_000).decode("utf-8", "replace").splitlines())
+    except Exception as exc:
+        code = getattr(exc, "code", 0)
+        return not (401 <= int(code or 0) <= 403)          # (robots.txt itself forbidden: treated as "no")
+    return rp.can_fetch(AGENT, url) and rp.can_fetch("*", url)
+
+
 def fetch(url: str, refresh: bool = False) -> dict:
     """{"url", "image", "text"} of a page (from the cache when fresh)."""
     url = str(url or "").strip()
@@ -64,6 +88,8 @@ def fetch(url: str, refresh: bool = False) -> dict:
     png, txt = d / "page.png", d / "page.txt"
     if not refresh and png.is_file() and txt.is_file() and time.time() - png.stat().st_mtime < 86400:
         return {"url": url, "image": str(png), "text": txt.read_text("utf-8")}
+    if not allowed(url):
+        raise SiteError("This site does not allow programs to read this page (its robots.txt). Open it yourself instead.")
     d.mkdir(parents=True, exist_ok=True)
     exe = browser()
     prof = d / "profile"                                   # (its own empty profile: never the person's signed-in one)

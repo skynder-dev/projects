@@ -1134,6 +1134,7 @@ PHRASES = {
     "Pictures drawn by AI": "Картинки от ИИ",
     "Showing a web page needs Microsoft Edge or Google Chrome on this PC.": "Чтобы показать сайт, на ПК нужен Microsoft Edge или Google Chrome.",
     "Give the page's full address (https://…).": "Дай полный адрес страницы (https://…).",
+    "This site does not allow programs to read this page (its robots.txt). Open it yourself instead.": "Этот сайт не разрешает программам читать эту страницу (его robots.txt). Открой её сам.",
     "The page could not be read (it may need signing in, or block programs).": "Страницу не удалось прочитать (может быть, нужен вход или она не пускает программы).", "Installing the picture add-on": "Ставлю модуль картинок",
     "A free picture model on this PC (FLUX.2 klein, Apache-2.0) draws this cartoon's characters (standing, talking, pointing, shrugging - the same person in every picture) and its places once; the cartoon then moves them instead of the program's own drawings.":
         "Бесплатная модель картинок на этом ПК (FLUX.2 klein, Apache-2.0) один раз рисует героев этого мультфильма (стоит, говорит, показывает, разводит руками — в каждой картинке один и тот же человек) и места действия; потом мультфильм двигает их вместо рисунков программы.",
