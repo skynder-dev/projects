@@ -14,7 +14,7 @@ import card_arbitrage as ca, deal_economics as de, phone_cards as pc
 ECB = b"<gesmes:Envelope><Cube><Cube time='2026-10-30'><Cube currency='USD' rate='1.1000'/><Cube currency='JPY' rate='160'/></Cube></Cube></gesmes:Envelope>"
 def card(name, setc, usd, eur): return {'id': name + setc, 'name': name, 'set': setc, 'scryfall_uri': 'https://scryfall.com/card/' + setc + '/1?utm=x', 'prices': {'usd': usd, 'eur': eur}}
 PAGE = {'data': [card('SYNTHETIC Alpha', 'aaa', '100.00', '50.00'), card('SYNTHETIC Alpha', 'bbb', '90.00', '50.00'), card('SYNTHETIC Beta', 'ccc', '20.00', '60.00'),
-                 card('SYNTHETIC Even', 'ddd', '30.00', '27.00'), card('SYNTHETIC NoEur', 'eee', '40.00', None)], 'has_more': False}
+                 card('SYNTHETIC Even', 'ddd', '30.00', '27.00'), card('SYNTHETIC NoEur', 'eee', '40.00', None), card('SYNTHETIC Lone', 'fff', '150.00', '1.73')], 'has_more': False}
 class Tests(unittest.TestCase):
     def setUp(self): self.t = tempfile.TemporaryDirectory(); self.root = Path(self.t.name)
     def tearDown(self): self.t.cleanup()
@@ -27,7 +27,7 @@ class Tests(unittest.TestCase):
     def test_rate(self): self.assertEqual(ca.ecb_rate(ECB), (1.1, '2026-10-30'))
     def test_deals_and_cards(self):
         stats = {'source_requests': 0}; r = ca.collect(self.root, stats, read=self.read())
-        self.assertEqual(r['status'], 'read'); self.assertEqual(r['printings_with_both_prices'], 4); self.assertEqual(r['model_requests'], 0)
+        self.assertEqual(r['status'], 'read'); self.assertEqual(r['printings_with_both_prices'], 5); self.assertEqual(r['dropped_as_suspicious'], 1); self.assertEqual(r['model_requests'], 0)
         names = [(d['name'], d['set'], d['buy'], d['left']) for d in r['deals']]
         # Alpha aaa: buy EU 55.00, sell US 100 -> 100*0.8675-55-6 = 25.75 ; Beta: buy US 20, sell EU 66 -> 66*0.95-20-6 = 36.70 ; Even: no gap
         self.assertEqual(names, [('SYNTHETIC Beta', 'CCC', 'US', 36.7), ('SYNTHETIC Alpha', 'AAA', 'EU', 25.75)])

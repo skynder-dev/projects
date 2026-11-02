@@ -444,8 +444,8 @@
     },
     {
       "path": "reveng/ResearchLocal/card_arbitrage.py",
-      "bytes": 9128,
-      "sha256": "61d4285ed6c8bbac0c8768a6fe9c7946f77563797c8756ae1c4d3ac4b26525fe",
+      "bytes": 9568,
+      "sha256": "ecac48140949fc4808d282ab8c358e398f08281465dcc42234836d762a245eb1",
       "change": "new_card_arbitrage_trial_2026-11-02"
     },
     {
@@ -1100,8 +1100,8 @@
     },
     {
       "path": "reveng/tests/test_card_arbitrage.py",
-      "bytes": 4581,
-      "sha256": "87fe59e0926cb0213f6ab206c1aa47760481f75904ab137f3b673807b789f168",
+      "bytes": 4679,
+      "sha256": "aba9a6a7ce2a0845936361c4096b2360d0f7f073ad5bffd1dc1a474518582a6b",
       "change": "new_card_arbitrage_offline_contracts_2026-11-02"
     },
     {

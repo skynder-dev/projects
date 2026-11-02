@@ -26,6 +26,7 @@ SELL_FEE_PCT = {'US': 13.25, 'EU': 5.0}       # TCGplayer ~10.75% + payment ~2.5
 SHIPPING_USD = 6.0                             # one tracked letter between Europe and the USA, one card
 MIN_PROFIT_USD = 5.0
 MAX_DEALS = 8
+MAX_RATIO = 2.5   # a price over 2.5x the other market's is taken as a data artefact (a lone listing, another printing), not a deal
 
 
 def ecb_rate(raw):
@@ -53,6 +54,10 @@ def rows(pages):
     return out
 
 
+def suspicious(cards, rate):
+    return sum(1 for c in cards if max(c['usd'], c['eur'] * rate) > MAX_RATIO * min(c['usd'], c['eur'] * rate))
+
+
 def gaps(cards, rate, rate_day):
     """Both directions per printing; a deal only when what is left after the assumed fees and shipping clears the bar."""
     deals = []
@@ -60,6 +65,8 @@ def gaps(cards, rate, rate_day):
         eu_in_usd = round(c['eur'] * rate, 2)
         for buy, sell, buy_usd, sell_usd, market in (('EU', 'US', eu_in_usd, c['usd'], 'US'), ('US', 'EU', c['usd'], eu_in_usd, 'EU')):
             left = sell_usd * (1 - SELL_FEE_PCT[market] / 100) - buy_usd - SHIPPING_USD
+            if sell_usd > buy_usd * MAX_RATIO:
+                continue
             if left >= MIN_PROFIT_USD:
                 deals.append(dict(c, buy=buy, sell=sell, buy_usd=buy_usd, sell_usd=sell_usd, left=round(left, 2), rate=rate, rate_day=rate_day))
     deals.sort(key=lambda d: d['left'], reverse=True)
@@ -121,7 +128,7 @@ def collect(root, stats, offline=False, read=None):
             old.unlink()
         for i, d in enumerate(deals, 1):
             (folder / ('mtg-%02d.json' % i)).write_text(json.dumps(deal_file(d), ensure_ascii=False, indent=1), encoding='utf-8')
-        result.update(status='read', ecb_usd_per_eur=rate, ecb_day=day, printings_with_both_prices=len(cards), deals=[{k: d[k] for k in ('name', 'set', 'buy', 'sell', 'buy_usd', 'sell_usd', 'left', 'uri')} for d in deals])
+        result.update(status='read', ecb_usd_per_eur=rate, ecb_day=day, printings_with_both_prices=len(cards), dropped_as_suspicious=suspicious(cards, rate), deals=[{k: d[k] for k in ('name', 'set', 'buy', 'sell', 'buy_usd', 'sell_usd', 'left', 'uri')} for d in deals])
     except Exception as ex:
         result.update(status='source_unavailable', error=m.error_text(ex, 200), deals=[])
     result['source_requests'] = stats.get('source_requests', 0); result['model_requests'] = 0
@@ -133,7 +140,7 @@ if __name__ == '__main__':
     a = argparse.ArgumentParser(description=__doc__); a.add_argument('--root', required=True, type=Path); a.add_argument('--offline', action='store_true')
     o = a.parse_args()
     r = collect(o.root.resolve(), {'source_requests': 0}, o.offline)
-    print(r['status'], r.get('error', ''), 'rate', r.get('ecb_usd_per_eur'), 'printings', r.get('printings_with_both_prices'), 'requests', r['source_requests'])
+    print(r['status'], r.get('error', ''), 'rate', r.get('ecb_usd_per_eur'), 'printings', r.get('printings_with_both_prices'), 'suspicious', r.get('dropped_as_suspicious'), 'requests', r['source_requests'])
     for d in r['deals']:
         print('  ', d['left'], d['buy'], '->', d['sell'], d['name'], d['set'], d['buy_usd'], d['sell_usd'])
     try:
