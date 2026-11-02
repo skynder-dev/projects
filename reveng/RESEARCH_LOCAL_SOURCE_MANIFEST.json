@@ -1100,8 +1100,8 @@
     },
     {
       "path": "reveng/tests/test_card_arbitrage.py",
-      "bytes": 4679,
-      "sha256": "aba9a6a7ce2a0845936361c4096b2360d0f7f073ad5bffd1dc1a474518582a6b",
+      "bytes": 4699,
+      "sha256": "d6186dd2600d805efd757c937390e47f85d0233237179a7bc67bb869d0f4d698",
       "change": "new_card_arbitrage_offline_contracts_2026-11-02"
     },
     {
