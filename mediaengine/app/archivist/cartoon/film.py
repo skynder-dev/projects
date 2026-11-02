@@ -102,6 +102,8 @@ def check_script(sc: dict) -> dict:
     if re.match(r"(?i)^https?://\S+$", str(site.get("url") or "")):
         out["site"] = {"url": str(site["url"])[:500]}     # (a web page shown in the scenes without a visual: site.py)
         free = [s for s in scenes if not s.get("visual")]
+        if len(free) < len(scenes) // 2:                  # (a writer gives every scene a picture: every second one shows
+            free = [s for i, s in enumerate(scenes) if not s.get("visual") or i % 2 == 1]   # the page instead)
         for k, s in enumerate(free):
             s["site_part"] = [k, len(free)]
     return out
@@ -490,7 +492,7 @@ def close_up(film: dict, scene: dict, t: float) -> str | None:
     second line of a scene - and on a line said with a strong feeling - as cartoons do; never while a picture is to be
     read (a scene with a visual), in a scene's first moments (its transition, someone walking in), on a short line or a
     line in a bubble. film["camera"] == "still": never."""
-    if film.get("camera") == "still" or scene.get("visual") or scene.get("site_part"):
+    if film.get("camera") == "still" or scene.get("visual") or scene.get("site_part"):  # (a page shown: no close-up)
         return None
     j = _line_at(scene, t)
     if j < 0:
@@ -537,7 +539,7 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
     ln, j = _speaking(scene, t)
     speaker = ln["who"] if ln else None
     names = _shown(film, scene)                            # (nobody else there: the narrator presents it)
-    page = site_image(film) if scene.get("site_part") and not scene.get("visual") else ""
+    page = site_image(film) if scene.get("site_part") else ""
     xs, sc, box = _layout(cv, len(names), bool(scene.get("visual")) or bool(page))
     cam_x, cam_y, zoom = _camera(cv, film, scene, t, names, xs, sc)
     cv.lens = zoom
@@ -549,7 +551,7 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                 gy = bgs.ground_y(cv)
             else:
                 gy = bgs.draw(cv, scene["bg"], t)
-            if scene.get("visual") and box:
+            if scene.get("visual") and box and not page:
                 if scene["bg"] not in DARK and (scene["visual"].get("kind") not in ("road", "title")
                                                  or (scene["visual"].get("kind") == "title" and scene["bg"] in INDOOR)):
                     bx, by, bw_, bh_ = box                 # (a light card under a scheme or a paper: it reads on any background)
