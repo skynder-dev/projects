@@ -51,7 +51,7 @@ def flux(job):
         if not group:
             continue
         pipe = Flux2KleinPipeline.from_pretrained(job["model"], torch_dtype=torch.bfloat16)
-        pipe.enable_sequential_cpu_offload() if seq else pipe.enable_model_cpu_offload()
+        pipe.enable_sequential_cpu_offload()               # (all of them: the faster way crashed on the owner's busy card)
         for _n, p in group:
             kw = dict(prompt=p["prompt"], height=p["h"], width=p["w"], num_inference_steps=4,
                       generator=torch.Generator("cuda").manual_seed(int(p.get("seed") or 7)))
