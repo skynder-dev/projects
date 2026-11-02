@@ -36,20 +36,34 @@ def standin(job):
 
 
 def flux(job):
+    """Pictures without a reference first (the model moved to the card part by part: fast), then those drawn from a
+    reference with the model moved layer by layer (sequential offload): a reference needs more of the card than a 12 GB
+    card shared with other programs has, and without it a picture took half an hour (measured on the owner's RTX 3060:
+    43 s instead)."""
     import torch
     from diffusers import Flux2KleinPipeline
     from PIL import Image
-    pipe = Flux2KleinPipeline.from_pretrained(job["model"], torch_dtype=torch.bfloat16)
-    pipe.enable_model_cpu_offload()
-    for n, p in enumerate(job["pictures"], 1):
-        kw = dict(prompt=p["prompt"], height=p["h"], width=p["w"], num_inference_steps=4,
-                  generator=torch.Generator("cuda").manual_seed(int(p.get("seed") or 7)))
-        if p.get("ref") and os.path.isfile(p["ref"]):
-            ref = Image.open(p["ref"]).convert("RGB")
-            ref.thumbnail((448, 784))   # (a full-size reference doubles what the card holds: on 12 GB it spills to slow memory)
-            kw["image"] = [ref]
-        _save(pipe(**kw).images[0], p["out"])
-        print(f"PIC {n} {p.get('what') or ''}", flush=True)
+    pics = list(enumerate(job["pictures"], 1))
+    plain = [x for x in pics if not x[1].get("ref")]
+    by_ref = [x for x in pics if x[1].get("ref")]
+    done = 0
+    for group, seq in ((plain, False), (by_ref, True)):
+        if not group:
+            continue
+        pipe = Flux2KleinPipeline.from_pretrained(job["model"], torch_dtype=torch.bfloat16)
+        pipe.enable_sequential_cpu_offload() if seq else pipe.enable_model_cpu_offload()
+        for _n, p in group:
+            kw = dict(prompt=p["prompt"], height=p["h"], width=p["w"], num_inference_steps=4,
+                      generator=torch.Generator("cuda").manual_seed(int(p.get("seed") or 7)))
+            if p.get("ref") and os.path.isfile(p["ref"]):
+                ref = Image.open(p["ref"]).convert("RGB")
+                ref.thumbnail((448, 784))
+                kw["image"] = [ref]
+            _save(pipe(**kw).images[0], p["out"])
+            done += 1
+            print(f"PIC {done} {p.get('what') or ''}", flush=True)
+        del pipe
+        torch.cuda.empty_cache()
 
 
 def main():

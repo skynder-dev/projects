@@ -333,7 +333,7 @@ def _paint(todo: list) -> None:
     for the pictures not drawn yet - up to three times - so one bad moment does not lose the rest."""
     from .. import auto_edit as ae, voice as vo
     work = ROOT / "work"
-    left, done, tries, log = list(todo), 0, 0, []
+    left, done, tries, log, started = list(todo), 0, 0, [], time.time()
     try:
         work.mkdir(parents=True, exist_ok=True)
         while left:
@@ -360,7 +360,7 @@ def _paint(todo: list) -> None:
             if _PSTOP.is_set():
                 raise PainterError("Stopped. The pictures drawn so far are kept.")
             done += got
-            left = left[got:]
+            left = [x for x in left if not (Path(x["out"]).is_file() and Path(x["out"]).stat().st_mtime >= started - 1)]
             if proc.returncode == 0 and not left:
                 break
             tries += 1
