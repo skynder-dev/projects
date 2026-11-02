@@ -68,7 +68,9 @@ RULES = {
     # the tool name must really start with a capital letter even though the rest of the rule ignores case
     'tools': r'(?:at\s+least\s+\d{1,3}\s*%|must\s+be|required\s+to\s+be|primary)[^.;]{0,50}?(?:generated|created|made|produced)\s+(?:using|with|in|by)\s+(?-i:[A-Z][\w.\-]*(?:\s+[A-Z0-9][\w.\-]*){0,3})',
     'eligibility': r'(?:at\s+least|aged?)\s+\d{2}\s+years?(?:\s+old)?|open\s+to\s+[^.;]{0,50}?(?:worldwide|globally|all\s+countries|any\s+country|residents\s+of\s+[A-Z][\w ]{0,25})',
-    'exclusivity': r'non-exclusive\s+licen[cs]e|exclusive\s+(?:rights|licen[cs]e|premiere)|world\s+premiere|must\s+not\s+have\s+been\s+(?:previously\s+)?(?:published|released|screened)',
+    'exclusivity': r'non-exclusive\s+licen[cs]e|exclusive\s+(?:rights|licen[cs]e|premiere)|world\s+premiere',
+    # the film must be new / not entered elsewhere: this, not the licence, is what stops one film going to several contests
+    'premiere': r'(?:must\s+not\s+have\s+been|not\s+(?:been\s+)?previously|never\s+(?:been\s+)?)\s*(?:publicly\s+)?(?:published|released|screened|broadcast|submitted)[^.;]{0,60}|(?:submitted\s+to|entered\s+in)[^.;]{0,20}?(?:any\s+)?other\s+(?:competition|contest|festival)',
     'format': r'\b(?:16:9|9:16|1080p|2160p|4K|MP4|MOV)\b(?:[^.;]{0,30}?\b(?:16:9|9:16|1080p|2160p|4K|MP4|MOV)\b)*',
 }
 
@@ -114,7 +116,10 @@ def parse(key, text, stamp, response_sha, today=None, spec=None):
         mm = re.search(RULES[kind], text, re.I)
         if not mm:
             return None
-        quote = ' '.join(mm.group(0).split()[:MAX_QUOTE_WORDS])
+        words = mm.group(0).split()
+        if kind in ('exclusivity', 'premiere'):   # a few words before, so "not subject to any exclusive licence" is not read as one
+            words = text[:mm.start()].split()[-5:] + words
+        quote = ' '.join(words[:MAX_QUOTE_WORDS])
         facts.append({'id': 'K' + str(len(facts) + 1), 'kind': kind, 'quote': quote})
         return quote
 
@@ -154,9 +159,11 @@ def compatible(records):
             lo, hi = max(a['length_minutes'][0], b['length_minutes'][0]), min(a['length_minutes'][1], b['length_minutes'][1])
             tools = {t for t in (a.get('required_tool'), b.get('required_tool')) if t}
             if lo <= hi and len(tools) <= 1:
-                warn = [r['key'] for r in (a, b) if any(f['kind'] == 'exclusivity' for f in r['facts'])]
+                facts = lambda r: list(r['facts']) + [f for pg in r.get('rules_pages', []) for f in pg.get('facts', [])]
+                warn = [r['key'] for r in (a, b) if any(f['kind'] == 'exclusivity' for f in facts(r))]
+                new_only = [r['key'] for r in (a, b) if any(f['kind'] == 'premiere' for f in facts(r))]
                 out.append({'contests': [a['key'], b['key']], 'shared_length_minutes': [lo, hi], 'required_tool': next(iter(tools), None),
-                            'check_exclusivity_terms_of': warn})
+                            'check_exclusivity_terms_of': warn, 'requires_new_unsubmitted_film': new_only})
     return out
 
 

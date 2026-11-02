@@ -68,6 +68,15 @@ class ParseTests(unittest.TestCase):
         r = ct.parse('billion_ai_film_2027', 'SYNTHETIC page about a festival with no stated terms.', 's', 'a' * 64)
         self.assertEqual(r['classification'], 'not_found_in_checked_source'); self.assertIsNone(r['prize']); self.assertIsNone(r['declared_deadline'])
         self.assertEqual(r['deadline_status'], 'unknown'); self.assertIn('deadline', r['unproven'])
+    def test_premiere_and_negated_exclusivity(self):
+        page = ('SYNTHETIC. The Film is not subject to any exclusive license that conflicts. The Film must be not previously publicly released, '
+                'broadcast, published, or submitted to, or awarded by, any other competition.')
+        r = ct.parse('billion_ai_film_2027', page, 's', 'a' * 64, today='2026-11-01')
+        q = {f['kind']: f['quote'] for f in r['facts']}
+        self.assertTrue(q['exclusivity'].startswith('is not subject to any exclusive license'))
+        self.assertIn('not previously publicly released', q['premiere'])
+        a = dict(r, length_minutes=[5, 7], deadline_status='open'); b = dict(a, key='other', facts=[])
+        self.assertEqual(ct.compatible([a, b])[0]['requires_new_unsubmitted_film'], ['billion_ai_film_2027'])
     def test_dates_and_money_forms(self):
         self.assertEqual(ct.parse_date('deadline: Nov. 22, 2026'), '2026-11-22'); self.assertEqual(ct.parse_date('2027-02-15'), '2027-02-15')
         self.assertIsNone(ct.parse_date('deadline 31 February 2027')); self.assertIsNone(ct.parse_date('soon'))

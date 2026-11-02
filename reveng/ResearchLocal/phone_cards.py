@@ -63,6 +63,8 @@ def contest_cards(root, today):
             lo, hi = r['length_minutes']; span = str(lo) if lo == hi else str(lo) + '-' + str(hi)
             ru.append('Длина: ' + span + ' мин' + ('; программа: ' + r['required_tool'] if r.get('required_tool') else ''))
             en.append('Length: ' + span + ' min' + ('; tool: ' + r['required_tool'] if r.get('required_tool') else ''))
+        if any(f['kind'] == 'premiere' for f in list(r.get('facts', [])) + [f for pg in r.get('rules_pages', []) for f in pg.get('facts', [])]):
+            ru.append('Только новый фильм: нигде раньше не поданный и не показанный'); en.append('New film only: not submitted or shown anywhere before')
         if r.get('dig_in'):
             read = sum(1 for p in r.get('rules_pages', []) if p.get('classification') not in ('source_unavailable', 'not_checked_this_run_budget'))
             ru.append('Правила дочитаны: страниц ' + str(read) + ' (подробно - на ПК)'); en.append('Rules read: ' + str(read) + ' page(s) (details on the PC)')

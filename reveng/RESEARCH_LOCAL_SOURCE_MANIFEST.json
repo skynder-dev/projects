@@ -112,9 +112,9 @@
     },
     {
       "path": "reveng/ResearchLocal/ContestTermsPresentation.cs",
-      "bytes": 14476,
-      "sha256": "d6a124d79f9d5274aa86b99085bda5577171d945198c1fce10faea0b51ca3863",
-      "change": "new_contest_terms_window_presentation_2026-11-01+phone_decisions+dig_in_rules_export_2026-11-01"
+      "bytes": 14790,
+      "sha256": "fd9d7b5ab31b6b57150a0295948c3282892de2b4d7510c5aa5613e68641cdd65",
+      "change": "new_contest_terms_window_presentation_2026-11-01+phone_decisions+dig_in_rules_export_2026-11-01+premiere_rule"
     },
     {
       "path": "reveng/ResearchLocal/CorroborationPresentation.cs",
@@ -504,9 +504,9 @@
     },
     {
       "path": "reveng/ResearchLocal/contest_terms.py",
-      "bytes": 30484,
-      "sha256": "66f9e6f1517b3ffc3ed6e341626425eeb20dbbb34f6bde646d92fddc523c1c2e",
-      "change": "new_contest_terms_collector_2026-10-31+aggregator_leads_stdlib_html_view_file_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates+link_text_date+phone_cards_hook+dig_in_rules_export_2026-11-01"
+      "bytes": 31286,
+      "sha256": "f07f12454c156f56a27e2b7cf7412276c17c551f88aaaead60750eb00fd433f9",
+      "change": "new_contest_terms_collector_2026-10-31+aggregator_leads_stdlib_html_view_file_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates+link_text_date+phone_cards_hook+dig_in_rules_export_2026-11-01+premiere_rule"
     },
     {
       "path": "reveng/ResearchLocal/contract_v2.py",
@@ -745,9 +745,9 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 8930,
-      "sha256": "2a81f0aa8e38916c0f5fc5adf30c98ae2989c0815dcde86fafbaf4f88c997099",
-      "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01"
+      "bytes": 9279,
+      "sha256": "d2c706ffe6acfb9a681c46219027a198428e7eee56a31de2cdfde27c3d393d93",
+      "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule"
     },
     {
       "path": "reveng/ResearchLocal/plan_mapping.py",
@@ -1102,9 +1102,9 @@
     },
     {
       "path": "reveng/tests/test_contest_terms.py",
-      "bytes": 25664,
-      "sha256": "6c3fb264a80c080bf961e48bb2b4db4bdce4aa653447f618a2ebaa0b4fef2b5e",
-      "change": "new_contest_terms_offline_contracts_2026-10-31+lead_and_view_contracts_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates+link_text_date+dig_in_rules_export_2026-11-01"
+      "bytes": 26483,
+      "sha256": "138782a390e39ef3e8f11e59512c4be49ee4f7bce7cabea7a063842af88ab524",
+      "change": "new_contest_terms_offline_contracts_2026-10-31+lead_and_view_contracts_2026-11-01+closed_hosts_declared_canonical_2026-11-01+yearless_listing_dates+link_text_date+dig_in_rules_export_2026-11-01+premiere_rule"
     },
     {
       "path": "reveng/tests/test_deal_economics.py",
