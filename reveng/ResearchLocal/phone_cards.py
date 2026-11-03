@@ -13,6 +13,7 @@ from datetime import date
 from pathlib import Path
 
 SCHEMA = 'reveng-phone-cards-v1'
+MIN_CONTEST_PRIZE_USD = 10000
 # the card front keeps only what decides: a missing deadline or prize is said, the rest of the unknown stays on the PC
 KEY_UNKNOWN = {'deadline': ('срок подачи', 'deadline'), 'prize': ('приз', 'prize')}
 KIND_RU = {'deadline': 'срок', 'prize': 'приз', 'fee': 'взнос', 'length': 'длина', 'tools': 'инструмент', 'eligibility': 'кто может',
@@ -56,7 +57,9 @@ def contest_cards(root, today):
     for r in json.loads(wrap['payload_json'])['records']:
         if r.get('classification') not in ('contest_terms_found', 'partial_terms') or r.get('deadline_status') == 'closed':
             continue
-        if not r.get('declared_deadline') and not r.get('prize'):   # no date and no prize on the organizer's page: nothing to decide on
+        # contests are a side line (the goal is money): only a known deadline with a prize of at least MIN_CONTEST_PRIZE_USD
+        prize = r.get('prize') or {}
+        if not r.get('declared_deadline') or prize.get('currency') != 'USD' or (prize.get('amount') or 0) < MIN_CONTEST_PRIZE_USD:
             continue
         ru, en = [], []
         if r.get('declared_deadline'):
