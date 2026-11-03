@@ -30,6 +30,12 @@ def money(p):
     return ('{:,.0f}'.format(a) if a == int(a) else '{:,.2f}'.format(a)).replace(',', ' ') + (' ' + p['currency'] if p.get('currency') else '')
 
 
+def clean_title(t):
+    """A listing's link text carries its own countdown ('34d', 'today Oct 31', '9d Nov 10'): not part of the name."""
+    t = re.sub(r'\s+(?:today|tomorrow|\d{1,3}d)(?:\s+[A-Z][a-z]{2}\s+\d{1,2})?\s*$', '', t.strip())
+    return re.sub(r'\s+[A-Z][a-z]{2}\s+\d{1,2}\s*$', '', t).strip()
+
+
 def card_id(prefix, key):
     return ('rv_' + prefix + '_' + re.sub(r'[^A-Za-z0-9_.-]', '_', key))[:79]
 
@@ -50,6 +56,8 @@ def contest_cards(root, today):
     for r in json.loads(wrap['payload_json'])['records']:
         if r.get('classification') not in ('contest_terms_found', 'partial_terms') or r.get('deadline_status') == 'closed':
             continue
+        if not r.get('declared_deadline') and not r.get('prize'):   # no date and no prize on the organizer's page: nothing to decide on
+            continue
         ru, en = [], []
         if r.get('declared_deadline'):
             d = date.fromisoformat(r['declared_deadline']); days = (d - date.fromisoformat(today)).days
@@ -69,7 +77,7 @@ def contest_cards(root, today):
             read = sum(1 for p in r.get('rules_pages', []) if p.get('classification') not in ('source_unavailable', 'not_checked_this_run_budget'))
             ru.append('Правила дочитаны: страниц ' + str(read) + ' (подробно - на ПК)'); en.append('Rules read: ' + str(read) + ' page(s) (details on the PC)')
         miss = [KEY_UNKNOWN[k] for k, f in (('deadline', 'declared_deadline'), ('prize', 'prize')) if not r.get(f)]
-        out.append(finish({'id': card_id('c', r['key']), 'kind': 'reveng', 'prof': 'конкурс', 'prof_en': 'contest', 'text': r['title'][:70], 'lines': ru, 'lines_en': en,
+        out.append(finish({'id': card_id('c', r['key']), 'kind': 'reveng', 'prof': 'конкурс', 'prof_en': 'contest', 'text': clean_title(r['title'])[:70], 'lines': ru, 'lines_en': en,
                            'unknown': ('Не указан ' + ' и '.join(x[0] for x in miss) + '.') if miss else '',
                            'unknown_en': ('No ' + ' or '.join(x[1] for x in miss) + ' stated.') if miss else '',
                            'url': r['source_url']}))

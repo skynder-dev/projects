@@ -43,6 +43,15 @@ class Tests(unittest.TestCase):
     def test_no_phone_folder_keeps_local_copy(self):
         n, where = pc.write(self.root, self.root / 'absent', today='2026-11-01')
         self.assertIn('not found', where); self.assertTrue((self.root / 'phone-cards.json').exists())
+    def test_titles_cleaned_and_empty_contests_skipped(self):
+        self.assertEqual(pc.clean_title('2026 AI Holiday Film Competition - Curious Refuge 34d'), '2026 AI Holiday Film Competition - Curious Refuge')
+        self.assertEqual(pc.clean_title('Wandura Drama Challenge today Oct 31'), 'Wandura Drama Challenge')
+        self.assertEqual(pc.clean_title('IASFF 9d Nov 10'), 'IASFF')
+        self.assertEqual(pc.clean_title('AI Film Award 2027'), 'AI Film Award 2027')
+        r = rec('bare', 'partial_terms', 'unknown', None); r['prize'] = None
+        payload = json.dumps({'records': [r]}, sort_keys=True)
+        (self.root / 'contest-terms-view.json').write_text(json.dumps({'schema': 'contest-terms-view-v1', 'payload_sha256': pc.sha(payload), 'payload_json': payload}), encoding='utf-8')
+        self.assertEqual(pc.contest_cards(self.root, '2026-11-02'), [])
     def test_decisions_only_reveng(self):
         (self.phone / 'decisions.json').write_text(json.dumps({'rv_c_open': {'verdict': 'like'}, 'v4_tee': {'verdict': 'nope'}}), encoding='utf-8')
         self.assertEqual(pc.decisions(self.phone), {'rv_c_open': 'like'})
