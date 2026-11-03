@@ -16,8 +16,18 @@ import time
 import urllib.request
 from pathlib import Path
 
-SOCIAL, OUT = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
-API = sys.argv[3] if len(sys.argv) > 3 else 'http://127.0.0.1:11435'
+import argparse
+_ap = argparse.ArgumentParser()
+_ap.add_argument('social'); _ap.add_argument('out'); _ap.add_argument('api', nargs='?', default='http://127.0.0.1:11435')
+_ap.add_argument('--keyword', default='community')
+# --audience: keep only records Grants.gov lists for individuals, small businesses or nonprofits (temporary filter
+# until socialreel/topics.py exists); --skip: file with opportunity IDs already used, one per line
+_ap.add_argument('--audience', action='store_true')
+_ap.add_argument('--skip')
+_args = _ap.parse_args()
+SOCIAL, OUT, API = Path(_args.social).resolve(), Path(_args.out).resolve(), _args.api
+WANT = ('individual', 'small business', 'nonprofit')
+SKIP = set(Path(_args.skip).read_text(encoding='utf-8').split()) if _args.skip and Path(_args.skip).exists() else set()
 sys.path.insert(0, str(SOCIAL))
 OUT.mkdir(parents=True, exist_ok=True)
 
@@ -44,16 +54,21 @@ today = dt.date.today()
 client = grants.GrantsGovClient(OUT / 'source')
 rec = snap = None
 try:
-    hits, search_snap = client.search('community', 25, 'posted')
-    hits = [h for h in hits if (parse_date(h.get('closeDate')) or today) >= today + dt.timedelta(days=21)]
+    hits, search_snap = client.search(_args.keyword, 25, 'posted')
+    hits = [h for h in hits if (parse_date(h.get('closeDate')) or today) >= today + dt.timedelta(days=21)
+            and str(h.get('id')) not in SKIP]
     hits.sort(key=lambda h: parse_date(h.get('closeDate')))
-    for h in hits[:3]:
+    for h in hits[:(8 if _args.audience else 3)]:
         det, meta = client.detail(str(h['id']))
         r = grants.normalize(h, det, search_snapshot=search_snap, detail_snapshot=meta)
-        if r.get('detail_fetched') and r.get('description') and r.get('applicant_eligibility_desc'):
+        types = ' '.join(r.get('applicant_types') or []).lower()
+        if _args.audience and not any(w in types for w in WANT):
+            continue
+        if r.get('detail_fetched') and r.get('description') and (r.get('applicant_eligibility_desc') or _args.audience):
             rec, snap = r, meta
             break
-        rec, snap = rec or r, snap or meta
+        if not _args.audience:
+            rec, snap = rec or r, snap or meta
 except Exception as e:  # noqa: BLE001
     summary.append('source: FAILED ' + repr(e)[:300])
     done('source_failed')
@@ -62,8 +77,10 @@ if rec is None:
     done('source_failed')
 report['stages']['source'] = {'opportunity_id': rec.get('opportunity_id'), 'title': rec.get('title'),
                               'agency': rec.get('agency_name'), 'close_date': str(rec.get('close_date')),
+                              'applicant_types': rec.get('applicant_types'), 'keyword': _args.keyword,
                               'api_calls': len(client.calls)}
 summary.append(f"source: {rec.get('opportunity_id')} | {rec.get('title')} | closes {rec.get('close_date')}")
+summary.append('applicants: ' + '; '.join(rec.get('applicant_types') or ['(not listed)'])[:300])
 
 # 2. факты с происхождением
 try:
