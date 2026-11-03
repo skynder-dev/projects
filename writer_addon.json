@@ -1,0 +1,299 @@
+{
+ "passed": 8,
+ "total": 8,
+ "checks": [
+  {
+   "check": "the Install button: llama.cpp and the model downloaded, checked, started for a test",
+   "pass": true,
+   "detail": "('done', '', 78)"
+  },
+  {
+   "check": "en_topic: a story the program reads (5+ scenes with lines, pictures, the language asked)",
+   "pass": true,
+   "detail": "{'s': 314, 'state': 'done', 'result': {'ok': True, 'file': 'story.txt', 'title': 'Why a City Hospital Pays Three Times More for the Same Medicine', 'scenes': 10, 'words': 192, 'lines': 23, 'attempts': 1, 'device': '', 'finished_at': '2026-11-03T21:32:40'}, 'language': 'en', 'scenes': 10, 'visuals': ['title', 'contract', 'contract', 'compare', 'flow', 'bag', 'percent', '-', 'list', 'counter']}"
+  },
+  {
+   "check": "ro_topic: a story the program reads (5+ scenes with lines, pictures, the language asked)",
+   "pass": true,
+   "detail": "{'s': 394, 'state': 'done', 'result': {'ok': True, 'file': 'story.txt', 'title': 'Cum o firmă de administrare bani câștigă pe o renovare a scării blocului', 'scenes': 9, 'words': 224, 'lines': 22, 'attempts': 1, 'device': '', 'finished_at': '2026-11-03T21:39:16'}, 'language': 'ro', 'scenes': 9, 'visuals': ['title', 'road', 'contract', 'contract', 'flow', 'bag', 'bars', 'list', '-']}"
+  },
+  {
+   "check": "ru_adapt: a story the program reads (5+ scenes with lines, pictures, the language asked)",
+   "pass": true,
+   "detail": "{'s': 336, 'state': 'done', 'result': {'ok': True, 'file': 'story.txt', 'title': 'Как город теряет миллионы на простом дорожном контракте', 'scenes': 10, 'words': 201, 'lines': 28, 'attempts': 1, 'device': '', 'finished_at': '2026-11-03T21:44:51'}, 'language': 'ru', 'scenes': 10, 'visuals': ['title', 'road', 'contract', '-', 'contract', 'flow', 'road', 'road', 'bars', 'list']}"
+  },
+  {
+   "check": "the English story made into a cartoon (a preview without voices), 40-120 s",
+   "pass": true,
+   "detail": "('done', 89.396, None)"
+  },
+  {
+   "check": "the bigger model (Qwen3-14B): downloaded, checked, started for a test; the smaller one deleted",
+   "pass": true,
+   "detail": "('done', '')"
+  },
+  {
+   "check": "big_en_topic: a story the program reads (5+ scenes, pictures, the language asked)",
+   "pass": true,
+   "detail": "{'s': 609, 'state': 'done', 'result': {'ok': True, 'file': 'story.txt', 'title': 'Why a City Hospital Pays Three Times More for the Same Medicine', 'scenes': 10, 'words': 209, 'lines': 22, 'attempts': 1, 'device': '', 'finished_at': '2026-11-03T21:59:17'}, 'language': 'en', 'scenes': 10, 'visuals': ['title', 'contract', 'compare', 'contract', 'flow', 'bag', 'percent', 'magnifier', 'bars', 'list']}"
+  },
+  {
+   "check": "big_ru_topic: a story the program reads (5+ scenes, pictures, the language asked)",
+   "pass": true,
+   "detail": "{'s': 731, 'state': 'done', 'result': {'ok': True, 'file': 'story.txt', 'title': 'Как управляющая компания зарабатывает на ремонте подъезда, который так и не сделали', 'scenes': 10, 'words': 187, 'lines': 26, 'attempts': 1, 'device': '', 'finished_at': '2026-11-03T22:11:29'}, 'language': 'ru', 'scenes': 10, 'visuals': ['title', 'road', 'contract', '-', 'contract', 'flow', '-', 'road', 'bars', 'list']}"
+  }
+ ],
+ "llama": {
+  "tag": "b11941",
+  "builds": {
+   "vulkan": {
+    "name": "llama-b11941-bin-win-vulkan-x64.zip",
+    "size": 37230602,
+    "sha256": "3383efca87453d1d1e564b91d95db16d5b511ec72fad4983fd99ea8774649fd6"
+   },
+   "cpu": {
+    "name": "llama-b11941-bin-win-cpu-x64.zip",
+    "size": 24306304,
+    "sha256": "67549a639ceca9ac971333b7d5c0a93d080579e1a345b4427deff309c605d864"
+   }
+  }
+ },
+ "model": {
+  "label": "Qwen3-4B",
+  "repo": "ggml-org/Qwen3-4B-Instruct-2507-Q8_0-GGUF",
+  "rev": "e6f794d44f9395d0184a966c27b5ae99ea356fcb",
+  "file": "qwen3-4b-instruct-2507-q8_0.gguf",
+  "size": 4280403520,
+  "sha256": "ae916ede1c010a26955ee8ae2e908bf8815a3f135ec860439ab924701c69d5f1"
+ },
+ "stories": {
+  "en_topic": {
+   "s": 314,
+   "state": "done",
+   "result": {
+    "ok": true,
+    "file": "story.txt",
+    "title": "Why a City Hospital Pays Three Times More for the Same Medicine",
+    "scenes": 10,
+    "words": 192,
+    "lines": 23,
+    "attempts": 1,
+    "device": "",
+    "finished_at": "2026-11-03T21:32:40"
+   },
+   "language": "en",
+   "scenes": 10,
+   "visuals": [
+    "title",
+    "contract",
+    "contract",
+    "compare",
+    "flow",
+    "bag",
+    "percent",
+    "-",
+    "list",
+    "counter"
+   ]
+  },
+  "ro_topic": {
+   "s": 394,
+   "state": "done",
+   "result": {
+    "ok": true,
+    "file": "story.txt",
+    "title": "Cum o firmă de administrare bani câștigă pe o renovare a scării blocului",
+    "scenes": 9,
+    "words": 224,
+    "lines": 22,
+    "attempts": 1,
+    "device": "",
+    "finished_at": "2026-11-03T21:39:16"
+   },
+   "language": "ro",
+   "scenes": 9,
+   "visuals": [
+    "title",
+    "road",
+    "contract",
+    "contract",
+    "flow",
+    "bag",
+    "bars",
+    "list",
+    "-"
+   ]
+  },
+  "ru_adapt": {
+   "s": 336,
+   "state": "done",
+   "result": {
+    "ok": true,
+    "file": "story.txt",
+    "title": "Как город теряет миллионы на простом дорожном контракте",
+    "scenes": 10,
+    "words": 201,
+    "lines": 28,
+    "attempts": 1,
+    "device": "",
+    "finished_at": "2026-11-03T21:44:51"
+   },
+   "language": "ru",
+   "scenes": 10,
+   "visuals": [
+    "title",
+    "road",
+    "contract",
+    "-",
+    "contract",
+    "flow",
+    "road",
+    "road",
+    "bars",
+    "list"
+   ]
+  },
+  "big_en_topic": {
+   "s": 609,
+   "state": "done",
+   "result": {
+    "ok": true,
+    "file": "story.txt",
+    "title": "Why a City Hospital Pays Three Times More for the Same Medicine",
+    "scenes": 10,
+    "words": 209,
+    "lines": 22,
+    "attempts": 1,
+    "device": "",
+    "finished_at": "2026-11-03T21:59:17"
+   },
+   "language": "en",
+   "scenes": 10,
+   "visuals": [
+    "title",
+    "contract",
+    "compare",
+    "contract",
+    "flow",
+    "bag",
+    "percent",
+    "magnifier",
+    "bars",
+    "list"
+   ]
+  },
+  "big_ru_topic": {
+   "s": 731,
+   "state": "done",
+   "result": {
+    "ok": true,
+    "file": "story.txt",
+    "title": "Как управляющая компания зарабатывает на ремонте подъезда, который так и не сделали",
+    "scenes": 10,
+    "words": 187,
+    "lines": 26,
+    "attempts": 1,
+    "device": "",
+    "finished_at": "2026-11-03T22:11:29"
+   },
+   "language": "ru",
+   "scenes": 10,
+   "visuals": [
+    "title",
+    "road",
+    "contract",
+    "-",
+    "contract",
+    "flow",
+    "-",
+    "road",
+    "bars",
+    "list"
+   ]
+  }
+ },
+ "install_s": 78,
+ "manifest": {
+  "version": 1,
+  "llama": "b11941",
+  "llama_zips": {
+   "vulkan": [
+    "llama-b11941-bin-win-vulkan-x64.zip",
+    "3383efca87453d1d1e564b91d95db16d5b511ec72fad4983fd99ea8774649fd6"
+   ],
+   "cpu": [
+    "llama-b11941-bin-win-cpu-x64.zip",
+    "67549a639ceca9ac971333b7d5c0a93d080579e1a345b4427deff309c605d864"
+   ]
+  },
+  "which": "small",
+  "model": [
+   "ggml-org/Qwen3-4B-Instruct-2507-Q8_0-GGUF",
+   "e6f794d44f9395d0184a966c27b5ae99ea356fcb",
+   "qwen3-4b-instruct-2507-q8_0.gguf"
+  ],
+  "model_sha256": "ae916ede1c010a26955ee8ae2e908bf8815a3f135ec860439ab924701c69d5f1",
+  "gpu": "",
+  "speed": 6.029799267982369,
+  "installed_at": "2026-11-03T21:27:27"
+ },
+ "film": {
+  "ok": true,
+  "file": "film.mp4",
+  "seconds": 89.396,
+  "scenes": 10,
+  "lines": 23,
+  "width": 1080,
+  "height": 1920,
+  "voices": false,
+  "saved": "D:\\a\\_temp\\home-writer\\Exports\\Cartoons\\Why a City Hospital Pays Three Times More for the Same Medic.mp4",
+  "checks": [
+   {
+    "check": "video",
+    "pass": true,
+    "detail": "h264"
+   },
+   {
+    "check": "length",
+    "pass": true,
+    "detail": "89.400 s (planned 89.396 s)"
+   },
+   {
+    "check": "sound",
+    "pass": true,
+    "detail": "aac"
+   },
+   {
+    "check": "plays_to_the_end",
+    "pass": true,
+    "detail": "decoded completely"
+   }
+  ],
+  "finished_at": "2026-11-03T21:46:56"
+ },
+ "big_install_s": 132,
+ "big_manifest": {
+  "version": 1,
+  "llama": "b11941",
+  "llama_zips": {
+   "vulkan": [
+    "llama-b11941-bin-win-vulkan-x64.zip",
+    "3383efca87453d1d1e564b91d95db16d5b511ec72fad4983fd99ea8774649fd6"
+   ],
+   "cpu": [
+    "llama-b11941-bin-win-cpu-x64.zip",
+    "67549a639ceca9ac971333b7d5c0a93d080579e1a345b4427deff309c605d864"
+   ]
+  },
+  "which": "big",
+  "model": [
+   "Qwen/Qwen3-14B-GGUF",
+   "530227a7d994db8eca5ab5ced2fb692b614357fd",
+   "Qwen3-14B-Q4_K_M.gguf"
+  ],
+  "model_sha256": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0",
+  "gpu": "",
+  "speed": 2.386236189658052,
+  "installed_at": "2026-11-03T21:49:06"
+ }
+}

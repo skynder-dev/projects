@@ -1,0 +1,9 @@
+PASS the Install button: llama.cpp and the model downloaded, checked, started for a test
+PASS en_topic: a story the program reads (5+ scenes with lines, pictures, the language asked)
+PASS ro_topic: a story the program reads (5+ scenes with lines, pictures, the language asked)
+PASS ru_adapt: a story the program reads (5+ scenes with lines, pictures, the language asked)
+PASS the English story made into a cartoon (a preview without voices), 40-120 s
+PASS the bigger model (Qwen3-14B): downloaded, checked, started for a test; the smaller one deleted
+PASS big_en_topic: a story the program reads (5+ scenes, pictures, the language asked)
+PASS big_ru_topic: a story the program reads (5+ scenes, pictures, the language asked)
+{"passed": 8, "total": 8}

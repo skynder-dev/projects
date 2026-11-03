@@ -1,0 +1,48 @@
+Title: Cum o firmă de administrare bani câștigă pe o renovare a scării blocului
+Format: vertical
+Language: ro
+Narrator: Iana (woman, narrator)
+Mihai (man, administrator)
+Lidia (woman, resident)
+Gheorghe (man, building inspector)
+Ana (woman, property manager)
+
+== Home | title: Cum o firmă de administrare bani câștigă pe o renovare a scării blocului / care nu s-a făcut niciodată
+Iana (wave, happy): Un bloc vechi. O scară ruginitoasă. Renovarea ar trebui să fie simplă, nu?
+Iana (explain, sly): Dar în realitate, o firmă de administrare bani poate câștiga fără să facă nimic.
+
+== Building site | road: repair
+Lidia (point up, surprised) [bubble]: Scara e deteriorată. Nu se poate sta în ea!
+Iana: Oamenii cer renovarea. O firmă de administrare bani primește o cerință oficială.
+
+== Office | tender: TENDER; must have experience in stair renovation; 3 years of work; only one company can apply
+Iana: Se anunță un licitație pentru renovarea scării.
+Mihai (read, sly): Doar o firmă are experiență. Trei ani de lucrări. O singură companie poate aplica.
+Ana (rub hands, happy): Perfect! E clar. Doar cea bună va câștiga.
+
+== Office | contract: CONTRACT; price 180 000 lei; stamp APPROVED; renovation must be completed in 45 days
+Iana: Firma „Scara Sigură” câștigă cu un preț de 180.000 lei.
+Mihai (thumbs up, happy): A fost aprobat! Toți sunt mulțumiți.
+
+== Board | flow: City budget -> Scara Sigură 180 000 lei; Scara Sigură -> No work done; Scara Sigură -> Kickback 30%
+Iana: Bani se duc la „Scara Sigură” – dar nu se face nimic.
+Ana (think, worried): Ce se întâmplă cu scara? Nu a fost văzută nicio lucrare.
+Iana: 30% din valoarea contractului ajunge în buzunarul administratorului.
+
+== Home | bag: "180.000 lei pentru o scară fără renovare"
+Lidia (facepalm, sad) [bubble]: A fost plătită o sumă mare pentru ceva care nu a fost făcut!
+Iana: Firma a câștigat fără să facă niciun lucru.
+
+== Board | bars: Fair price 60 000 lei, paid 180 000 lei
+Iana: Un preț corect ar fi fost 60.000 lei.
+Iana: A fost plătit de 3 ori mai mult – fără lucrare reală.
+
+== City hall | list: Red flags; Only one bidder; No work inspection; Price far above fair market; Kickback 30%
+Ana (point, angry): Cum să înțelegi dacă e o problemă?
+Ana (point up): Doar un candidat, preț ridicat, fără verificare.
+Iana (wave, happy): Spuneți la fiecare licitație: „Cine a scris cerințele?” și „Ce se întâmplă cu lucrarea?”
+
+== Night | visual: empty staircase, no paint, no repair
+Gheorghe (scratches head, worried) [bubble]: Nu s-a făcut nimic. Dar bani sunt în buzunar.
+Iana (explain, calm): O firmă de administrare bani câștigă prin „lucrări” care nu există.
+Iana (final, clear): Verifică dacă lucrarea e făcută. Și întreabă cine a scris cerințele.

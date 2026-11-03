@@ -1,0 +1,51 @@
+Title: Why a City Hospital Pays Three Times More for the Same Medicine
+Format: vertical
+Language: en
+Narrator: Dana (woman, narrator)
+Dr. Helen (woman, hospital director)
+Paul (man, procurement officer)
+Larry (man, supplier)
+Sally (woman, nurse)
+Mark (man, inspector)
+
+== Hospital | title: Why a City Hospital / Pays Three Times More for the Same Medicine
+Dana (wave, neutral): A hospital needs medicine. It should be simple, right?
+Dana (explain, sly): Let's see how it ends up costing three times more.
+
+== Office | tender: TENDER; 5 years of experience; special delivery; 3 days to apply
+Dana: The hospital announces a tender for a new medicine. A fair price is about two hundred thousand dollars per bottle.
+Paul (present, sly): Perfectly normal requirements!
+
+== Shop | compare: Generic drug $200 vs Brand name drug $600
+Sally (worried, sad) [bubble]: Why can’t we use the cheaper one?
+Dana: Paul writes the tender for only one supplier. Five years of experience. A special delivery. And just three days to apply.
+
+== Office | contract: CONTRACT; price $600 000; stamp APPROVED
+Paul (point up, happy): Approved! Our hospital deserves the best!
+Dr. Helen (nod, neutral): We need this medicine. No time to waste.
+
+== Board | flow: Hospital budget -> Larry $600K; Larry -> Medicine $200K; Larry -> Kickback
+Dana: The hospital pays Larry six hundred thousand dollars for one hundred bottles.
+Dana: Larry buys the medicine for two hundred thousand. And the difference goes somewhere else.
+
+== Hospital | bag: $400 000
+Larry (rubs hands, sly) [bubble]: A nice profit. For everyone involved.
+Mark (scratches head, worried): This seems... odd.
+
+== Board | percent: 200% kickback
+Dana: Larry keeps two hundred thousand for himself. And another two hundred goes to Paul and others who helped.
+Dana: That’s a 200% kickback. On the same medicine.
+
+== Hospital | magnifier: invoice
+Mark (show, worried): The invoice says this is brand name. But I checked. It's generic.
+Sally (facepalm, sad): We’re paying three times more for the same thing.
+
+== Board | bars: fair price 200, paid 600; kickback 400
+Dana: One medicine. Paid three times the fair price.
+Dana: And every dollar of it came from patients and insurance.
+
+== City hall | list: Red flags; Only one bidder; Rushed deadlines; Price far above the market
+Mark (explain, angry): How to spot it?
+Mark (point): One bidder and rushed deadlines.
+Mark (point up): And a price far above the market.
+Dana (wave, happy): Follow the money. And ask who wrote the tender.

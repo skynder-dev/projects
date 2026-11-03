@@ -1,0 +1,51 @@
+Title: Why a City Hospital Pays Three Times More for the Same Medicine
+Format: vertical
+Language: en
+Narrator: Dana (woman, narrator)
+Dr. Lee (man, hospital doctor)
+Mara (woman, pharmacy manager)
+Ben Carter (man, drug supplier)
+Faye (woman, hospital accountant)
+
+== Hospital | title: Why a City Hospital Pays Three Times More / for the Same Medicine
+Dana (wave, neutral): A hospital buys medicine. Should cost about $200 per bottle.
+Dana (explain, sly): But sometimes, it costs three times that. Why?
+
+== Office | contract: CONTRACT; price $600; stamp APPROVED; "Only one supplier approved"
+Dr. Lee (point up, worried): The contract says we must buy from one company.
+Mara (rubbing hands, happy): That’s how we get the lowest price, right?
+
+== Shop | tender: TENDER; "Must be delivered in 48 hours"; "Only one brand allowed"; "Must use special vial"
+Dana (explain, sly): The tender says: deliver fast. Only one brand. Special vial.
+Ben Carter (showing paper, sneaky) [bubble]: We have the only special vials.
+
+== Board | compare: Generic medicine $200 vs Special vial medicine $600
+Faye (point, surprised): That’s three times more. And the medicine is exactly the same.
+Dana (think, worried): The same dosage. Same ingredients. Just a different package.
+
+== Office | flow: Hospital budget -> Ben Carter $600; Ben Carter -> Pharmacy $150; Ben Carter -> Mara 30% kickback
+Dana (explain, sly): The hospital pays $600.
+Dana: Ben Carter keeps $150 for the pharmacy. And gives Mara a 30% kickback.
+
+== Home | bag: "Medicine for 200 patients"
+Mara (smiles, happy) [bubble]: We’re all set. The medicine is safe and ready.
+Faye (facepalm, sad): But it costs $600 per bottle. Not $200.
+
+== Board | percent: 30% kickback to Mara
+Dana (point, angry): That’s 30% of the extra cost — going straight to her pocket.
+Mara (shrugs, sly): The hospital pays more. I get a share. It’s fair.
+
+== Timeline | date: March 1st – Tender posted; date: March 5th – Only one bid; date: March 8th – Contract signed
+Dana (timeline, neutral): March 1: tender posted.
+Dana: March 5: only Ben Carter responded.
+Dana: March 8: contract signed. No competition.
+
+== Paper | list: Red flags; Only one supplier; Special delivery rules; Price three times higher
+Faye (point, angry): Watch for these signs.
+Faye (point up): One supplier. No competition. High price.
+
+== Hospital | counter: $200 -> $600 (counting up)
+Dana (showing money, serious): The city hospital pays $600 per bottle.
+Dana (to viewer): That’s three times more than it should be.
+Dana (wave, calm): Always ask: Who wrote the tender? Was there a choice?
+Dana (sly smile): If the price is too high, and only one company wins — something’s wrong.
