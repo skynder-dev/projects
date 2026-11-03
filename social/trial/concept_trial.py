@@ -30,6 +30,10 @@ WANT = ('individual', 'small business', 'nonprofit')
 SKIP = set(Path(_args.skip).read_text(encoding='utf-8').split()) if _args.skip and Path(_args.skip).exists() else set()
 sys.path.insert(0, str(SOCIAL))
 OUT.mkdir(parents=True, exist_ok=True)
+try:
+    sys.stdout.reconfigure(encoding='utf-8')  # Windows console is cp1252; -I ignores PYTHONIOENCODING
+except Exception:  # noqa: BLE001
+    pass
 
 from socialreel import grants, concept_core as core, concept_admission  # noqa: E402
 from socialreel.claims import build_claims  # noqa: E402
