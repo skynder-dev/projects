@@ -308,6 +308,26 @@ def main() -> int:
         srv.shutdown()
     check("web page: a page's picture and text taken by the browser on this PC, shown in the scenes without a visual "
           "(scrolled further in each), the address kept in the story's text", site_ok, detail)
+    # a shirt from Forge's wardrobe: the wearer in a plain T-shirt with the print on the chest (not mirrored), the camera
+    # close to it for a moment while the wearer says the shirt's line; a print that is not there is left out
+    import cv2 as _cv2
+    prn = work / "print.png"
+    pr = np.zeros((540, 450, 4), np.uint8)
+    pr[150:390, 60:390] = (40, 40, 230, 255)              # (a red block on a transparent sheet)
+    _cv2.imwrite(str(prn), pr)
+    sw = copy.deepcopy(SHORT)
+    sw["wardrobe"] = [{"print": str(prn), "wearer": "rick", "line": "And it is approved!", "zoom": True},
+                      {"print": str(work / "nope.png"), "wearer": "kate"}]
+    fw = F.check_script(sw)
+    sw0 = F.timeline(fw)["scenes"][0]
+    l1 = sw0["lines"][1]
+    cvw = Canvas(270, 480, 1080)
+    F.draw_frame(cvw, fw, sw0, l1["s"] + 0.4, {})
+    red = int(((cvw.img[:, :, 2].astype(int) - cvw.img[:, :, 1]) > 120).sum())
+    check("wardrobe: a shirt's print on its wearer (a plain T-shirt), a short zoom on it at the shirt's line, a missing "
+          "print left out", len(fw.get("wardrobe") or []) == 1 and fw["cast"]["rick"]["outfit"] == "tee"
+          and F.shirt_zoom(fw, sw0, l1["s"] + 0.4) == "rick" and F.shirt_zoom(fw, sw0, l1["s"] + F.ZOOM_S + 0.2) is None
+          and red > 2000, (fw.get("wardrobe"), red))
     from archivist.cartoon.voices import spoken
     sp = (spoken("The city pays $4.8M, the crew gets $300K - 30% of it.", "en"),
           spoken("Город платит 480 млн ₽, бригада получает 1,2 млн. Это $300 и 21 млн рублей.", "ru"))

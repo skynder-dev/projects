@@ -98,6 +98,16 @@ def check_script(sc: dict) -> dict:
     out["drawing"] = sc.get("drawing") if isinstance(sc.get("drawing"), str) and sc.get("drawing") in STYLES else "flat"
     out["language"] = str(sc.get("language") or "en")[:5]
     out["pictures"] = sc.get("pictures") is not False         # (pictures drawn once, when there are: art.py)
+    wear = []                                              # (a shirt print on a character, a short zoom on it at a line:
+    for it in (sc.get("wardrobe") if isinstance(sc.get("wardrobe"), list) else [])[:4]:   # Forge's wardrobe.json)
+        if (isinstance(it, dict) and it.get("wearer") in cast and str(it.get("print") or "").lower().endswith(".png")
+                and Path(str(it["print"])).is_file()):
+            wear.append({"print": str(it["print"]), "wearer": it["wearer"], "line": str(it.get("line") or "")[:300],
+                         "zoom": bool(it.get("zoom"))})
+    if wear:
+        out["wardrobe"] = wear
+        for w in wear:                                     # (the wearer in a plain T-shirt: the print on it, not on a vest)
+            cast[w["wearer"]] = dict(cast[w["wearer"]], outfit="tee", hat="none")
     site = sc.get("site") if isinstance(sc.get("site"), dict) else {}
     if re.match(r"(?i)^https?://\S+$", str(site.get("url") or "")):
         out["site"] = {"url": str(site["url"])[:500]}     # (a web page shown in the scenes without a visual: site.py)
@@ -107,6 +117,27 @@ def check_script(sc: dict) -> dict:
         for k, s in enumerate(free):
             s["site_part"] = [k, len(free)]
     return out
+
+
+ZOOM_S = 1.6                   # seconds the camera stays on a shirt
+
+
+def shirt_of(film: dict, key: str) -> str:
+    return next((w["print"] for w in film.get("wardrobe") or [] if w["wearer"] == key), "")
+
+
+def shirt_zoom(film: dict, scene: dict, t: float) -> str | None:
+    """Who the camera is close to the chest of now: the wearer saying the shirt's line (or, without a line, the wearer's
+    first line in the film), for ZOOM_S seconds from its start."""
+    for w in film.get("wardrobe") or []:
+        if not w.get("zoom"):
+            continue
+        want = re.sub(r"\W+", " ", w["line"].lower()).strip()
+        for ln in scene["lines"]:
+            said = re.sub(r"\W+", " ", str(ln.get("text") or "").lower()).strip()
+            if ln["who"] == w["wearer"] and (want and (want in said or said in want)) and ln["s"] <= t < ln["s"] + ZOOM_S:
+                return w["wearer"]
+    return None
 
 
 def site_image(film: dict) -> str:
@@ -515,6 +546,13 @@ def _camera(cv: Canvas, film: dict, scene: dict, t: float, names: list, xs: list
     pics = pictures(film)
     if pics["cast"] or scene["bg"] in pics["bg"]:
         z = 1.0                                            # (pictures: no slow push-in - resized a pixel at a time they shivered)
+    shirt = shirt_zoom(film, scene, t)
+    if shirt and shirt in names and shirt not in pics["cast"]:
+        b = ch._body(film["cast"][shirt])
+        zz = CLOSE["vertical" if cv.SH > cv.SW else "horizontal"] * 1.35
+        x, y = xs[names.index(shirt)], bgs.ground_y(cv) - (b["leg_h"] + b["torso_h"] * 0.52) * sc
+        hw, hh = cv.SW / (2 * zz), cv.SH / (2 * zz)
+        return min(max(x, hw), cv.SW - hw), min(max(y, hh), cv.SH - hh), zz
     who = close_up(film, scene, t)
     if not who or who not in names:
         return cv.SW / 2, cv.SH / 2, z
@@ -613,7 +651,7 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                 else:
                     ch.draw(cv, c, x, gy - hop, sc, turn if walk is None else look, pose, pose2, mix, emo,
                             mouths.get(key, 0.0) if speaker == key else 0.0, blink, t + k, walk, (gzx, gzy), nod=nod, brow=brow,
-                            snap=snap, sit=sit)
+                            snap=snap, sit=sit, shirt=shirt_of(film, key))
                 if speaker == key and ln.get("bubble"):
                     _bubble_for(cv, ln, x, gy - 600 * sc + ch.sit_drop(c) * sc * sit, t)
 

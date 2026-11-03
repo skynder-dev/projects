@@ -139,7 +139,7 @@ def sit_drop(c: dict) -> float:
 def draw(cv: Canvas, c: dict, x: float, y: float, scale: float = 1.0, look: int = 1, pose: str = "idle",
          pose2: str | None = None, mix_t: float = 0.0, emotion: str = "neutral", mouth: float = 0.0, blink: float = 0.0,
          t: float = 0.0, walk: float | None = None, gaze: tuple = (0.0, 0.0), alpha_shadow: float = 0.2,
-         nod: float = 0.0, brow: float = 0.0, snap: bool = False, sit: float | None = None):
+         nod: float = 0.0, brow: float = 0.0, snap: bool = False, sit: float | None = None, shirt: str = ""):
     """A character with its feet at stage (x, y). look: 1 right, -1 left. pose2/mix_t: halfway between two poses
     (snap: a new gesture - it swings a little past and settles). mouth: 0 closed .. 1 wide open, or (opening, the
     sound's shape: SHAPES). t: seconds (breathing, shifting the weight). walk: the step's phase (None: standing).
@@ -182,6 +182,8 @@ def draw(cv: Canvas, c: dict, x: float, y: float, scale: float = 1.0, look: int 
             # the body, the arm away from the look, the arm on its side (in front; in front of the face too: a hand
             # on the face, a phone at the ear)
             _torso(cv, c, b, breath)
+            if shirt:                                      # (a print on the chest: Forge's shirt for this video)
+                _print(cv, shirt, b)
             _arm(cv, c, b, -sh_x, sh_y, p["b"][0] - swing, p["b"][1], back=True, hand=hand_b)
             arm_a = lambda: _arm(cv, c, b, sh_x, sh_y, p["a"][0] + swing, p["a"][1], back=False, hand=hand_a, held=held,
                                  held_k=held_k)
@@ -304,6 +306,8 @@ def _torso(cv: Canvas, c: dict, b: dict, breath: float):
         cv.line([(-10, top + 30), (-12, top + 70)], "#e8e8e8", 3)
         cv.line([(10, top + 30), (12, top + 70)], "#e8e8e8", 3)
         cv.rect(-40, top + 120, 80, 40, shade(cloth, -0.1), INK, 3, 12)
+    elif outfit == "tee":                                  # (a plain T-shirt: a round neckline, room for a print)
+        cv.poly(arc(0, top + 2, 30, 18, 0, 180, 12), shade(cloth, -0.25), INK, 3)
     elif outfit == "sweater":
         cv.poly(arc(0, top + 4, 30, 18, 0, 180, 10), shade(cloth, 0.25), INK, 3)
         for yy in range(int(top + 40), int(bot - 10), 26):
@@ -313,6 +317,47 @@ def _torso(cv: Canvas, c: dict, b: dict, breath: float):
         cv.poly([(24, top + 2), (0, top + 26), (10, top + 40)], shade(cloth, 0.3), INK, 3)
         for yy in (top + 60, top + 95, top + 130):
             cv.circle(0, yy, 4, shade(cloth, -0.35))
+
+
+def _print(cv: Canvas, path: str, b: dict):
+    """A print (a transparent PNG) on the chest, never mirrored (its words read the right way whichever way the
+    character looks); white text on a dark shirt stays as it is."""
+    import numpy as np
+    from pathlib import Path
+    from . import art
+    try:
+        img, a = art._load(Path(path), False)
+    except OSError:
+        return
+    m = cv._m[-1]
+    s = (abs(m[0, 0] * m[1, 1] - m[0, 1] * m[1, 0])) ** 0.5
+    w_px = max(4, int(b["torso_w"] * 0.62 * s))
+    h_px = max(4, int(img.shape[0] * w_px / img.shape[1]))
+    pic, alpha = _rgba(path, w_px, h_px)
+    cx, cy = 0.0, -b["torso_h"] * 0.52
+    x = m[0, 0] * cx + m[0, 1] * cy + m[0, 2] - w_px / 2
+    y = m[1, 0] * cx + m[1, 1] * cy + m[1, 2] - h_px / 2
+    cv.paste(pic, alpha, int(round(x)), int(round(y)))
+
+
+_RGBA: dict = {}
+
+
+def _rgba(path: str, w: int, h: int):
+    """A print with its own transparency, sized (kept: the same size every picture)."""
+    import cv2
+    import numpy as np
+    key = (path, w, h)
+    if key not in _RGBA:
+        raw = cv2.imdecode(np.fromfile(path, np.uint8), cv2.IMREAD_UNCHANGED)
+        if raw.ndim == 2:
+            raw = cv2.cvtColor(raw, cv2.COLOR_GRAY2BGRA)
+        if raw.shape[2] == 3:
+            raw = np.dstack([raw, np.full(raw.shape[:2], 255, np.uint8)])
+        small = cv2.resize(raw, (w, h), interpolation=cv2.INTER_AREA)
+        _RGBA.clear() if len(_RGBA) > 16 else None
+        _RGBA[key] = (small[..., :3], (small[..., 3:4].astype(np.float32) / 255.0))
+    return _RGBA[key]
 
 
 def _arm(cv: Canvas, c: dict, b: dict, sx: float, sy: float, a_up: float, bend: float, back: bool, hand: str = "rest",
