@@ -51,11 +51,17 @@ def candidates(data):
 
 
 def founded(md, today):
-    """The founding month from the AI-readable profile ('Founded: July 2026' / 'Founded July 2026'), and months since then."""
-    mm = re.search(r'Founded\W{0,4}\s*([A-Za-z]{3,9})\s+(\d{4})', md)
-    if not mm or not MONTHS.get(mm.group(1).lower()[:3]):
+    """The founding month from the AI-readable profile ('- Founded date: 2024-07-01', or 'Founded July 2026'), and months since then."""
+    iso = re.search(r'Founded(?: date)?\W{0,4}\s*(\d{4})-(\d{2})-\d{2}', md)   # the AI profile: '- Founded date: 2024-07-01'
+    if iso:
+        y, mo = int(iso.group(1)), int(iso.group(2))
+    else:
+        mm = re.search(r'Founded\W{0,4}\s*([A-Za-z]{3,9})\s+(\d{4})', md)
+        if not mm or not MONTHS.get(mm.group(1).lower()[:3]):
+            return None, None
+        y, mo = int(mm.group(2)), MONTHS[mm.group(1).lower()[:3]]
+    if not 1 <= mo <= 12:
         return None, None
-    y, mo = int(mm.group(2)), MONTHS[mm.group(1).lower()[:3]]
     return '%04d-%02d' % (y, mo), (today.year - y) * 12 + today.month - mo
 
 

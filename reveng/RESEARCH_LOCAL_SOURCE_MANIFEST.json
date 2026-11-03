@@ -20,7 +20,7 @@
       "no external writes or model/live capture"
     ]
   },
-  "application_files": 105,
+  "application_files": 106,
   "buyer_normalization_repair": {
     "publication_status": "not_published",
     "base_source_context_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
@@ -1017,6 +1017,12 @@
       "change": "existing_positive_fixture_exact_synthetic_title_quote"
     },
     {
+      "path": "reveng/ResearchLocal/trustmrr_signals.py",
+      "bytes": 5619,
+      "sha256": "ffee4087a98e6736f21e630ad56d848e740684b9d0abecad60dc08d49f9f6ce0",
+      "change": "new_trustmrr_signals_2026-11-03"
+    },
+    {
       "path": "reveng/ResearchLocal/wordpress_identity.py",
       "bytes": 1473,
       "sha256": "a85fba46e5145f23292d9fb1ef08d40cfec22ffc4304baeb8bb586341d760664",
@@ -1221,6 +1227,12 @@
       "followon_base_commit": "97fc10f422399adcd20177df5129cc7b7d2f71e3",
       "followon_base_sha256": null,
       "change": "new_unpublished_followon_source_or_tests"
+    },
+    {
+      "path": "reveng/tests/test_trustmrr_signals.py",
+      "bytes": 4007,
+      "sha256": "f7b33dfbec6153b0a4e4cbea8172354eeb14656f7fd1e379ea59c89e2804d0f5",
+      "change": "new_trustmrr_signals_offline_contracts_2026-11-03"
     }
   ],
   "followon": {
@@ -1645,5 +1657,6 @@
   "phone_cards": "2026-11-01: phone_cards.py writes RevEng's cards (open contests with stated terms, resale deals) into Forge's phone folder as reveng-cards.json; the Forge phone app (0.4.0) shows them on its RevEng screen (tap the title to switch); decisions come back in decisions.json under rv_* ids; contest_terms.py calls it after each collection",
   "dig_in": "2026-11-01: contests the owner marks 'dig in' on the phone get their rules/FAQ pages read (same host, up to 3, inside the request budget), quoted facts kept per page, only empty main fields filled with the page named; liked leads stay in every run; research_export carries contest-terms.json (signed), contest-terms-view.json, phone-cards.json, phone-decisions.json",
   "card_arbitrage": "2026-11-02 trial of the deal search: card_arbitrage.py takes Scryfall's daily Cardmarket (EUR) and TCGplayer (USD) prices of the same Magic card, converts at the ECB rate, subtracts assumed fees and shipping, keeps up to 8 gaps >= $5 as deals/mtg-*.json for deal_economics and the phone cards; prices are daily market figures, not sales",
-  "business_listings": "2026-11-02 reverse engineering from profit (owner): business_listings.py reads Empire Flippers' public listings API (monthly net profit, revenue, price, hours a week, summary, risks), drops nothing for needing capital or skills, ranks by money per hour and by payback; top 8 become phone cards (kind business); figures are the seller's; 03.11 owner: a business for sale is proof a way of earning works, not an offer to buy it - cards are one per way of earning (count, usual profit, how fast the youngest got there, example), no asking prices"
+  "business_listings": "2026-11-02 reverse engineering from profit (owner): business_listings.py reads Empire Flippers' public listings API (monthly net profit, revenue, price, hours a week, summary, risks), drops nothing for needing capital or skills, ranks by money per hour and by payback; top 8 become phone cards (kind business); figures are the seller's; 03.11 owner: a business for sale is proof a way of earning works, not an offer to buy it - cards are one per way of earning (count, usual profit, how fast the youngest got there, example), no asking prices",
+  "trustmrr_signals": "2026-11-03: trustmrr_signals.py reads TrustMRR's public AI endpoints (llms.txt: /api/ai/discovery, /startup/{slug}.md for the founding month only, at most 12 profiles a run): young projects with verified revenue >= $500 in 30 days; signals for the analysis step, not cards"
 }
