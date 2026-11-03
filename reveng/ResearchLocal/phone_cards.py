@@ -121,6 +121,34 @@ def deal_cards(root):
     return out
 
 
+def business_cards(root):
+    """Businesses that already make money (business-listings.json, sealed): how much, how much work, what it costs, how."""
+    path = root / 'business-listings.json'
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding='utf-8')); claim = data.pop('integrity_sha256', None)
+    if claim != sha(json.dumps(data, sort_keys=True, ensure_ascii=False)):
+        raise ValueError('business listings seal mismatch; no cards written from it')
+    out = []
+    for r in data.get('top', []):
+        usd = lambda v: money({'amount': v, 'currency': 'USD'})
+        ru = ['Чистыми ' + usd(r['monthly_net_profit']) + ' в месяц (со слов продавца)']
+        en = ['Net ' + usd(r['monthly_net_profit']) + ' a month (seller-stated)']
+        if r.get('hours_per_week'):
+            ru.append('Работы ' + str(int(r['hours_per_week'])) + ' ч в неделю, это ~' + usd(r['profit_per_hour']) + ' в час')
+            en.append(str(int(r['hours_per_week'])) + ' h of work a week, ~' + usd(r['profit_per_hour']) + ' an hour')
+        if r.get('price'):
+            ru.append('Продаётся за ' + usd(r['price']) + ', окупится за ~' + str(r['payback_months']) + ' мес')
+            en.append('Asking ' + usd(r['price']) + ', pays back in ~' + str(r['payback_months']) + ' months')
+        if r.get('how'):
+            ru.append('Как: ' + r['how']); en.append('How: ' + r['how'])
+        risk = (r.get('risks') or [''])[0]
+        out.append(finish({'id': card_id('b', r['id']), 'kind': 'reveng', 'prof': 'бизнес', 'prof_en': 'business', 'text': r['title'][:70], 'lines': ru, 'lines_en': en,
+                           'unknown': 'Цифры продавца, RevEng их не проверял.' + (' Риск: ' + risk if risk else ''),
+                           'unknown_en': 'Seller-stated figures, not checked by RevEng.' + (' Risk: ' + risk if risk else ''), 'url': r.get('url')}))
+    return out
+
+
 def phone_dir(given=None):
     if given:
         return Path(given)
@@ -131,7 +159,7 @@ def phone_dir(given=None):
 def write(root, given_dir=None, today=None):
     """Writes the cards into the phone folder when it exists; returns (number of cards, where or why not)."""
     root = Path(root); today = today or date.today().isoformat()
-    cards = contest_cards(root, today) + deal_cards(root)
+    cards = business_cards(root) + deal_cards(root) + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export
