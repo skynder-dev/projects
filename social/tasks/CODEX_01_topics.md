@@ -40,6 +40,12 @@ into `social/late-core-20261028` (not into `main`).
        veterans programs -> veterans, workforce training -> workers). Keep a config table of professions with
        keywords; each topic records `audience_profession`. Here an organization-only applicant list is NOT a reason
        to exclude; pure university research with no clear profession is.
+       Measured 03.11.2026 on live Grants.gov (posted only): exact profession words find few records (firefighter 1,
+       nurse 9, farmer 16, apprenticeship 21, police 22, teacher 36, veteran 46), while multi-word queries like
+       "fire department" (406) or "rural health" (442) are noise because the search matches words separately.
+       So: match professions on exact words/phrases in title, synopsis and eligibility text, not on raw hit counts;
+       also search `forecasted` records and mark `recurring_program` when the title/synopsis says it is an annual
+       or fiscal-year program (for videos made before the next round opens).
    - Discovery from Grants.gov search for each rubric. Use the official search API's eligibility filter and
      several keywords per rubric. Put the Grants.gov applicant-eligibility code table in config, with a comment naming where it came from
      (see the rule about the internet above).
