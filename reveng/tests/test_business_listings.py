@@ -37,12 +37,13 @@ class Tests(unittest.TestCase):
         self.assertIsNone(fba['price']); self.assertEqual(app['how'], 'This business earns from affiliate reviews.')
         saved = json.loads((self.root / 'business-listings.json').read_text(encoding='utf-8')); claim = saved.pop('integrity_sha256')
         self.assertEqual(claim, pc.sha(json.dumps(saved, sort_keys=True, ensure_ascii=False)))
+        ms = {x['model']: x for x in r['models']}
+        self.assertEqual(ms['SaaS']['count'], 1); self.assertEqual(ms['Amazon FBA']['example']['monthly_net_profit'], 30000)
         cards = pc.business_cards(self.root)
-        app = [c for c in cards if c['id'] == 'rv_b_id2'][0]; fba = [c for c in cards if c['id'] == 'rv_b_id5'][0]
-        self.assertEqual(app['text'], 'Программа по подписке · Tools'); self.assertEqual(app['lines'][0], 'Как зарабатывает: программа по подписке')
-        self.assertEqual(app['lines'][1], 'Чистыми 2 000 USD в месяц (со слов продавца)'); self.assertEqual(app['lines'][2], 'Работы 8 ч в неделю, это ~58 USD в час')
-        self.assertIn('окупится за ~25.0 мес', app['lines'][3]); self.assertEqual(fba['text'], 'Товары через склады Amazon · Outdoors')
-        self.assertEqual(fba['lines'][2], 'Работы, по словам продавца, 1 ч в неделю - верить нельзя')
+        self.assertTrue(all(c['id'].startswith('rv_m_') for c in cards)); self.assertFalse(any('Продаётся' in l or 'окупится' in l for c in cards for l in c['lines']))
+        saas = [c for c in cards if c['id'] == 'rv_m_SaaS'][0]
+        self.assertEqual(saas['text'], 'Программа по подписке'); self.assertTrue(saas['lines'][0].startswith('1 прибыльных бизнесов так зарабатывают, обычно 2 000 USD'))
+        self.assertIn('мес после старта', saas['lines'][2])
     def test_robots_and_offline(self):
         self.assertEqual(bl.collect(self.root, {'source_requests': 0}, read=self.read(True))['status'], 'source_unavailable')
         r = bl.collect(self.root, {'source_requests': 0}, offline=True); self.assertEqual(r['status'], 'source_unavailable'); self.assertEqual(r['source_requests'], 0)

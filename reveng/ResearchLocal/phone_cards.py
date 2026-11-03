@@ -136,42 +136,33 @@ def model_of(title):
 
 
 def business_cards(root):
-    """Businesses that already make money (business-listings.json, sealed): how much, how much work, what it costs, how."""
+    """Ways of making money, proven by businesses that already make it (business-listings.json, sealed): one card per way -
+    how many, usual monthly profit, how fast the youngest got there, an example. Not an offer to buy anything."""
     path = root / 'business-listings.json'
     if not path.exists():
         return []
     data = json.loads(path.read_text(encoding='utf-8')); claim = data.pop('integrity_sha256', None)
     if claim != sha(json.dumps(data, sort_keys=True, ensure_ascii=False)):
         raise ValueError('business listings seal mismatch; no cards written from it')
-    out = []; usd = lambda v: money({'amount': v, 'currency': 'USD'})
-    if data.get('models'):
-        top = data['models'][:6]
-        def word(model, lang):
-            ru, en, _ = model_of('Per Month ' + model + ' Business')
-            return (ru if lang == 'ru' else en) if (ru != 'бизнес') else model
-        out.append(finish({'id': 'rv_b_models', 'kind': 'reveng', 'prof': 'как зарабатывают', 'prof_en': 'how they make money',
-                           'text': 'На чём зарабатывают ' + str(data.get('read', 0)) + ' прибыльных бизнесов',
-                           'lines': [word(x['model'], 'ru') + ': ' + str(x['count']) + ' шт, обычно ' + usd(x['median_monthly_profit']) + '/мес' for x in top],
-                           'lines_en': [word(x['model'], 'en') + ': ' + str(x['count']) + ', typically ' + usd(x['median_monthly_profit']) + '/mo' for x in top],
-                           'unknown': 'Это бизнесы, выставленные на продажу; цифры продавцов.', 'unknown_en': 'Businesses listed for sale; seller figures.'}))
-    for r in data.get('top', []):
-        how_ru, how_en, niche = model_of(r['title'])
-        ru = ['Чистыми ' + usd(r['monthly_net_profit']) + ' в месяц (со слов продавца)']
-        en = ['Net ' + usd(r['monthly_net_profit']) + ' a month (seller-stated)']
-        if r.get('profit_per_hour'):
-            ru.append('Работы ' + str(int(r['hours_per_week'])) + ' ч в неделю, это ~' + usd(round(r['profit_per_hour'])) + ' в час')
-            en.append(str(int(r['hours_per_week'])) + ' h of work a week, ~' + usd(round(r['profit_per_hour'])) + ' an hour')
-        elif r.get('hours_per_week') is not None:
-            ru.append('Работы, по словам продавца, ' + str(int(r['hours_per_week'])) + ' ч в неделю - верить нельзя')
-            en.append('Seller says ' + str(int(r['hours_per_week'])) + ' h of work a week - not credible')
-        if r.get('price'):
-            ru.append('Продаётся за ' + usd(r['price']) + ', окупится за ~' + str(r['payback_months']) + ' мес')
-            en.append('Asking ' + usd(r['price']) + ', pays back in ~' + str(r['payback_months']) + ' months')
-        ru.insert(0, 'Как зарабатывает: ' + how_ru); en.insert(0, 'Makes money as: ' + how_en)
-        risk = (r.get('risks') or [''])[0]
-        out.append(finish({'id': card_id('b', r['id']), 'kind': 'reveng', 'prof': 'бизнес', 'prof_en': 'business', 'text': (how_ru[0].upper() + how_ru[1:] + (' · ' + niche if niche else ''))[:70], 'lines': ru, 'lines_en': en,
-                           'unknown': 'Цифры продавца, RevEng их не проверял.',
-                           'unknown_en': 'Seller-stated figures, not checked by RevEng.' + (' Risk: ' + risk if risk else ''), 'url': r.get('url')}))
+    usd = lambda v: money({'amount': round(v), 'currency': 'USD'}); out = []
+    for x in data.get('models', [])[:8]:
+        if x['model'] == 'other':
+            continue
+        ru_name, en_name, _ = model_of('Per Month ' + x['model'] + ' Business')
+        if ru_name == 'бизнес':
+            ru_name = en_name = x['model']
+        ex = x['example']; _, _, niche = model_of(ex['title']); age = ex.get('age_months')
+        ru = [str(x['count']) + ' прибыльных бизнесов так зарабатывают, обычно ' + usd(x['median_monthly_profit']) + ' в месяц чистыми',
+              'Молодых (до 3 лет): ' + str(x['young_count'])]
+        en = [str(x['count']) + ' profitable businesses earn this way, typically ' + usd(x['median_monthly_profit']) + ' a month net', 'Young (under 3 years): ' + str(x['young_count'])]
+        if age is not None:
+            ru.append('Пример: ' + (niche or ex['title'][:40]) + ' - ' + usd(ex['monthly_net_profit']) + '/мес через ' + str(age) + ' мес после старта')
+            en.append('Example: ' + (niche or ex['title'][:40]) + ' - ' + usd(ex['monthly_net_profit']) + '/mo ' + str(age) + ' months after start')
+        if ex.get('work_required'):
+            ru.append('Работа: ' + ', '.join(ex['work_required'][:3])); en.append('Work: ' + ', '.join(ex['work_required'][:3]))
+        out.append(finish({'id': card_id('m', re.sub(r'[^A-Za-z0-9]+', '_', x['model'])), 'kind': 'reveng', 'prof': 'способ заработка', 'prof_en': 'way to earn',
+                           'text': ru_name[0].upper() + ru_name[1:], 'lines': ru, 'lines_en': en,
+                           'unknown': 'Доказано продающимися бизнесами; цифры продавцов.', 'unknown_en': 'Proven by businesses for sale; seller figures.', 'url': ex.get('url')}))
     return out
 
 

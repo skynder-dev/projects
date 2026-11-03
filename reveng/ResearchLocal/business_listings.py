@@ -52,16 +52,35 @@ def row(x):
             'figures_by': 'seller and Empire Flippers; not checked by RevEng'}
 
 
-def models(rows):
-    """The reverse-engineering view: how all read businesses make money, by model in the title: count, median monthly profit."""
-    groups = {}
+def model_name(title):
+    m_ = re.search(r'Per Month (.+?) (?:Business|Site|Brand|Store|Channel|App|Portfolio)\b', title)
+    return m_.group(1).strip() if m_ else 'other'
+
+
+def months_since(ym, today):
+    try:
+        y, mo = int(ym[:4]), int(ym[5:7]); return (today.year - y) * 12 + today.month - mo
+    except (TypeError, ValueError):
+        return None
+
+
+def models(rows, today=None):
+    """The reverse-engineering view (owner: a business for sale is proof a way of earning works, not an offer to buy it):
+    per way of making money - how many businesses, their usual monthly profit, and how fast the youngest got there,
+    with the best young example. Asking prices are left out on purpose."""
+    from datetime import date
+    today = today or date.today(); groups = {}
     for r in rows:
-        m_ = re.search(r'Per Month (.+?) (?:Business|Site|Brand|Store|Channel|App|Portfolio)\b', r['title'])
-        groups.setdefault(m_.group(1).strip() if m_ else 'other', []).append(r['monthly_net_profit'])
+        groups.setdefault(model_name(r['title']), []).append(dict(r, age_months=months_since(r.get('since'), today)))
     out = []
     for k, v in groups.items():
-        v = sorted(v); out.append({'model': k, 'count': len(v), 'median_monthly_profit': v[len(v) // 2]})
-    return sorted(out, key=lambda x: x['count'], reverse=True)
+        profits = sorted(x['monthly_net_profit'] for x in v)
+        young = sorted([x for x in v if x['age_months'] is not None and x['age_months'] <= 36], key=lambda x: x['monthly_net_profit'], reverse=True)
+        ex = young[0] if young else max(v, key=lambda x: x['monthly_net_profit'])
+        out.append({'model': k, 'count': len(v), 'median_monthly_profit': profits[len(profits) // 2], 'young_count': len(young),
+                    'example': {'title': ex['title'], 'monthly_net_profit': ex['monthly_net_profit'], 'age_months': ex['age_months'],
+                                'hours_per_week': ex['hours_per_week'], 'how': ex['how'], 'work_required': ex['work_required'], 'url': ex['url']}})
+    return sorted(out, key=lambda x: (x['young_count'], x['count']), reverse=True)
 
 
 def rank(rows):
