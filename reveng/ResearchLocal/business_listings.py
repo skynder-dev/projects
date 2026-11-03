@@ -18,6 +18,8 @@ SCHEMA = 'reveng-business-listings-v1'
 API = 'https://api.empireflippers.com/api/v1/listings/list?limit=100&page='
 PAGES = 3
 TOP = 8
+# 03.11: paused until the terms allow it - Empire Flippers' developer page asks API users to apply and state the use-case
+ALLOWED = False
 MAX_CARD_PRICE_USD = 1_000_000   # cards: businesses one could raise money for (owner: $100k+ can be found); all rows stay in the data
 MIN_CREDIBLE_HOURS = 5   # '1 hour a week' is a sales line, not a work estimate: no money-per-hour figure below this
 
@@ -104,6 +106,8 @@ def collect(root, stats, offline=False, read=None):
     try:
         if offline:
             raise ValueError('offline: no HTTP; nothing new read')
+        if not ALLOWED:
+            raise ValueError('paused: Empire Flippers asks API users to apply with a use-case (empireflippers.com/developers); no permission yet')
         rp = robotparser.RobotFileParser(); rp.parse(read('https://' + urlsplit(API).netloc + '/robots.txt', stats, 65536).decode('utf-8', 'replace').splitlines())
         rows, total = [], None
         for page in range(1, PAGES + 1):

@@ -10,6 +10,7 @@ def audit(event, a):
     if event.startswith('socket.') or event in {'subprocess.Popen', 'os.system', 'urllib.Request'}: raise PermissionError('No network/process: ' + event)
 sys.addaudithook(audit)
 import business_listings as bl, phone_cards as pc
+bl.ALLOWED = True   # the contracts test the reader itself; the live source stays paused in the app
 
 def L(i, profit, hours, price, title, status='For Sale'):
     return {'id': 'id%d' % i, 'listing_number': 1000 + i, 'public_title': 'SYNTHETIC ' + title, 'listing_status': status, 'average_monthly_net_profit': profit,
@@ -44,6 +45,11 @@ class Tests(unittest.TestCase):
         saas = [c for c in cards if c['id'] == 'rv_m_SaaS'][0]
         self.assertEqual(saas['text'], 'Программа по подписке'); self.assertTrue(saas['lines'][0].startswith('1 прибыльных бизнесов так зарабатывают, обычно 2 000 USD'))
         self.assertIn('мес после старта', saas['lines'][2])
+    def test_paused_source_reads_nothing(self):
+        bl.ALLOWED = False
+        try: r = bl.collect(self.root, {'source_requests': 0}, read=lambda *a: (_ for _ in ()).throw(AssertionError('HTTP while paused')))
+        finally: bl.ALLOWED = True
+        self.assertEqual(r['status'], 'source_unavailable'); self.assertIn('paused', r['error'])
     def test_robots_and_offline(self):
         self.assertEqual(bl.collect(self.root, {'source_requests': 0}, read=self.read(True))['status'], 'source_unavailable')
         r = bl.collect(self.root, {'source_requests': 0}, offline=True); self.assertEqual(r['status'], 'source_unavailable'); self.assertEqual(r['source_requests'], 0)
