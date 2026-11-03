@@ -727,6 +727,11 @@ def prompt(job: dict) -> str:
             f"- Translate everything that is said and every label in the visuals into natural spoken {n} (not word for word).\n"
             + keywords,
             "SCRIPT:\n\n" + str(job.get("source") or "").strip()[:MAX_SOURCE], f"Now write the whole script in {n}."])
+    if job.get("mode") == "text" and job.get("site"):      # (a web page about an opportunity: a short, useful review)
+        return "\n\n".join(["Write a short cartoon script that presents the opportunity described in the TEXT (a web "
+                            "page) to a viewer who could use it. Use only its facts and numbers, in your own words.",
+                            REVIEW_RULES, f"TEXT:\n\"\"\"\n{str(job.get('source') or '').strip()[:MAX_SOURCE]}\n\"\"\"" + where,
+                            _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script about the TEXT."])
     if job.get("mode") == "text":
         return "\n\n".join(["Write a new cartoon script that explains what the TEXT below is about. Use its facts and "
                             "numbers, but tell it in your own words as a story with invented characters; do not copy its "
@@ -734,6 +739,18 @@ def prompt(job: dict) -> str:
                             _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script about the TEXT."])
     return "\n\n".join([f"Write a new cartoon script.\n\nTOPIC: {str(job.get('topic') or '').strip()[:MAX_TOPIC]}" + _topic_note(str(job.get('topic') or ''), lang) + where,
                         _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script about the TOPIC."])
+
+
+REVIEW_RULES = """RULES FOR THIS REVIEW (they come before everything else):
+- Every scene is for the viewer's benefit: who can get it, how much, how to apply, until when. Nothing else.
+- Never discourage. Never say or show that it is hard, complicated, confusing or not worth it. If the TEXT names a
+  difficulty, give it only together with the way through it ("three steps", "one form", "free help at ...").
+- No history: no years it was created, no names of laws or politicians, no "since 1965", unless the viewer needs it to apply.
+- The scenes are one chain: each scene answers the question the scene before it raises. Order: 1) a hook in the first
+  line - the viewer's problem or the money ("College costs too much? Here is up to $X a year you never pay back."),
+  2) what it is in one sentence, 3) who can get it, 4) how much, 5) how to apply, step by step, 6) the deadline and where to
+  start. 6 to 8 scenes.
+- Numbers only as the TEXT gives them; a number you are not sure of is left out, never guessed."""
 
 
 NOTES = ("Below is part {k} of {n} of what is said in a video (heard by a speech recognizer: some words may be wrong). "
