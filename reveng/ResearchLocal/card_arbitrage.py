@@ -113,7 +113,7 @@ def deal_file(d):
         en_check = ['Check across printings: ' + str(same) + ' of ' + str(n) + ' the same way - ' + word[1]]
     return {'schema': 'reveng-resale-deal-v1', 'title': 'MTG: ' + d['name'] + ' (' + d['set'] + ')', 'currency': 'USD', 'source': d['uri'],
             'scryfall_id': d['id'], 'links': d.get('links', {}), 'check': d.get('check'),
-            'origin': 'card_arbitrage trial: Scryfall daily prices, not sales',
+            'origin': 'card_arbitrage trial: Scryfall daily prices, not sales', 'attribution': 'Card data: Scryfall (scryfall.com). Exchange rate - Source: ECB statistics.',
             'lines_ru': ['Купить ' + where[d['buy']][0] + ': ~$' + format(d['buy_usd'], '.2f'), 'Продать ' + where[d['sell']][0] + ': ~$' + format(d['sell_usd'], '.2f'),
                          'Остаётся ~$' + format(d['left'], '.2f') + ' с карты (комиссии ' + str(SELL_FEE_PCT[d['sell']]) + '% и доставка $' + format(SHIPPING_USD, '.0f') + ' - допущения)'] + ru_check,
             'lines_en': ['Buy ' + where[d['buy']][1] + ': ~$' + format(d['buy_usd'], '.2f'), 'Sell ' + where[d['sell']][1] + ': ~$' + format(d['sell_usd'], '.2f'),
@@ -164,7 +164,7 @@ def collect(root, stats, offline=False, read=None, decisions=None):
             page = json.loads(read(url, stats, 4194304).decode('utf-8')); pages.append(page)
             if not page.get('has_more') or not str(page.get('next_page', '')).startswith('https://api.scryfall.com/'):
                 break
-            url = page['next_page']; time.sleep(0.15)   # Scryfall asks for 50-100 ms between requests
+            url = page['next_page']; time.sleep(0.6)   # Scryfall's hard limit for /cards/search is 2 per second (scryfall.com/docs/api/rate-limits)
         cards = rows(pages); deals = gaps(cards, rate, day); keep = liked(decisions)
         # deals the owner marked "dig in" stay even when today's list no longer has them, and get the check across printings
         for name in keep:
@@ -183,7 +183,7 @@ def collect(root, stats, offline=False, read=None, decisions=None):
                 continue
             allowed(SEARCH, stats, read, robots)
             url = SEARCH + quote('!"' + d['name'] + '" -is:digital game:paper')
-            d['check'] = check(d, [json.loads(read(url, stats, 4194304).decode('utf-8'))], rate); time.sleep(0.15)
+            d['check'] = check(d, [json.loads(read(url, stats, 4194304).decode('utf-8'))], rate); time.sleep(0.6)
         for old in folder.glob('mtg-*.json'):
             if old.stem not in keep:
                 old.unlink()

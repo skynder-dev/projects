@@ -450,9 +450,9 @@
     },
     {
       "path": "reveng/ResearchLocal/card_arbitrage.py",
-      "bytes": 13610,
-      "sha256": "0e09977dc298a51ea88647bce3a47ff66c87031af2d8cea01e43d2b8e1560d06",
-      "change": "new_card_arbitrage_trial_2026-11-02+stable_dig_in"
+      "bytes": 13749,
+      "sha256": "2dcd2d2ce7d1abd6c75ca115f49524f0edc5f4cfb378004ac7baece995d24595",
+      "change": "new_card_arbitrage_trial_2026-11-02+stable_dig_in+scryfall_terms"
     },
     {
       "path": "reveng/ResearchLocal/collection_attempts.py",
