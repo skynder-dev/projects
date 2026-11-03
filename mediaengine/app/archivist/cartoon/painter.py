@@ -337,7 +337,8 @@ def _paint(todo: list) -> None:
     try:
         work.mkdir(parents=True, exist_ok=True)
         while left:
-            while vo._CURRENT.get("id") and not _PSTOP.is_set():   # (a voice-over, a story or a cartoon being made:
+            while (vo._CURRENT.get("id") and vo._CURRENT.get("step") != "waiting for pictures"   # (one waiting for us:
+                   and not _PSTOP.is_set()):                                                       # not waited for)   # (a voice-over, a story or a cartoon being made:
                 PAINT.update(what="waiting for the voice-over or cartoon being made")   # the card is theirs first)
                 time.sleep(2)
             req = work / f"paint-{int(time.time())}.json"

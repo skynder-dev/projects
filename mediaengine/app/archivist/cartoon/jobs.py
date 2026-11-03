@@ -50,8 +50,10 @@ def do(jid: str, d: Path, job: dict) -> dict:
     from .. import auto_edit as ae, orders as od
     from . import painter as PT
     import time as _t
+    from .. import voice as _vo
     while PT.PAINT.get("state") == "running":              # (pictures being drawn: the graphics card is theirs first -
-        _t.sleep(2)                                        # a voice or the writer beside them made both crawl)
+        _vo._CURRENT["step"] = "waiting for pictures"      # a voice or the writer beside them made both crawl)
+        _t.sleep(2)
     if job.get("kind") == "cartoon_study":                # a video studied for its rhythm (reference.py)
         from . import reference as R
         return R.do(jid, d, job)

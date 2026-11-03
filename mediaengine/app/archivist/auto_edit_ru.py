@@ -1133,6 +1133,7 @@ PHRASES = {
     "fist": "кулак", "sneaky": "крадётся", "standing": "стоит",
     "Pictures drawn by AI": "Картинки от ИИ",
     "waiting for the voice-over or cartoon being made": "жду, пока закончится озвучка или мультфильм",
+    "waiting for pictures": "жду картинки",
     "Showing a web page needs Microsoft Edge or Google Chrome on this PC.": "Чтобы показать сайт, на ПК нужен Microsoft Edge или Google Chrome.",
     "Give the page's full address (https://…).": "Дай полный адрес страницы (https://…).",
     "This site does not allow programs to read this page (its robots.txt). Open it yourself instead.": "Этот сайт не разрешает программам читать эту страницу (его robots.txt). Открой её сам.",
