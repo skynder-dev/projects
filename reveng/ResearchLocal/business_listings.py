@@ -18,6 +18,7 @@ SCHEMA = 'reveng-business-listings-v1'
 API = 'https://api.empireflippers.com/api/v1/listings/list?limit=100&page='
 PAGES = 3
 TOP = 8
+MIN_CREDIBLE_HOURS = 5   # '1 hour a week' is a sales line, not a work estimate: no money-per-hour figure below this
 
 
 def num(x):
@@ -41,7 +42,7 @@ def row(x):
         return None
     return {'id': str(x.get('id', '')), 'number': x.get('listing_number'), 'title': str(x.get('public_title') or '')[:90], 'status': x.get('listing_status'),
             'monthly_net_profit': profit, 'monthly_revenue': revenue, 'price': price if price and not x.get('unpriced') else None,
-            'hours_per_week': hours, 'profit_per_hour': round(profit / (hours * 52 / 12), 1) if hours else None,
+            'hours_per_week': hours, 'profit_per_hour': round(profit / (hours * 52 / 12), 1) if hours and hours >= MIN_CREDIBLE_HOURS else None,
             'payback_months': round(price / profit, 1) if price and not x.get('unpriced') else None, 'margin_pct': num(x.get('profit_margin')),
             'profit_trend_pct': num(x.get('net_profit_trend_percent')), 'trend_months': x.get('net_profit_trend_percent_months'),
             'since': str(x.get('first_made_money_at') or '')[:7], 'how': sentence(x.get('summary')),
@@ -51,11 +52,12 @@ def row(x):
 
 
 def rank(rows):
-    """No filter by what we can do or afford; two plain orders: money per hour of work, and how fast the price comes back."""
+    """No filter by what we can do or afford; three plain orders taken in turn: money per hour of work, how fast the price comes back, profit."""
     by_hour = sorted([r for r in rows if r['profit_per_hour']], key=lambda r: r['profit_per_hour'], reverse=True)
     by_payback = sorted([r for r in rows if r['payback_months']], key=lambda r: r['payback_months'])
+    by_profit = sorted(rows, key=lambda r: r['monthly_net_profit'], reverse=True)   # sold or unpriced ones still show how money is made
     picked, seen = [], set()
-    for r in [x for pair in zip(by_hour, by_payback) for x in pair] + by_hour + by_payback:
+    for r in [x for trio in zip(by_hour, by_payback, by_profit) for x in trio] + by_hour + by_payback + by_profit:
         if r['id'] not in seen:
             seen.add(r['id']); picked.append(r)
         if len(picked) >= TOP:

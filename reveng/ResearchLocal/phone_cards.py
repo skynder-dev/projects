@@ -121,6 +121,20 @@ def deal_cards(root):
     return out
 
 
+MODELS = [  # how a listed business makes money, read from its title, in plain words
+    (r'\bKDP\b|Kindle', 'книги на Amazon Kindle', 'Amazon Kindle books'), (r'\bFBA\b', 'товары через склады Amazon', 'goods via Amazon warehouses (FBA)'),
+    (r'Amazon Associates|Affiliate', 'сайт на партнёрских ссылках', 'affiliate site'), (r'Display Advertising|AdSense', 'сайт на рекламе', 'ad-supported site'),
+    (r'eCommerce|Shopify|DTC|Dropship', 'интернет-магазин', 'online store'), (r'\bSaaS\b|Software', 'программа по подписке', 'software subscription'),
+    (r'YouTube', 'YouTube-канал', 'YouTube channel'), (r'Newsletter', 'рассылка', 'newsletter'), (r'Lead Gen', 'продажа заявок клиентам', 'lead generation'),
+    (r'Info Product|Course|Digital Product', 'цифровые товары и курсы', 'digital products and courses'), (r'App\b', 'приложение', 'app'), (r'Service', 'услуги', 'services')]
+
+
+def model_of(title):
+    ru = [m[1] for m in MODELS if re.search(m[0], title, re.I)]; en = [m[2] for m in MODELS if re.search(m[0], title, re.I)]
+    niche = re.search(r'in the (.+?) Niche', title)
+    return (', '.join(dict.fromkeys(ru)) or 'бизнес', ', '.join(dict.fromkeys(en)) or 'business', niche.group(1) if niche else '')
+
+
 def business_cards(root):
     """Businesses that already make money (business-listings.json, sealed): how much, how much work, what it costs, how."""
     path = root / 'business-listings.json'
@@ -132,19 +146,22 @@ def business_cards(root):
     out = []
     for r in data.get('top', []):
         usd = lambda v: money({'amount': v, 'currency': 'USD'})
+        how_ru, how_en, niche = model_of(r['title'])
         ru = ['Чистыми ' + usd(r['monthly_net_profit']) + ' в месяц (со слов продавца)']
         en = ['Net ' + usd(r['monthly_net_profit']) + ' a month (seller-stated)']
-        if r.get('hours_per_week'):
-            ru.append('Работы ' + str(int(r['hours_per_week'])) + ' ч в неделю, это ~' + usd(r['profit_per_hour']) + ' в час')
-            en.append(str(int(r['hours_per_week'])) + ' h of work a week, ~' + usd(r['profit_per_hour']) + ' an hour')
+        if r.get('profit_per_hour'):
+            ru.append('Работы ' + str(int(r['hours_per_week'])) + ' ч в неделю, это ~' + usd(round(r['profit_per_hour'])) + ' в час')
+            en.append(str(int(r['hours_per_week'])) + ' h of work a week, ~' + usd(round(r['profit_per_hour'])) + ' an hour')
+        elif r.get('hours_per_week') is not None:
+            ru.append('Работы, по словам продавца, ' + str(int(r['hours_per_week'])) + ' ч в неделю - верить нельзя')
+            en.append('Seller says ' + str(int(r['hours_per_week'])) + ' h of work a week - not credible')
         if r.get('price'):
             ru.append('Продаётся за ' + usd(r['price']) + ', окупится за ~' + str(r['payback_months']) + ' мес')
             en.append('Asking ' + usd(r['price']) + ', pays back in ~' + str(r['payback_months']) + ' months')
-        if r.get('how'):
-            ru.append('Как: ' + r['how']); en.append('How: ' + r['how'])
+        ru.insert(0, 'Как зарабатывает: ' + how_ru); en.insert(0, 'Makes money as: ' + how_en)
         risk = (r.get('risks') or [''])[0]
-        out.append(finish({'id': card_id('b', r['id']), 'kind': 'reveng', 'prof': 'бизнес', 'prof_en': 'business', 'text': r['title'][:70], 'lines': ru, 'lines_en': en,
-                           'unknown': 'Цифры продавца, RevEng их не проверял.' + (' Риск: ' + risk if risk else ''),
+        out.append(finish({'id': card_id('b', r['id']), 'kind': 'reveng', 'prof': 'бизнес', 'prof_en': 'business', 'text': (how_ru[0].upper() + how_ru[1:] + (' · ' + niche if niche else ''))[:70], 'lines': ru, 'lines_en': en,
+                           'unknown': 'Цифры продавца, RevEng их не проверял.',
                            'unknown_en': 'Seller-stated figures, not checked by RevEng.' + (' Risk: ' + risk if risk else ''), 'url': r.get('url')}))
     return out
 

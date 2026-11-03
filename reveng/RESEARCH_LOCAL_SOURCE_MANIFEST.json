@@ -410,9 +410,9 @@
     },
     {
       "path": "reveng/ResearchLocal/business_listings.py",
-      "bytes": 5863,
-      "sha256": "367508e458556d28e95ab4f2f98cc101a80c80b880dbd823d6a7b612a5464bee",
-      "change": "new_business_listings_2026-11-02"
+      "bytes": 6192,
+      "sha256": "023c0b5f13867a024bfde01ddf06eff85b80026120076ee594769d221f60f90d",
+      "change": "new_business_listings_2026-11-02+plain_models"
     },
     {
       "path": "reveng/ResearchLocal/buyer_evidence.py",
@@ -757,9 +757,9 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 12218,
-      "sha256": "b4255b8719b4f2470f6d50ca8c9f2bc3d15e4a4a678658db5c9f9521baa4f01f",
-      "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines+skip_empty_clean_titles+contests_10k+business_cards"
+      "bytes": 14017,
+      "sha256": "c5fc73aad00a09ca6b2a0714f71debcd7b29f785d1715007dccd447b9d419752",
+      "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines+skip_empty_clean_titles+contests_10k+business_cards+plain_models"
     },
     {
       "path": "reveng/ResearchLocal/plan_mapping.py",
@@ -1091,9 +1091,9 @@
     },
     {
       "path": "reveng/tests/test_business_listings.py",
-      "bytes": 4496,
-      "sha256": "c8312f8abdde85d8656c90293f7d387697f5410b5623077a005ad8789adca549",
-      "change": "new_business_listings_offline_contracts_2026-11-02"
+      "bytes": 5123,
+      "sha256": "4a2b8efba5c2d5820581b1ea97c0ab5ff4531f7240c5e4618adc98edea6e78d9",
+      "change": "new_business_listings_offline_contracts_2026-11-02+plain_models"
     },
     {
       "path": "reveng/tests/test_capability_portable.py",
