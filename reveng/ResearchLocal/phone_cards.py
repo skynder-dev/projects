@@ -14,6 +14,7 @@ from pathlib import Path
 
 SCHEMA = 'reveng-phone-cards-v1'
 MIN_CONTEST_PRIZE_USD = 10000
+BUDGET_USD = 100000   # owner 03.11: at most $100 000 to start one idea; a deal needing more capital is not a card
 # the card front keeps only what decides: a missing deadline or prize is said, the rest of the unknown stays on the PC
 KEY_UNKNOWN = {'deadline': ('срок подачи', 'deadline'), 'prize': ('приз', 'prize')}
 KIND_RU = {'deadline': 'срок', 'prize': 'приз', 'fee': 'взнос', 'length': 'длина', 'tools': 'инструмент', 'eligibility': 'кто может',
@@ -96,6 +97,8 @@ def deal_cards(root):
     for f in sorted(folder.glob('*.json')):
         deal = json.loads(f.read_text(encoding='utf-8'))
         r = de.compute(deal)
+        if r.get('capital_needed') and r['capital_needed'] > BUDGET_USD:
+            continue
         c = r.get('currency') or ''
         if r['status'] == 'not_computable':
             lines = ['Посчитать нельзя: не хватает ' + ', '.join(r['missing_required'] or ['верных цифр'])]
@@ -176,7 +179,8 @@ def phone_dir(given=None):
 def write(root, given_dir=None, today=None):
     """Writes the cards into the phone folder when it exists; returns (number of cards, where or why not)."""
     root = Path(root); today = today or date.today().isoformat()
-    cards = business_cards(root) + deal_cards(root) + contest_cards(root, today)
+    # businesses for sale are not ideas to start (owner 03.11: mature, costly to run, survivors only); kept as data, not cards
+    cards = deal_cards(root) + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export

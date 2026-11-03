@@ -53,6 +53,10 @@ class Tests(unittest.TestCase):
         payload = json.dumps({'records': [r]}, sort_keys=True)
         (self.root / 'contest-terms-view.json').write_text(json.dumps({'schema': 'contest-terms-view-v1', 'payload_sha256': pc.sha(payload), 'payload_json': payload}), encoding='utf-8')
         self.assertEqual(pc.contest_cards(self.root, '2026-11-02'), [])
+    def test_budget_limits_deals(self):
+        (self.root / 'deals' / 'big.json').write_text(json.dumps({'schema': de.SCHEMA, 'title': 'SYNTHETIC big', 'currency': 'USD', 'figures': {
+            'buy_price': {'value': 60000, 'status': 'owner_stated'}, 'sell_price': {'value': 90000, 'status': 'owner_stated'}, 'quantity': {'value': 2, 'status': 'owner_stated'}}}), encoding='utf-8')
+        self.assertNotIn('rv_d_big', [c['id'] for c in pc.deal_cards(self.root)])
     def test_decisions_only_reveng(self):
         (self.phone / 'decisions.json').write_text(json.dumps({'rv_c_open': {'verdict': 'like'}, 'v4_tee': {'verdict': 'nope'}}), encoding='utf-8')
         self.assertEqual(pc.decisions(self.phone), {'rv_c_open': 'like'})
