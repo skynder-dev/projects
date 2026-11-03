@@ -1,6 +1,6 @@
 name: reveng-money
-# A live run of RevEng's "who already makes money" source (reveng/ResearchLocal/business_listings.py) on GitHub's
-# machine: Empire Flippers' public listings API, the app's own bounded transport, no model. Started by hand. The top
+# A live run of RevEng's "who already makes money" source (reveng/ResearchLocal/trustmrr_signals.py) on GitHub's
+# machine: TrustMRR's public AI endpoints, the app's own bounded transport, no model. Started by hand. The top
 # businesses are printed as notices; the result is kept as the run's artifact for 14 days.
 on:
   workflow_dispatch:
@@ -20,9 +20,9 @@ jobs:
       - name: Collect
         run: |
           mkdir -p "$RUNNER_TEMP/research"
-          cd reveng/ResearchLocal && python -B business_listings.py --root "$RUNNER_TEMP/research" | head -10 | while IFS= read -r l; do echo "::notice::$l"; done
+          cd reveng/ResearchLocal && python -B trustmrr_signals.py --root "$RUNNER_TEMP/research" | head -10 | while IFS= read -r l; do echo "::notice::$l"; done
       - uses: actions/upload-artifact@v4
         with:
-          name: business-listings
-          path: ${{ runner.temp }}/research/business-listings.json
+          name: trustmrr-signals
+          path: ${{ runner.temp }}/research/trustmrr-signals.json
           retention-days: 14
