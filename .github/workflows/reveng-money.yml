@@ -1,0 +1,28 @@
+name: reveng-money
+# A live run of RevEng's "who already makes money" source (reveng/ResearchLocal/business_listings.py) on GitHub's
+# machine: Empire Flippers' public listings API, the app's own bounded transport, no model. Started by hand. The top
+# businesses are printed as notices; the result is kept as the run's artifact for 14 days.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Collect
+        run: |
+          mkdir -p "$RUNNER_TEMP/research"
+          cd reveng/ResearchLocal && python -B business_listings.py --root "$RUNNER_TEMP/research" | head -10 | while IFS= read -r l; do echo "::notice::$l"; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: business-listings
+          path: ${{ runner.temp }}/research/business-listings.json
+          retention-days: 14
