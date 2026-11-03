@@ -892,7 +892,8 @@ def render(script: dict, out: Path, work: Path, voices: dict | None = None, capt
             raise FilmError(str(exc))
     W, H = FORMATS[film["format"]]
     if captions is not None and H > W and pictures(film)["cast"] and (captions.get("position") or "middle") == "middle":
-        captions = dict(captions, position="top")          # (picture characters are tall: the middle band is their chest)
+        captions = dict(captions, position="bottom")       # (picture characters are tall: the middle band is their face,
+                                                           # the top one the scene's picture - over their legs is least in the way)
     film["caption_at"] = (((captions or {}).get("position") or ("middle" if H > W else "bottom")) if captions is not None
                           else "")                         # (close-ups keep the faces out of the captions)
     tl = timeline(film, voices)
