@@ -143,9 +143,18 @@ def business_cards(root):
     data = json.loads(path.read_text(encoding='utf-8')); claim = data.pop('integrity_sha256', None)
     if claim != sha(json.dumps(data, sort_keys=True, ensure_ascii=False)):
         raise ValueError('business listings seal mismatch; no cards written from it')
-    out = []
+    out = []; usd = lambda v: money({'amount': v, 'currency': 'USD'})
+    if data.get('models'):
+        top = data['models'][:6]
+        def word(model, lang):
+            ru, en, _ = model_of('Per Month ' + model + ' Business')
+            return (ru if lang == 'ru' else en) if (ru != 'бизнес') else model
+        out.append(finish({'id': 'rv_b_models', 'kind': 'reveng', 'prof': 'как зарабатывают', 'prof_en': 'how they make money',
+                           'text': 'На чём зарабатывают ' + str(data.get('read', 0)) + ' прибыльных бизнесов',
+                           'lines': [word(x['model'], 'ru') + ': ' + str(x['count']) + ' шт, обычно ' + usd(x['median_monthly_profit']) + '/мес' for x in top],
+                           'lines_en': [word(x['model'], 'en') + ': ' + str(x['count']) + ', typically ' + usd(x['median_monthly_profit']) + '/mo' for x in top],
+                           'unknown': 'Это бизнесы, выставленные на продажу; цифры продавцов.', 'unknown_en': 'Businesses listed for sale; seller figures.'}))
     for r in data.get('top', []):
-        usd = lambda v: money({'amount': v, 'currency': 'USD'})
         how_ru, how_en, niche = model_of(r['title'])
         ru = ['Чистыми ' + usd(r['monthly_net_profit']) + ' в месяц (со слов продавца)']
         en = ['Net ' + usd(r['monthly_net_profit']) + ' a month (seller-stated)']

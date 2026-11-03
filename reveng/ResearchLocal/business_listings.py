@@ -18,6 +18,7 @@ SCHEMA = 'reveng-business-listings-v1'
 API = 'https://api.empireflippers.com/api/v1/listings/list?limit=100&page='
 PAGES = 3
 TOP = 8
+MAX_CARD_PRICE_USD = 1_000_000   # cards: businesses one could raise money for (owner: $100k+ can be found); all rows stay in the data
 MIN_CREDIBLE_HOURS = 5   # '1 hour a week' is a sales line, not a work estimate: no money-per-hour figure below this
 
 
@@ -51,8 +52,22 @@ def row(x):
             'figures_by': 'seller and Empire Flippers; not checked by RevEng'}
 
 
+def models(rows):
+    """The reverse-engineering view: how all read businesses make money, by model in the title: count, median monthly profit."""
+    groups = {}
+    for r in rows:
+        m_ = re.search(r'Per Month (.+?) (?:Business|Site|Brand|Store|Channel|App|Portfolio)\b', r['title'])
+        groups.setdefault(m_.group(1).strip() if m_ else 'other', []).append(r['monthly_net_profit'])
+    out = []
+    for k, v in groups.items():
+        v = sorted(v); out.append({'model': k, 'count': len(v), 'median_monthly_profit': v[len(v) // 2]})
+    return sorted(out, key=lambda x: x['count'], reverse=True)
+
+
 def rank(rows):
     """No filter by what we can do or afford; three plain orders taken in turn: money per hour of work, how fast the price comes back, profit."""
+    rows = [r for r in rows if not r['price'] or r['price'] <= MAX_CARD_PRICE_USD]
+    rows = [r for r in rows if r['price'] or r['monthly_net_profit'] <= MAX_CARD_PRICE_USD / 30]   # unpriced: same scale by profit
     by_hour = sorted([r for r in rows if r['profit_per_hour']], key=lambda r: r['profit_per_hour'], reverse=True)
     by_payback = sorted([r for r in rows if r['payback_months']], key=lambda r: r['payback_months'])
     by_profit = sorted(rows, key=lambda r: r['monthly_net_profit'], reverse=True)   # sold or unpriced ones still show how money is made
@@ -80,7 +95,7 @@ def collect(root, stats, offline=False, read=None):
             rows += [r for r in (row(x) for x in data.get('listings') or []) if r]
             if str(data.get('page')) == str(data.get('pages')):
                 break
-        result.update(status='read', listings_total=total, read=len(rows), top=rank(rows),
+        result.update(status='read', listings_total=total, read=len(rows), top=rank(rows), models=models(rows),
                       for_sale=sum(1 for r in rows if str(r['status']).lower().startswith('for sale')))
     except Exception as ex:
         result.update(status='source_unavailable', error=m.error_text(ex, 200), top=[])
