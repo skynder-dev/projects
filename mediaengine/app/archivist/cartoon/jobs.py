@@ -48,6 +48,10 @@ def new_make(script: dict, voices: bool = True, captions: dict | None = None, ti
 def do(jid: str, d: Path, job: dict) -> dict:
     """voice._do for the cartoon jobs (in the queue's thread)."""
     from .. import auto_edit as ae, orders as od
+    from . import painter as PT
+    import time as _t
+    while PT.PAINT.get("state") == "running":              # (pictures being drawn: the graphics card is theirs first -
+        _t.sleep(2)                                        # a voice or the writer beside them made both crawl)
     if job.get("kind") == "cartoon_study":                # a video studied for its rhythm (reference.py)
         from . import reference as R
         return R.do(jid, d, job)

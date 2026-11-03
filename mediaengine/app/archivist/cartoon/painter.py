@@ -337,6 +337,9 @@ def _paint(todo: list) -> None:
     try:
         work.mkdir(parents=True, exist_ok=True)
         while left:
+            while vo._CURRENT.get("id") and not _PSTOP.is_set():   # (a voice-over, a story or a cartoon being made:
+                PAINT.update(what="waiting for the voice-over or cartoon being made")   # the card is theirs first)
+                time.sleep(2)
             req = work / f"paint-{int(time.time())}.json"
             req.write_text(json.dumps({"model": str(MODEL), "pictures": left, "standin": standin(), "site": str(SITE)}), "utf-8")
             env = dict(os.environ, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", HF_HUB_DISABLE_TELEMETRY="1")
