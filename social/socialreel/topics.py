@@ -347,7 +347,10 @@ def _fixture_records(path: Path, out: Path) -> tuple[list[dict], dict]:
 
 
 def run(cfg: dict, out: Path, *, fixture: Path | None = None, as_of: str | None = None,
-        config_dir: Path | None = None) -> dict:
+        config_dir: Path | None = None, sources: list[str] | None = None) -> dict:
+    if sources is not None and set(sources) != {"grants"}:
+        from .source_intake import discover_topics
+        return discover_topics(cfg, out, sources, fixture=fixture, as_of=as_of, config_dir=config_dir)
     rules = configuration(cfg)
     if as_of is None:
         today = utc_now().date()
@@ -437,7 +440,7 @@ def top_opportunity_id(path: Path) -> str:
     """Read only a ranked, non-excluded topic; never silently fall back to search."""
     data = read_json(path)
     if not isinstance(data, dict) or data.get("schema") != SCHEMA:
-        raise PipelineError("Unsupported topics.json schema")
+        raise PipelineError("Unsupported topics.json schema; use source --topics for typed multi-source output")
     rows = data.get("topics")
     if not isinstance(rows, list) or not rows or not isinstance(rows[0], dict):
         raise PipelineError("topics.json has no ranked topic")

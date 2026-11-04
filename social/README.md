@@ -55,3 +55,23 @@ are recorded without guessing the next opening date.
 Rules, keywords, the detail-request limit (10), timing window and provisional
 eligibility-code table live in `topics_config.json`. See [Topic discovery](docs/TOPICS.md)
 for configuration, the seen file, output format and `concept_trial.py --topics`.
+
+## USA.gov and student aid sources
+
+The `source` command feeds USA.gov pages, Federal Student Aid pages or College
+Scorecard data into the same record → claims → concept-core inputs path. Conditions
+remain whole, raw HTML/JSON has SHA-256 receipts, and no model is called.
+
+Entirely offline examples, from `social/`:
+
+```sh
+python -m socialreel source --source usagov --page energy --fixture fixtures/usagov_energy_synthetic.html --out runs/source-energy
+python -m socialreel topics --sources usagov,studentaid,scorecard --fixture fixtures/public_sources_synthetic.json --out runs/public-topics --as-of 2026-11-04
+python -m socialreel source --topics runs/public-topics/topics.json --topic-id studentaid:pell --out runs/source-student-aid
+```
+
+These fixtures are synthetic, not live program evidence. New sources are enabled
+explicitly with `--sources`; the Grants.gov default and ranking rules remain in
+place. Live Scorecard requires `COLLEGE_SCORECARD_API_KEY` in the environment.
+See [More sources](docs/MORE_SOURCES.md) for live commands, the catalog, request
+preparation, supported formats and the existing core's admission limits.
