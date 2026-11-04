@@ -581,8 +581,8 @@ def _mouth(cv, emotion, mouth, hw, hh, cy, skin, lips=None):
         cv.rect(-ow * 0.36, my - 7, ow * 0.72, 7, "#ffffff", None, 0, 2)
         return
     if shape in ("O", "U") and o >= 0.08:                # round lips: "o" open, "u" small and pushed out
-        rx = w * (0.3 if shape == "O" else 0.2)
-        ry = (9 + 15 * o) if shape == "O" else (8 + 6 * o)
+        rx = w * (0.26 if shape == "O" else 0.19)
+        ry = (7 + 10 * o) if shape == "O" else (7 + 5 * o)
         cv.ellipse(0, my + ry * 0.35, rx, ry, "#6b2430", line_c, 4.5 if lips else 4)
         if shape == "O" and o > 0.3:
             cv.ellipse(0, my + ry * 0.95, rx * 0.55, ry * 0.3, "#e2737c")
@@ -604,12 +604,12 @@ def _mouth(cv, emotion, mouth, hw, hh, cy, skin, lips=None):
                     lips or INK, 5.5 if lips else 4.5)
         return
     ow = w * (0.7 + 0.3 * (1 - o)) * (1.15 if emotion in ("happy", "laugh") else 0.8 if emotion == "scared" else 1.0)
-    oh = 6 + 30 * o
+    oh = 5 + 20 * o                                        # (a talking mouth opens a little: wide flapping looked cheap)
     pts = bezier((-ow / 2, my - curve * 0.25), (-ow / 3, my - oh * 0.25), (ow / 3, my - oh * 0.25), (ow / 2, my - curve * 0.25), 8) + \
         bezier((ow / 2, my - curve * 0.25), (ow / 3, my + oh), (-ow / 3, my + oh), (-ow / 2, my - curve * 0.25), 12)[1:]
-    cv.poly(pts, "#6b2430", lips or INK, 4.5 if lips else 4)
-    if o > 0.35:
-        cv.ellipse(0, my + oh * 0.62, ow * 0.26, oh * 0.22, "#e2737c")
+    cv.poly(pts, "#7a3440", lips or INK, 3.5 if lips else 3)
+    if o > 0.45:
+        cv.ellipse(0, my + oh * 0.6, ow * 0.24, oh * 0.2, "#d9707a")
     if emotion in ("happy", "laugh") or o > 0.5:
         cv.rect(-ow * 0.32, my - oh * 0.2, ow * 0.64, max(4, oh * 0.22), "#ffffff", None, 0, 3)
 
@@ -664,7 +664,7 @@ def visemes(env: list, fps: int = 30) -> list:
     for k, v in enumerate(env):
         target = max(0.0, min(1.0, v))
         if target > 0.08:
-            target *= 0.75 + 0.25 * math.sin(k * 1.7)          # (talking mouths move, they do not hold a shape)
-        cur = target if target > cur else lerp(cur, target, 0.55)
+            target *= 0.8 * (0.8 + 0.2 * math.sin(k * 1.7))     # (talking mouths move a little; never fully open)
+        cur = lerp(cur, target, 0.6) if target > cur else lerp(cur, target, 0.45)   # (eased both ways: no snapping)
         out.append(cur)
     return out

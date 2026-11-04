@@ -46,7 +46,18 @@ def _safe(key: str) -> str:
     return re.sub(r"[^a-z0-9_]", "", str(key).lower())[:40] or "voice"
 
 
-def _voice_for(c: dict, key: str, lang: str = "en") -> tuple[dict, str]:
+def describe_voice(c: dict) -> str:
+    """A voice that fits a character: a woman's or a man's, younger or older by the role, warm and natural."""
+    role = str(c.get("role") or "").lower()
+    who = "woman" if c.get("female") else "man"
+    age = ("in her twenties" if c.get("female") else "in his twenties") if re.search(r"student|young|girl|boy|студент|молод", role) \
+        else ("in her fifties" if c.get("female") else "in his fifties") if re.search(r"director|mayor|boss|official|senior|grand|дир|мэр|нач", role) \
+        else ("in her thirties" if c.get("female") else "in his thirties")
+    return (f"A {who} {age}, a warm, friendly, natural conversational voice, relaxed and kind, not loud, not commanding, "
+            f"speaking at a normal pace.")
+
+
+def _voice_for(c: dict, key: str, lang: str = "en", narrator: bool = False) -> tuple[dict, str]:
     """The voice of a character for the worker, and a description to keep it by ("" for the program's own voice)."""
     v = c.get("voice") or {}
     if v.get("kind") != "describe" and lang not in vo.QWEN_LANGS:
@@ -54,6 +65,11 @@ def _voice_for(c: dict, key: str, lang: str = "en") -> tuple[dict, str]:
         # English recording garbled it (voice add-on check, run 40616952980); a voice from a description said it
         who = "woman" if c.get("female") else "man"
         v = {"kind": "describe", "text": f"A clear, warm {who}'s narrator voice, calm and friendly, speaking naturally."}
+    if not v and (c.get("female") or not narrator):
+        # (no voice of its own: the program's own voice is a man's, a narrator's - a woman, or a second man, spoke with
+        # it too: "an aunt with a commanding man's voice". A voice from a description fitting the person instead,
+        # kept by its name, so the same person sounds the same in every film)
+        v = {"kind": "describe", "text": describe_voice(c)}
     if v.get("kind") == "describe" and str(v.get("text") or "").strip():
         desc = re.sub(r"[()\r\n]+", " ", str(v["text"])).strip()[:400]
         kept = _kept(key, desc)
@@ -197,7 +213,7 @@ def make(film: dict, work: Path, progress=None, stop=None) -> dict:
     for key, items in groups.items():
         if stop is not None and stop():
             raise FilmError("Stopped.")
-        v, desc = _voice_for(film["cast"][key], key, lang)
+        v, desc = _voice_for(film["cast"][key], key, lang, narrator=key == film.get("narrator"))
         engine = ("qwen" if v.get("ref_wav") and lang in vo.QWEN_LANGS and vo.qwen_installed() else "voxcpm")
         d = work / f"voice_{_safe(key)}"
         shutil.rmtree(d, ignore_errors=True)
