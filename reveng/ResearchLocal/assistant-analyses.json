@@ -24,7 +24,39 @@
    "unknown": "Разбор ассистента. Неизвестно главное: сколько фирм из ста купят. Риски: 40% фирм без сайта не хотят его; много конкурентов; холодные звонки и SMS в США ограничены законом.",
    "unknown_en": "Assistant analysis. Key unknown: how many firms out of 100 buy. Risks: 40% of firms without a site do not want one; many competitors; cold calls and texts are restricted by US law.",
    "signal": "TrustMRR: Prospo (tool for this service) $4,801 in 30 days at 3 months, 1 person; seller-side signal is weak (no active subscriptions, for sale at $10,000)",
-   "sources": ["https://trustmrr.com/startup/prospo", "https://resources.review42.com/what-percentage-of-small-businesses-have-a-website/", "https://www.godaddy.com/resources/skills/website-maintenance-cost", "https://aibrify.com/blog/website-cost-small-business", "https://moneyzine.com/resources/small-business-website-statistics"]
+   "sources": [
+    "https://trustmrr.com/startup/prospo",
+    "https://resources.review42.com/what-percentage-of-small-businesses-have-a-website/",
+    "https://www.godaddy.com/resources/skills/website-maintenance-cost",
+    "https://aibrify.com/blog/website-cost-small-business",
+    "https://moneyzine.com/resources/small-business-website-statistics"
+   ]
+  },
+  {
+   "id": "rv_a_mac_utility",
+   "made": "2026-11-04",
+   "title": "Платная программа для Mac за разовые $19",
+   "title_en": "A paid Mac app for a one-time $19",
+   "lines": [
+    "Пример: почтовая программа bytemail - $24 019 за 30 дней, проекту 2 месяца, один человек (проверено через Stripe)",
+    "Как зарабатывает: разовая покупка $19, сервера нет (почта не идёт через их сервер) - содержать почти нечего",
+    "Старт: Mac и программист (или ИИ-помощник для кода); взнос разработчика Apple - если продавать через App Store",
+    "Через сколько деньги: у примера - первые недели после запуска",
+    "Тест: найти частую жалобу Mac-пользователей на встроенную программу и сделать простую замену"
+   ],
+   "lines_en": [
+    "Example: bytemail mail app - $24,019 in 30 days, 2 months old, one person (verified via Stripe)",
+    "Money: one-time $19, no server (mail never touches theirs) - almost nothing to run",
+    "Start: a Mac and a developer (or an AI coding assistant); Apple developer fee if sold via the App Store",
+    "Time to money: for the example - the first weeks after launch",
+    "Test: find a common Mac user complaint about a built-in app and ship a simple replacement"
+   ],
+   "unknown": "Разбор ассистента. Неизвестно: откуда пришли покупатели (каналы на странице не указаны) и не разовый ли это всплеск после запуска - выручка разовая, подписок всего 91. Нужен навык разработки под Mac.",
+   "unknown_en": "Assistant analysis. Unknown: where buyers came from (no channels listed) and whether it is a one-off launch spike - revenue is one-time, only 91 subscriptions. Needs Mac development skill.",
+   "signal": "TrustMRR bytemail: founded September 2026, all-time $24,257, 30 days $24,019, MRR $346, one-time $19, 1 person, Swift",
+   "sources": [
+    "https://trustmrr.com/startup/bytemail"
+   ]
   }
  ]
 }
