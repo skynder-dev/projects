@@ -35,6 +35,7 @@ def main(argv=None):
     origin.add_argument("--topics", type=Path, help="replay a typed topics.json bundle offline")
     s.add_argument("--topic-id", help="topic_id from --topics; default is the first ranked topic")
     s.add_argument("--page", help="configured page name or approved official URL")
+    s.add_argument("--program", help="USA.gov program name or 1-based index; default: whole page, otherwise first complete program that fits")
     s.add_argument("--college-id", help="College Scorecard school ID")
     s.add_argument("--fixture", type=Path, help="offline HTML/JSON bytes for a single source")
     s.add_argument("--out", required=True, type=Path)
@@ -57,6 +58,8 @@ def main(argv=None):
     if a.cmd == "source":
         from .source_intake import acquire, replay_topic, write_bundle
         try:
+            if a.program is not None and a.source and a.source != "usagov":
+                raise PipelineError("--program is supported only for USA.gov")
             if a.topics:
                 if a.fixture:
                     raise PipelineError("--topics replays its own snapshots; do not combine with --fixture")
@@ -65,7 +68,7 @@ def main(argv=None):
                 if a.topic_id:
                     raise PipelineError("--topic-id requires --topics")
                 record, claims, _ = acquire(a.source, a.out, page=a.page, school_id=a.college_id, fixture=a.fixture)
-            result = write_bundle(record, claims, a.out, read_json(a.config), prepare_request=a.prepare_request)
+            result = write_bundle(record, claims, a.out, read_json(a.config), prepare_request=a.prepare_request, program=a.program)
         except (PipelineError, OSError, ValueError) as error:
             print(f"SOURCE FAILED: {error}", file=sys.stderr)
             return 2

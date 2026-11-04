@@ -1,0 +1,6 @@
+{
+  "note": "SYNTHETIC OFFLINE TEST: invented energy program units, not live benefit rules",
+  "sources": [
+    {"source_type": "usagov", "page": "energy", "fixture": "usagov_energy_programs_synthetic.html"}
+  ]
+}

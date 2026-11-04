@@ -82,3 +82,10 @@ quotes and snapshot locators. The page catalog includes `energy`, `unclaimed`,
 before fetching. Ended programs stay in the archive with `expired: true` and are
 excluded from concept inputs. [USA.gov facts](docs/USAGOV_FACTS.md) explains the
 complete-fact selection rule and the saved selected/dropped keys.
+
+For pages with several programs, `source --program liheap` (or a 1-based index)
+selects a complete program with its own conditions and the page-wide notes.
+Without it, a page that fits stays whole; otherwise the first complete program
+that fits is chosen and reported. Topics can include `usagov:energy:liheap`,
+`usagov:energy:wap` and `usagov:energy:disconnected` from one snapshot.
+See [Energy programs](docs/ENERGY_PROGRAMS.md) for offline commands and limits.

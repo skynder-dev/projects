@@ -166,10 +166,10 @@ class USAGovHTML(MainHTML):
         # Each row/option inherits complete prose in its heading ancestry. Global
         # conditions remain mandatory later even when an unrelated option is dropped.
         for unit in units:
-            names = [h["text"] for h in unit["heading_path"]]
+            paths = [h["path"] for h in unit["heading_path"]]
             unit["required_context_keys"] = [other["key"] for other in units if other is not unit
                 and other["kind"] == "section" and other["heading_path"]
-                and [h["text"] for h in other["heading_path"]] == names[:len(other["heading_path"])]]
+                and [h["path"] for h in other["heading_path"]] == paths[:len(other["heading_path"])]]
         return self.text(title).strip(), title.path, units
 
 
@@ -216,7 +216,7 @@ def build_claims(record):
     return rows
 
 
-def select_for_core(record, claims, cfg):
+def _select_units(record, claims, cfg, *, allowed_keys=None, required_keys=None, program_info=None):
     """Choose complete units + mandatory conditions, with a recorded, bounded ledger."""
     from . import concept_core as core, concept_admission as admission
     cap = (cfg.get("usagov_facts") or {}).get("max_claims", 16)
@@ -229,9 +229,10 @@ def select_for_core(record, claims, cfg):
         before = len(expired)
         expired.update(c["key"] for c in claims if set(c["values"].get("required_context_keys", [])).intersection(expired))
         changed = len(expired) != before
-    active = [c for c in claims if c["key"] not in expired]
-    mandatory = {c["key"] for c in active if c["kind"] == "page" or
-                 c["kind"] == "section" and (CONDITIONS.search(c["quote"]) or CONDITIONS.search(str(c["values"].get("heading") or "")))}
+    active = [c for c in claims if c["key"] not in expired and (allowed_keys is None or c["key"] in allowed_keys)]
+    mandatory = ({c["key"] for c in active if c["kind"] == "page" or
+                  c["kind"] == "section" and (CONDITIONS.search(c["quote"]) or CONDITIONS.search(str(c["values"].get("heading") or "")))}
+                 if required_keys is None else set(required_keys) - expired)
 
     def dependencies(keys):
         result = set(keys)
@@ -244,7 +245,9 @@ def select_for_core(record, claims, cfg):
     mandatory = dependencies(mandatory)
     report = {"rule": "Whole units only: page/conditions mandatory, then table rows, application/search sections, list items, remaining sections; dependencies mandatory for each choice",
               "max_claims": cap, "context_cap_bytes": core.SOURCE_CONTEXT_BYTES,
-              "non_system_wire_cap_bytes": min(18000, admission.BASE_BYTES - 14000),
+              # Reserve the same 14 KB for system text and request metadata;
+              # the actual unchanged admission still checks the complete body.
+              "non_system_wire_cap_bytes": admission.BASE_BYTES - 14000 if program_info else min(18000, admission.BASE_BYTES - 14000),
               "selected_keys": [], "dropped_keys": [], "dropped": [], "expired_keys": sorted(expired)}
 
     def projection(keys):
@@ -260,6 +263,10 @@ def select_for_core(record, claims, cfg):
         rec["fields"]["description"] = "html.main.selected_complete_facts"
         rec["extraction"] = "Selected complete HTML text_content units; full original record and claims retained separately"
         rec["fact_projection"] = {"selected_keys": [c["key"] for c in rows], "rule": report["rule"]}
+        if program_info is not None and rows:
+            rec["selected_program"] = copy.deepcopy(program_info)
+            rec["topic_id"] = record["topic_id"] + ":" + program_info["name"]
+            rec["fact_projection"]["program"] = program_info["name"]
         for c in rows:
             c.pop("source_context", None)
         if rows:
@@ -270,7 +277,7 @@ def select_for_core(record, claims, cfg):
         return rec, rows
 
     def fits(keys):
-        if not keys or len(keys) > cap:
+        if not keys or len(keys) > cap or keys.intersection(expired) or (allowed_keys is not None and not keys <= allowed_keys):
             return False
         rec, rows = projection(keys)
         if len(rec["description"].encode("utf-8")) > core.SOURCE_CONTEXT_BYTES:
@@ -320,3 +327,8 @@ def select_for_core(record, claims, cfg):
     report["dropped_keys"] = [row["key"] for row in report["dropped"]]
     rec, rows = projection(selected)
     return rec, rows, report
+
+
+def select_for_core(record, claims, cfg, *, program=None):
+    from .usagov_programs import select_program
+    return select_program(record, claims, cfg, program=program)
