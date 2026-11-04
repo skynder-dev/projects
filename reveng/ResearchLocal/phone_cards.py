@@ -212,6 +212,35 @@ def signal_cards(root, analysed=()):
     return out
 
 
+def hn_cards(root):
+    """People on Hacker News who say how much they earn and on what (hn-income.json, sealed). Shown only with a plain
+    Russian sentence the assistant wrote from the comment (signal-summaries.json, key = comment id); the figure is what
+    the person says, marked as not verified."""
+    path = root / 'hn-income.json'
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding='utf-8')); claim = data.pop('integrity_sha256', None)
+    if claim != sha(json.dumps(data, sort_keys=True, ensure_ascii=False)):
+        raise ValueError('hn income seal mismatch; no cards written from it')
+    try:
+        plain = json.loads((root / 'signal-summaries.json').read_text(encoding='utf-8')).get('summaries', {})
+    except (OSError, ValueError):
+        plain = {}
+    out = []
+    for r in data.get('people', []):
+        s = plain.get(r['id']) or {}
+        if not (s.get('ru') and s.get('en')):
+            continue
+        usd = money({'amount': r['monthly_usd'], 'currency': 'USD'}); d = r.get('date') or ''
+        when = d[8:10] + '.' + d[5:7] + '.' + d[:4] if len(d) == 10 else '?'
+        out.append(finish({'id': card_id('h', r['id']), 'kind': 'reveng', 'prof': 'рассказ', 'prof_en': 'story', 'text': str(s.get('title') or s['ru'])[:70],
+                           'lines': [str(s['ru'])[:220], 'Говорит, что получает ' + usd + ' в месяц (со слов автора, не проверено)', 'Написал ' + when + ' на Hacker News'],
+                           'lines_en': [str(s['en'])[:220], 'Says it brings ' + usd + ' a month (self-reported, not verified)', 'Posted ' + d + ' on Hacker News'],
+                           'unknown': 'Пересказ ассистента. Не разобрано, сколько стоит начать и что может убить. Вправо - разберу.',
+                           'unknown_en': 'Retold by the assistant. Not analysed: cost to start, what kills it. Swipe right and it gets analysed.', 'url': r.get('url')}))
+    return out
+
+
 def assistant_cards(root):
     """Analyses the assistant wrote in chat from sources it read (assistant-analyses.json): marked as such on the card,
     never as RevEng's own automatic result."""
@@ -248,7 +277,7 @@ def write(root, given_dir=None, today=None):
             analysed.update(re.findall(r'trustmrr\.com/startup/([a-z0-9-]+)', ' '.join(a.get('sources', []))))
     except (OSError, ValueError):
         pass
-    cards = mine + signal_cards(root, analysed) + contest_cards(root, today)
+    cards = mine + signal_cards(root, analysed) + hn_cards(root) + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export

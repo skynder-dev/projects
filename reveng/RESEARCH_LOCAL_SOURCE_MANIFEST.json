@@ -661,8 +661,8 @@
     },
     {
       "path": "reveng/ResearchLocal/hn_income.py",
-      "bytes": 6218,
-      "sha256": "daf0a7137e41d33275ba7119a553d683e417676ec9794e004b4b2c6d09df4948",
+      "bytes": 6456,
+      "sha256": "f9166215b8d86cd90a3091dca06cdb3f92d908ba50ee9aa7cf3b668cc5323199",
       "change": "new_hn_income_2026-11-04"
     },
     {
@@ -769,8 +769,8 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 19396,
-      "sha256": "8176c09106cdf4e7c3da5d228bf8c757b896353336fbbb7398d1907c801096e7",
+      "bytes": 21501,
+      "sha256": "fa0b9987815b992eaaf32432eb22014df7cca68c7ba57bc8586319bc55818eee",
       "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines+skip_empty_clean_titles+contests_10k+business_cards+plain_models+models_cap+ways_not_buy+budget_100k+assistant_cards+signal_cards"
     },
     {
@@ -957,8 +957,8 @@
     },
     {
       "path": "reveng/ResearchLocal/signal-summaries.json",
-      "bytes": 3773,
-      "sha256": "a51bea973baccc5246c4434d328734694fba3f1caa1f5c2afee01997d9d3313c"
+      "bytes": 7841,
+      "sha256": "9df9ef7e200fdbb5bdc4e27c6ab38a99271922a238e34325b7c7dbef70cfea53"
     },
     {
       "path": "reveng/ResearchLocal/social_idea_preview.py",
@@ -1161,8 +1161,8 @@
     },
     {
       "path": "reveng/tests/test_hn_income.py",
-      "bytes": 2812,
-      "sha256": "5d1e384b69bc818ae2de2e380a754fee5299fe1a518ef0369eca8a35ad019d1a",
+      "bytes": 2819,
+      "sha256": "7c22b673a792643131ba3c055749b9efb547b7660fb8f8fb739358f7a14c8834",
       "change": "new_hn_income_offline_contracts_2026-11-04"
     },
     {
@@ -1203,8 +1203,8 @@
     },
     {
       "path": "reveng/tests/test_phone_cards.py",
-      "bytes": 9507,
-      "sha256": "6b1483eaf88eb8f6d4eea170d625c7c72857d77a3ebf424e77bc68826ee921ec",
+      "bytes": 10798,
+      "sha256": "4735ee7c92825dc1e4ec50e6ca75227cffc712f4cf50186552683fc0d0c8ebec",
       "change": "new_phone_cards_offline_contracts_2026-11-01+bilingual_short_unknown+skip_empty_clean_titles+order+budget_100k+assistant_cards+signal_cards"
     },
     {

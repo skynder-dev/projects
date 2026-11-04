@@ -37,6 +37,51 @@
   "heyron": {
    "ru": "Подписка за $49 в месяц: ИИ-помощник ведёт дела человека, который работает один, плюс сообщество, где учат запускать приложения",
    "en": "$49/month subscription: an AI agent that runs a one-person business, plus a community that teaches launching apps"
+  },
+  "hn35568449": {
+   "title": "Программа для фирм по борьбе с вредителями",
+   "ru": "Программа для фирм, которые травят тараканов и грызунов: заказы, клиенты, учёт; фирмы платят ежемесячно. Запущена во время пандемии",
+   "en": "Software for pest control companies: jobs, customers, records; companies pay monthly. Started during the pandemic"
+  },
+  "hn35568678": {
+   "title": "Программы на заказ для малых фирм",
+   "ru": "Делает маленьким фирмам программы под заказ: сбор данных с сайтов, отчёты; берёт помесячную плату. По его словам, несколько часов работы в неделю",
+   "en": "Builds small custom systems for small businesses (data collection, reports) for a monthly fee; a few hours of work a week, he says"
+  },
+  "hn35569095": {
+   "title": "Проверка файлов на вирусы для других сайтов",
+   "ru": "Сервис, которым другие сайты проверяют загружаемые файлы на вирусы и опасное содержимое; платят за количество проверок. Рекламу не покупал",
+   "en": "A service other sites use to check uploaded files for malware and unsafe content; paid by usage. No money spent on marketing"
+  },
+  "hn35570182": {
+   "title": "Готовые данные для чужих программ",
+   "ru": "Продаёт доступ к готовым данным (например, проверка госномеров и документов в Мексике) для чужих программ. Рост: $200, $900, $2 000 в месяц по годам",
+   "en": "Sells access to ready data (e.g. Mexican ID checks) for other people's software. Grew $200, $900, $2,000 a month year by year"
+  },
+  "hn35573937": {
+   "title": "Программа для продавцов домов на колёсах",
+   "ru": "Программа учёта клиентов и сделок для магазинов, продающих дома на колёсах; около $4 000 в месяц, расходы $400",
+   "en": "Customer and deal software for manufactured-home dealers; about $4,000 a month, costs $400"
+  },
+  "hn35572542": {
+   "title": "Приложение: плейлист по описанию",
+   "ru": "Приложение для iPhone: пишешь «музыка для работы» - оно собирает плейлист. Первые $2 000 за две недели после запуска",
+   "en": "iPhone app that builds a playlist from a prompt. First $2,000 within two weeks of launch"
+  },
+  "hn35568523": {
+   "title": "ИИ пишет тексты для магазинов Shopify",
+   "ru": "Дополнение для магазинов на Shopify: ИИ пишет описания товаров; магазины платят подписку",
+   "en": "Add-on for Shopify stores: AI writes product copy; stores pay a subscription"
+  },
+  "hn35569894": {
+   "title": "Пресеты для фотографов",
+   "ru": "Сервис для фотографов: по готовой фотографии восстанавливает настройки обработки и продаёт их как пресет. До $2 000 в месяц за 1-2 месяца",
+   "en": "Service for photographers: recovers the editing settings from a photo and sells them as a preset. Reached $2,000 a month in 1-2 months"
+  },
+  "hn35573491": {
+   "title": "Технические книги",
+   "ru": "Пишет и продаёт технические книги для программистов; пара книг приносит около $2 000 в месяц",
+   "en": "Writes and sells technical books for programmers; a couple of books bring about $2,000 a month"
   }
  }
 }

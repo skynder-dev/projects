@@ -82,6 +82,17 @@ class Tests(unittest.TestCase):
         self.assertIn('возраст не указан', cards[1]['lines'][1]); cards = cards[:1]
         self.assertEqual(cards[0]['lines'], ['SYNTHETIC суть alpha', 'Заработал 4 801 USD за 30 дней, проекту 3 мес (выручка проверена TrustMRR)', 'Цена: $19 once', 'Откуда клиенты: Reddit', 'Команда: 1 person'])
         self.assertEqual(cards[0]['lines_en'][0], 'SYNTHETIC gist alpha'); self.assertIn('пересказ ассистента', cards[0]['unknown'])
+    def test_hn_cards(self):
+        data = {'people': [{'id': 'hn1', 'monthly_usd': 4000, 'text': 'SYNTHETIC', 'date': '2023-04-14', 'url': 'https://news.ycombinator.com/item?id=1'},
+                           {'id': 'hn2', 'monthly_usd': 9000, 'text': 'SYNTHETIC no summary', 'date': '2023-04-14'}]}
+        (self.root / 'hn-income.json').write_text(json.dumps(dict(data, integrity_sha256=pc.sha(json.dumps(data, sort_keys=True, ensure_ascii=False)))), encoding='utf-8')
+        (self.root / 'signal-summaries.json').write_text(json.dumps({'summaries': {'hn1': {'title': 'SYNTHETIC t', 'ru': 'SYNTHETIC суть', 'en': 'SYNTHETIC gist'}}}), encoding='utf-8')
+        cards = pc.hn_cards(self.root)
+        self.assertEqual([c['id'] for c in cards], ['rv_h_hn1']); self.assertEqual(cards[0]['text'], 'SYNTHETIC t')
+        self.assertEqual(cards[0]['lines'], ['SYNTHETIC суть', 'Говорит, что получает 4 000 USD в месяц (со слов автора, не проверено)', 'Написал 14.04.2023 на Hacker News'])
+        data['people'][0]['monthly_usd'] = 1   # tampered
+        (self.root / 'hn-income.json').write_text(json.dumps(dict(data, integrity_sha256='x')), encoding='utf-8')
+        with self.assertRaises(ValueError): pc.hn_cards(self.root)
     def test_decisions_only_reveng(self):
         (self.phone / 'decisions.json').write_text(json.dumps({'rv_c_open': {'verdict': 'like'}, 'v4_tee': {'verdict': 'nope'}}), encoding='utf-8')
         self.assertEqual(pc.decisions(self.phone), {'rv_c_open': 'like'})

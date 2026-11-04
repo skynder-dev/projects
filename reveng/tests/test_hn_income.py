@@ -26,7 +26,7 @@ class Tests(unittest.TestCase):
         def read(url, stats, cap=0):
             stats['source_requests'] += 1
             if url.endswith('robots.txt'): raise ValueError('HTTP Error 404: Not Found')
-            if '/search?' in url: return json.dumps({'hits': [{'objectID': '7', 'title': 'Ask HN: SYNTHETIC', 'num_comments': 100}]}).encode()
+            if '/search?' in url: return json.dumps({'hits': [{'objectID': '7', 'title': 'Ask HN: SYNTHETIC income', 'num_comments': 100}]}).encode()
             return json.dumps(tree).encode()
         hn.time.sleep = lambda s: None
         r = hn.collect(self.root, {'source_requests': 0}, read=read, now=datetime(2026, 11, 4, tzinfo=timezone.utc))

@@ -22,6 +22,7 @@ MIN_COMMENTS = 80
 MAX_THREADS = 8
 MIN_MONTHLY_USD, MAX_MONTHLY_USD = 1000, 300000
 MAX_AGE_YEARS = 4
+MONEY_TITLE = re.compile(r'income|revenue|money|profit|MRR|\$|earn|side project|business', re.I)
 
 AMOUNT = r'\$\s?(\d{1,3}(?:[,.]\d{3})+|\d+(?:\.\d+)?)\s?(k|K)?'
 PERIOD = r'(?:/\s?(?:mo|month|m)\b|\s?(?:per|a|each|every)\s+month\b|\s?MRR\b|\s?monthly\b|\s?/mth\b)'
@@ -78,6 +79,8 @@ def collect(root, stats, offline=False, read=None, now=None):
             if not rp.can_fetch(m.UA, url):
                 raise ValueError('robots.txt denied')
             for h in json.loads(read(url, stats, 1048576).decode('utf-8')).get('hits', []):
+                if not MONEY_TITLE.search(h.get('title') or ''):
+                    continue   # off-topic threads that only matched a word
                 threads.setdefault(int(h['objectID']), {'id': int(h['objectID']), 'title': h.get('title') or '', 'comments': h.get('num_comments') or 0})
             time.sleep(1)
         picked = sorted(threads.values(), key=lambda t: -t['comments'])[:MAX_THREADS]; rows = []
