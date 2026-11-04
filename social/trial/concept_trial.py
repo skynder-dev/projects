@@ -61,10 +61,17 @@ def done(state):
 today = dt.date.today()
 client = grants.GrantsGovClient(OUT / 'source')
 rec = snap = None
+TOPIC_AUDIENCE = None
 try:
     if _args.topics:
         from socialreel.topics import top_opportunity_id
         selected_id = top_opportunity_id(_args.topics)
+        try:
+            _top = next(t for t in json.loads(Path(_args.topics).read_text(encoding='utf-8'))['topics']
+                        if str(t.get('opportunity_id')) == str(selected_id))
+            TOPIC_AUDIENCE = {'rubric': _top.get('rubric'), 'profession': _top.get('audience_profession')}
+        except Exception:  # noqa: BLE001
+            TOPIC_AUDIENCE = None
         det, meta = client.detail(selected_id)
         rec, snap = grants.normalize({'id': selected_id}, det, detail_snapshot=meta), meta
         raise StopIteration
@@ -95,6 +102,7 @@ except Exception as e:  # noqa: BLE001
 if rec is None:
     summary.append('source: no current opportunity found')
     done('source_failed')
+report['stages']['topic_audience'] = TOPIC_AUDIENCE
 report['stages']['source'] = {'opportunity_id': rec.get('opportunity_id'), 'title': rec.get('title'),
                               'agency': rec.get('agency_name'), 'close_date': str(rec.get('close_date')),
                               'applicant_types': rec.get('applicant_types'), 'keyword': _args.keyword,
@@ -116,10 +124,17 @@ cfg = {'writer': 'ollama', 'local_editorial': {'enabled': True, 'execution_autho
        'ollama': {'model': 'qwen3.5:9b'},
        'concept_first': {'enabled': True, 'result_contract': core.RESULT_V2,
                          'brief': {'hook_language': 'en'},
-                         'topic_direction': (f'Current date: {today.isoformat()}. Viewer: people in the US who work in, volunteer for or run the kind of '
-                                             'organization this program funds, or the professionals and residents it serves. '
-                                             'What they can concretely learn, check or bring to their organization about this '
-                                             'real federal funding opportunity, keeping every condition and exclusion'),
+                         'topic_direction': (f'Current date: {today.isoformat()}. ' + (
+                             (f"Viewer: {TOPIC_AUDIENCE['profession']} in the US, the people this program is meant to "
+                              'help or employ, even though the applicant is an organization (an agency, a department, '
+                              'a nonprofit). Speak to the viewer, not to the applicant: what exists for people like them, '
+                              'what it can pay for, and what they can do (for example ask their local office or employer). '
+                              'Never say the viewer can apply when only organizations can. ')
+                             if TOPIC_AUDIENCE and TOPIC_AUDIENCE.get('profession') else
+                             'Viewer: people in the US who work in, volunteer for or run the kind of '
+                             'organization this program funds, or the professionals and residents it serves. ') +
+                             'What they can concretely learn, check or bring to their organization about this '
+                             'real federal funding opportunity, keeping every condition and exclusion'),
                          'unknowns': ['Whether any particular viewer or organization is eligible',
                                       'Whether any applicant will actually receive funding',
                                       'Whether the opportunity changed after the snapshot date',
