@@ -129,7 +129,8 @@ def node(cv: Canvas, x, y, label: str, icon: str = "", color=BLUE, appear=1.0, w
             ICONS.get(icon, _icon_none)(cv, 0, -h / 2 + 2, 0.62)
         size = 38 if cv.text_width(label, 38, "black") <= w - 28 else 30    # (two lines: smaller, kept inside the box)
         top = -h / 2 + (52 if icon else 0)                 # (centred in the room the icon leaves)
-        cv.text(label, 0, (top + h / 2) / 2, size, "#ffffff", "black", outline=INK, stroke=3, width=w - 24)
+        cv.text(label, 0, (top + h / 2) / 2, size, "#ffffff", "black", outline=INK, stroke=3, width=w - 24,
+                height=h / 2 - top - 10)
         if sub:
             cv.text(sub, 0, h / 2 + 36, 28, INK, "extrabold", width=w + 60)
 

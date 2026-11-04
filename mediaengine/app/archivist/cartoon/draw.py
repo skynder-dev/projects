@@ -411,8 +411,10 @@ class Canvas:
         self.blend("#000000", alpha, arc(x, y, rx, ry, 0, 360, 36))
 
     def text(self, text: str, x: float, y: float, size: float, color="#ffffff", font: str = "extrabold",
-             outline: str | None = None, stroke: float = 0, width: float = 0, anchor: str = "mm", alpha: float = 1.0):
-        """Text at a stage point (anchor: l/m/r + t/m/b), size and wrap width in stage units (no turning)."""
+             outline: str | None = None, stroke: float = 0, width: float = 0, anchor: str = "mm", alpha: float = 1.0,
+             height: float = 0):
+        """Text at a stage point (anchor: l/m/r + t/m/b), size and wrap width in stage units (no turning). It never
+        leaves its box: smaller until every line fits the width (a long word too) and the lines fit the height."""
         m = self._m[-1]
         sc = self._scale()
         px = int(round(size * sc))
@@ -421,8 +423,12 @@ class Canvas:
         if self.style == "board":                          # (marker: black, or a colour that stands out)
             _h, s, v = _hsv(str(color))
             color, outline, stroke = ("#222222" if s < 0.4 or v < 0.5 else color), None, 0
-        rgb, a = _text_image(str(text), px, str(color), font, str(outline or ""), int(round(stroke * sc)), int(width * sc))
-        h, w = rgb.shape[:2]
+        for _ in range(10):
+            rgb, a = _text_image(str(text), px, str(color), font, str(outline or ""), int(round(stroke * sc)), int(width * sc))
+            h, w = rgb.shape[:2]
+            if ((not width or w <= width * sc + 4) and (not height or h <= height * sc + 4)) or px <= 8:
+                break
+            px = max(8, int(px * 0.9))
         cx, cy = m[0, 0] * x + m[0, 1] * y + m[0, 2], m[1, 0] * x + m[1, 1] * y + m[1, 2]
         x0 = int(round(cx - (w / 2 if anchor[0] == "m" else (w if anchor[0] == "r" else 0))))
         y0 = int(round(cy - (h / 2 if anchor[1] == "m" else (h if anchor[1] == "b" else 0))))

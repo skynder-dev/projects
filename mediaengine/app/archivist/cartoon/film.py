@@ -375,7 +375,7 @@ def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: di
         if kind == "title":
             a = back(_appear(scene, None, t, 0.8))
             with cv.at(0, -120, 0, max(0.01, a)):
-                cv.text(v.get("title") or "", 0, 0, 96, "#ffffff", "black", outline=INK, stroke=8, width=960)
+                cv.text(v.get("title") or "", 0, 0, 96, "#ffffff", "black", outline=INK, stroke=8, width=960, height=300)
             if v.get("sub"):
                 cv.text(v["sub"], 0, 150, 52, ink, "black", width=900, alpha=ease(_appear(scene, None, t - 0.5, 0.6)))
             P.money_bag(cv, -300 + math.sin(st * 2) * 10, 300, 1.0)
@@ -422,12 +422,12 @@ def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: di
                 a = _appear(scene, note.get("at"), t, 0.4)
                 if a > 0:
                     P.tick(cv, 160, -230 + i * 170, 0.9, bool(note.get("ok")), a)
-                    cv.text(note.get("text") or "", 370, -230 + i * 170, 40, ink, "black", width=320, alpha=min(1, a * 1.5))
+                    cv.text(note.get("text") or "", 370, -230 + i * 170, 40, ink, "black", width=320, alpha=min(1, a * 1.5), height=160)
         elif kind == "bars":
             P.bars(cv, 0, 300, [float(x) for x in v.get("values") or [1]], v.get("labels") or [], v.get("colors") or [P.GREEN, P.RED],
                    ease(_appear(scene, v.get("at"), t, 1.6)), 760, 520, v.get("unit") or "", ink=ink)
             if v.get("title"):
-                cv.text(v["title"], 0, -330, 56, ink, "black", width=900)
+                cv.text(v["title"], 0, -330, 56, ink, "black", width=900, height=130)
         elif kind == "road":
             holes = _appear(scene, v.get("holes_at"), t, 1.5) if v.get("holes_at") is not None else (0.0 if v.get("fresh") else 1.0)
             patch = _appear(scene, v.get("patch_at"), t, 1.5) if v.get("patch_at") is not None else 0.0
@@ -454,7 +454,7 @@ def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: di
             P.cash_stack(cv, 260, 300, 1.0, 2 + int(5 * g))
         elif kind == "list":
             if v.get("title"):
-                cv.text(v["title"], 0, -320, 60, ink, "black", width=900)
+                cv.text(v["title"], 0, -320, 60, ink, "black", width=900, height=130)
             warn = bool(re.search(r"(?i)red flag|warning|risk|scam|avoid|mistake|\bnot\b|don.?t|флаж|опасн|ошибк|осторожн|не делай|"
                                   r"semnal|avertiz|risc", str(v.get("title") or "")))
             for i, it in enumerate(v.get("items") or []):
@@ -463,7 +463,7 @@ def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: di
                     continue
                 y = -190 + i * 140                         # (a cross only in a list of warnings: "Who can get it" ticks)
                 P.tick(cv, -400, y, 0.85, bool(it.get("ok")) or not warn, a)
-                cv.text(it.get("text") or "", -320, y, 50, ink, "black", width=780, anchor="lm", alpha=min(1, a * 1.5))
+                cv.text(it.get("text") or "", -320, y, 50, ink, "black", width=780, anchor="lm", alpha=min(1, a * 1.5), height=125)
         elif kind == "percent":                            # a share of a whole: the slice grows to its size
             a = ease(_appear(scene, v.get("at"), t, 1.4))
             share = max(0.0, min(1.0, float(v.get("value") or 0) / 100.0))
@@ -495,13 +495,13 @@ def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: di
                 x = -260 + i * 520
                 if a > 0:
                     P.price_tag(cv, x, -40, side.get("price") or "", 1.5, side.get("color") or (P.GREEN if i == 0 else P.RED), a, 0)
-                    cv.text(side.get("label") or "", x, 110, 46, ink, "black", width=440, alpha=min(1, a * 1.5))
+                    cv.text(side.get("label") or "", x, 110, 46, ink, "black", width=440, alpha=min(1, a * 1.5), height=150)
             if len(v.get("sides") or []) == 2:
                 cv.text("vs", 0, -40, 60, ink, "black")
         elif kind == "bag":
             P.money_bag(cv, 0, 60, 1.8, v.get("label") or "$")
             if v.get("text"):
-                cv.text(v["text"], 0, -300, 56, ink, "black", width=900)
+                cv.text(v["text"], 0, -300, 56, ink, "black", width=900, height=130)
         elif kind == "magnifier":
             P.document(cv, -60, 20, 1.1, v.get("title") or "TENDER", 7, 1.0, v.get("price") or "", 1.0, 3)
             ph = st * 0.9
