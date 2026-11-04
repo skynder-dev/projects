@@ -24,6 +24,8 @@ _ap.add_argument('--keyword', default='community')
 # until socialreel/topics.py exists); --skip: file with opportunity IDs already used, one per line
 _ap.add_argument('--audience', action='store_true')
 _ap.add_argument('--skip')
+# --opportunity: use this exact Grants.gov record (for before/after comparisons on the same input)
+_ap.add_argument('--opportunity')
 _args = _ap.parse_args()
 SOCIAL, OUT, API = Path(_args.social).resolve(), Path(_args.out).resolve(), _args.api
 WANT = ('individual', 'small business', 'nonprofit')
@@ -58,6 +60,10 @@ today = dt.date.today()
 client = grants.GrantsGovClient(OUT / 'source')
 rec = snap = None
 try:
+    if _args.opportunity:
+        det, meta = client.detail(_args.opportunity)
+        rec, snap = grants.normalize({'id': _args.opportunity}, det, search_snapshot=None, detail_snapshot=meta), meta
+        raise StopIteration
     hits, search_snap = client.search(_args.keyword, 25, 'posted')
     hits = [h for h in hits if (parse_date(h.get('closeDate')) or today) >= today + dt.timedelta(days=21)
             and str(h.get('id')) not in SKIP]
@@ -73,6 +79,8 @@ try:
             break
         if not _args.audience:
             rec, snap = rec or r, snap or meta
+except StopIteration:
+    pass
 except Exception as e:  # noqa: BLE001
     summary.append('source: FAILED ' + repr(e)[:300])
     done('source_failed')
@@ -100,8 +108,10 @@ cfg = {'writer': 'ollama', 'local_editorial': {'enabled': True, 'execution_autho
        'ollama': {'model': 'qwen3.5:9b'},
        'concept_first': {'enabled': True, 'result_contract': core.RESULT_V2,
                          'brief': {'hook_language': 'en'},
-                         'topic_direction': ('What a small community organization in the US could concretely learn or check '
-                                             'about this real federal funding opportunity, keeping every condition and exclusion'),
+                         'topic_direction': ('Viewer: people in the US who work in, volunteer for or run the kind of '
+                                             'organization this program funds, or the professionals and residents it serves. '
+                                             'What they can concretely learn, check or bring to their organization about this '
+                                             'real federal funding opportunity, keeping every condition and exclusion'),
                          'unknowns': ['Whether any particular viewer or organization is eligible',
                                       'Whether any applicant will actually receive funding',
                                       'Whether the opportunity changed after the snapshot date',
