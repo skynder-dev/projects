@@ -104,3 +104,14 @@
 - Принят код Codex CODEX_04 (PR #8): USA.gov даёт отдельные факты (разделы, списки, строки таблиц), 190/190.
 - Пробный запуск научился брать готовые факты из `socialreel source` (`--bundle`): первая проба идей для обычных
   людей по USA.gov.
+
+## Первые идеи для обычных людей по USA.gov, 04.11.2026
+- unclaimed (невостребованные деньги): хорошие и разные. «Did your old boss forget to pay you?» (невыплаченная
+  зарплата, база Минтруда), «Your insurance company might owe you cash» (неточно: в источнике страховка ветеранов VA и
+  возвраты по ипотеке FHA, это не «страховая компания»), «There is no single place to find all your money».
+- unclaimed_tax_refunds: лучшие пока. «Did you miss your refund because you didn't file?» (возврат за 3 года),
+  «Can't check your refund online?», «Millions of refunds go unclaimed every year. Is yours one of them?» (есть в
+  источнике). Говорят со зрителем, без обещаний, проверки чистые.
+- energy: идей нет, отбор фактов вернул пустой список (ядро: «needs unique claim identities»). Пробный запуск теперь
+  показывает причину отказа отбора; прогон повторён.
+- Вывод: источники для людей дают качественно другой результат, чем Grants.gov. Основной поток роликов строить на них.

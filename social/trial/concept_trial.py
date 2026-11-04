@@ -74,6 +74,13 @@ try:
         _cf = _b / 'concept_claims.json' if (_b / 'concept_claims.json').exists() else _b / 'claims.json'
         rec = json.loads(_rf.read_text(encoding='utf-8'))
         BUNDLE_CLAIMS = json.loads(_cf.read_text(encoding='utf-8'))
+        _sel = _b / 'claim_selection.json'
+        if _sel.exists():
+            _s = json.loads(_sel.read_text(encoding='utf-8'))
+            report['stages']['claim_selection'] = _s
+            if _s.get('state') == 'refused':
+                summary.append('source: ' + str(rec.get('title')) + ' | claim selection REFUSED: ' + str(_s.get('reason'))[:400])
+                done('selection_refused')
         rec.setdefault('opportunity_id', rec.get('source_id') or rec.get('page') or rec.get('url'))
         TOPIC_AUDIENCE = {'rubric': 'help_people', 'profession': None, 'people': True}
         raise StopIteration
