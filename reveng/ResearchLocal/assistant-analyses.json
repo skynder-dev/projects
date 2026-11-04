@@ -35,10 +35,11 @@
   {
    "id": "rv_a_mac_utility",
    "made": "2026-11-04",
-   "title": "Платная программа для Mac за разовые $19",
-   "title_en": "A paid Mac app for a one-time $19",
+   "title": "Платная утилита для Mac/Windows за разовые $6-19",
+   "title_en": "A paid Mac/Windows utility for a one-time $6-19",
    "lines": [
     "Пример: почтовая программа bytemail - $24 019 за 30 дней, проекту 2 месяца, один человек (проверено через Stripe)",
+    "Второй пример: панель задач для Windows lumabar - $1 806 за 30 дней в первый месяц, ~350 покупателей по $5.99, пришли с Reddit",
     "Как зарабатывает: разовая покупка $19, сервера нет (почта не идёт через их сервер) - содержать почти нечего",
     "Старт: Mac и программист (или ИИ-помощник для кода); взнос разработчика Apple - если продавать через App Store",
     "Через сколько деньги: у примера - первые недели после запуска",
@@ -46,6 +47,7 @@
    ],
    "lines_en": [
     "Example: bytemail mail app - $24,019 in 30 days, 2 months old, one person (verified via Stripe)",
+    "Second example: lumabar Windows taskbar - $1,806 in 30 days in its first month, ~350 buyers at $5.99, came from Reddit",
     "Money: one-time $19, no server (mail never touches theirs) - almost nothing to run",
     "Start: a Mac and a developer (or an AI coding assistant); Apple developer fee if sold via the App Store",
     "Time to money: for the example - the first weeks after launch",
@@ -53,9 +55,10 @@
    ],
    "unknown": "Разбор ассистента. Неизвестно: откуда пришли покупатели (каналы на странице не указаны) и не разовый ли это всплеск после запуска - выручка разовая, подписок всего 91. Нужен навык разработки под Mac.",
    "unknown_en": "Assistant analysis. Unknown: where buyers came from (no channels listed) and whether it is a one-off launch spike - revenue is one-time, only 91 subscriptions. Needs Mac development skill.",
-   "signal": "TrustMRR bytemail: founded September 2026, all-time $24,257, 30 days $24,019, MRR $346, one-time $19, 1 person, Swift",
+   "signal": "TrustMRR bytemail: founded September 2026, all-time $24,257, 30 days $24,019, MRR $346, one-time $19, 1 person, Swift; TrustMRR lumabar: founded October 2026, all-time $1,824, $5.99 one-time, ~350 users, channel Reddit",
    "sources": [
-    "https://trustmrr.com/startup/bytemail"
+    "https://trustmrr.com/startup/bytemail",
+    "https://trustmrr.com/startup/lumabar"
    ]
   }
  ]
