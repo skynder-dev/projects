@@ -3,7 +3,7 @@
   "sources": [
     {"source_type": "usagov", "page": "energy", "fixture": "usagov_energy_synthetic.html"},
     {"source_type": "usagov", "page": "unclaimed", "fixture": "usagov_unclaimed_synthetic.html"},
-    {"source_type": "usagov", "page": "wages", "fixture": "usagov_wages_synthetic.html"},
+    {"source_type": "usagov", "page": "wage_laws", "fixture": "usagov_wages_synthetic.html"},
     {"source_type": "studentaid", "page": "pell", "fixture": "studentaid_pell_synthetic.html"},
     {"source_type": "scorecard", "school_id": "999001", "fixture": "scorecard_synthetic.json"}
   ],

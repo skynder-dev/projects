@@ -1,6 +1,6 @@
 {
   "format_note": "format not checked live; finite official page catalog, not a web crawl",
-  "usagov": {"pages": ["energy", "unclaimed", "wages"]},
+  "usagov": {"pages": ["energy", "unclaimed", "wage_laws", "unclaimed_tax_refunds", "workers_comp"]},
   "studentaid": {"pages": ["pell", "fafsa_deadlines"]},
   "scorecard": {"schools": []},
   "scoring": {"audience": 25, "actionability": 20, "benefit_text": 20, "conditions": 25, "novelty": 10, "missing_penalty": 2}

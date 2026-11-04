@@ -75,3 +75,10 @@ explicitly with `--sources`; the Grants.gov default and ranking rules remain in
 place. Live Scorecard requires `COLLEGE_SCORECARD_API_KEY` in the environment.
 See [More sources](docs/MORE_SOURCES.md) for live commands, the catalog, request
 preparation, supported formats and the existing core's admission limits.
+
+USA.gov now produces separate section, option and table-row facts, with exact
+quotes and snapshot locators. The page catalog includes `energy`, `unclaimed`,
+`wage_laws`, `unclaimed_tax_refunds` and `workers_comp`; the dead `wages` name fails
+before fetching. Ended programs stay in the archive with `expired: true` and are
+excluded from concept inputs. [USA.gov facts](docs/USAGOV_FACTS.md) explains the
+complete-fact selection rule and the saved selected/dropped keys.
