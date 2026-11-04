@@ -455,12 +455,14 @@ def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: di
         elif kind == "list":
             if v.get("title"):
                 cv.text(v["title"], 0, -320, 60, ink, "black", width=900)
+            warn = bool(re.search(r"(?i)red flag|warning|risk|scam|avoid|mistake|\bnot\b|don.?t|флаж|опасн|ошибк|осторожн|не делай|"
+                                  r"semnal|avertiz|risc", str(v.get("title") or "")))
             for i, it in enumerate(v.get("items") or []):
                 a = _appear(scene, it.get("at"), t, 0.4)
                 if a <= 0:
                     continue
-                y = -190 + i * 140
-                P.tick(cv, -400, y, 0.85, bool(it.get("ok")), a)
+                y = -190 + i * 140                         # (a cross only in a list of warnings: "Who can get it" ticks)
+                P.tick(cv, -400, y, 0.85, bool(it.get("ok")) or not warn, a)
                 cv.text(it.get("text") or "", -320, y, 50, ink, "black", width=780, anchor="lm", alpha=min(1, a * 1.5))
         elif kind == "percent":                            # a share of a whole: the slice grows to its size
             a = ease(_appear(scene, v.get("at"), t, 1.4))

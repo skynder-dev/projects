@@ -124,6 +124,20 @@ def _trim(src: Path, dst: Path) -> None:
     src.unlink(missing_ok=True)
 
 
+_LEFT: dict = {}
+
+
+def _left(path: str, img) -> int:
+    """Where a page's content starts from the left (its first column that is not the page's own background)."""
+    import numpy as np
+    if path not in _LEFT:
+        part = img[: min(len(img), 4000)].astype(np.int16)
+        diff = np.abs(part - part[:, :1]).max(axis=2) > 40
+        cols = np.where(diff.mean(axis=0) > 0.002)[0]
+        _LEFT[path] = int(cols[0]) if len(cols) else 0
+    return _LEFT[path]
+
+
 def draw(cv, path: str, box: tuple, k0: float, k1: float, t: float) -> None:
     """The page in the visual's box: a window onto it, scrolled from k0 to k1 (shares of the page) as t goes 0..1."""
     import math
@@ -136,14 +150,17 @@ def draw(cv, path: str, box: tuple, k0: float, k1: float, t: float) -> None:
     m = cv._m[-1]
     s = math.sqrt(abs(m[0, 0] * m[1, 1] - m[0, 1] * m[1, 0]))
     W, H = max(8, int(bw * 0.92 * s)), max(8, int(bh * 0.92 * s))
-    scale = W / iw
+    zoom = 1.7                                             # (a page's whole width makes its text unreadable on a phone:
+    scale = zoom * W / iw                                  # its middle, larger - where a page's main text is)
     view = int(H / scale)
     e = t * t * (3 - 2 * t)
     top = int((k0 + (k1 - k0) * e) * max(0, ih - view))
-    crop = img[top:top + view]
-    pic, _ = art._sized_pic(Path(path), W, int(ih * scale), False)
+    full_w = int(iw * scale)
+    pic, _ = art._sized_pic(Path(path), full_w, int(ih * scale), False)
     y0 = int(top * scale)
-    pic = pic[y0:y0 + H]
+    x0 = max(0, min(full_w - W, int(_left(path, img) * scale) - 12))   # (from where the page's text starts)
+    pic = pic[y0:y0 + H, x0:x0 + W]
+    crop = None
     x = m[0, 0] * cx + m[0, 1] * cy + m[0, 2] - W / 2
     y = m[1, 0] * cx + m[1, 1] * cy + m[1, 2] - H / 2
     cv.blend("#1f2433", 0.25, rounded(cx - bw * 0.46 + 8, cy - bh * 0.46 + 10, bw * 0.92, bh * 0.92, 18))
