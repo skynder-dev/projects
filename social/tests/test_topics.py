@@ -102,6 +102,37 @@ class TopicsTests(unittest.TestCase):
         with patch("urllib.request.urlopen", side_effect=transport):
             return topics.run(cfg or CFG, self.home / name, as_of=TODAY.isoformat())
 
+    def test_live_run_20261104_research_programs_do_not_reach_the_top(self):
+        # Synthetic records with the exact titles from the first live run (04.11.2026).
+        table = topics.configuration(CFG)["eligibility_codes"]
+        rows = [fixture_row("320753", title="Science of Learning and Augmented Intelligence (SL)",
+                            agency_name="U.S. National Science Foundation", applicant_types=[table["99"]]),
+                fixture_row("344634", title="Social Psychology", agency_name="U.S. National Science Foundation",
+                            applicant_types=[table["99"]]),
+                fixture_row("352741", title="NRL Long Range Broad Agency Announcement (BAA) for Basic and Applied Research",
+                            agency_name="Naval Research Laboratory", applicant_types=[table["99"]]),
+                fixture_row("359671", title="Small Business Innovation Research (SBIR)", agency_name="NIH",
+                            applicant_types=[table["23"]]),
+                fixture_row("101")]
+        result = self.offline(rows)
+        kept = [r["opportunity_id"] for r in result["topics"]]
+        self.assertNotIn("320753", kept); self.assertNotIn("344634", kept); self.assertNotIn("352741", kept)
+        self.assertIn("359671", kept)  # research, but small businesses are listed
+        self.assertIn("101", kept)
+        codes = {r["opportunity_id"]: r["exclusion"]["code"] for r in result["excluded"]}
+        self.assertEqual(codes.get("344634"), "research_program")
+
+    def test_live_run_20261104_mixed_institution_list_gets_reduced_audience(self):
+        table = topics.configuration(CFG)["eligibility_codes"]
+        many = [table[c] for c in ("00", "01", "02", "06", "07", "20", "12", "13")]
+        result = self.offline([fixture_row("345738", title="National Center for Workplace Training Translation",
+                                           applicant_types=many),
+                               fixture_row("101", applicant_types=[table["12"]])])
+        by = {r["opportunity_id"]: r for r in result["topics"]}
+        mixed = by["345738"]["score"]["components"]["audience"]
+        self.assertLess(mixed["points"], by["101"]["score"]["components"]["audience"]["points"])
+        self.assertIn("mostly institutions", mixed["reason"])
+
     def test_institution_only_excluded_and_individual_kept(self):
         table = topics.configuration(CFG)["eligibility_codes"]
         for code in ("00", "01", "02", "04", "05", "06", "07", "08", "11", "20"):

@@ -191,9 +191,15 @@ def score(rec: dict, cfg: dict, today: dt.date, seen: set[str]) -> dict:
     audience = min(cfg["audience_max_points"],
                    max((cfg["audience_points"].get(c, 0) for c in matched), default=0)
                    + max(0, len(matched - {"99"}) - 1) * cfg["audience_extra_type_points"])
+    mixed = (cfg.get("mixed_list_rule") or {})
+    share = len(matched) / len(codes) if codes and matched else 1.0
+    mixed_note = ""
+    if matched and share < mixed.get("min_share", 0):
+        audience = round(audience * share)
+        mixed_note = f"; wanted categories are {len(matched)} of {len(codes)} listed, mostly institutions: points x{share:.2f}"
     components = {"audience": {"points": audience,
                   "reason": ("Source lists target applicant categories: " + ", ".join(sorted(matched))
-                             if matched else "No confirmed target applicant category; search filter is not evidence"),
+                             + mixed_note if matched else "No confirmed target applicant category; search filter is not evidence"),
                   "matched_codes": sorted(matched)}}
     if rubric == "profession":
         profession = _profession_matches(rec, cfg)[0]
@@ -257,6 +263,12 @@ def score(rec: dict, cfg: dict, today: dt.date, seen: set[str]) -> dict:
             "components": components, "missing_data": missing}
 
 
+def _research_markers(rec: dict, cfg: dict) -> list[str]:
+    rule = cfg.get("research_rule") or {}
+    text = " ".join(str(rec.get(k) or "") for k in ("title", "agency", "synopsis")).casefold()
+    return [m for m in rule.get("markers", []) if re.search(r"(?<![a-z0-9])" + re.escape(m.casefold()) + r"(?![a-z0-9])", text)]
+
+
 def _exclusion(rec: dict, cfg: dict, today: dt.date, *, final: bool) -> dict:
     codes, unknown = _categories(rec, cfg)
     profession = _profession_matches(rec, cfg)
@@ -265,6 +277,11 @@ def _exclusion(rec: dict, cfg: dict, today: dt.date, *, final: bool) -> dict:
             and (final or not profession_enabled)):
         return {"excluded": True, "code": "institution_only",
                 "reason": "Listed applicant types are only educational, government, tribal or other institutions"}
+    research = _research_markers(rec, cfg)
+    if final and research and not profession and not codes.intersection({"21", "23"}):
+        return {"excluded": True, "code": "research_program",
+                "reason": "Research program (" + ", ".join(research) + ") without individuals or small businesses "
+                          "listed and without an exact profession; not for an ordinary viewer"}
     close = parse_date(rec.get("close_date"))
     if close and close < today:
         return {"excluded": True, "code": "closed", "reason": "Source close date is before the scoring date"}
