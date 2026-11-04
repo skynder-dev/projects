@@ -18,6 +18,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(hn.monthly_usd('made $120k/year selling templates'), 10000)
         self.assertIsNone(hn.monthly_usd('$500/month'))
         self.assertIsNone(hn.monthly_usd('no money here'))
+        self.assertEqual(hn.monthly_usd('broke the $2k/mo mark, now $6k/mo', [2000]), 6000); self.assertIsNone(hn.monthly_usd('passed $2k a month', [2000]))
     def test_collect(self):
         tree = {'id': 7, 'children': [
             {'id': 8, 'type': 'comment', 'text': 'SYNTHETIC: <p>I sell stickers, $3k/mo', 'author': 'a', 'created_at': '2025-01-02T00:00:00Z',

@@ -42,10 +42,11 @@ def amount(num, k):
     return v * 1000 if k else v
 
 
-def monthly_usd(text):
-    """The largest monthly figure stated in the text (yearly figures divided by 12), or None."""
+def monthly_usd(text, skip=()):
+    """The largest monthly figure stated in the text (yearly figures divided by 12), or None. Figures in `skip` (the
+    thread question's own threshold, e.g. "more than $2k monthly") are only an echo of the question and are ignored."""
     found = [amount(a, k) for a, k in MONTHLY.findall(text)] + [amount(a, k) / 12 for a, k in YEARLY.findall(text)]
-    found = [v for v in found if MIN_MONTHLY_USD <= v <= MAX_MONTHLY_USD]
+    found = [v for v in found if MIN_MONTHLY_USD <= v <= MAX_MONTHLY_USD and round(v) not in skip]
     return round(max(found)) if found else None
 
 
@@ -53,7 +54,7 @@ def walk(node, out, thread):
     """Top-level answers of the thread only (replies are mostly discussion)."""
     for c in node.get('children') or []:
         if c.get('type') == 'comment' and c.get('text'):
-            t = plain(c['text']); usd = monthly_usd(t)
+            t = plain(c['text']); usd = monthly_usd(t, thread.get('echo', ()))
             if usd:
                 out.append({'id': 'hn' + str(c['id']), 'monthly_usd': usd, 'text': t[:600], 'author': c.get('author'),
                             'date': (c.get('created_at') or '')[:10], 'url': 'https://news.ycombinator.com/item?id=%s' % c['id'],
@@ -85,6 +86,8 @@ def collect(root, stats, offline=False, read=None, now=None):
                 threads.setdefault(int(h['objectID']), {'id': int(h['objectID']), 'title': h.get('title') or '', 'comments': h.get('num_comments') or 0})
             time.sleep(1)
         picked = sorted(threads.values(), key=lambda t: -t['comments'])[:MAX_THREADS]; rows = []
+        for t in picked:
+            t['echo'] = sorted({round(amount(a, k)) for a, k in re.findall(AMOUNT, t['title'])})
         for t in picked:
             if stats.get('source_requests', 0) >= 23:
                 break

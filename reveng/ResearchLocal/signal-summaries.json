@@ -82,6 +82,41 @@
    "title": "Технические книги",
    "ru": "Пишет и продаёт технические книги для программистов; пара книг приносит около $2 000 в месяц",
    "en": "Writes and sells technical books for programmers; a couple of books bring about $2,000 a month"
+  },
+  "hn35573381": {
+   "title": "Готовые таблицы цен для сайтов",
+   "ru": "Сервис, которым владельцы сайтов делают красивые таблицы тарифов и цен; платят подпиской. Делает в свободное время, около $6 000 в месяц",
+   "en": "A service site owners use to build pricing tables; subscription. Run part-time, about $6,000 a month"
+  },
+  "hn35571172": {
+   "title": "Простая статистика посещений сайта",
+   "ru": "Замена Google Analytics без слежки за посетителями; сайты платят подписку. Двое людей, $2 000 через полтора года, теперь около $4 000",
+   "en": "Privacy-friendly website analytics, a Google Analytics replacement; subscription. Two people, $2,000 after 1.5 years, now about $4,000"
+  },
+  "hn33923806": {
+   "title": "Две небольшие программы для фирм",
+   "ru": "Двое партнёров сделали программу, которая помогает фирмам вводить новых клиентов в работу, и вторую маленькую; около $100 000 в год почти без их участия",
+   "en": "Two partners built a client-onboarding product for businesses plus a small second one; about $100,000 a year with little involvement"
+  },
+  "hn35569096": {
+   "title": "Предпросмотр именных украшений для магазинов",
+   "ru": "Делал для магазинов именных кулонов и подобных товаров программу: покупатель сразу видит, как будет выглядеть изделие с его надписью",
+   "en": "Built preview tools for shops selling custom name pendants and similar items: buyers see the finished piece with their text"
+  },
+  "hn35568406": {
+   "title": "Сайт для изучающих японский на пожертвованиях",
+   "ru": "Бесплатный сайт для изучения японского; деньги - добровольные взносы пользователей через Patreon, около $2 000 в месяц",
+   "en": "Free site for learning Japanese; money comes from voluntary Patreon donations, about $2,000 a month"
+  },
+  "hn33930824": {
+   "title": "Дополнение к Word для писателей",
+   "ru": "Платное дополнение к Microsoft Word: подсвечивает повторы и слабые слова в тексте; покупают писатели",
+   "en": "Paid Microsoft Word add-in that highlights repeated and weak words; bought by writers"
+  },
+  "hn33925738": {
+   "title": "Статистика сайта, разовая покупка",
+   "ru": "Программа статистики посещений, которую покупают один раз и ставят на свой сервер; около $1 500 в месяц без рекламы",
+   "en": "Self-hosted website analytics sold as a one-time license; about $1,500 a month with no marketing"
   }
  }
 }
