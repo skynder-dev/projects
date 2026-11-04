@@ -122,6 +122,19 @@ class TopicsTests(unittest.TestCase):
         codes = {r["opportunity_id"]: r["exclusion"]["code"] for r in result["excluded"]}
         self.assertEqual(codes.get("344634"), "research_program")
 
+    def test_live_run_20261104b_research_mentioning_a_profession_is_not_a_profession_topic(self):
+        table = topics.configuration(CFG)["eligibility_codes"]
+        rows = [fixture_row("361169", title="Agriculture and Food Research Initiative Competitive Grants Program",
+                            applicant_types=[table["06"], table["12"]],
+                            description="<p>Supports research and workforce training for future scientists.</p>"),
+                fixture_row("362325", title="Updated National Dislocated Worker Grant Program Guidance",
+                            applicant_types=[table["00"], table["12"]],
+                            description="<p>Helps dislocated workers return to work.</p>")]
+        result = self.offline(rows)
+        kept = [r["opportunity_id"] for r in result["topics"]]
+        self.assertNotIn("361169", kept)
+        self.assertIn("362325", kept)
+
     def test_live_run_20261104_mixed_institution_list_gets_reduced_audience(self):
         table = topics.configuration(CFG)["eligibility_codes"]
         many = [table[c] for c in ("00", "01", "02", "06", "07", "20", "12", "13")]

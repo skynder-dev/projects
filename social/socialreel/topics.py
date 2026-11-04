@@ -278,10 +278,15 @@ def _exclusion(rec: dict, cfg: dict, today: dt.date, *, final: bool) -> dict:
         return {"excluded": True, "code": "institution_only",
                 "reason": "Listed applicant types are only educational, government, tribal or other institutions"}
     research = _research_markers(rec, cfg)
-    if final and research and not profession and not codes.intersection({"21", "23"}):
+    # 04.11.2026 second live run: research grants entered `profession` because their synopsis merely mentions
+    # workers, teachers or schools. For a research record the profession must be named in the title.
+    profession_in_title = any(e["field"] == "title" for m in profession for e in m["evidence"])
+    title = str(rec.get("title") or "").casefold()
+    small_business_program = "23" in codes and any(w in title for w in ("small business", "sbir", "sttr"))
+    if final and research and not profession_in_title and "21" not in codes and not small_business_program:
         return {"excluded": True, "code": "research_program",
-                "reason": "Research program (" + ", ".join(research) + ") without individuals or small businesses "
-                          "listed and without an exact profession; not for an ordinary viewer"}
+                "reason": "Research program (" + ", ".join(research) + ") without individuals listed, not a small-business "
+                          "program by title, and without a profession named in the title; not for an ordinary viewer"}
     close = parse_date(rec.get("close_date"))
     if close and close < today:
         return {"excluded": True, "code": "closed", "reason": "Source close date is before the scoring date"}
