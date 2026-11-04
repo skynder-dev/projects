@@ -28,6 +28,8 @@ _ap.add_argument('--skip')
 _source = _ap.add_mutually_exclusive_group()
 _source.add_argument('--opportunity')
 _source.add_argument('--topics', type=Path, help='topics.json: use the first ranked opportunity')
+# --topic-pick ID: with --topics, use this ranked (not excluded) topic instead of the first one
+_ap.add_argument('--topic-pick')
 _args = _ap.parse_args()
 SOCIAL, OUT, API = Path(_args.social).resolve(), Path(_args.out).resolve(), _args.api
 WANT = ('individual', 'small business', 'nonprofit')
@@ -66,6 +68,13 @@ try:
     if _args.topics:
         from socialreel.topics import top_opportunity_id
         selected_id = top_opportunity_id(_args.topics)
+        if _args.topic_pick:
+            _rows = json.loads(Path(_args.topics).read_text(encoding='utf-8'))['topics']
+            _hit = [t for t in _rows if str(t.get('opportunity_id')) == str(_args.topic_pick)
+                    and (t.get('exclusion') or {}).get('excluded') is False]
+            if not _hit:
+                raise PipelineError('--topic-pick is not a ranked, non-excluded topic in topics.json')
+            selected_id = str(_args.topic_pick)
         try:
             _top = next(t for t in json.loads(Path(_args.topics).read_text(encoding='utf-8'))['topics']
                         if str(t.get('opportunity_id')) == str(selected_id))
@@ -243,6 +252,16 @@ for c in proposal.get('concepts', []):
     for w in _PRESSURE:
         if w in low:
             issues.append(f"{c['id']}: pressure wording: {w}")
+# the viewer must not be told they can apply or get the money when only organizations can apply
+_types = ' '.join(rec.get('applicant_types') or []).lower()
+if 'individual' not in _types:
+    _APPLY = ('you can apply', 'you can get', 'you could get', 'apply now', 'get up to', 'your company can',
+              'ваша компания может', 'вы можете получить', 'вы можете подать', 'подайте заявку', 'получите до')
+    for c in proposal.get('concepts', []):
+        low = ' '.join(str(c.get(k, '')) for k in core.CARD_TEXT_FIELDS).lower()
+        for w in _APPLY:
+            if w in low:
+                issues.append(f"{c['id']}: viewer told they can apply or get money, but applicants are organizations: {w}")
 report['stages']['program_checks'] = issues
 summary.append('program checks: ' + ('; '.join(issues) if issues else 'no past dates, no pressure wording found'))
 summary.append(f"validate: ok, {diag.get('result_state')}, concepts {diag.get('concept_count')}")
