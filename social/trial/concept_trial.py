@@ -30,6 +30,8 @@ _source.add_argument('--opportunity')
 _source.add_argument('--topics', type=Path, help='topics.json: use the first ranked opportunity')
 # --topic-pick ID: with --topics, use this ranked (not excluded) topic instead of the first one
 _ap.add_argument('--topic-pick')
+# --bundle DIR: record and claims already built by `python -m socialreel source` (USA.gov and other sources)
+_ap.add_argument('--bundle')
 _args = _ap.parse_args()
 SOCIAL, OUT, API = Path(_args.social).resolve(), Path(_args.out).resolve(), _args.api
 WANT = ('individual', 'small business', 'nonprofit')
@@ -64,7 +66,17 @@ today = dt.date.today()
 client = grants.GrantsGovClient(OUT / 'source')
 rec = snap = None
 TOPIC_AUDIENCE = None
+BUNDLE_CLAIMS = None
 try:
+    if _args.bundle:
+        _b = Path(_args.bundle)
+        _rf = _b / 'concept_record.json' if (_b / 'concept_record.json').exists() else _b / 'record.json'
+        _cf = _b / 'concept_claims.json' if (_b / 'concept_claims.json').exists() else _b / 'claims.json'
+        rec = json.loads(_rf.read_text(encoding='utf-8'))
+        BUNDLE_CLAIMS = json.loads(_cf.read_text(encoding='utf-8'))
+        rec.setdefault('opportunity_id', rec.get('source_id') or rec.get('page') or rec.get('url'))
+        TOPIC_AUDIENCE = {'rubric': 'help_people', 'profession': None, 'people': True}
+        raise StopIteration
     if _args.topics:
         from socialreel.topics import top_opportunity_id
         selected_id = top_opportunity_id(_args.topics)
@@ -121,7 +133,7 @@ summary.append('applicants: ' + '; '.join(rec.get('applicant_types') or ['(not l
 
 # 2. факты с происхождением
 try:
-    claims = build_claims(rec, snap, today)
+    claims = BUNDLE_CLAIMS if BUNDLE_CLAIMS is not None else build_claims(rec, snap, today)
 except PipelineError as e:
     summary.append('claims: FAILED ' + str(e)[:300])
     done('claims_failed')
@@ -140,6 +152,10 @@ cfg = {'writer': 'ollama', 'local_editorial': {'enabled': True, 'execution_autho
                               'what it can pay for, and what they can do (for example ask their local office or employer). '
                               'Never say the viewer can apply when only organizations can. ')
                              if TOPIC_AUDIENCE and TOPIC_AUDIENCE.get('profession') else
+                             ('Viewer: ordinary people in the US who may need this kind of help for themselves or their '
+                              'family. Speak to them directly: what exists, who it is for, what they can do next and where, '
+                              'keeping that rules and amounts can differ by state when the source says so. ')
+                             if TOPIC_AUDIENCE and TOPIC_AUDIENCE.get('people') else
                              'Viewer: people in the US who work in, volunteer for or run the kind of '
                              'organization this program funds, or the professionals and residents it serves. ') +
                              'What they can concretely learn, check or bring to their organization about this '
@@ -254,7 +270,7 @@ for c in proposal.get('concepts', []):
             issues.append(f"{c['id']}: pressure wording: {w}")
 # the viewer must not be told they can apply or get the money when only organizations can apply
 _types = ' '.join(rec.get('applicant_types') or []).lower()
-if 'individual' not in _types:
+if 'individual' not in _types and not (TOPIC_AUDIENCE or {}).get('people'):
     _APPLY = ('you can apply', 'you can get', 'you could get', 'apply now', 'get up to', 'your company can',
               'ваша компания может', 'вы можете получить', 'вы можете подать', 'подайте заявку', 'получите до')
     for c in proposal.get('concepts', []):
@@ -262,6 +278,9 @@ if 'individual' not in _types:
         for w in _APPLY:
             if w in low:
                 issues.append(f"{c['id']}: viewer told they can apply or get money, but applicants are organizations: {w}")
+for c in proposal.get('concepts', []):
+    if _re.search('[\u0400-\u04ff]', str(c.get('hook', ''))):
+        issues.append(f"{c['id']}: hook is not in the hook language (Cyrillic found, brief says en)")
 report['stages']['program_checks'] = issues
 summary.append('program checks: ' + ('; '.join(issues) if issues else 'no past dates, no pressure wording found'))
 summary.append(f"validate: ok, {diag.get('result_state')}, concepts {diag.get('concept_count')}")
