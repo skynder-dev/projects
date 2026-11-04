@@ -37,6 +37,20 @@ files unchanged, offline tests, byte-exact snapshots, never invent facts). All e
 4. Audience score for `profession`: how large and clear the profession is (config table of points per profession,
    with a comment that the numbers are editorial choices, not measured data).
 
+5. Fix ranking found in the first live run (04.11.2026, `topics.json` of 10 records, none excluded):
+   - top was 345738 «National Center for Construction Safety and Health Research and Translation (U54)», score 100,
+     because its long applicant list also contains codes 12/13/23. A research center grant is not for an ordinary
+     viewer. Mixed lists must not get full audience points just because one wanted code is present among many
+     institutional ones; score the share and the main audience, and record why.
+   - places 2-10 were NSF/NRL research programs («Science of Learning…», «Social Psychology», «Cognitive
+     Neuroscience», «NRL Long Range BAA») in `help_people`, only because their code is 99 (unrestricted). Code 99
+     alone must NOT mean «individuals». Add a research-program rule (for example agency NSF/NIH/DoD research
+     offices, words like «research», «science of», «BAA», «R01», «U54», «fellowship for investigators»): such records
+     are excluded from `help_people` and `small_business_nonprofit` with a reason, and kept only in `profession`
+     when a profession phrase matches.
+   - only 10 records were looked at in total. Fetch details for up to 10 per rubric (config), not 10 overall.
+   Add regression tests with these exact titles (synthetic records, marked synthetic).
+
 ## Tests (extend `social/tests/test_topics.py` or a new file)
 - fire-department grant kept in `profession` with `audience_profession` = firefighters and the matched phrase;
 - university-only research grant with no profession excluded with a reason;
