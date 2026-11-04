@@ -132,25 +132,33 @@ def discover_topics(cfg: dict, out: Path, source_types: list[str], *, fixture: P
     for job in jobs:
         record, claims, calls = acquire(job["source_type"], out, page=job.get("page"),
                                         school_id=job.get("school_id"), fixture=job.get("fixture"))
-        if record["topic_id"] in ids:
-            raise PipelineError("Duplicate public topic ID in configured sources")
-        ids.add(record["topic_id"])
         receipts.extend(calls)
-        scoring_record, selection = record, None
+        programs = []
         if record["source_type"] == "usagov":
             from .usagov_facts import select_for_core
-            scoring_record, _, selection = select_for_core(record, claims, cfg)
-        excluded = bool(selection and selection["state"] == "refused")
-        item = {"source_type": record["source_type"], "topic_id": record["topic_id"], "opportunity_id": None,
-                       "title": record["title"], "agency": record["source_label"], "source_url": record["source_url"],
-                       "close_date": record["close_date"], "rubric": record["rubric"],
-                       "eligible_applicant_types": None, "score": _public_score(scoring_record, catalog["scoring"], seen),
-                       "exclusion": {"excluded": excluded, "code": "no_current_complete_facts" if excluded else None,
-                                     "reason": selection["reason"] if excluded else None},
-                       "provenance": record["provenance"], "record": record, "claims": claims}
-        if selection is not None:
-            item["claim_selection"] = selection
-        (dropped if excluded else ranked).append(item)
+            from .usagov_programs import program_units
+            programs = program_units(record, claims)
+        for program in programs or [None]:
+            scoring_record, selection = record, None
+            if record["source_type"] == "usagov":
+                scoring_record, _, selection = select_for_core(record, claims, cfg, program=program["name"] if program else None)
+            topic_id = record["topic_id"] + ":" + program["name"] if program else record["topic_id"]
+            if topic_id in ids:
+                raise PipelineError("Duplicate public topic ID in configured sources")
+            ids.add(topic_id)
+            excluded = bool(selection and selection["state"] == "refused")
+            item = {"source_type": record["source_type"], "topic_id": topic_id, "opportunity_id": None,
+                    "title": program["title"] if program else record["title"], "agency": record["source_label"], "source_url": record["source_url"],
+                    "close_date": record["close_date"], "rubric": record["rubric"],
+                    "eligible_applicant_types": None, "score": _public_score(scoring_record, catalog["scoring"], seen),
+                    "exclusion": {"excluded": excluded, "code": "no_current_complete_facts" if excluded else None,
+                                  "reason": selection["reason"] if excluded else None},
+                    "provenance": record["provenance"], "record": record, "claims": claims}
+            if selection is not None:
+                item["claim_selection"] = selection
+            if program:
+                item["program"] = program["name"]
+            (dropped if excluded else ranked).append(item)
     ranked.sort(key=lambda row: (-row["score"]["total"], row["topic_id"]))
     dropped.sort(key=lambda row: row["topic_id"])
     result = {"schema": TOPICS_SCHEMA, "mode": "fixture" if fixture is not None else "live", "as_of": today.isoformat(),
@@ -207,6 +215,12 @@ def replay_topic(path: Path, out: Path, topic_id: str | None = None):
     # Reparse the verified bytes, rather than trusting editable claims in topics.json.
     parsed, claims, _ = acquire(item["source_type"], out, page=receipt["url"], school_id=record.get("school_id"),
                                 fixture=out / receipt["file"])
+    if item["source_type"] == "usagov" and item["topic_id"] != parsed["topic_id"]:
+        from .usagov_programs import program_units
+        names = {parsed["topic_id"] + ":" + p["name"]: p["name"] for p in program_units(parsed, claims)}
+        if item["topic_id"] not in names:
+            raise PipelineError("USA.gov program topic differs from verified snapshot headings")
+        parsed["requested_program"] = names[item["topic_id"]]
     return parsed, claims
 
 
@@ -215,20 +229,34 @@ def topics_id(value):
     return opportunity_id(value)
 
 
-def write_bundle(record: dict, claims: list[dict], out: Path, cfg: dict, *, prepare_request: bool = False) -> dict:
+def write_bundle(record: dict, claims: list[dict], out: Path, cfg: dict, *, prepare_request: bool = False, program=None) -> dict:
     # A failed/new preparation must never leave an older, runnable request beside new inputs.
-    (out / "concept_request.json").unlink(missing_ok=True)
+    for name in ("concept_request.json", "concept_inputs.json", "concept_record.json", "concept_claims.json",
+                 "claim_selection.json", "request_status.json"):
+        (out / name).unlink(missing_ok=True)
+    if program is not None and record["source_type"] != "usagov":
+        raise PipelineError("--program is supported only for USA.gov")
     write_json(out / "record.json", record)
     write_json(out / "claims.json", claims)
-    (out / "concept_inputs.json").unlink(missing_ok=True)
     result = {"source_type": record["source_type"], "claims": len(claims), "accepted": False, "model_called": False}
     if record["source_type"] == "usagov":
         from .usagov_facts import select_for_core
-        record, claims, selection = select_for_core(record, claims, cfg)
+        try:
+            record, claims, selection = select_for_core(record, claims, cfg, program=program)
+        except PipelineError as error:
+            status = {"state": "refused", "reason": str(error), "model_called": False}
+            write_json(out / "claim_selection.json", status)
+            write_json(out / "request_status.json", status)
+            raise
         write_json(out / "concept_record.json", record)
         write_json(out / "concept_claims.json", claims)
         write_json(out / "claim_selection.json", selection)
         result["selected_claims"] = len(claims)
+        if "program_selection" in selection:
+            result["program"] = selection["chosen_program"]
+            result["program_selection"] = selection["program_selection"]
+            result["program_selection_note"] = selection.get("program_selection_note", "Whole page fits; no single program selected")
+            result["left_out_programs"] = selection["left_out_programs"]
         if selection["state"] == "refused":
             write_json(out / "request_status.json", {"state": "refused", "reason": selection["reason"], "model_called": False})
             result["request_refused"] = True
