@@ -43,7 +43,12 @@ then base on it). Work in branch `codex/social-save-choose`. Open a pull request
 5. Export: `concepts export JOB --md PATH` writes a short Markdown page in Russian for the owner: source title, link,
    close date, each concept's question, angle, what the viewer learns, what is not answered, hook, which facts
    support it, and the current decision state. This is what the owner will read on the phone.
-6. Recovery: interrupting a write (simulate) leaves the store readable and the previous revision intact.
+6. Hand-off file for other projects (agreed on `shared/BOARD.md` in repo skynder-dev/pc, 03.11):
+   `concepts handoff JOB --out PATH` writes `<id>.json` with `{"id", "topic", "audience", "script", "source_url",
+   "facts"}`. `facts` is a list of the claims the chosen concept cites, each with the exact source quote or field
+   locator and the snapshot SHA-256. Only for a job with an explicit owner pick; `script` may be empty until a
+   script step exists. Never invent a fact or a URL: if the source URL is unknown, the command fails.
+7. Recovery: interrupting a write (simulate) leaves the store readable and the previous revision intact.
 
 ## Tests (new file `social/tests/test_concept_choose.py`)
 - import, list, show, decide, edit, export round trip on a synthetic trial.json;
