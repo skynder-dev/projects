@@ -169,6 +169,22 @@ def business_cards(root):
     return out
 
 
+def assistant_cards(root):
+    """Analyses the assistant wrote in chat from sources it read (assistant-analyses.json): marked as such on the card,
+    never as RevEng's own automatic result."""
+    path = root / 'assistant-analyses.json'
+    if not path.exists():
+        return []
+    out = []
+    for a in json.loads(path.read_text(encoding='utf-8')).get('analyses', []):
+        if not re.fullmatch(r'rv_a_[A-Za-z0-9_.-]{1,72}', str(a.get('id', ''))):
+            continue
+        out.append(finish({'id': a['id'], 'kind': 'reveng', 'prof': 'разбор ассистента', 'prof_en': 'assistant analysis', 'text': str(a.get('title', ''))[:70],
+                           'lines': list(a.get('lines', []))[:6], 'lines_en': list(a.get('lines_en') or a.get('lines', []))[:6],
+                           'unknown': str(a.get('unknown', '')), 'unknown_en': str(a.get('unknown_en', '')), 'url': (a.get('sources') or [None])[0]}))
+    return out
+
+
 def phone_dir(given=None):
     if given:
         return Path(given)
@@ -180,7 +196,7 @@ def write(root, given_dir=None, today=None):
     """Writes the cards into the phone folder when it exists; returns (number of cards, where or why not)."""
     root = Path(root); today = today or date.today().isoformat()
     # businesses for sale are not ideas to start (owner 03.11: mature, costly to run, survivors only); kept as data, not cards
-    cards = deal_cards(root) + contest_cards(root, today)
+    cards = assistant_cards(root) + deal_cards(root) + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export

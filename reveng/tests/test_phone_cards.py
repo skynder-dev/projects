@@ -57,6 +57,11 @@ class Tests(unittest.TestCase):
         (self.root / 'deals' / 'big.json').write_text(json.dumps({'schema': de.SCHEMA, 'title': 'SYNTHETIC big', 'currency': 'USD', 'figures': {
             'buy_price': {'value': 60000, 'status': 'owner_stated'}, 'sell_price': {'value': 90000, 'status': 'owner_stated'}, 'quantity': {'value': 2, 'status': 'owner_stated'}}}), encoding='utf-8')
         self.assertNotIn('rv_d_big', [c['id'] for c in pc.deal_cards(self.root)])
+    def test_assistant_cards_are_marked(self):
+        (self.root / 'assistant-analyses.json').write_text(json.dumps({'analyses': [{'id': 'rv_a_x', 'title': 'SYNTHETIC idea', 'lines': ['a', 'b'], 'unknown': 'u', 'sources': ['https://example.org/']},
+                                                                                   {'id': 'bad id', 'title': 'no'}]}), encoding='utf-8')
+        cards = pc.assistant_cards(self.root)
+        self.assertEqual([c['id'] for c in cards], ['rv_a_x']); self.assertEqual(cards[0]['prof'], 'разбор ассистента'); self.assertEqual(cards[0]['url'], 'https://example.org/')
     def test_decisions_only_reveng(self):
         (self.phone / 'decisions.json').write_text(json.dumps({'rv_c_open': {'verdict': 'like'}, 'v4_tee': {'verdict': 'nope'}}), encoding='utf-8')
         self.assertEqual(pc.decisions(self.phone), {'rv_c_open': 'like'})
