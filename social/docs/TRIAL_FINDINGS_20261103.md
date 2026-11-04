@@ -136,3 +136,16 @@
   some cases or visit your local office.», «If your utilities were disconnected, you can get help to restore them.»
   (последнее сильнее источника: «можете получить помощь» вместо «помощь может быть»). Нужна проверка «может → будет».
 - В каталог добавлены 5 страниц из docs/USAGOV_PAGES_NEXT.md, прогон идей по ним запущен.
+
+## Пять новых страниц USA.gov, 04.11.2026 (все прочитались, 6-7 фактов, по 3 идеи)
+- financial_aid: «Stop thinking only about loans. There is more help available.», «Don't guess the price. Calculate it
+  accurately before you apply.» Замена studentaid.gov работает.
+- grants_and_loans: лучшая тема против обмана: «Stop looking for free money from the government—it does not exist for
+  individuals.», «Federal loans exist, but grants are for organizations only.» Проверка «free money» здесь ложная
+  тревога: фраза против мошенников. Проверку надо учить отрицанию.
+- financial_hardship: страница-оглавление, первые фразы длинные и повторяют вводный текст. Слабее.
+- housing_help: смешанно; «Don't let your home fall apart or get you kicked out» цепляет, но пугает.
+- disaster: хорошо: «Your area isn't eligible? Don't assume you're alone.», «Utility bills, credit cards, student
+  debt—help exists.»
+- Итого по USA.gov: 9 из 10 страниц дают годные идеи для людей. Механизм от источника до идей работает стабильно.
+  Следующее узкое место: идеи негде сохранить, выбрать и передать дальше (CODEX_02).
