@@ -199,7 +199,8 @@ class TopicsTests(unittest.TestCase):
     def test_identical_queries_shared_across_rubrics_use_one_snapshot(self):
         cfg = {"topics": {"seen_file": None, "rubrics": {
             "help_people": {"keywords": ["same", "same"], "eligibility_codes": ["99"]},
-            "small_business_nonprofit": {"keywords": ["same"], "eligibility_codes": ["99"]}}}}
+            "small_business_nonprofit": {"keywords": ["same"], "eligibility_codes": ["99"]},
+            "profession": {"enabled": False}}}}
         transport = Transport([hit()], {"101": detail(codes=("99",))})
         result = self.live(transport, cfg)
         self.assertEqual(len(result["sources"]), 2)  # one search, one detail
@@ -224,9 +225,79 @@ class TopicsTests(unittest.TestCase):
         table = topics.configuration(CFG)["eligibility_codes"]
         transport = Transport([hit("100", applicantTypes=[table["20"]]),
                                hit("99", closeDate="11/01/2026"), hit()], {"101": detail()})
-        result = self.live(transport)
+        result = self.live(transport, {"topics": {"seen_file": None, "rubrics": {"profession": {"enabled": False}}}})
         self.assertEqual(result["detail_fetch_count"], 1)
         self.assertEqual({r["exclusion"]["code"] for r in result["excluded"]}, {"institution_only", "closed"})
+
+    def test_fire_department_kept_for_firefighters_and_pure_university_research_excluded(self):
+        table = topics.configuration(CFG)["eligibility_codes"]
+        result = self.offline([
+            fixture_row("100", title="Equipment grants for fire departments", applicant_types=[table["02"]]),
+            fixture_row("101", title="University biochemistry research", applicant_types=[table["20"]])])
+        self.assertEqual(len(result["topics"]), 1)
+        item = result["topics"][0]
+        self.assertEqual(item["rubric"], "profession")
+        self.assertEqual(item["audience_profession"], "firefighters")
+        self.assertEqual(item["eligible_applicant_types"], [table["02"]])
+        self.assertIn("no audience size measured", item["score"]["components"]["audience"]["reason"])
+        self.assertEqual(result["excluded"][0]["exclusion"]["code"], "institution_only")
+
+    def test_profession_match_uses_exact_words_and_phrases_not_search_hits(self):
+        table = topics.configuration(CFG)["eligibility_codes"]
+        result = self.offline([
+            fixture_row("100", title="Farmersville schooling research", applicant_types=[table["20"]]),
+            fixture_row("101", title="Fire recovery for a department", applicant_types=[table["02"]]),
+            fixture_row("102", title="Support for a FIRE DEPARTMENT", applicant_types=[table["02"]])])
+        self.assertEqual([r["opportunity_id"] for r in result["topics"]], ["102"])
+        self.assertEqual(len(result["excluded"]), 2)
+
+    def test_profession_in_synopsis_keeps_institution_hit_after_detail(self):
+        table = topics.configuration(CFG)["eligibility_codes"]
+        transport = Transport([hit(applicantTypes=[table["20"]])],
+                              {"101": detail(codes=("20",), synopsisDesc="Training nurses in rural clinics.")})
+        result = self.live(transport)
+        item = result["topics"][0]
+        self.assertEqual(result["detail_fetch_count"], 1)
+        self.assertEqual(item["audience_profession"], "medical_staff")
+        self.assertTrue(any(e["field"] == "synopsis" for e in item["profession_evidence"][0]["evidence"]))
+
+    def test_profession_in_eligibility_text_preserves_exact_html(self):
+        table = topics.configuration(CFG)["eligibility_codes"]
+        text = "<p>Only rural <b>clinics</b> can apply. Full conditions remain here.</p>\n"
+        result = self.offline([fixture_row(applicant_types=[table["20"]], applicant_eligibility_desc=text)])
+        self.assertEqual(result["topics"][0]["audience_profession"], "medical_staff")
+        self.assertEqual(result["topics"][0]["eligibility_text"], text)
+
+    def test_forecasted_search_and_annual_marker_keep_unknown_deadline_unknown(self):
+        transport = Transport([hit(oppStatus="forecasted", closeDate=None)],
+                              {"101": detail(codes=("02",), responseDate=None,
+                                             synopsisDesc="Annual grants for fire departments. Next round not announced.")})
+        result = self.live(transport)
+        self.assertTrue(all(body["oppStatuses"] == "posted|forecasted" for url, body in transport.requests if url == grants.SEARCH_URL))
+        item = result["topics"][0]
+        self.assertEqual(item["status"], "forecasted")
+        self.assertTrue(item["recurring_program"])
+        self.assertIsNone(item["close_date"])
+        self.assertIsNone(item["score"]["components"]["timing"]["days_left"])
+        self.assertIn("next opening date remains unknown", item["recurring_program_reason"])
+
+    def test_recurring_program_requires_annual_or_fiscal_year_source_marker(self):
+        for marker in ("Annual program", "Program returns annually", "Fiscal-year program", "FY2027 grants"):
+            with self.subTest(marker=marker):
+                result = self.offline([fixture_row(title=marker)])
+                self.assertTrue(result["topics"][0]["recurring_program"])
+                self.assertTrue(result["topics"][0]["recurring_program_evidence"])
+        result = self.offline([fixture_row(title="One program in 2027", applicant_eligibility_desc="Annual certification required.")])
+        self.assertIsNone(result["topics"][0]["recurring_program"])
+
+    def test_profession_table_handles_all_requested_audiences(self):
+        table = topics.configuration(CFG)["eligibility_codes"]
+        for title, profession in (("Rural clinics", "medical_staff"), ("Farms", "farmers"),
+                                  ("Schools", "teachers"), ("Veterans programs", "veterans"),
+                                  ("Workforce training", "workers"), ("Police training", "police")):
+            with self.subTest(title=title):
+                result = self.offline([fixture_row(title=title, applicant_types=[table["02"]])])
+                self.assertEqual(result["topics"][0]["audience_profession"], profession)
 
     def test_unknown_types_and_others_never_infer_eligibility_from_text(self):
         table = topics.configuration(CFG)["eligibility_codes"]
@@ -316,6 +387,28 @@ class TopicsTests(unittest.TestCase):
             runpy.run_path(str(ROOT / "trial" / "concept_trial.py"), run_name="__main__")
         self.assertEqual(transport.requests[0], (grants.SEARCH_URL,
                          {"rows": 25, "oppStatuses": "posted", "startRecordNum": 0, "keyword": "community"}))
+        self.assertEqual(transport.requests[1], (grants.DETAIL_URL, {"opportunityId": 101}))
+
+    def test_trial_preserves_base_branch_opportunity_flag(self):
+        transport = Transport([], {"101": detail()})
+        argv = [str(ROOT / "trial" / "concept_trial.py"), str(ROOT), str(self.home / "trial"), "--opportunity", "101"]
+        with patch.object(sys, "argv", argv), patch("urllib.request.urlopen", side_effect=transport), \
+                patch("socialreel.claims.build_claims", side_effect=PipelineError("Stop after source")), \
+                contextlib.redirect_stdout(io.StringIO()), self.assertRaises(SystemExit):
+            runpy.run_path(str(ROOT / "trial" / "concept_trial.py"), run_name="__main__")
+        self.assertEqual(transport.requests, [(grants.DETAIL_URL, {"opportunityId": 101})])
+
+    def test_trial_preserves_base_branch_keyword_and_skip_flags(self):
+        skip = self.home / "skip.txt"
+        skip.write_text("100\n", encoding="utf-8")
+        transport = Transport([hit("100", closeDate="12/15/2099"), hit(closeDate="12/15/2099")], {"101": detail()})
+        argv = [str(ROOT / "trial" / "concept_trial.py"), str(ROOT), str(self.home / "trial"),
+                "--keyword", "teacher", "--skip", str(skip)]
+        with patch.object(sys, "argv", argv), patch("urllib.request.urlopen", side_effect=transport), \
+                patch("socialreel.claims.build_claims", side_effect=PipelineError("Stop after source")), \
+                contextlib.redirect_stdout(io.StringIO()), self.assertRaises(SystemExit):
+            runpy.run_path(str(ROOT / "trial" / "concept_trial.py"), run_name="__main__")
+        self.assertEqual(transport.requests[0][1]["keyword"], "teacher")
         self.assertEqual(transport.requests[1], (grants.DETAIL_URL, {"opportunityId": 101}))
 
     def test_invalid_cli_date_and_config_return_clear_failure(self):

@@ -29,10 +29,25 @@
     "small_business_nonprofit": {
       "eligibility_codes": ["12", "13", "23", "99"],
       "keywords": ["small business", "nonprofit", "community"]
+    },
+    "profession": {
+      "enabled": true,
+      "eligibility_codes": ["00", "01", "02", "04", "05", "06", "07", "08", "11", "12", "13", "20", "21", "22", "23", "25", "99"],
+      "keywords": ["firefighter", "nurse", "farmer", "teacher", "veteran", "apprenticeship", "police"]
     }
   },
+  "professions": {
+    "firefighters": {"keywords": ["firefighter", "firefighters", "fire department", "fire departments"], "breadth_points": 8, "clarity_points": 24},
+    "medical_staff": {"keywords": ["nurse", "nurses", "rural clinic", "rural clinics", "rural health", "medical staff", "healthcare workers", "health care workers"], "breadth_points": 12, "clarity_points": 24},
+    "farmers": {"keywords": ["farmer", "farmers", "farm", "farms", "farming"], "breadth_points": 10, "clarity_points": 24},
+    "teachers": {"keywords": ["teacher", "teachers", "school", "schools"], "breadth_points": 12, "clarity_points": 24},
+    "veterans": {"keywords": ["veteran", "veterans"], "breadth_points": 10, "clarity_points": 24},
+    "workers": {"keywords": ["workforce training", "worker", "workers", "apprenticeship", "apprenticeships", "apprentice", "apprentices"], "breadth_points": 14, "clarity_points": 24},
+    "police": {"keywords": ["police", "police officers", "law enforcement officers"], "breadth_points": 8, "clarity_points": 24}
+  },
+  "recurring_program_patterns": ["\\bannual(?:ly)?\\b", "\\bfiscal[\\s-]+year\\b", "\\bFY[\\s-]*[0-9]{2,4}\\b"],
   "search_rows": 25,
-  "statuses": "posted",
+  "statuses": "posted|forecasted",
   "max_detail_fetch": 10,
   "seen_file": "topics_seen.json",
   "timing": {"min_days": 14, "max_days": 120, "ideal_points": 25, "soon_points": 5, "far_points": 10},

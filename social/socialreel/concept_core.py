@@ -295,6 +295,23 @@ def build_request(record,claims,cfg,*,source_evidence=None):
               'Do not choose a winner, score quality, claim originality or measured interest. No script, scenes or production instructions. '
               'Follow language_contract: owner_fields must be written originally in Russian (ru); only hook uses brief hook_language. '
               'Source quotes and technical IDs stay unchanged. No post-output translation or repair. Return only schema JSON.')
+    # 03.11.2026 editorial guidance: four live trials gave three eligibility-checklist cards per record
+    # ("who can apply", "how much", "is matching required"), flat hooks and invented qualifiers.
+    system += (' EDITORIAL: the viewer is a person scrolling short videos, described by topic_direction, not the '
+               'grant office of the applicant. A good concept answers: why should this viewer care, and what can they '
+               'concretely do or check. Each concept must use a different editorial approach and name it in the first '
+               'words of angle_ru, chosen from: real-life situation of one person or team, common costly mistake, '
+               'deadline countdown, surprising number from the source, comparison of two options in the source, '
+               'myth versus what the source says. Different facts with the same approach are not different concepts. '
+               'Do not build a concept on standard federal boilerplate (generic compliance, certification, research '
+               'restriction or reporting clauses) unless it is the main point of the program. Do not add qualifiers '
+               'that the source does not state (for example small, local, new, any). The hook is the first spoken '
+               'line of the video in the hook language, at most 15 words, it makes the viewer stay (names the viewer, '
+               'a stake, or a surprise) and still keeps the conditions true; a bare field value or a yes/no question '
+               'is not a hook. No pressure or promise wording that the source does not support (secure your spot, '
+               'do not miss, guaranteed, act now, free money): a competitive grant is a chance, not a reserved place. '
+               'Mention a deadline only if it is after the current date stated in topic_direction; if the source gives '
+               'a date that is already past, do not build a concept on it and say so in not_answered_ru.')
     result_contract=data.get('result_contract',VERSION)
     if result_contract==RESULT_V2:
         system+=(' If the bound evidence is insufficient for any useful supported concept, return the explicit '

@@ -35,6 +35,17 @@ into `social/late-core-20261028` (not into `main`).
    - Rubrics (config, not hardcoded strings scattered in code):
      - `help_people`: programs individuals can apply for.
      - `small_business_nonprofit`: small businesses and nonprofits.
+     - `profession`: grants for a clear professional audience even when the applicant is an organization
+       (fire departments -> firefighters, rural clinics -> medical staff, farms -> farmers, schools -> teachers,
+       veterans programs -> veterans, workforce training -> workers). Keep a config table of professions with
+       keywords; each topic records `audience_profession`. Here an organization-only applicant list is NOT a reason
+       to exclude; pure university research with no clear profession is.
+       Measured 03.11.2026 on live Grants.gov (posted only): exact profession words find few records (firefighter 1,
+       nurse 9, farmer 16, apprenticeship 21, police 22, teacher 36, veteran 46), while multi-word queries like
+       "fire department" (406) or "rural health" (442) are noise because the search matches words separately.
+       So: match professions on exact words/phrases in title, synopsis and eligibility text, not on raw hit counts;
+       also search `forecasted` records and mark `recurring_program` when the title/synopsis says it is an annual
+       or fiscal-year program (for videos made before the next round opens).
    - Discovery from Grants.gov search for each rubric. Use the official search API's eligibility filter and
      several keywords per rubric. Put the Grants.gov applicant-eligibility code table in config, with a comment naming where it came from
      (see the rule about the internet above).
@@ -42,7 +53,7 @@ into `social/late-core-20261028` (not into `main`).
      institutions. Keep the exclusion reason.
    - Fetch detail for the top N candidates only (N in config, default 10) to save API calls.
 2. Scoring, transparent and rule based. Each topic gets a total plus every component with a reason:
-   - audience: how broad the eligible applicants are;
+   - audience: how broad the eligible applicants are (for `profession`: how large and clear the profession is);
    - timing: days left until close (too soon and very far are worse; window in config);
    - concreteness: award amount present, eligibility text present, synopsis present;
    - novelty: not already in a `seen` file (path in config; the file lists opportunity IDs used before);
@@ -57,6 +68,8 @@ into `social/late-core-20261028` (not into `main`).
 
 ## Tests (new file `social/tests/test_topics.py`)
 - Institution-only record is excluded with a reason; an individuals record is kept.
+- A fire-department grant is kept in `profession` with `audience_profession` = firefighters; a university-only
+  research grant with no profession is excluded.
 - Score components and reasons are present; missing award amount lowers concreteness and is listed.
 - A `seen` ID is ranked below an otherwise equal new one.
 - Fixture run writes `topics.json`, deterministic order, provenance SHA-256 matches the saved snapshot bytes.
