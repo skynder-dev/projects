@@ -123,3 +123,10 @@
 - Третий прогон: energy снова отказ отбора, значит дело не в байтах, а в том, что условия трёх программ страницы
   (LIHEAP, WAP, отключение) держатся одним куском. Задание: social/tasks/CODEX_05_energy.md. unclaimed и налоговые
   возвраты в третий раз стабильно хорошие.
+
+## USA.gov wage_laws и workers_comp, 04.11.2026
+- wage_laws: «Is your paycheck really fair? Learn your rights.», «Are you really an independent contractor? Check your
+  status.» Хорошо, со зрителем.
+- workers_comp: «Workers' comp can help if you get hurt at work.», «Your employer type decides where to file your
+  claim.», «Denied? You can still appeal the decision.» (про обжалование: проверить, есть ли это в источнике).
+- Принят код Codex CODEX_05 (PR #9): страница energy делится на программы LIHEAP, WAP, отключение; 210/210, ядро 88/88.
