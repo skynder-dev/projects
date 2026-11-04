@@ -1,0 +1,30 @@
+{
+ "schema": "reveng-assistant-analyses-v1",
+ "note": "Analyses written by the assistant in chat from sources it read (not RevEng's own automatic result). Each card says so.",
+ "analyses": [
+  {
+   "id": "rv_a_local_sites",
+   "made": "2026-11-03",
+   "title": "Сайты для местных фирм без сайта",
+   "title_en": "Websites for local businesses that have none",
+   "lines": [
+    "Старт: до $500 (конструктор от $17/мес, домен ~$11/год, сайт делает ИИ)",
+    "Цена: фрилансеры берут $1 200-3 500; почти треть малых фирм тратит на сайт до $500",
+    "Поддержка: $50-500/мес у малых фирм; хостинг $5-15/мес, остаётся ~$35-45 с клиента",
+    "Пример расчёта (допущение): $500 + $50/мес; 10 клиентов = $5 000 и ~$400/мес",
+    "Тест: сделать 10 фирмам сайт заранее и предложить купить"
+   ],
+   "lines_en": [
+    "Start: under $500 (builder from $17/mo, domain ~$11/yr, AI builds the site)",
+    "Price: freelancers charge $1,200-3,500; almost a third of small firms spend under $500",
+    "Upkeep: small firms pay $50-500/mo; hosting $5-15/mo, ~$35-45 left per client",
+    "Example (assumption): $500 + $50/mo; 10 clients = $5,000 and ~$400/mo",
+    "Test: build 10 firms a site upfront and offer it"
+   ],
+   "unknown": "Разбор ассистента. Неизвестно главное: сколько фирм из ста купят. Риски: 40% фирм без сайта не хотят его; много конкурентов; холодные звонки и SMS в США ограничены законом.",
+   "unknown_en": "Assistant analysis. Key unknown: how many firms out of 100 buy. Risks: 40% of firms without a site do not want one; many competitors; cold calls and texts are restricted by US law.",
+   "signal": "TrustMRR: Prospo (tool for this service) $4,801 in 30 days at 3 months, 1 person; seller-side signal is weak (no active subscriptions, for sale at $10,000)",
+   "sources": ["https://trustmrr.com/startup/prospo", "https://resources.review42.com/what-percentage-of-small-businesses-have-a-website/", "https://www.godaddy.com/resources/skills/website-maintenance-cost", "https://aibrify.com/blog/website-cost-small-business", "https://moneyzine.com/resources/small-business-website-statistics"]
+  }
+ ]
+}
