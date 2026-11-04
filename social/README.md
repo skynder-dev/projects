@@ -46,6 +46,11 @@ The first command uses the public Grants.gov API; the second is entirely offline
 Both write `topics.json` with ranked topics, scores and reasons, missing data,
 excluded records and snapshot SHA-256 receipts. Fixture exports remain explicitly
 historical and normalized. No publication or model call happens in this command.
+The three rubrics cover individuals, small businesses/nonprofits, and a clear
+professional audience. Exact profession words/phrases can retain organization-only
+grants for firefighters, medical staff, farmers, teachers, veterans, workers or police.
+Search includes posted and forecasted records; explicit annual/fiscal-year markers
+are recorded without guessing the next opening date.
 
 Rules, keywords, the detail-request limit (10), timing window and provisional
 eligibility-code table live in `topics_config.json`. See [Topic discovery](docs/TOPICS.md)

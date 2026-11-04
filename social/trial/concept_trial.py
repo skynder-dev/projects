@@ -9,7 +9,6 @@
 
 Запуск: python -I concept_trial.py <папка social> <папка для результата> [адрес Ollama] [--topics PATH]
 """
-import argparse
 import datetime as dt
 import json
 import sys
@@ -26,11 +25,10 @@ _ap.add_argument('--keyword', default='community')
 _ap.add_argument('--audience', action='store_true')
 _ap.add_argument('--skip')
 # --opportunity: use this exact Grants.gov record (for before/after comparisons on the same input)
-_ap.add_argument('--opportunity')
-# --topics: topics.json from `python -m socialreel topics`; use its first ranked opportunity
-_ap.add_argument('--topics')
+_source = _ap.add_mutually_exclusive_group()
+_source.add_argument('--opportunity')
+_source.add_argument('--topics', type=Path, help='topics.json: use the first ranked opportunity')
 _args = _ap.parse_args()
-args = _args
 SOCIAL, OUT, API = Path(_args.social).resolve(), Path(_args.out).resolve(), _args.api
 WANT = ('individual', 'small business', 'nonprofit')
 SKIP = set(Path(_args.skip).read_text(encoding='utf-8').split()) if _args.skip and Path(_args.skip).exists() else set()
@@ -64,9 +62,12 @@ today = dt.date.today()
 client = grants.GrantsGovClient(OUT / 'source')
 rec = snap = None
 try:
-    if _args.topics and not _args.opportunity:
+    if _args.topics:
         from socialreel.topics import top_opportunity_id
-        _args.opportunity = str(top_opportunity_id(Path(_args.topics)))
+        selected_id = top_opportunity_id(_args.topics)
+        det, meta = client.detail(selected_id)
+        rec, snap = grants.normalize({'id': selected_id}, det, detail_snapshot=meta), meta
+        raise StopIteration
     if _args.opportunity:
         det, meta = client.detail(_args.opportunity)
         rec, snap = grants.normalize({'id': _args.opportunity}, det, search_snapshot=None, detail_snapshot=meta), meta
