@@ -601,7 +601,8 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
             elif page and box:                             # (the web page, scrolled a part further in every scene)
                 from . import site as S
                 k, n = scene["site_part"]
-                S.draw(cv, page, box, k / max(1, n), (k + 1) / max(1, n),
+                span = 0.3                                 # (only the page's first part: what it is for is near its top;
+                S.draw(cv, page, box, span * k / max(1, n), span * (k + 1) / max(1, n),   # further down came prisons)
                        min(1.0, max(0.0, (t - scene["s"]) / max(0.5, scene["e"] - scene["s"]))))
             last = scene["lines"][_line_at(scene, t)] if _line_at(scene, t) >= 0 else None
             sitting = seated(scene)
