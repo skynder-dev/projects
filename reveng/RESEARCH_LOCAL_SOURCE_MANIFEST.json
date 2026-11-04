@@ -410,8 +410,8 @@
     },
     {
       "path": "reveng/ResearchLocal/assistant-analyses.json",
-      "bytes": 5371,
-      "sha256": "25ded79b24550cb7c3a7187881f9ac8f06c4dec351188226d66287ee1c21332e",
+      "bytes": 5806,
+      "sha256": "12aca3e3060de3c30111c997f56920fc1dfbeda268d9a12e0dfded290a04d3cd",
       "change": "new_assistant_analyses_2026-11-03"
     },
     {
@@ -763,8 +763,8 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 18341,
-      "sha256": "4e4f45dfffef34cdbe6f91b3a5ca9d4eb43cb796ff74cf9731e4ddad2e41a0d4",
+      "bytes": 19189,
+      "sha256": "61b68b48d16626a09a10a6ec055239fce187a0d50db0a0ea9b1b1b81a8779d02",
       "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines+skip_empty_clean_titles+contests_10k+business_cards+plain_models+models_cap+ways_not_buy+budget_100k+assistant_cards+signal_cards"
     },
     {
@@ -950,6 +950,11 @@
       "change": "new_unpublished_saved_context_source_or_tests"
     },
     {
+      "path": "reveng/ResearchLocal/signal-summaries.json",
+      "bytes": 2979,
+      "sha256": "fe275e372e34eac550c174473e946033a637777c2faeeb467c1d7edacf66e151"
+    },
+    {
       "path": "reveng/ResearchLocal/social_idea_preview.py",
       "bytes": 7137,
       "sha256": "cd6192da3013288cf33ca86bf47258b9d8476e03f45f8e77e61caec95fa47cda",
@@ -1024,8 +1029,8 @@
     },
     {
       "path": "reveng/ResearchLocal/trustmrr_signals.py",
-      "bytes": 6569,
-      "sha256": "363bbf471c401113c05ec0fdbb9a5c18616b4125a43481a7bd283bbbef60f84b",
+      "bytes": 6745,
+      "sha256": "be4c2421337102274cdffa3d8f3c22ce484a3968292afa88dc4a65eef06d6a0e",
       "change": "new_trustmrr_signals_2026-11-03+signal_cards"
     },
     {
@@ -1186,8 +1191,8 @@
     },
     {
       "path": "reveng/tests/test_phone_cards.py",
-      "bytes": 8253,
-      "sha256": "6e47cfe5e07d13e509b3e20db17273a89e55581f3ff0f22ab0b4bde7b5aeac1b",
+      "bytes": 9273,
+      "sha256": "2c41bcafc74f9144f7f4b069c229b52aa72a38b24ac81fb4f0a47c69bf39a6e1",
       "change": "new_phone_cards_offline_contracts_2026-11-01+bilingual_short_unknown+skip_empty_clean_titles+order+budget_100k+assistant_cards+signal_cards"
     },
     {

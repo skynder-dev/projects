@@ -1,0 +1,34 @@
+{
+ "schema": "reveng-signal-summaries-v1",
+ "note": "Plain one-sentence retelling by the assistant of the TrustMRR discovery description (trustmrr.com/api/ai/discovery, read 2026-11-04). Not RevEng's own result. A signal without an entry here is not shown on the phone.",
+ "summaries": {
+  "intentsly": {
+   "ru": "Программа для продавцов: сама ищет в LinkedIn, Reddit, X и Facebook людей, которым сейчас нужен похожий товар, и начинает с ними переписку; фирмы платят за программу",
+   "en": "Software for sellers: finds people on LinkedIn, Reddit, X and Facebook who need a similar product right now and starts the conversation; companies pay for it"
+  },
+  "devops-daily": {
+   "ru": "Сайт с новостями и уроками для специалистов, которые держат серверы и программы компании в рабочем состоянии",
+   "en": "News and tutorials site for people who keep a company's servers and software running (DevOps)"
+  },
+  "next-level-builders": {
+   "ru": "Платное обучение и сообщество для тех, кто делает маленькие платные онлайн-сервисы: уроки, готовые заготовки, общение",
+   "en": "Paid coaching and community for people building small paid online services: lessons, templates, a group"
+  },
+  "basincheck": {
+   "ru": "Приложение для подрядчиков на нефтяных и газовых объектах: проверка техники безопасности с телефона, работает без интернета; платят фирмы-подрядчики",
+   "en": "App for oil and gas contractors: safety checks on site from a phone, works offline; contractor firms pay"
+  },
+  "printotr-a": {
+   "ru": "Сервис для тех, кто продаёт футболки, кружки и т.п. с принтами на Etsy и Shopify: ИИ сам делает рисунки; продавцы платят за сервис",
+   "en": "Service for people selling printed shirts, mugs etc. on Etsy and Shopify: AI makes the designs; sellers pay for it"
+  },
+  "bidder-iq": {
+   "ru": "Сайт для покупателей и продавцов коллекционных машин: показывает, за сколько продавались похожие машины на аукционах",
+   "en": "Site for collector-car buyers and sellers: shows what similar cars sold for at auctions"
+  },
+  "ecomstatement-com": {
+   "ru": "Набор инструментов для интернет-магазинов: реклама и поиск покупателей (подробнее на TrustMRR не сказано)",
+   "en": "Toolkit for online shops: advertising and finding buyers (TrustMRR gives no more detail)"
+  }
+ }
+}

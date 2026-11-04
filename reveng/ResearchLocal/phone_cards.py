@@ -62,7 +62,9 @@ def contest_cards(root, today):
         prize = r.get('prize') or {}
         if not r.get('declared_deadline') or prize.get('currency') != 'USD' or (prize.get('amount') or 0) < MIN_CONTEST_PRIZE_USD:
             continue
-        ru, en = [], []
+        # owner 04.11: first a plain sentence of what this is (the contests read here are AI film contests)
+        ru = ['Суть: снять короткий фильм с помощью ИИ и подать на конкурс; деньги получают только призёры']
+        en = ['In short: make a short film with AI tools and enter it; only winners get money']
         if r.get('declared_deadline'):
             d = date.fromisoformat(r['declared_deadline']); days = (d - date.fromisoformat(today)).days
             ru.append('Подать до ' + d.strftime('%d.%m.%Y') + ' (осталось ' + str(days) + ' дн.)'); en.append('Deadline ' + d.strftime('%b %d, %Y') + ' (' + str(days) + ' days left)')
@@ -81,7 +83,7 @@ def contest_cards(root, today):
             read = sum(1 for p in r.get('rules_pages', []) if p.get('classification') not in ('source_unavailable', 'not_checked_this_run_budget'))
             ru.append('Правила дочитаны: страниц ' + str(read) + ' (подробно - на ПК)'); en.append('Rules read: ' + str(read) + ' page(s) (details on the PC)')
         miss = [KEY_UNKNOWN[k] for k, f in (('deadline', 'declared_deadline'), ('prize', 'prize')) if not r.get(f)]
-        out.append(finish({'id': card_id('c', r['key']), 'kind': 'reveng', 'prof': 'конкурс', 'prof_en': 'contest', 'text': clean_title(r['title'])[:70], 'lines': ru, 'lines_en': en,
+        out.append(finish({'id': card_id('c', r['key']), 'kind': 'reveng', 'prof': 'конкурс', 'prof_en': 'contest', 'text': clean_title(r['title'])[:70], 'lines': ru[:6], 'lines_en': en[:6],
                            'unknown': ('Не указан ' + ' и '.join(x[0] for x in miss) + '.') if miss else '',
                            'unknown_en': ('No ' + ' or '.join(x[1] for x in miss) + ' stated.') if miss else '',
                            'url': r['source_url']}))
@@ -184,23 +186,27 @@ def signal_cards(root, analysed=()):
     if claim != sha(json.dumps(data, sort_keys=True, ensure_ascii=False)):
         raise ValueError('signals seal mismatch; no cards written from it')
     usd = lambda v: money({'amount': round(v), 'currency': 'USD'}); out = []
+    try:   # owner 04.11: a card starts with one plain sentence (what is sold, to whom, where the money comes from)
+        plain = json.loads((root / 'signal-summaries.json').read_text(encoding='utf-8')).get('summaries', {})
+    except (OSError, ValueError):
+        plain = {}
     for r in data.get('signals', []):
         age = r.get('age_months')
         if r['slug'] in analysed or age is None or age > SIGNAL_MAX_AGE_MONTHS or r['last30_usd'] < SIGNAL_MIN_30D_USD:
             continue
+        s = plain.get(r['slug']) or {}
+        if not (s.get('ru') and s.get('en')):
+            continue   # no plain description yet: the card would not be understood
         p = r.get('profile') or {}
-        ru = ['Заработал ' + usd(r['last30_usd']) + ' за 30 дней, проекту ' + str(age) + ' мес (выручка проверена TrustMRR)']
-        en = ['Made ' + usd(r['last30_usd']) + ' in 30 days, ' + str(age) + ' months old (revenue verified by TrustMRR)']
-        what = p.get('value') or r.get('what')
-        if what:
-            ru.append('Что: ' + what); en.append('What: ' + what)
+        ru = [str(s['ru'])[:200], 'Заработал ' + usd(r['last30_usd']) + ' за 30 дней, проекту ' + str(age) + ' мес (выручка проверена TrustMRR)']
+        en = [str(s['en'])[:200], 'Made ' + usd(r['last30_usd']) + ' in 30 days, ' + str(age) + ' months old (revenue verified by TrustMRR)']
         for key, ru_label, en_label in (('pricing', 'Цена', 'Price'), ('channels', 'Откуда клиенты', 'Customers from'), ('team', 'Команда', 'Team')):
             if p.get(key):
                 ru.append(ru_label + ': ' + p[key]); en.append(en_label + ': ' + p[key])
         out.append(finish({'id': card_id('s', r['slug']), 'kind': 'reveng', 'prof': 'сигнал', 'prof_en': 'signal', 'text': r['name'][:70],
-                           'lines': ru[:6], 'lines_en': en[:6], 'url': r.get('url'),
-                           'unknown': 'Не разобрано: сколько стоит начать, содержать и что может убить. Вправо - разберу.',
-                           'unknown_en': 'Not analysed: cost to start, to run, what kills it. Swipe right and it gets analysed.'}))
+                           'lines': ru[:5], 'lines_en': en[:5], 'url': r.get('url'),
+                           'unknown': 'Описание - пересказ ассистента со страницы TrustMRR. Не разобрано, сколько стоит начать и что может убить. Вправо - разберу.',
+                           'unknown_en': 'Description retold by the assistant from the TrustMRR page. Not analysed: cost to start, what kills it. Swipe right and it gets analysed.'}))
     return out
 
 

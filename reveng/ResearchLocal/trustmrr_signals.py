@@ -115,3 +115,5 @@ if __name__ == '__main__':
     print(r['status'], r.get('error', ''), 'signals', len(r['signals']), 'requests', r['source_requests'])
     for x in r['signals']:
         print('  $%s/30d' % int(x['last30_usd']), 'age', x.get('age_months'), 'mo |', x['name'], '|', x['category'], '|', x['what'][:110])
+        pr = x.get('profile') or {}
+        print('     ', x['slug'], '|', ' | '.join(k + ': ' + pr[k][:90] for k in ('pricing', 'channels', 'team', 'audience') if pr.get(k)))

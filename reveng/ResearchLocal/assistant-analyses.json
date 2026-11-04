@@ -8,6 +8,7 @@
    "title": "Сайты для местных фирм без сайта",
    "title_en": "Websites for local businesses that have none",
    "lines": [
+    "Суть: найти местные фирмы без сайта (парикмахерские, мастерские, кафе), заранее сделать им сайт с помощью ИИ и продать",
     "Старт: до $500 (конструктор от $17/мес, домен ~$11/год, сайт делает ИИ)",
     "Цена: фрилансеры берут $1 200-3 500; почти треть малых фирм тратит на сайт до $500",
     "Поддержка: $50-500/мес у малых фирм; хостинг $5-15/мес, остаётся ~$35-45 с клиента",
@@ -15,6 +16,7 @@
     "Тест: сделать 10 фирмам сайт заранее и предложить купить"
    ],
    "lines_en": [
+    "In short: find local businesses with no website, build them one with AI in advance and sell it",
     "Start: under $500 (builder from $17/mo, domain ~$11/yr, AI builds the site)",
     "Price: freelancers charge $1,200-3,500; almost a third of small firms spend under $500",
     "Upkeep: small firms pay $50-500/mo; hosting $5-15/mo, ~$35-45 left per client",
@@ -38,19 +40,19 @@
    "title": "Платная утилита для Mac/Windows за разовые $6-19",
    "title_en": "A paid Mac/Windows utility for a one-time $6-19",
    "lines": [
+    "Суть: сделать одну маленькую полезную программу для компьютера и продавать её разово за $6-19, без подписки",
     "Пример: почтовая программа bytemail - $24 019 за 30 дней, проекту 2 месяца, один человек (проверено через Stripe)",
     "Второй пример: панель задач для Windows lumabar - $1 806 за 30 дней в первый месяц, ~350 покупателей по $5.99, пришли с Reddit",
     "Как зарабатывает: разовая покупка $19, сервера нет (почта не идёт через их сервер) - содержать почти нечего",
     "Старт: Mac и программист (или ИИ-помощник для кода); взнос разработчика Apple - если продавать через App Store",
-    "Через сколько деньги: у примера - первые недели после запуска",
     "Тест: найти частую жалобу Mac-пользователей на встроенную программу и сделать простую замену"
    ],
    "lines_en": [
+    "In short: build one small useful desktop program and sell it once for $6-19, no subscription",
     "Example: bytemail mail app - $24,019 in 30 days, 2 months old, one person (verified via Stripe)",
     "Second example: lumabar Windows taskbar - $1,806 in 30 days in its first month, ~350 buyers at $5.99, came from Reddit",
     "Money: one-time $19, no server (mail never touches theirs) - almost nothing to run",
     "Start: a Mac and a developer (or an AI coding assistant); Apple developer fee if sold via the App Store",
-    "Time to money: for the example - the first weeks after launch",
     "Test: find a common Mac user complaint about a built-in app and ship a simple replacement"
    ],
    "unknown": "Разбор ассистента. Неизвестно: откуда пришли покупатели (каналы на странице не указаны) и не разовый ли это всплеск после запуска - выручка разовая, подписок всего 91. Нужен навык разработки под Mac.",
