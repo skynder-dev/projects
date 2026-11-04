@@ -231,6 +231,8 @@ def write(root, given_dir=None, today=None):
     """Writes the cards into the phone folder when it exists; returns (number of cards, where or why not)."""
     root = Path(root); today = today or date.today().isoformat()
     # businesses for sale are not ideas to start (owner 03.11: mature, costly to run, survivors only); kept as data, not cards
+    # single card resales are not a business model either (owner 04.11); deal math stays as data until a model card answers
+    # the four questions (start, monthly cost, time to money, what kills it)
     mine = assistant_cards(root)
     analysed = set()
     try:
@@ -238,7 +240,7 @@ def write(root, given_dir=None, today=None):
             analysed.update(re.findall(r'trustmrr\.com/startup/([a-z0-9-]+)', ' '.join(a.get('sources', []))))
     except (OSError, ValueError):
         pass
-    cards = mine + signal_cards(root, analysed) + deal_cards(root) + contest_cards(root, today)
+    cards = mine + signal_cards(root, analysed) + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export

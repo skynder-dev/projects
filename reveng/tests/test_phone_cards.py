@@ -29,8 +29,9 @@ class Tests(unittest.TestCase):
     def test_cards(self):
         n, where = pc.write(self.root, self.phone, today='2026-11-01')
         cards = json.loads((self.phone / 'reveng-cards.json').read_text(encoding='utf-8'))['cards']
-        self.assertEqual(n, 3); self.assertEqual([c['id'] for c in cards], ['rv_d_half', 'rv_d_sheet', 'rv_c_open'])
-        cards = [cards[2], cards[0], cards[1]]   # below: contest, half deal, full deal
+        self.assertEqual(n, 1); self.assertEqual([c['id'] for c in cards], ['rv_c_open'])   # single deals are not a model: no deck cards
+        deals = pc.deal_cards(self.root); self.assertEqual([c['id'] for c in deals], ['rv_d_half', 'rv_d_sheet'])
+        cards = cards + deals   # below: contest, half deal, full deal
         for c in cards: self.assertRegex(c['id'], r'^rv_[A-Za-z0-9_.-]{1,76}$'); self.assertEqual(c['kind'], 'reveng'); self.assertEqual(len(c['rev']), 12)
         self.assertEqual(cards[0]['lines'][:2], ['Подать до 20.11.2026 (осталось 19 дн.)', 'Приз: 1 000 000 USD'])
         self.assertEqual(cards[0]['lines_en'][:2], ['Deadline Nov 20, 2026 (19 days left)', 'Prize: 1 000 000 USD'])
