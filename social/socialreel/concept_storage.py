@@ -2,6 +2,28 @@
 import os,tempfile
 from .common import stable_json,sha256_bytes
 from pathlib import Path
+from .common import PipelineError
+
+
+def immutable_bytes(path, data):
+    """Create once, fsync, or reuse byte-identical content; never replace history."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        stream = path.open('xb')
+    except FileExistsError:
+        if path.is_symlink() or not path.is_file():
+            raise PipelineError('Immutable file differs; original preserved')
+        with path.open('r+b' if os.name == 'nt' else 'rb') as stream:
+            if stream.read() != data:
+                raise PipelineError('Immutable file differs; original preserved: ' + str(path))
+            os.fsync(stream.fileno())
+        return False
+    with stream:
+        stream.write(data)
+        stream.flush()
+        os.fsync(stream.fileno())
+    return True
 
 def write_json(p: Path, obj) -> str:
     """Write deterministic JSON and return its sha256."""
