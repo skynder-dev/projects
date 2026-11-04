@@ -23,11 +23,23 @@ def main(argv=None):
     sub.add_parser("selftest", help="run unit tests")
     ix = sub.add_parser("index", help="write README.md index for a results folder")
     ix.add_argument("results_dir")
-    t = sub.add_parser("topics", help="discover and rank Grants.gov topics without generating media")
+    t = sub.add_parser("topics", help="discover and rank official topics without generating media")
     t.add_argument("--config", default=str(ROOT / "config.json"))
     t.add_argument("--out", required=True, help="directory for topics.json and exact source snapshots")
-    t.add_argument("--fixture", help="offline normalized export; never makes an API request")
+    t.add_argument("--fixture", help="offline Grants.gov export or multi-source manifest; no API request")
     t.add_argument("--as-of", help="scoring date, YYYY-MM-DD (default: current UTC date)")
+    t.add_argument("--sources", help="comma-separated grants,usagov,studentaid,scorecard (default: grants)")
+    s = sub.add_parser("source", help="official source to record, claims and existing concept-core inputs")
+    origin = s.add_mutually_exclusive_group(required=True)
+    origin.add_argument("--source", choices=("usagov", "studentaid", "scorecard"))
+    origin.add_argument("--topics", type=Path, help="replay a typed topics.json bundle offline")
+    s.add_argument("--topic-id", help="topic_id from --topics; default is the first ranked topic")
+    s.add_argument("--page", help="configured page name or approved official URL")
+    s.add_argument("--college-id", help="College Scorecard school ID")
+    s.add_argument("--fixture", type=Path, help="offline HTML/JSON bytes for a single source")
+    s.add_argument("--out", required=True, type=Path)
+    s.add_argument("--config", default=str(ROOT / "config.json"))
+    s.add_argument("--prepare-request", action="store_true", help="attempt existing core admission; never calls a model")
     a = ap.parse_args(argv)
 
     if a.cmd == "selftest":
@@ -42,12 +54,30 @@ def main(argv=None):
         res = rebuild(Path(a.run_dir))
         print(json.dumps(res, indent=2))
         return 0 if res["byte_identical"] else 3
+    if a.cmd == "source":
+        from .source_intake import acquire, replay_topic, write_bundle
+        try:
+            if a.topics:
+                if a.fixture:
+                    raise PipelineError("--topics replays its own snapshots; do not combine with --fixture")
+                record, claims = replay_topic(a.topics, a.out, a.topic_id)
+            else:
+                if a.topic_id:
+                    raise PipelineError("--topic-id requires --topics")
+                record, claims, _ = acquire(a.source, a.out, page=a.page, school_id=a.college_id, fixture=a.fixture)
+            result = write_bundle(record, claims, a.out, read_json(a.config), prepare_request=a.prepare_request)
+        except (PipelineError, OSError, ValueError) as error:
+            print(f"SOURCE FAILED: {error}", file=sys.stderr)
+            return 2
+        print(json.dumps(result, indent=2))
+        return 2 if result.get("request_refused") else 0
     if a.cmd == "topics":
         from .topics import run as run_topics
         try:
             result = run_topics(read_json(a.config), Path(a.out),
                                 fixture=Path(a.fixture) if a.fixture else None,
-                                as_of=a.as_of, config_dir=Path(a.config).resolve().parent)
+                                as_of=a.as_of, config_dir=Path(a.config).resolve().parent,
+                                sources=[source.strip() for source in a.sources.split(",")] if a.sources else None)
         except (PipelineError, OSError, ValueError) as e:
             print(f"TOPICS FAILED: {e}", file=sys.stderr)
             return 2

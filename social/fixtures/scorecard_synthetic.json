@@ -1,0 +1,14 @@
+{
+  "fixture_note": "SYNTHETIC OFFLINE TEST FIXTURE; not an actual institution or API response",
+  "metadata": {"total": 1, "page": 0, "per_page": 1},
+  "results": [
+    {
+      "id": 999001,
+      "school.name": "Synthetic College (offline example)",
+      "school.state": "SYNTHETIC",
+      "school.school_url": "example.invalid",
+      "latest.aid.pell_grant_rate": 0.42,
+      "latest.aid.federal_loan_rate": 0.0
+    }
+  ]
+}
