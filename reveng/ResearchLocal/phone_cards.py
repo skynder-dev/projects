@@ -192,14 +192,16 @@ def signal_cards(root, analysed=()):
         plain = {}
     for r in data.get('signals', []):
         age = r.get('age_months')
-        if r['slug'] in analysed or age is None or age > SIGNAL_MAX_AGE_MONTHS or r['last30_usd'] < SIGNAL_MIN_30D_USD:
+        if r['slug'] in analysed or (age is not None and age > SIGNAL_MAX_AGE_MONTHS) or r['last30_usd'] < SIGNAL_MIN_30D_USD:
             continue
         s = plain.get(r['slug']) or {}
         if not (s.get('ru') and s.get('en')):
             continue   # no plain description yet: the card would not be understood
         p = r.get('profile') or {}
-        ru = [str(s['ru'])[:200], 'Заработал ' + usd(r['last30_usd']) + ' за 30 дней, проекту ' + str(age) + ' мес (выручка проверена TrustMRR)']
-        en = [str(s['en'])[:200], 'Made ' + usd(r['last30_usd']) + ' in 30 days, ' + str(age) + ' months old (revenue verified by TrustMRR)']
+        ru_age = 'проекту ' + str(age) + ' мес' if age is not None else 'возраст не указан'   # unknown age is shown, not hidden
+        en_age = str(age) + ' months old' if age is not None else 'age not stated'
+        ru = [str(s['ru'])[:200], 'Заработал ' + usd(r['last30_usd']) + ' за 30 дней, ' + ru_age + ' (выручка проверена TrustMRR)']
+        en = [str(s['en'])[:200], 'Made ' + usd(r['last30_usd']) + ' in 30 days, ' + en_age + ' (revenue verified by TrustMRR)']
         for key, ru_label, en_label in (('pricing', 'Цена', 'Price'), ('channels', 'Откуда клиенты', 'Customers from'), ('team', 'Команда', 'Team')):
             if p.get(key):
                 ru.append(ru_label + ': ' + p[key]); en.append(en_label + ': ' + p[key])

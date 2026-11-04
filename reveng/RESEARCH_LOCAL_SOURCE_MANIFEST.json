@@ -763,8 +763,8 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 19189,
-      "sha256": "61b68b48d16626a09a10a6ec055239fce187a0d50db0a0ea9b1b1b81a8779d02",
+      "bytes": 19396,
+      "sha256": "8176c09106cdf4e7c3da5d228bf8c757b896353336fbbb7398d1907c801096e7",
       "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines+skip_empty_clean_titles+contests_10k+business_cards+plain_models+models_cap+ways_not_buy+budget_100k+assistant_cards+signal_cards"
     },
     {
@@ -951,8 +951,8 @@
     },
     {
       "path": "reveng/ResearchLocal/signal-summaries.json",
-      "bytes": 2979,
-      "sha256": "fe275e372e34eac550c174473e946033a637777c2faeeb467c1d7edacf66e151"
+      "bytes": 3387,
+      "sha256": "8ab34b1eb0e8bb12c35e6bfe42f03803fc70a20a3156b8ec5fc80177953d3a2c"
     },
     {
       "path": "reveng/ResearchLocal/social_idea_preview.py",
@@ -1191,8 +1191,8 @@
     },
     {
       "path": "reveng/tests/test_phone_cards.py",
-      "bytes": 9273,
-      "sha256": "2c41bcafc74f9144f7f4b069c229b52aa72a38b24ac81fb4f0a47c69bf39a6e1",
+      "bytes": 9507,
+      "sha256": "6b1483eaf88eb8f6d4eea170d625c7c72857d77a3ebf424e77bc68826ee921ec",
       "change": "new_phone_cards_offline_contracts_2026-11-01+bilingual_short_unknown+skip_empty_clean_titles+order+budget_100k+assistant_cards+signal_cards"
     },
     {
