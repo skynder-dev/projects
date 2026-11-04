@@ -89,3 +89,12 @@ Without it, a page that fits stays whole; otherwise the first complete program
 that fits is chosen and reported. Topics can include `usagov:energy:liheap`,
 `usagov:energy:wap` and `usagov:energy:disconnected` from one snapshot.
 See [Energy programs](docs/ENERGY_PROGRAMS.md) for offline commands and limits.
+
+## Saved concepts and owner choices
+
+`python -m socialreel concepts import TRIAL_JSON --store DIR` saves a trial in the
+existing ConceptStore. `concepts list/show/decide/edit/export/handoff` provide
+revision history, an explicit owner pick or rejection, edits and a Russian
+Markdown page for phone review. Edits make the previous choice stale; handoff
+requires a current explicit pick and source provenance. No model runs in these
+commands. See [Save and choose](docs/SAVE_AND_CHOOSE.md) for commands and recovery.

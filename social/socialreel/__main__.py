@@ -41,8 +41,13 @@ def main(argv=None):
     s.add_argument("--out", required=True, type=Path)
     s.add_argument("--config", default=str(ROOT / "config.json"))
     s.add_argument("--prepare-request", action="store_true", help="attempt existing core admission; never calls a model")
+    from .concept_choose_cli import add_parser
+    add_parser(sub)
     a = ap.parse_args(argv)
 
+    if a.cmd == "concepts":
+        from .concept_choose_cli import run as run_concepts
+        return run_concepts(a)
     if a.cmd == "selftest":
         suite = unittest.defaultTestLoader.discover(str(ROOT / "tests"), top_level_dir=str(ROOT))
         res = unittest.TextTestRunner(verbosity=2).run(suite)
