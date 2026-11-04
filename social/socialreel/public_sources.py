@@ -222,13 +222,13 @@ class MainHTML(HTMLParser):
         return self.text(title).strip(), title.path, sections
 
 
-def html_record(raw: bytes, receipt: dict, source_type: str) -> dict:
+def html_record(raw: bytes, receipt: dict, source_type: str, *, parser_type=MainHTML) -> dict:
     if source_type not in HTML_HOSTS:
         raise PipelineError("Unsupported HTML source type")
     official_url(receipt["url"], HTML_HOSTS[source_type])
     try:
         # USA.gov/StudentAid pages are expected to be UTF-8. Fail rather than replace characters.
-        parser = MainHTML()
+        parser = parser_type()
         parser.feed(raw.decode("utf-8-sig"))
         parser.close()
     except UnicodeError:

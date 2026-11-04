@@ -60,7 +60,8 @@ class OfflineSourceCase(unittest.TestCase):
 
 class USAGovTests(OfflineSourceCase):
     def acquire(self, page="energy"):
-        return usagov.USAGovClient(self.home / "source").page(page, fixture=FIX / f"usagov_{page}_synthetic.html")
+        fixture_name = "wages" if page == "wage_laws" else page
+        return usagov.USAGovClient(self.home / "source").page(page, fixture=FIX / f"usagov_{fixture_name}_synthetic.html")
 
     def test_fixture_raw_bytes_hash_and_complete_conditions_in_claims(self):
         record, receipt = self.acquire()
@@ -89,7 +90,7 @@ class USAGovTests(OfflineSourceCase):
         self.assertEqual(record["source_type"], "usagov")
 
     def test_wages_keeps_recovery_identity_and_exclusions(self):
-        record, _ = self.acquire("wages")
+        record, _ = self.acquire("wage_laws")
         rows = usagov.build_claims(record)
         text = "\n".join(row["statement"] for row in rows)
         self.assertIn("only if the Wage and Hour Division recovered wages", text)
@@ -160,7 +161,7 @@ class USAGovTests(OfflineSourceCase):
         record, receipt = usagov.USAGovClient(self.home / "source").page("energy", fixture=path)
         rows = usagov.build_claims(record)
         self.assert_receipt(receipt, raw)
-        self.assertIn("Only eligible households may apply. " * 399, rows[1]["statement"])
+        self.assertIn("Only eligible households may apply. " * 399, rows[0]["quote"])
         with self.assertRaisesRegex(PipelineError, "8192.*no clipping"):
             core.build_request(record, rows, config())
 
@@ -270,7 +271,7 @@ class USAGovTests(OfflineSourceCase):
         data = topics.run({"topics": {"seen_file": "seen.json"}}, self.home / "out", sources=["usagov"],
                           fixture=FIX / "public_sources_synthetic.json", as_of="2026-11-04", config_dir=self.home)
         rows = {row["topic_id"]: row for row in data["topics"]}
-        self.assertLess(rows["usagov:energy"]["score"]["total"], rows["usagov:wages"]["score"]["total"])
+        self.assertLess(rows["usagov:energy"]["score"]["total"], rows["usagov:wage_laws"]["score"]["total"])
         self.assertTrue(rows["usagov:energy"]["score"]["components"]["novelty"]["seen"])
 
     def test_real_network_guard_is_active(self):

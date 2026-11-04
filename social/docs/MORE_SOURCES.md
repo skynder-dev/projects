@@ -13,7 +13,7 @@ python -m socialreel source --source usagov --page energy --fixture fixtures/usa
 python -m socialreel source --source studentaid --page pell --fixture fixtures/studentaid_pell_synthetic.html --out runs/source-pell
 python -m socialreel source --source scorecard --college-id 999001 --fixture fixtures/scorecard_synthetic.json --out runs/source-scorecard
 python -m socialreel topics --sources usagov,studentaid,scorecard --fixture fixtures/public_sources_synthetic.json --out runs/public-topics --as-of 2026-11-04
-python -m socialreel source --topics runs/public-topics/topics.json --topic-id usagov:wages --out runs/source-wages-replayed
+python -m socialreel source --topics runs/public-topics/topics.json --topic-id usagov:wage_laws --out runs/source-wage-laws-replayed
 ```
 
 Fixture-файлы с суффиксом `synthetic` явно синтетические: они проверяют механизм,
@@ -27,8 +27,10 @@ manifest не содержит fixture для выбранного источн�
 
 ```sh
 python -m socialreel source --source usagov --page energy --out runs/energy-live
-python -m socialreel source --source usagov --page wages --out runs/wages-live
+python -m socialreel source --source usagov --page wage_laws --out runs/wage-laws-live
 python -m socialreel source --source usagov --page unclaimed --out runs/unclaimed-live
+python -m socialreel source --source usagov --page unclaimed_tax_refunds --out runs/tax-refunds-live
+python -m socialreel source --source usagov --page workers_comp --out runs/workers-comp-live
 python -m socialreel source --source studentaid --page pell --out runs/pell-live
 python -m socialreel source --source studentaid --page fafsa_deadlines --out runs/fafsa-live
 python -m socialreel topics --sources usagov,studentaid --out runs/public-topics-live
@@ -69,7 +71,10 @@ HTML-разбор выбирает один `main`/`role=main`, иначе од�
 байты остаются в снимке. Разделы, включая исключения, не сокращаются и не переводятся.
 
 `claims.json` имеет прежнюю форму: `key`, `statement`, `values`, `source`.
-USA.gov не выдаётся за Grants.gov. Текст утверждений копирует полные разделы;
+USA.gov не выдаётся за Grants.gov. После CODEX_04 USA.gov отдельно сохраняет разделы,
+пункты списков и строки таблиц, а также заголовок с вводным текстом. Полные цитаты,
+выбор целых фактов и отметки завершённых программ описаны в [USAGOV_FACTS.md](USAGOV_FACTS.md).
+Текст утверждений копирует целые структурные единицы;
 «may» не превращается в обещание. Различия штатов сохраняются при наличии такого
 текста, а не приписываются всем программам. Для HTML есть пути элементов и хеш
 извлечённого текста, для Scorecard — точный JSON Pointer (плоский или вложенный
@@ -104,8 +109,10 @@ SHA-256 сохранённого снимка и заново строит ут�
 
 Существующие границы ядра действуют и здесь: полный контекст условий не больше
 8192 байт UTF-8, прежние ограничения запроса и проверенный офлайн-токенизатор.
-Слишком длинная страница сохраняется целиком в record/claims, затем получает отказ
-ядра без обрезки. Автоматическое сокращение источников и обход допуска не добавлены.
+Слишком длинная страница сохраняется целиком в record/claims. Для USA.gov отдельный
+набор полных фактов ограничивается описанным правилом отбора; ключи пропусков
+сохраняются в комплекте. Неделимые обязательные условия, которые не помещаются,
+дают отказ без обрезки. StudentAid не менялся; обход допуска не добавлен.
 
 ## Проверки
 
@@ -118,8 +125,9 @@ python -B -m unittest discover -s tests -t .
 python -B -m unittest tests.test_usagov tests.test_studentaid -v
 ```
 
-Офлайн прошли 88 тестов ядра и полный набор 172 теста; новых проверок источников —
-30. Для старого полного набора нужны уже предусмотренные Pillow, pypdf и
+На этапе CODEX_03 офлайн прошли 88 тестов ядра и полный набор 172 теста; новых
+проверок источников было 30. Проверки CODEX_04 перечислены в USAGOV_FACTS.md.
+Для старого полного набора нужны уже предусмотренные Pillow, pypdf и
 ffmpeg/ffprobe. Новые тесты запускаются на Python 3.11 без новых зависимостей и
 блокируют настоящие сетевые соединения. Проверка построителя запроса останавливается
 на границе допуска, не изображая успешную проверку токенизатора или запуск модели.
