@@ -267,7 +267,7 @@ class FullConditionContext(unittest.TestCase):
         detail['synopsis']['applicantEligibilityDesc'] = 'X'
         rec, rows, _ = record_and_claims(hit, detail, search, meta)
         before = copy.deepcopy(rows)
-        with patch.object(admission, 'admit') as admit, self.assertRaisesRegex(PipelineError, '8192 UTF-8 bytes; no clipping'):
+        with patch.object(admission, 'admit') as admit, self.assertRaisesRegex(PipelineError, f'{core.SOURCE_CONTEXT_BYTES} UTF-8 bytes; no clipping'):
             core.build_request(rec, rows, config())
         admit.assert_not_called()
         self.assertEqual(rows, before)

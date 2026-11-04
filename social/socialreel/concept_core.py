@@ -9,7 +9,9 @@ VERSION = "SOCIAL_PROPOSED_CONCEPT_COMPACT_V1"
 IDS = ("C1", "C2", "C3")
 RESULT_V2 = "SOCIAL_CONCEPT_RESULT_V2"
 CARD_TEXT_FIELDS = ('viewer_question_ru','angle_ru','what_viewer_learns_ru','not_answered_ru','hook')
-SOURCE_CONTEXT_BYTES = 8192
+# 04.11.2026: 8192 refused the live USA.gov energy-help page (mandatory conditions do not fit); the model window is
+# 16384 tokens and the request bound 40 KiB, so 16384 bytes of full source context still fits with margin.
+SOURCE_CONTEXT_BYTES = 16384
 
 def authorized(cfg):
  p=cfg.get('local_editorial') or {}
@@ -84,7 +86,7 @@ def inputs(record, claims, cfg, *, source_evidence=None):
             except UnicodeEncodeError as error:raise PipelineError('Concept source context contains invalid Unicode') from error
             text_bytes += len(raw)
             if text_bytes > SOURCE_CONTEXT_BYTES:
-                raise PipelineError('Concept full source context exceeds 8192 UTF-8 bytes; no clipping; narrow the source explicitly')
+                raise PipelineError(f'Concept full source context exceeds {SOURCE_CONTEXT_BYTES} UTF-8 bytes; no clipping; narrow the source explicitly')
             if sha256_bytes(raw) != row['text_sha256']:
                 raise PipelineError('Concept full source context text/hash mismatch')
             if expected_context.get(row['field']) != (row['text'], row['representation']):

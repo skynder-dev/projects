@@ -155,14 +155,14 @@ class USAGovTests(OfflineSourceCase):
                 usagov.USAGovClient(self.home / "source").page("energy", fixture=path)
 
     def test_long_source_is_kept_and_existing_core_refuses_without_clipping(self):
-        raw = b"<main><h1>Synthetic</h1><p>" + b"Only eligible households may apply. " * 400 + b"</p></main>"
+        raw = b"<main><h1>Synthetic</h1><p>" + b"Only eligible households may apply. " * 500 + b"</p></main>"
         path = self.home / "long.html"
         path.write_bytes(raw)
         record, receipt = usagov.USAGovClient(self.home / "source").page("energy", fixture=path)
         rows = usagov.build_claims(record)
         self.assert_receipt(receipt, raw)
-        self.assertIn("Only eligible households may apply. " * 399, rows[0]["quote"])
-        with self.assertRaisesRegex(PipelineError, "8192.*no clipping"):
+        self.assertIn("Only eligible households may apply. " * 499, rows[0]["quote"])
+        with self.assertRaisesRegex(PipelineError, str(core.SOURCE_CONTEXT_BYTES) + ".*no clipping"):
             core.build_request(record, rows, config())
 
     def test_source_cli_writes_same_downstream_inputs_without_model(self):
