@@ -13,6 +13,12 @@ PAGES = {
     "wage_laws": "https://www.usa.gov/wage-laws",
     "unclaimed_tax_refunds": "https://www.usa.gov/unclaimed-tax-refunds",
     "workers_comp": "https://www.usa.gov/workers-compensation",
+    # added 04.11.2026 (found by search on usa.gov; see docs/USAGOV_PAGES_NEXT.md)
+    "financial_aid": "https://www.usa.gov/financial-aid",
+    "grants_and_loans": "https://www.usa.gov/government-grants-and-loans",
+    "financial_hardship": "https://www.usa.gov/financial-hardship",
+    "housing_help": "https://www.usa.gov/housing-help",
+    "disaster": "https://www.usa.gov/disaster",
 }
 
 

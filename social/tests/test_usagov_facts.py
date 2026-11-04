@@ -226,7 +226,9 @@ class USAGovFactsTests(OfflineSourceCase):
         self.assertLess(len(stable_json(body).encode()), admission.BASE_BYTES)
 
     def test_catalog_and_new_pages_keep_explicit_topics_and_conditions(self):
-        self.assertEqual(set(usagov.PAGES), {"energy", "unclaimed", "wage_laws", "unclaimed_tax_refunds", "workers_comp"})
+        self.assertEqual(set(usagov.PAGES), {"energy", "unclaimed", "wage_laws", "unclaimed_tax_refunds", "workers_comp",
+                                             "financial_aid", "grants_and_loans", "financial_hardship", "housing_help",
+                                             "disaster"})
         self.assertEqual(read_json(FIX.parent / "public_sources_config.json")["usagov"]["pages"], list(usagov.PAGES))
         for page, fixture, intent in (("wage_laws", "wages", "wages"), ("unclaimed_tax_refunds", "unclaimed_tax_refunds", "unclaimed"),
                                        ("workers_comp", "workers_comp", None)):

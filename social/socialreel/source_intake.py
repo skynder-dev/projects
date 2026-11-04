@@ -17,7 +17,7 @@ def acquire(source_type: str, out: Path, *, page: str | None = None, school_id: 
             fixture: Path | None = None) -> tuple[dict, list[dict], list[dict]]:
     if source_type == "usagov":
         if not page:
-            raise PipelineError("USA.gov requires --page (energy, unclaimed, wage_laws, unclaimed_tax_refunds, workers_comp or official URL)")
+            raise PipelineError("USA.gov requires --page (a page name from socialreel/usagov.py PAGES or an official URL)")
         client = usagov.USAGovClient(out / "source")
         record, receipt = client.page(page, fixture=fixture)
         rows = usagov.build_claims(record, receipt)

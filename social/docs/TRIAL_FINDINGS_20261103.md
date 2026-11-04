@@ -130,3 +130,9 @@
 - workers_comp: «Workers' comp can help if you get hurt at work.», «Your employer type decides where to file your
   claim.», «Denied? You can still appeal the decision.» (про обжалование: проверить, есть ли это в источнике).
 - Принят код Codex CODEX_05 (PR #9): страница energy делится на программы LIHEAP, WAP, отключение; 210/210, ядро 88/88.
+
+## energy после CODEX_05, 04.11.2026
+- Прошла: 6 фактов, 3 идеи: «If your energy bills are too high, there is help available.», «You can apply online in
+  some cases or visit your local office.», «If your utilities were disconnected, you can get help to restore them.»
+  (последнее сильнее источника: «можете получить помощь» вместо «помощь может быть»). Нужна проверка «может → будет».
+- В каталог добавлены 5 страниц из docs/USAGOV_PAGES_NEXT.md, прогон идей по ним запущен.
