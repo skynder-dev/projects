@@ -661,8 +661,8 @@
     },
     {
       "path": "reveng/ResearchLocal/hn_income.py",
-      "bytes": 6456,
-      "sha256": "f9166215b8d86cd90a3091dca06cdb3f92d908ba50ee9aa7cf3b668cc5323199",
+      "bytes": 6911,
+      "sha256": "d4549a943fb343628780ce80f95aa769360898178ea296cfc7144eaaec6cbfb9",
       "change": "new_hn_income_2026-11-04"
     },
     {
@@ -1035,8 +1035,8 @@
     },
     {
       "path": "reveng/ResearchLocal/trustmrr_signals.py",
-      "bytes": 6745,
-      "sha256": "be4c2421337102274cdffa3d8f3c22ce484a3968292afa88dc4a65eef06d6a0e",
+      "bytes": 7346,
+      "sha256": "b96aedad0a85d4ec61341bfe18afb82e0dd32b3f99389a42a4a7e905595b6e9f",
       "change": "new_trustmrr_signals_2026-11-03+signal_cards"
     },
     {

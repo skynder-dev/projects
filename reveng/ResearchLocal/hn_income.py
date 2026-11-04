@@ -17,12 +17,13 @@ import reveng_local_research as m
 
 SCHEMA = 'reveng-hn-income-v1'
 API = 'https://hn.algolia.com/api/v1/'
-QUERIES = ['profitable side project', 'side project revenue', 'passive income', 'how much do you make', 'bootstrapped revenue']
-MIN_COMMENTS = 80
-MAX_THREADS = 8
+QUERIES = ['profitable side project', 'side project revenue', 'passive income', 'best income stream', 'bootstrapped revenue',
+           'Etsy income', 'YouTube channel income', 'print on demand', 'newsletter revenue', 'make money online']
+MIN_COMMENTS = 40
+MAX_THREADS = 10
 MIN_MONTHLY_USD, MAX_MONTHLY_USD = 1000, 300000
 MAX_AGE_YEARS = 4
-MONEY_TITLE = re.compile(r'income|revenue|money|profit|MRR|\$|earn|side project|business', re.I)
+MONEY_TITLE = re.compile(r'income|revenue|money|profit|MRR|\$|earn|side project|business|Etsy|YouTube|newsletter|print on demand|sell', re.I)
 
 AMOUNT = r'\$\s?(\d{1,3}(?:[,.]\d{3})+|\d+(?:\.\d+)?)\s?(k|K)?'
 PERIOD = r'(?:/\s?(?:mo|month|m)\b|\s?(?:per|a|each|every)\s+month\b|\s?MRR\b|\s?monthly\b|\s?/mth\b)'
@@ -111,5 +112,9 @@ if __name__ == '__main__':
     print(r['status'], r.get('error', ''), 'threads', len(r['threads']), 'people', len(r['people']), 'requests', r['source_requests'])
     for t in r['threads']:
         print('  thread', t['id'], t['comments'], t['title'][:90], t.get('error', ''))
-    for x in r['people'][:40]:
+    try:   # print only people without a plain retelling yet (the assistant writes those)
+        done = set(json.loads((o.root / 'signal-summaries.json').read_text(encoding='utf-8')).get('summaries', {}))
+    except (OSError, ValueError):
+        done = set()
+    for x in [p for p in r['people'] if p['id'] not in done][:45]:
         print('  $%s/mo' % x['monthly_usd'], x['id'], x['date'], '|', re.sub(r'\s+', ' ', x['text'])[:260])
