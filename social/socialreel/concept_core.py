@@ -308,7 +308,10 @@ def build_request(record,claims,cfg,*,source_evidence=None):
                'that the source does not state (for example small, local, new, any). The hook is the first spoken '
                'line of the video in the hook language, at most 15 words, it makes the viewer stay (names the viewer, '
                'a stake, or a surprise) and still keeps the conditions true; a bare field value or a yes/no question '
-               'is not a hook.')
+               'is not a hook. No pressure or promise wording that the source does not support (secure your spot, '
+               'do not miss, guaranteed, act now, free money): a competitive grant is a chance, not a reserved place. '
+               'Mention a deadline only if it is after the current date stated in topic_direction; if the source gives '
+               'a date that is already past, do not build a concept on it and say so in not_answered_ru.')
     result_contract=data.get('result_contract',VERSION)
     if result_contract==RESULT_V2:
         system+=(' If the bound evidence is insufficient for any useful supported concept, return the explicit '

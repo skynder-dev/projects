@@ -108,7 +108,7 @@ cfg = {'writer': 'ollama', 'local_editorial': {'enabled': True, 'execution_autho
        'ollama': {'model': 'qwen3.5:9b'},
        'concept_first': {'enabled': True, 'result_contract': core.RESULT_V2,
                          'brief': {'hook_language': 'en'},
-                         'topic_direction': ('Viewer: people in the US who work in, volunteer for or run the kind of '
+                         'topic_direction': (f'Current date: {today.isoformat()}. Viewer: people in the US who work in, volunteer for or run the kind of '
                                              'organization this program funds, or the professionals and residents it serves. '
                                              'What they can concretely learn, check or bring to their organization about this '
                                              'real federal funding opportunity, keeping every condition and exclusion'),
@@ -192,6 +192,36 @@ except Exception as e:  # noqa: BLE001
     done('validation_failed')
 report['stages']['validate'] = diag
 report['stages']['proposal'] = proposal
+# program checks after the core (diagnostic only, nothing is rewritten): dates already past, pressure wording
+import re as _re
+_MONTHS = {m: i for i, m in enumerate(['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august',
+                                         'september', 'october', 'november', 'december'], 1)}
+_PRESSURE = ('secure your spot', "don't miss", 'do not miss', 'miss the chance', 'guaranteed', 'act now', 'free money',
+             'hurry', 'last chance')
+issues = []
+for c in proposal.get('concepts', []):
+    text = ' '.join(str(c.get(k, '')) for k in core.CARD_TEXT_FIELDS)
+    low = text.lower()
+    for m in _re.finditer(r'(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s+(20\d\d))?', low):
+        y = int(m.group(3)) if m.group(3) else today.year
+        try:
+            d = dt.date(y, _MONTHS[m.group(1)], int(m.group(2)))
+        except ValueError:
+            continue
+        if d < today:
+            issues.append(f"{c['id']}: date already past: {m.group(0)}")
+    for m in _re.finditer(r'(20\d\d)-(\d\d)-(\d\d)|(\d{1,2})\.(\d{1,2})\.(20\d\d)', low):
+        try:
+            d = dt.date(int(m.group(1)), int(m.group(2)), int(m.group(3))) if m.group(1) else dt.date(int(m.group(6)), int(m.group(5)), int(m.group(4)))
+        except ValueError:
+            continue
+        if d < today:
+            issues.append(f"{c['id']}: date already past: {m.group(0)}")
+    for w in _PRESSURE:
+        if w in low:
+            issues.append(f"{c['id']}: pressure wording: {w}")
+report['stages']['program_checks'] = issues
+summary.append('program checks: ' + ('; '.join(issues) if issues else 'no past dates, no pressure wording found'))
 summary.append(f"validate: ok, {diag.get('result_state')}, concepts {diag.get('concept_count')}")
 for c in proposal.get('concepts', []):
     summary.append(f"{c['id']}: {c['viewer_question_ru'][:160]} | hook: {c['hook'][:120]}")
