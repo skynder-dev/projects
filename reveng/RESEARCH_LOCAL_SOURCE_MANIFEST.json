@@ -763,9 +763,9 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 15404,
-      "sha256": "c823d29334cfe0892f48751618c1a179d0a328f1c792f5735c4a28cf87ad58ae",
-      "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines+skip_empty_clean_titles+contests_10k+business_cards+plain_models+models_cap+ways_not_buy+budget_100k+assistant_cards"
+      "bytes": 18159,
+      "sha256": "1cc351c423fbf3edf5dfea42a6da70723b6b7ff42e5fc0fec156d0b94a6d86d5",
+      "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines+skip_empty_clean_titles+contests_10k+business_cards+plain_models+models_cap+ways_not_buy+budget_100k+assistant_cards+signal_cards"
     },
     {
       "path": "reveng/ResearchLocal/plan_mapping.py",
@@ -1024,9 +1024,9 @@
     },
     {
       "path": "reveng/ResearchLocal/trustmrr_signals.py",
-      "bytes": 5619,
-      "sha256": "ffee4087a98e6736f21e630ad56d848e740684b9d0abecad60dc08d49f9f6ce0",
-      "change": "new_trustmrr_signals_2026-11-03"
+      "bytes": 6569,
+      "sha256": "363bbf471c401113c05ec0fdbb9a5c18616b4125a43481a7bd283bbbef60f84b",
+      "change": "new_trustmrr_signals_2026-11-03+signal_cards"
     },
     {
       "path": "reveng/ResearchLocal/wordpress_identity.py",
@@ -1186,9 +1186,9 @@
     },
     {
       "path": "reveng/tests/test_phone_cards.py",
-      "bytes": 6969,
-      "sha256": "104e45fefb3cffe8eb11cb4628f69b0ee8afb20244d1ff1d39284cce30952c62",
-      "change": "new_phone_cards_offline_contracts_2026-11-01+bilingual_short_unknown+skip_empty_clean_titles+order+budget_100k+assistant_cards"
+      "bytes": 8135,
+      "sha256": "64b184ef56dee15af8d55fa8b5f8ab7962a6970a7677530b6f92397380130e23",
+      "change": "new_phone_cards_offline_contracts_2026-11-01+bilingual_short_unknown+skip_empty_clean_titles+order+budget_100k+assistant_cards+signal_cards"
     },
     {
       "path": "reveng/tests/test_price_cache_integrity.py",
@@ -1236,9 +1236,9 @@
     },
     {
       "path": "reveng/tests/test_trustmrr_signals.py",
-      "bytes": 4007,
-      "sha256": "f7b33dfbec6153b0a4e4cbea8172354eeb14656f7fd1e379ea59c89e2804d0f5",
-      "change": "new_trustmrr_signals_offline_contracts_2026-11-03"
+      "bytes": 4322,
+      "sha256": "a2647ab68ae947aff83cd013a226e9a432ed8164129f4d6cc1acc6bee9ab20b6",
+      "change": "new_trustmrr_signals_offline_contracts_2026-11-03+signal_cards"
     }
   ],
   "followon": {

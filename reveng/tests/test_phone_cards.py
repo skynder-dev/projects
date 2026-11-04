@@ -62,6 +62,15 @@ class Tests(unittest.TestCase):
                                                                                    {'id': 'bad id', 'title': 'no'}]}), encoding='utf-8')
         cards = pc.assistant_cards(self.root)
         self.assertEqual([c['id'] for c in cards], ['rv_a_x']); self.assertEqual(cards[0]['prof'], 'разбор ассистента'); self.assertEqual(cards[0]['url'], 'https://example.org/')
+    def test_signal_cards(self):
+        data = {'signals': [{'slug': 'alpha', 'name': 'SYNTHETIC Alpha', 'last30_usd': 4801, 'age_months': 3, 'what': 'does a thing', 'url': 'https://trustmrr.com/startup/alpha',
+                             'profile': {'pricing': '$19 once', 'channels': 'Reddit', 'team': '1 person'}},
+                            {'slug': 'old', 'name': 'Old', 'last30_usd': 9000, 'age_months': 40}, {'slug': 'small', 'name': 'Small', 'last30_usd': 300, 'age_months': 2},
+                            {'slug': 'done', 'name': 'Done', 'last30_usd': 5000, 'age_months': 2}]}
+        (self.root / 'trustmrr-signals.json').write_text(json.dumps(dict(data, integrity_sha256=pc.sha(json.dumps(data, sort_keys=True, ensure_ascii=False)))), encoding='utf-8')
+        cards = pc.signal_cards(self.root, {'done'})
+        self.assertEqual([c['id'] for c in cards], ['rv_s_alpha'])
+        self.assertEqual(cards[0]['lines'], ['Заработал 4 801 USD за 30 дней, проекту 3 мес (выручка проверена TrustMRR)', 'Что: does a thing', 'Цена: $19 once', 'Откуда клиенты: Reddit', 'Команда: 1 person'])
     def test_decisions_only_reveng(self):
         (self.phone / 'decisions.json').write_text(json.dumps({'rv_c_open': {'verdict': 'like'}, 'v4_tee': {'verdict': 'nope'}}), encoding='utf-8')
         self.assertEqual(pc.decisions(self.phone), {'rv_c_open': 'like'})

@@ -169,6 +169,41 @@ def business_cards(root):
     return out
 
 
+SIGNAL_MAX_AGE_MONTHS = 24
+SIGNAL_MIN_30D_USD = 1000
+
+
+def signal_cards(root, analysed=()):
+    """Young projects with verified revenue (trustmrr-signals.json, sealed), one card each, made by RevEng itself: what it
+    earns and how young, its price, where its customers come from, team. Marked 'not analysed'; a swipe right asks for
+    the analysis (cost to start, to run, time to money, what kills it). Projects already analysed by the assistant are skipped."""
+    path = root / 'trustmrr-signals.json'
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding='utf-8')); claim = data.pop('integrity_sha256', None)
+    if claim != sha(json.dumps(data, sort_keys=True, ensure_ascii=False)):
+        raise ValueError('signals seal mismatch; no cards written from it')
+    usd = lambda v: money({'amount': round(v), 'currency': 'USD'}); out = []
+    for r in data.get('signals', []):
+        age = r.get('age_months')
+        if r['slug'] in analysed or age is None or age > SIGNAL_MAX_AGE_MONTHS or r['last30_usd'] < SIGNAL_MIN_30D_USD:
+            continue
+        p = r.get('profile') or {}
+        ru = ['Заработал ' + usd(r['last30_usd']) + ' за 30 дней, проекту ' + str(age) + ' мес (выручка проверена TrustMRR)']
+        en = ['Made ' + usd(r['last30_usd']) + ' in 30 days, ' + str(age) + ' months old (revenue verified by TrustMRR)']
+        what = p.get('value') or r.get('what')
+        if what:
+            ru.append('Что: ' + what); en.append('What: ' + what)
+        for key, ru_label, en_label in (('pricing', 'Цена', 'Price'), ('channels', 'Откуда клиенты', 'Customers from'), ('team', 'Команда', 'Team')):
+            if p.get(key):
+                ru.append(ru_label + ': ' + p[key]); en.append(en_label + ': ' + p[key])
+        out.append(finish({'id': card_id('s', r['slug']), 'kind': 'reveng', 'prof': 'сигнал', 'prof_en': 'signal', 'text': r['name'][:70],
+                           'lines': ru[:6], 'lines_en': en[:6], 'url': r.get('url'),
+                           'unknown': 'Не разобрано: сколько стоит начать, содержать и что может убить. Вправо - разберу.',
+                           'unknown_en': 'Not analysed: cost to start, to run, what kills it. Swipe right and it gets analysed.'}))
+    return out
+
+
 def assistant_cards(root):
     """Analyses the assistant wrote in chat from sources it read (assistant-analyses.json): marked as such on the card,
     never as RevEng's own automatic result."""
@@ -196,7 +231,14 @@ def write(root, given_dir=None, today=None):
     """Writes the cards into the phone folder when it exists; returns (number of cards, where or why not)."""
     root = Path(root); today = today or date.today().isoformat()
     # businesses for sale are not ideas to start (owner 03.11: mature, costly to run, survivors only); kept as data, not cards
-    cards = assistant_cards(root) + deal_cards(root) + contest_cards(root, today)
+    mine = assistant_cards(root)
+    analysed = set()
+    try:
+        for a in json.loads((root / 'assistant-analyses.json').read_text(encoding='utf-8')).get('analyses', []):
+            analysed.update(re.findall(r'trustmrr\.com/startup/([a-z0-9-]+)', ' '.join(a.get('sources', []))))
+    except (OSError, ValueError):
+        pass
+    cards = mine + signal_cards(root, analysed) + deal_cards(root) + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export

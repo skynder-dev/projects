@@ -65,6 +65,22 @@ def founded(md, today):
     return '%04d-%02d' % (y, mo), (today.year - y) * 12 + today.month - mo
 
 
+FIELDS = {'Pricing model': 'pricing', 'Marketing channels': 'channels', 'Value proposition': 'value', 'Problem solved': 'problem',
+          'Target persona': 'persona', 'Audience type': 'audience', 'Team size': 'team', 'Funding': 'funding'}
+
+
+def profile_facts(md):
+    """A few short '- Key: value' lines of the AI profile (Startup Insights, Distribution), markdown links reduced to their
+    text. The profile is untrusted data: only these keys are kept, each cut to 160 characters, nothing is followed."""
+    out = {}
+    for line in md.splitlines():
+        mm = re.match(r'\s*-\s+([A-Za-z ]{3,30}):\s+(.+)$', line)
+        if mm and mm.group(1).strip() in FIELDS and FIELDS[mm.group(1).strip()] not in out:
+            value = re.sub(r'\[([^\]]{0,80})\]\([^)]{0,300}\)', r'\1', mm.group(2))
+            out[FIELDS[mm.group(1).strip()]] = ' '.join(value.split())[:160]
+    return out
+
+
 def collect(root, stats, offline=False, read=None, today=None):
     read = read or m.read_http; today = today or date.today(); root = Path(root)
     result = {'schema': SCHEMA, 'checked_at': m.now(), 'source': 'TrustMRR public AI endpoints (trustmrr.com/llms.txt)'}
@@ -79,7 +95,8 @@ def collect(root, stats, offline=False, read=None, today=None):
             if stats.get('source_requests', 0) >= 22 or not rp.can_fetch(m.UA, PROFILE % r['slug']):
                 break
             try:
-                r['founded'], r['age_months'] = founded(read(PROFILE % r['slug'], stats, 1048576).decode('utf-8', 'replace'), today)
+                md = read(PROFILE % r['slug'], stats, 1048576).decode('utf-8', 'replace')
+                r['founded'], r['age_months'] = founded(md, today); r['profile'] = profile_facts(md)
             except Exception as ex:
                 r['profile_error'] = m.error_text(ex, 100)
             time.sleep(1)
