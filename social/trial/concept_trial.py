@@ -7,8 +7,9 @@
 - результат не принят владельцем и не сохраняется в ConceptStore.
 - никакой публикации, платных API и медиа.
 
-Запуск: python -I concept_trial.py <папка social> <папка для результата> [адрес Ollama]
+Запуск: python -I concept_trial.py <папка social> <папка для результата> [адрес Ollama] [--topics PATH]
 """
+import argparse
 import datetime as dt
 import json
 import sys
@@ -16,8 +17,14 @@ import time
 import urllib.request
 from pathlib import Path
 
-SOCIAL, OUT = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
-API = sys.argv[3] if len(sys.argv) > 3 else 'http://127.0.0.1:11435'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('social', type=Path)
+parser.add_argument('out', type=Path)
+parser.add_argument('api', nargs='?', default='http://127.0.0.1:11435')
+parser.add_argument('--topics', type=Path, help='topics.json: use the first ranked opportunity')
+args = parser.parse_args()
+SOCIAL, OUT = args.social.resolve(), args.out.resolve()
+API = args.api
 sys.path.insert(0, str(SOCIAL))
 OUT.mkdir(parents=True, exist_ok=True)
 
@@ -44,7 +51,15 @@ today = dt.date.today()
 client = grants.GrantsGovClient(OUT / 'source')
 rec = snap = None
 try:
-    hits, search_snap = client.search('community', 25, 'posted')
+    if args.topics:
+        from socialreel.topics import top_opportunity_id
+        selected_id = top_opportunity_id(args.topics)
+        det, meta = client.detail(selected_id)
+        r = grants.normalize({'id': selected_id}, det, detail_snapshot=meta)
+        rec, snap = r, meta
+        hits = []
+    else:
+        hits, search_snap = client.search('community', 25, 'posted')
     hits = [h for h in hits if (parse_date(h.get('closeDate')) or today) >= today + dt.timedelta(days=21)]
     hits.sort(key=lambda h: parse_date(h.get('closeDate')))
     for h in hits[:3]:

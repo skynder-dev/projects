@@ -32,3 +32,21 @@ Locally (Linux/Windows, Python 3.11 + ffmpeg): `pip install -r requirements.txt`
 
 ## Rules
 `docs/migration_01/04_OWNER_RULES.md`: no spend, publishing or external contact without explicit owner approval. Nothing here posts to any social network.
+
+## Topic discovery (no media or model required)
+
+From `social/`, using Python 3.11 and its standard library only:
+
+```sh
+python -m socialreel topics --out runs/topics
+python -m socialreel topics --out runs/topics-offline --fixture fixtures/grants_gov_normalized_20261003.json --as-of 2026-11-02
+```
+
+The first command uses the public Grants.gov API; the second is entirely offline.
+Both write `topics.json` with ranked topics, scores and reasons, missing data,
+excluded records and snapshot SHA-256 receipts. Fixture exports remain explicitly
+historical and normalized. No publication or model call happens in this command.
+
+Rules, keywords, the detail-request limit (10), timing window and provisional
+eligibility-code table live in `topics_config.json`. See [Topic discovery](docs/TOPICS.md)
+for configuration, the seen file, output format and `concept_trial.py --topics`.
