@@ -23,6 +23,11 @@ def main(argv=None):
     sub.add_parser("selftest", help="run unit tests")
     ix = sub.add_parser("index", help="write README.md index for a results folder")
     ix.add_argument("results_dir")
+    t = sub.add_parser("topics", help="discover and rank Grants.gov topics without generating media")
+    t.add_argument("--config", default=str(ROOT / "config.json"))
+    t.add_argument("--out", required=True, help="directory for topics.json and exact source snapshots")
+    t.add_argument("--fixture", help="offline normalized export; never makes an API request")
+    t.add_argument("--as-of", help="scoring date, YYYY-MM-DD (default: current UTC date)")
     a = ap.parse_args(argv)
 
     if a.cmd == "selftest":
@@ -37,6 +42,19 @@ def main(argv=None):
         res = rebuild(Path(a.run_dir))
         print(json.dumps(res, indent=2))
         return 0 if res["byte_identical"] else 3
+    if a.cmd == "topics":
+        from .topics import run as run_topics
+        try:
+            result = run_topics(read_json(a.config), Path(a.out),
+                                fixture=Path(a.fixture) if a.fixture else None,
+                                as_of=a.as_of, config_dir=Path(a.config).resolve().parent)
+        except (PipelineError, OSError, ValueError) as e:
+            print(f"TOPICS FAILED: {e}", file=sys.stderr)
+            return 2
+        print(json.dumps({"topics_file": str(Path(a.out) / "topics.json"),
+                          "ranked": len(result["topics"]), "excluded": len(result["excluded"]),
+                          "mode": result["mode"]}, indent=2))
+        return 0
     cfg = read_json(a.config)
     if a.voice:
         cfg["voice"]["backend"] = a.voice

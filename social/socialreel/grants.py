@@ -89,11 +89,16 @@ class GrantsGovClient:
             raise PipelineError(f"Grants.gov API error {data.get('errorcode')}: {data.get('msg')}")
         return data, meta
 
-    def search(self, keyword: str, rows: int, statuses: str) -> tuple[list[dict], dict]:
+    def search(self, keyword: str, rows: int, statuses: str, *, eligibilities: str | None = None) -> tuple[list[dict], dict]:
         body = {"rows": rows, "oppStatuses": statuses, "startRecordNum": 0}
         if keyword:
             body["keyword"] = keyword
-        data, meta = self._post(SEARCH_URL, body, f"search_{_safe(keyword or 'all')}.json")
+        if eligibilities:
+            body["eligibilities"] = eligibilities
+        # Filtered queries can share a sanitized keyword. Bind their snapshot
+        # names to the full request so one query cannot overwrite another.
+        suffix = "_eligibilities_" + sha256_bytes(json.dumps(body, sort_keys=True).encode("utf-8"))[:16] if eligibilities else ""
+        data, meta = self._post(SEARCH_URL, body, f"search_{_safe(keyword or 'all')}{suffix}.json")
         hits = ((data.get("data") or {}).get("oppHits")) or []
         return hits, meta
 

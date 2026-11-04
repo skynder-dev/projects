@@ -1,0 +1,45 @@
+{
+  "eligibility_table_note": "Legacy Grants.gov applicant eligibility categories; descriptions cross-checked against socialreel/grants.py and repository fixtures where available. Numeric mapping is provisional: needs check against Grants.gov docs. No live documentation or API verification performed.",
+  "eligibility_codes": {
+    "00": "State governments",
+    "01": "County governments",
+    "02": "City or township governments",
+    "04": "Special district governments",
+    "05": "Independent school districts",
+    "06": "Public and State controlled institutions of higher education",
+    "07": "Native American tribal governments (Federally recognized)",
+    "08": "Public housing authorities/Indian housing authorities",
+    "11": "Native American tribal organizations (other than Federally recognized tribal governments)",
+    "12": "Nonprofits having a 501(c)(3) status with the IRS, other than institutions of higher education",
+    "13": "Nonprofits that do not have a 501(c)(3) status with the IRS, other than institutions of higher education",
+    "20": "Private institutions of higher education",
+    "21": "Individuals",
+    "22": "For profit organizations other than small businesses",
+    "23": "Small businesses",
+    "25": "Others (see text field entitled \"Additional Information on Eligibility\" for clarification)",
+    "99": "Unrestricted (i.e., open to any type of entity above), subject to any clarification in text field entitled \"Additional Information on Eligibility\""
+  },
+  "institution_codes": ["00", "01", "02", "04", "05", "06", "07", "08", "11", "20"],
+  "description_aliases": {},
+  "rubrics": {
+    "help_people": {
+      "eligibility_codes": ["21", "99"],
+      "keywords": ["individual", "housing", "education"]
+    },
+    "small_business_nonprofit": {
+      "eligibility_codes": ["12", "13", "23", "99"],
+      "keywords": ["small business", "nonprofit", "community"]
+    }
+  },
+  "search_rows": 25,
+  "statuses": "posted",
+  "max_detail_fetch": 10,
+  "seen_file": "topics_seen.json",
+  "timing": {"min_days": 14, "max_days": 120, "ideal_points": 25, "soon_points": 5, "far_points": 10},
+  "audience_points": {"21": 40, "23": 32, "12": 28, "13": 28, "99": 20},
+  "audience_extra_type_points": 4,
+  "audience_max_points": 40,
+  "concreteness_points": {"award_amount": 10, "eligibility_text": 8, "synopsis": 7},
+  "novelty_points": 10,
+  "missing_data_penalty": 2
+}

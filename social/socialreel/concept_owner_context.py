@@ -40,7 +40,9 @@ def save(store,job_id,expected_revision,context):
             # immutable revision. Reuse only identical bytes, never repair/overwrite.
             if path.is_symlink() or not path.is_file():
                 raise PipelineError('Owner context orphan revision differs; original bytes preserved')
-            with path.open('rb') as stream:
+            # Windows requires a writable descriptor for fsync; r+b neither
+            # truncates nor changes the immutable revision bytes checked below.
+            with path.open('r+b' if os.name=='nt' else 'rb') as stream:
                 if stream.read()!=data:
                     raise PipelineError('Owner context orphan revision differs; original bytes preserved')
                 # The interrupted write may itself have failed at fsync. Retry
