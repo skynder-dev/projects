@@ -33,6 +33,10 @@
   "scalereach": {
    "ru": "Сервис для авторов видео: ИИ сам нарезает из длинного ролика короткие для TikTok, Reels и Shorts; авторы и агентства платят подписку",
    "en": "Service for video creators: AI cuts a long video into short clips for TikTok, Reels and Shorts; creators and agencies pay a subscription"
+  },
+  "heyron": {
+   "ru": "Подписка за $49 в месяц: ИИ-помощник ведёт дела человека, который работает один, плюс сообщество, где учат запускать приложения",
+   "en": "$49/month subscription: an AI agent that runs a one-person business, plus a community that teaches launching apps"
   }
  }
 }

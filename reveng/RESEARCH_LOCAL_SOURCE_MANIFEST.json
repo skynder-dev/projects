@@ -661,8 +661,9 @@
     },
     {
       "path": "reveng/ResearchLocal/hn_income.py",
-      "bytes": 5999,
-      "sha256": "0a64b343b756901a41ed6d3ef97fcc86b637426342a0c2c582e5adcd03099486"
+      "bytes": 6218,
+      "sha256": "daf0a7137e41d33275ba7119a553d683e417676ec9794e004b4b2c6d09df4948",
+      "change": "new_hn_income_2026-11-04"
     },
     {
       "path": "reveng/ResearchLocal/html_document_identity.py",
@@ -956,8 +957,8 @@
     },
     {
       "path": "reveng/ResearchLocal/signal-summaries.json",
-      "bytes": 3387,
-      "sha256": "8ab34b1eb0e8bb12c35e6bfe42f03803fc70a20a3156b8ec5fc80177953d3a2c"
+      "bytes": 3773,
+      "sha256": "a51bea973baccc5246c4434d328734694fba3f1caa1f5c2afee01997d9d3313c"
     },
     {
       "path": "reveng/ResearchLocal/social_idea_preview.py",
@@ -1160,8 +1161,9 @@
     },
     {
       "path": "reveng/tests/test_hn_income.py",
-      "bytes": 2777,
-      "sha256": "f9e14aa8c36065a27203a7c03adeded0f03e1b5a1bc8eda72a93d56c736cc027"
+      "bytes": 2812,
+      "sha256": "5d1e384b69bc818ae2de2e380a754fee5299fe1a518ef0369eca8a35ad019d1a",
+      "change": "new_hn_income_offline_contracts_2026-11-04"
     },
     {
       "path": "reveng/tests/test_hypothesis_contract.py",

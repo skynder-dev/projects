@@ -65,7 +65,13 @@ def collect(root, stats, offline=False, read=None, now=None):
     try:
         if offline:
             raise ValueError('offline: no HTTP; nothing new read')
-        rp = robotparser.RobotFileParser(); rp.parse(read('https://hn.algolia.com/robots.txt', stats, 65536).decode('utf-8', 'replace').splitlines())
+        rp = robotparser.RobotFileParser()
+        try:
+            rp.parse(read('https://hn.algolia.com/robots.txt', stats, 65536).decode('utf-8', 'replace').splitlines())
+        except Exception as ex:   # no robots.txt (404) means no restrictions; any other failure stops the run
+            if '404' not in str(ex):
+                raise
+            rp.parse([])
         since = int(now.timestamp()) - MAX_AGE_YEARS * 365 * 86400; threads = {}
         for q in QUERIES:
             url = API + 'search?' + parse.urlencode({'query': q, 'tags': 'ask_hn', 'numericFilters': 'num_comments>%d,created_at_i>%d' % (MIN_COMMENTS, since), 'hitsPerPage': 10})
