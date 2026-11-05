@@ -70,6 +70,8 @@ def collect(root, stats, offline=False, read=None):
             time.sleep(1)
             tree = json.loads(read(API + 'items/%s' % h['objectID'], stats, 16777216).decode('utf-8'))
             threads.append({'id': int(h['objectID']), 'title': h.get('title'), 'date': (h.get('created_at') or '')[:10]})
+            threads[-1]['answers'] = len(tree.get('children') or [])
+            threads[-1]['starts'] = [plain(c.get('text') or '')[:40] for c in (tree.get('children') or [])[:6]]
             for c in tree.get('children') or []:
                 t = plain(c.get('text') or '')
                 if not re.match(r'\s*seeking\s+freelancer', t, re.I):
@@ -94,6 +96,6 @@ if __name__ == '__main__':
     a = argparse.ArgumentParser(description=__doc__); a.add_argument('--root', required=True, type=Path); a.add_argument('--offline', action='store_true')
     o = a.parse_args()
     r = collect(o.root.resolve(), {'source_requests': 0}, o.offline)
-    print(r['status'], r.get('error', ''), 'requests', len(r['requests']), json.dumps(r['summary'], ensure_ascii=False), [t['title'] for t in r['threads']])
+    print(r['status'], r.get('error', ''), 'requests', len(r['requests']), json.dumps(r['summary'], ensure_ascii=False), [(t['title'], t.get('answers'), t.get('starts')) for t in r['threads']])
     for x in r['requests'][:40]:
         print('  ', x['date'], x['kinds'], x['rate_per_hour_usd'], x['budget_usd'], '|', x['text'][:220])

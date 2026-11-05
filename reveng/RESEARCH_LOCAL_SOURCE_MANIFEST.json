@@ -667,8 +667,8 @@
     },
     {
       "path": "reveng/ResearchLocal/hn_demand.py",
-      "bytes": 6837,
-      "sha256": "e5498d82e084857fedcfff6f404479fe591d3655666edbb15de7480e4d467594",
+      "bytes": 7055,
+      "sha256": "806823b2f0463f32dabdd52f220c1a927612534723b8fc66c7855590b8f1d8ca",
       "change": "new_hn_demand_2026-11-05"
     },
     {
