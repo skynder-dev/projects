@@ -20,7 +20,7 @@
       "no external writes or model/live capture"
     ]
   },
-  "application_files": 107,
+  "application_files": 108,
   "buyer_normalization_repair": {
     "publication_status": "not_published",
     "base_source_context_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
@@ -461,6 +461,12 @@
       "change": "new_card_arbitrage_trial_2026-11-02+stable_dig_in+scryfall_terms"
     },
     {
+      "path": "reveng/ResearchLocal/clipping_campaigns.py",
+      "bytes": 4720,
+      "sha256": "7a3a6a5b66580c228daf67e8dce9bcf2eb4f37ec9dae69f36c02e250b57729b4",
+      "change": "new_clipping_campaigns_2026-11-05"
+    },
+    {
       "path": "reveng/ResearchLocal/collection_attempts.py",
       "bytes": 4975,
       "sha256": "d5bc544536b4e86dec9bd1f6b7b9d71c1568c007a0bdde8cbfb2d39a31ef8f33",
@@ -769,8 +775,8 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 21501,
-      "sha256": "fa0b9987815b992eaaf32432eb22014df7cca68c7ba57bc8586319bc55818eee",
+      "bytes": 24481,
+      "sha256": "15b92782bace0b12ff0f27ee29b39a4df269c65da5fa31d61de6f1405a0b6973",
       "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines+skip_empty_clean_titles+contests_10k+business_cards+plain_models+models_cap+ways_not_buy+budget_100k+assistant_cards+signal_cards"
     },
     {
@@ -1138,6 +1144,12 @@
       "bytes": 6470,
       "sha256": "6c5ce1f29901a674c0a607349d117634f295cd44d046e551859d3404c2a6ad2a",
       "change": "new_card_arbitrage_offline_contracts_2026-11-02+stable_dig_in"
+    },
+    {
+      "path": "reveng/tests/test_clipping_campaigns.py",
+      "bytes": 3400,
+      "sha256": "dcfbb8674dde7b4da765e849ef40012be13a9e4f800095148e86f9f528b7b73f",
+      "change": "new_clipping_campaigns_offline_contracts_2026-11-05"
     },
     {
       "path": "reveng/tests/test_collection_integrity.py",

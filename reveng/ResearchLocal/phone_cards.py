@@ -241,6 +241,37 @@ def hn_cards(root):
     return out
 
 
+def clipping_card(root):
+    """One card about the clipping market right now (clipping-campaigns.json, sealed): how much money brands have put
+    into clipping campaigns, the usual pay per 1000 views, who runs most campaigns. Built from the board's own figures."""
+    path = root / 'clipping-campaigns.json'
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding='utf-8')); claim = data.pop('integrity_sha256', None)
+    if claim != sha(json.dumps(data, sort_keys=True, ensure_ascii=False)):
+        raise ValueError('clipping seal mismatch; no card written from it')
+    s = data.get('summary') or {}
+    if data.get('status') != 'read' or not s.get('campaigns'):
+        return []
+    usd = lambda v: money({'amount': v, 'currency': 'USD'})
+    ru = ['Суть: бренды и агентства платят за просмотры коротких роликов, нарезанных из их видео; плата за каждую 1000 просмотров',
+          'Сейчас открыто кампаний: %d, общий бюджет %s, уже выплачено %s' % (s['campaigns'], usd(s['budget_usd']), usd(s['spent_usd']))]
+    en = ['In short: brands and agencies pay for views of short clips cut from their videos, per 1000 views',
+          'Open campaigns: %d, total budget %s, already paid %s' % (s['campaigns'], usd(s['budget_usd']), usd(s['spent_usd']))]
+    if s.get('median_per_1k_usd'):
+        ru.append('Обычная ставка: $%s за 1000 просмотров (у половины кампаний меньше)' % s['median_per_1k_usd'])
+        en.append('Typical rate: $%s per 1000 views (half the campaigns pay less)' % s['median_per_1k_usd'])
+    if s.get('top_categories'):
+        ru.append('Чаще всего про: ' + ', '.join(s['top_categories'])); en.append('Mostly about: ' + ', '.join(s['top_categories']))
+    if s.get('top_runners'):
+        ru.append('Больше всего кампаний ведут: ' + ', '.join(s['top_runners']) + ' (посредники между брендом и нарезчиками)')
+        en.append('Most campaigns are run by: ' + ', '.join(s['top_runners']) + ' (middlemen between brands and clippers)')
+    return [finish({'id': 'rv_k_clipping_board', 'kind': 'reveng', 'prof': 'рынок', 'prof_en': 'market', 'text': 'Нарезка роликов: кто и сколько платит сейчас',
+                    'lines': ru[:6], 'lines_en': en[:6], 'url': 'https://contentrewards.com/c/discover',
+                    'unknown': 'Цифры с открытой доски Content Rewards. Сколько получает один нарезчик - не видно. Вправо - разберу, как на этом заработать.',
+                    'unknown_en': 'Figures from the public Content Rewards board. What one clipper earns is not shown. Swipe right and it gets analysed.'})]
+
+
 def assistant_cards(root):
     """Analyses the assistant wrote in chat from sources it read (assistant-analyses.json): marked as such on the card,
     never as RevEng's own automatic result."""
@@ -277,7 +308,7 @@ def write(root, given_dir=None, today=None):
             analysed.update(re.findall(r'trustmrr\.com/startup/([a-z0-9-]+)', ' '.join(a.get('sources', []))))
     except (OSError, ValueError):
         pass
-    cards = mine + signal_cards(root, analysed) + hn_cards(root) + contest_cards(root, today)
+    cards = mine + clipping_card(root) + signal_cards(root, analysed) + hn_cards(root) + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export
