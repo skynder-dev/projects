@@ -75,22 +75,23 @@ class Tests(unittest.TestCase):
         data['signals'].append({'slug': 'blank', 'name': 'No plain words', 'last30_usd': 5000, 'age_months': 2})
         (self.root / 'trustmrr-signals.json').write_text(json.dumps(dict(data, integrity_sha256=pc.sha(json.dumps(data, sort_keys=True, ensure_ascii=False)))), encoding='utf-8')
         self.assertEqual(pc.signal_cards(self.root, {'done'}), [])   # no plain sentence yet: nothing shown
-        plain = {'summaries': {k: {'ru': 'SYNTHETIC суть ' + k, 'en': 'SYNTHETIC gist ' + k} for k in ('alpha', 'old', 'small', 'done', 'ageless')}}
+        plain = {'summaries': {k: {'ru': 'SYNTHETIC суть ' + k, 'en': 'SYNTHETIC gist ' + k, 'ai': {'verdict': 'keep', 'ru': 'SYNTHETIC держится', 'en': 'SYNTHETIC holds'}} for k in ('alpha', 'old', 'small', 'done', 'ageless')}}
+        plain['summaries']['eaten'] = {'ru': 'x', 'en': 'x', 'ai': {'verdict': 'eaten', 'ru': 'x', 'en': 'x'}}
         (self.root / 'signal-summaries.json').write_text(json.dumps(plain), encoding='utf-8')
         cards = pc.signal_cards(self.root, {'done'})
         self.assertEqual([c['id'] for c in cards], ['rv_s_alpha', 'rv_s_ageless'])   # 'blank' has no plain sentence
         self.assertIn('возраст не указан', cards[1]['lines'][1]); cards = cards[:1]
-        self.assertEqual(cards[0]['lines'], ['SYNTHETIC суть alpha', 'Заработал 4 801 USD за 30 дней, проекту 3 мес (выручка проверена TrustMRR)', 'Цена: $19 once', 'Откуда клиенты: Reddit', 'Команда: 1 person'])
+        self.assertEqual(cards[0]['lines'], ['SYNTHETIC суть alpha', 'Заработал 4 801 USD за 30 дней, проекту 3 мес (выручка проверена TrustMRR)', 'Почему ИИ не съест: SYNTHETIC держится', 'Цена: $19 once', 'Откуда клиенты: Reddit', 'Команда: 1 person'])
         self.assertEqual(cards[0]['lines_en'][0], 'SYNTHETIC gist alpha'); self.assertIn('пересказ ассистента', cards[0]['unknown'])
     def test_hn_cards(self):
         data = {'people': [{'id': 'hn1', 'monthly_usd': 4000, 'text': 'SYNTHETIC', 'date': '2023-04-14', 'url': 'https://news.ycombinator.com/item?id=1'},
                            {'id': 'hn2', 'monthly_usd': 9000, 'text': 'SYNTHETIC no summary', 'date': '2023-04-14'}]}
         (self.root / 'hn-income.json').write_text(json.dumps(dict(data, integrity_sha256=pc.sha(json.dumps(data, sort_keys=True, ensure_ascii=False)))), encoding='utf-8')
-        (self.root / 'signal-summaries.json').write_text(json.dumps({'summaries': {'hn1': {'title': 'SYNTHETIC t', 'ru': 'SYNTHETIC суть', 'en': 'SYNTHETIC gist'}}}), encoding='utf-8')
+        (self.root / 'signal-summaries.json').write_text(json.dumps({'summaries': {'hn1': {'title': 'SYNTHETIC t', 'ru': 'SYNTHETIC суть', 'en': 'SYNTHETIC gist', 'ai': {'verdict': 'keep', 'ru': 'SYNTHETIC держится', 'en': 'SYNTHETIC holds'}}, 'hn2': {'ru': 'x', 'en': 'x', 'ai': {'verdict': 'eaten', 'ru': 'x', 'en': 'x'}}}}), encoding='utf-8')
         self.assertEqual(pc.hn_cards(self.root, today='2026-11-05'), [])   # 2023 stories are too old
         cards = pc.hn_cards(self.root, today='2024-01-01')
         self.assertEqual([c['id'] for c in cards], ['rv_h_hn1']); self.assertEqual(cards[0]['text'], 'SYNTHETIC t')
-        self.assertEqual(cards[0]['lines'], ['SYNTHETIC суть', 'Говорит, что получает 4 000 USD в месяц (со слов автора, не проверено)', 'Написал 14.04.2023 на Hacker News'])
+        self.assertEqual(cards[0]['lines'], ['SYNTHETIC суть', 'Говорит, что получает 4 000 USD в месяц (со слов автора, не проверено)', 'Почему ИИ не съест: SYNTHETIC держится', 'Написал 14.04.2023 на Hacker News'])
         data['people'][0]['monthly_usd'] = 1   # tampered
         (self.root / 'hn-income.json').write_text(json.dumps(dict(data, integrity_sha256='x')), encoding='utf-8')
         with self.assertRaises(ValueError): pc.hn_cards(self.root)

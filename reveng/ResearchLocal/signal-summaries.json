@@ -1,122 +1,247 @@
 {
  "schema": "reveng-signal-summaries-v1",
- "note": "Plain one-sentence retelling by the assistant of the TrustMRR discovery description (trustmrr.com/api/ai/discovery, read 2026-11-04). Not RevEng's own result. A signal without an entry here is not shown on the phone.",
+ "note": "Plain one-sentence retelling by the assistant of the TrustMRR discovery description (trustmrr.com/api/ai/discovery, read 2026-11-04). Not RevEng's own result. A signal without an entry here is not shown on the phone. Each entry also carries the assistant's judgment whether AI in every phone eats it in 2026 (ai.verdict keep/eaten, owner 05.11); eaten and unjudged entries are not shown.",
  "summaries": {
   "intentsly": {
    "ru": "Программа для продавцов: сама ищет в LinkedIn, Reddit, X и Facebook людей, которым сейчас нужен похожий товар, и начинает с ними переписку; фирмы платят за программу",
-   "en": "Software for sellers: finds people on LinkedIn, Reddit, X and Facebook who need a similar product right now and starts the conversation; companies pay for it"
+   "en": "Software for sellers: finds people on LinkedIn, Reddit, X and Facebook who need a similar product right now and starts the conversation; companies pay for it",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "поиск клиентов в соцсетях - то, что ИИ-агенты делают дёшево; таких сервисов десятки",
+    "en": "finding leads on social media is what AI agents do cheaply; dozens of clones"
+   }
   },
   "devops-daily": {
    "ru": "Сайт с новостями и уроками для специалистов, которые держат серверы и программы компании в рабочем состоянии",
-   "en": "News and tutorials site for people who keep a company's servers and software running (DevOps)"
+   "en": "News and tutorials site for people who keep a company's servers and software running (DevOps)",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "новости и уроки - ИИ пересказывает их бесплатно",
+    "en": "news and tutorials - AI retells them for free"
+   }
   },
   "next-level-builders": {
    "ru": "Платное обучение и сообщество для тех, кто делает маленькие платные онлайн-сервисы: уроки, готовые заготовки, общение",
-   "en": "Paid coaching and community for people building small paid online services: lessons, templates, a group"
+   "en": "Paid coaching and community for people building small paid online services: lessons, templates, a group",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "уроки по созданию программ - ИИ сам учит и делает",
+    "en": "lessons on building software - AI teaches and builds itself"
+   }
   },
   "basincheck": {
    "ru": "Приложение для подрядчиков на нефтяных и газовых объектах: проверка техники безопасности с телефона, работает без интернета; платят фирмы-подрядчики",
-   "en": "App for oil and gas contractors: safety checks on site from a phone, works offline; contractor firms pay"
+   "en": "App for oil and gas contractors: safety checks on site from a phone, works offline; contractor firms pay",
+   "ai": {
+    "verdict": "keep",
+    "ru": "держится на отраслевых правилах безопасности и привычках подрядчиков, работает без интернета на объекте; это не заменит чат",
+    "en": "rests on industry safety rules and contractor habits, works offline on site; a chat does not replace it"
+   }
   },
   "printotr-a": {
    "ru": "Сервис для тех, кто продаёт футболки, кружки и т.п. с принтами на Etsy и Shopify: ИИ сам делает рисунки; продавцы платят за сервис",
-   "en": "Service for people selling printed shirts, mugs etc. on Etsy and Shopify: AI makes the designs; sellers pay for it"
+   "en": "Service for people selling printed shirts, mugs etc. on Etsy and Shopify: AI makes the designs; sellers pay for it",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "рисунки для принтов ИИ делает сам, бесплатно",
+    "en": "print designs are what AI makes itself, for free"
+   }
   },
   "bidder-iq": {
    "ru": "Сайт для покупателей и продавцов коллекционных машин: показывает, за сколько продавались похожие машины на аукционах",
-   "en": "Site for collector-car buyers and sellers: shows what similar cars sold for at auctions"
+   "en": "Site for collector-car buyers and sellers: shows what similar cars sold for at auctions",
+   "ai": {
+    "verdict": "keep",
+    "ru": "держится на собранной базе цен аукционов коллекционных машин - такой базы у ИИ нет",
+    "en": "rests on a collected database of collector-car auction prices that AI does not have"
+   }
   },
   "ecomstatement-com": {
    "ru": "Набор инструментов для интернет-магазинов: реклама и поиск покупателей (подробнее на TrustMRR не сказано)",
-   "en": "Toolkit for online shops: advertising and finding buyers (TrustMRR gives no more detail)"
+   "en": "Toolkit for online shops: advertising and finding buyers (TrustMRR gives no more detail)",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "обычные инструменты рекламы - их заменяет ИИ",
+    "en": "generic marketing tools - replaced by AI"
+   }
   },
   "scalereach": {
    "ru": "Сервис для авторов видео: ИИ сам нарезает из длинного ролика короткие для TikTok, Reels и Shorts; авторы и агентства платят подписку",
-   "en": "Service for video creators: AI cuts a long video into short clips for TikTok, Reels and Shorts; creators and agencies pay a subscription"
+   "en": "Service for video creators: AI cuts a long video into short clips for TikTok, Reels and Shorts; creators and agencies pay a subscription",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "нарезку роликов ИИ-сервисов уже десятки, цена падает; заработок в нарезке - у агентств и нарезчиков, не у программы",
+    "en": "dozens of AI clipping tools, prices falling; the money in clipping is with agencies and clippers, not the tool"
+   }
   },
   "heyron": {
    "ru": "Подписка за $49 в месяц: ИИ-помощник ведёт дела человека, который работает один, плюс сообщество, где учат запускать приложения",
-   "en": "$49/month subscription: an AI agent that runs a one-person business, plus a community that teaches launching apps"
+   "en": "$49/month subscription: an AI agent that runs a one-person business, plus a community that teaches launching apps",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "сам продаёт «ИИ-помощника» - завтра это бесплатно встроено в любой чат",
+    "en": "sells an \"AI agent\" - tomorrow it is built into every chat for free"
+   }
   },
   "hn35568449": {
    "title": "Программа для фирм по борьбе с вредителями",
    "ru": "Программа для фирм, которые травят тараканов и грызунов: заказы, клиенты, учёт; фирмы платят ежемесячно. Запущена во время пандемии",
-   "en": "Software for pest control companies: jobs, customers, records; companies pay monthly. Started during the pandemic"
+   "en": "Software for pest control companies: jobs, customers, records; companies pay monthly. Started during the pandemic",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35568678": {
    "title": "Программы на заказ для малых фирм",
    "ru": "Делает маленьким фирмам программы под заказ: сбор данных с сайтов, отчёты; берёт помесячную плату. По его словам, несколько часов работы в неделю",
-   "en": "Builds small custom systems for small businesses (data collection, reports) for a monthly fee; a few hours of work a week, he says"
+   "en": "Builds small custom systems for small businesses (data collection, reports) for a monthly fee; a few hours of work a week, he says",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35569095": {
    "title": "Проверка файлов на вирусы для других сайтов",
    "ru": "Сервис, которым другие сайты проверяют загружаемые файлы на вирусы и опасное содержимое; платят за количество проверок. Рекламу не покупал",
-   "en": "A service other sites use to check uploaded files for malware and unsafe content; paid by usage. No money spent on marketing"
+   "en": "A service other sites use to check uploaded files for malware and unsafe content; paid by usage. No money spent on marketing",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35570182": {
    "title": "Готовые данные для чужих программ",
    "ru": "Продаёт доступ к готовым данным (например, проверка госномеров и документов в Мексике) для чужих программ. Рост: $200, $900, $2 000 в месяц по годам",
-   "en": "Sells access to ready data (e.g. Mexican ID checks) for other people's software. Grew $200, $900, $2,000 a month year by year"
+   "en": "Sells access to ready data (e.g. Mexican ID checks) for other people's software. Grew $200, $900, $2,000 a month year by year",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35573937": {
    "title": "Программа для продавцов домов на колёсах",
    "ru": "Программа учёта клиентов и сделок для магазинов, продающих дома на колёсах; около $4 000 в месяц, расходы $400",
-   "en": "Customer and deal software for manufactured-home dealers; about $4,000 a month, costs $400"
+   "en": "Customer and deal software for manufactured-home dealers; about $4,000 a month, costs $400",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35572542": {
    "title": "Приложение: плейлист по описанию",
    "ru": "Приложение для iPhone: пишешь «музыка для работы» - оно собирает плейлист. Первые $2 000 за две недели после запуска",
-   "en": "iPhone app that builds a playlist from a prompt. First $2,000 within two weeks of launch"
+   "en": "iPhone app that builds a playlist from a prompt. First $2,000 within two weeks of launch",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35568523": {
    "title": "ИИ пишет тексты для магазинов Shopify",
    "ru": "Дополнение для магазинов на Shopify: ИИ пишет описания товаров; магазины платят подписку",
-   "en": "Add-on for Shopify stores: AI writes product copy; stores pay a subscription"
+   "en": "Add-on for Shopify stores: AI writes product copy; stores pay a subscription",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35569894": {
    "title": "Пресеты для фотографов",
    "ru": "Сервис для фотографов: по готовой фотографии восстанавливает настройки обработки и продаёт их как пресет. До $2 000 в месяц за 1-2 месяца",
-   "en": "Service for photographers: recovers the editing settings from a photo and sells them as a preset. Reached $2,000 a month in 1-2 months"
+   "en": "Service for photographers: recovers the editing settings from a photo and sells them as a preset. Reached $2,000 a month in 1-2 months",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35573491": {
    "title": "Технические книги",
    "ru": "Пишет и продаёт технические книги для программистов; пара книг приносит около $2 000 в месяц",
-   "en": "Writes and sells technical books for programmers; a couple of books bring about $2,000 a month"
+   "en": "Writes and sells technical books for programmers; a couple of books bring about $2,000 a month",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35573381": {
    "title": "Готовые таблицы цен для сайтов",
    "ru": "Сервис, которым владельцы сайтов делают красивые таблицы тарифов и цен; платят подпиской. Делает в свободное время, около $6 000 в месяц",
-   "en": "A service site owners use to build pricing tables; subscription. Run part-time, about $6,000 a month"
+   "en": "A service site owners use to build pricing tables; subscription. Run part-time, about $6,000 a month",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35571172": {
    "title": "Простая статистика посещений сайта",
    "ru": "Замена Google Analytics без слежки за посетителями; сайты платят подписку. Двое людей, $2 000 через полтора года, теперь около $4 000",
-   "en": "Privacy-friendly website analytics, a Google Analytics replacement; subscription. Two people, $2,000 after 1.5 years, now about $4,000"
+   "en": "Privacy-friendly website analytics, a Google Analytics replacement; subscription. Two people, $2,000 after 1.5 years, now about $4,000",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn33923806": {
    "title": "Две небольшие программы для фирм",
    "ru": "Двое партнёров сделали программу, которая помогает фирмам вводить новых клиентов в работу, и вторую маленькую; около $100 000 в год почти без их участия",
-   "en": "Two partners built a client-onboarding product for businesses plus a small second one; about $100,000 a year with little involvement"
+   "en": "Two partners built a client-onboarding product for businesses plus a small second one; about $100,000 a year with little involvement",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35569096": {
    "title": "Предпросмотр именных украшений для магазинов",
    "ru": "Делал для магазинов именных кулонов и подобных товаров программу: покупатель сразу видит, как будет выглядеть изделие с его надписью",
-   "en": "Built preview tools for shops selling custom name pendants and similar items: buyers see the finished piece with their text"
+   "en": "Built preview tools for shops selling custom name pendants and similar items: buyers see the finished piece with their text",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn35568406": {
    "title": "Сайт для изучающих японский на пожертвованиях",
    "ru": "Бесплатный сайт для изучения японского; деньги - добровольные взносы пользователей через Patreon, около $2 000 в месяц",
-   "en": "Free site for learning Japanese; money comes from voluntary Patreon donations, about $2,000 a month"
+   "en": "Free site for learning Japanese; money comes from voluntary Patreon donations, about $2,000 a month",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn33930824": {
    "title": "Дополнение к Word для писателей",
    "ru": "Платное дополнение к Microsoft Word: подсвечивает повторы и слабые слова в тексте; покупают писатели",
-   "en": "Paid Microsoft Word add-in that highlights repeated and weak words; bought by writers"
+   "en": "Paid Microsoft Word add-in that highlights repeated and weak words; bought by writers",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   },
   "hn33925738": {
    "title": "Статистика сайта, разовая покупка",
    "ru": "Программа статистики посещений, которую покупают один раз и ставят на свой сервер; около $1 500 в месяц без рекламы",
-   "en": "Self-hosted website analytics sold as a one-time license; about $1,500 a month with no marketing"
+   "en": "Self-hosted website analytics sold as a one-time license; about $1,500 a month with no marketing",
+   "ai": {
+    "verdict": "eaten",
+    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
+    "en": "a small 2023 program - now built with AI in an evening"
+   }
   }
  }
 }

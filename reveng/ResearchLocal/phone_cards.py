@@ -196,18 +196,18 @@ def signal_cards(root, analysed=()):
         if r['slug'] in analysed or (age is not None and age > SIGNAL_MAX_AGE_MONTHS) or r['last30_usd'] < SIGNAL_MIN_30D_USD:
             continue
         s = plain.get(r['slug']) or {}
-        if not (s.get('ru') and s.get('en')):
-            continue   # no plain description yet: the card would not be understood
+        if not (s.get('ru') and s.get('en')) or (s.get('ai') or {}).get('verdict') != 'keep':
+            continue   # no plain description, or AI in every phone does it for free in 2026 (owner 05.11), or not judged yet
         p = r.get('profile') or {}
         ru_age = 'проекту ' + str(age) + ' мес' if age is not None else 'возраст не указан'   # unknown age is shown, not hidden
         en_age = str(age) + ' months old' if age is not None else 'age not stated'
-        ru = [str(s['ru'])[:200], 'Заработал ' + usd(r['last30_usd']) + ' за 30 дней, ' + ru_age + ' (выручка проверена TrustMRR)']
-        en = [str(s['en'])[:200], 'Made ' + usd(r['last30_usd']) + ' in 30 days, ' + en_age + ' (revenue verified by TrustMRR)']
+        ru = [str(s['ru'])[:200], 'Заработал ' + usd(r['last30_usd']) + ' за 30 дней, ' + ru_age + ' (выручка проверена TrustMRR)', 'Почему ИИ не съест: ' + s['ai']['ru'][:160]]
+        en = [str(s['en'])[:200], 'Made ' + usd(r['last30_usd']) + ' in 30 days, ' + en_age + ' (revenue verified by TrustMRR)', 'Why AI will not eat it: ' + s['ai']['en'][:160]]
         for key, ru_label, en_label in (('pricing', 'Цена', 'Price'), ('channels', 'Откуда клиенты', 'Customers from'), ('team', 'Команда', 'Team')):
             if p.get(key):
                 ru.append(ru_label + ': ' + p[key]); en.append(en_label + ': ' + p[key])
         out.append(finish({'id': card_id('s', r['slug']), 'kind': 'reveng', 'prof': 'сигнал', 'prof_en': 'signal', 'text': r['name'][:70],
-                           'lines': ru[:5], 'lines_en': en[:5], 'url': r.get('url'),
+                           'lines': ru[:6], 'lines_en': en[:6], 'url': r.get('url'),
                            'unknown': 'Описание - пересказ ассистента со страницы TrustMRR. Не разобрано, сколько стоит начать и что может убить. Вправо - разберу.',
                            'unknown_en': 'Description retold by the assistant from the TrustMRR page. Not analysed: cost to start, what kills it. Swipe right and it gets analysed.'}))
     return out
@@ -232,13 +232,13 @@ def hn_cards(root, today=None):
         if (r.get('date') or '') < fresh:
             continue   # owner 05.11: stories years old are mostly dead or done by everyone with AI now; only the last year
         s = plain.get(r['id']) or {}
-        if not (s.get('ru') and s.get('en')):
+        if not (s.get('ru') and s.get('en')) or (s.get('ai') or {}).get('verdict') != 'keep':
             continue
         usd = money({'amount': r['monthly_usd'], 'currency': 'USD'}); d = r.get('date') or ''
         when = d[8:10] + '.' + d[5:7] + '.' + d[:4] if len(d) == 10 else '?'
         out.append(finish({'id': card_id('h', r['id']), 'kind': 'reveng', 'prof': 'рассказ', 'prof_en': 'story', 'text': str(s.get('title') or s['ru'])[:70],
-                           'lines': [str(s['ru'])[:220], 'Говорит, что получает ' + usd + ' в месяц (со слов автора, не проверено)', 'Написал ' + when + ' на Hacker News'],
-                           'lines_en': [str(s['en'])[:220], 'Says it brings ' + usd + ' a month (self-reported, not verified)', 'Posted ' + d + ' on Hacker News'],
+                           'lines': [str(s['ru'])[:220], 'Говорит, что получает ' + usd + ' в месяц (со слов автора, не проверено)', 'Почему ИИ не съест: ' + s['ai']['ru'][:160], 'Написал ' + when + ' на Hacker News'],
+                           'lines_en': [str(s['en'])[:220], 'Says it brings ' + usd + ' a month (self-reported, not verified)', 'Why AI will not eat it: ' + s['ai']['en'][:160], 'Posted ' + d + ' on Hacker News'],
                            'unknown': 'Пересказ ассистента. Не разобрано, сколько стоит начать и что может убить. Вправо - разберу.',
                            'unknown_en': 'Retold by the assistant. Not analysed: cost to start, what kills it. Swipe right and it gets analysed.', 'url': r.get('url')}))
     return out
