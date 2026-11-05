@@ -1,0 +1,1 @@
+{"package": "D:\\a\\_temp\\pkg\\MediaEngine-3.13.0-rc1-b296", "name": "MediaEngine-3.13.0-rc1-b296", "version": "3.13.0-rc1", "app_files": 239, "venv_mb": 449.4}

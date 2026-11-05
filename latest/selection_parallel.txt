@@ -1,0 +1,12 @@
+{
+ "cases": 400,
+ "parallel_runs": 280,
+ "different": 0,
+ "first_differences": [],
+ "big": {
+  "accepted_s": 18.88,
+  "parallel_s": 10.55,
+  "same": true
+ }
+}
+PASS parallel choice of moments == accepted choice
