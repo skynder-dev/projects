@@ -98,6 +98,8 @@ def check_script(sc: dict) -> dict:
     out["drawing"] = sc.get("drawing") if isinstance(sc.get("drawing"), str) and sc.get("drawing") in STYLES else "flat"
     out["language"] = str(sc.get("language") or "en")[:5]
     out["pictures"] = sc.get("pictures") is not False         # (pictures drawn once, when there are: art.py)
+    if sc.get("on_screen") is False:
+        out["on_screen"] = False
     wear = []                                              # (a shirt print on a character, a short zoom on it at a line:
     for it in (sc.get("wardrobe") if isinstance(sc.get("wardrobe"), list) else [])[:4]:   # Forge's wardrobe.json)
         if (isinstance(it, dict) and it.get("wearer") in cast and str(it.get("print") or "").lower().endswith(".png")
@@ -265,6 +267,8 @@ def timeline(sc: dict, voices: dict | None = None) -> dict:
 
 def _shown(sc: dict, scene: dict) -> list:
     """The characters in a scene's picture: its cast, or the narrator presenting a scene nobody else is in."""
+    if sc.get("on_screen") is False:                       # (a voice-over film: the pictures alone, nobody in them)
+        return []
     names = list(scene.get("cast") or [])
     if not names and any(x["who"] == sc.get("narrator") for x in scene.get("lines") or []):
         names = [sc["narrator"]]
@@ -287,6 +291,8 @@ def _layout(cv: Canvas, n: int, visual: bool) -> tuple[list, float, tuple | None
         else:
             xs = [cv.SW * (k + 1) / (n + 1) for k in range(n)]
             box = None
+    elif n == 0 and visual:                                # tall, nobody in the picture: the visual large, in the middle
+        return [], 1.0, (cv.SW * 0.5, cv.SH * 0.44, cv.SW * 0.98, cv.SH * 0.62)
     else:                                                  # tall: the visual on top, captions, the characters below
         sc = (1.05 if n <= 2 else 0.84) if visual else (1.25 if n <= 2 else 0.95)
         xs = [cv.SW * (k + 1) / (n + 1) for k in range(n)] if n > 1 else [cv.SW * 0.5]
