@@ -36,6 +36,10 @@
     "verdict": "keep",
     "ru": "держится на отраслевых правилах безопасности и привычках подрядчиков, работает без интернета на объекте; это не заменит чат",
     "en": "rests on industry safety rules and contractor habits, works offline on site; a chat does not replace it"
+   },
+   "needs": {
+    "ru": "знать правила безопасности нефтегаза изнутри; без человека из отрасли (партнёра) не войти, самим на объект идти не обязательно",
+    "en": "inside knowledge of oil and gas safety rules; needs an industry partner, we need not work on site ourselves"
    }
   },
   "printotr-a": {
@@ -54,6 +58,10 @@
     "verdict": "keep",
     "ru": "держится на собранной базе цен аукционов коллекционных машин - такой базы у ИИ нет",
     "en": "rests on a collected database of collector-car auction prices that AI does not have"
+   },
+   "needs": {
+    "ru": "собирать цены аукционов (проверить, разрешено ли) и знать рынок коллекционных машин; работать в отрасли не нужно",
+    "en": "collect auction prices (check that it is allowed) and know the collector-car market; no need to work in the trade"
    }
   },
   "ecomstatement-com": {
@@ -91,6 +99,10 @@
     "verdict": "keep",
     "ru": "фирмы платят за систему, где лежат их заказы и клиенты; сами её не соберут и не станут переносить",
     "en": "firms pay for the system that holds their jobs and customers; they will not build or move it themselves"
+   },
+   "needs": {
+    "ru": "понять работу фирм-дезинсекторов: 5-10 разговоров с владельцами; работать у них не нужно",
+    "en": "learn how pest control firms work: 5-10 talks with owners; no need to work there"
    }
   },
   "hn35568678": {
@@ -101,6 +113,10 @@
     "verdict": "ai_helps",
     "ru": "платят за готовый результат и поддержку, а не за программу; ИИ лишь ускоряет нам работу",
     "en": "they pay for a working result and support, not for software; AI just makes the work faster for us"
+   },
+   "needs": {
+    "ru": "находить мелкие фирмы и делать им программы с помощью ИИ; отрасль любая",
+    "en": "find small firms and build their systems with AI; any trade"
    }
   },
   "hn35569095": {
@@ -111,6 +127,10 @@
     "verdict": "keep",
     "ru": "держится на собственной базе вирусов и доверии сайтов-клиентов",
     "en": "rests on its own malware data and the trust of client sites"
+   },
+   "needs": {
+    "ru": "сильная техническая база по вирусам; далеко от нас",
+    "en": "strong technical malware know-how; far from us"
    }
   },
   "hn35570182": {
@@ -121,6 +141,10 @@
     "verdict": "keep",
     "ru": "продаёт доступ к данным, которых у ИИ нет",
     "en": "sells access to data AI does not have"
+   },
+   "needs": {
+    "ru": "найти данные, которые нужны многим, и законный доступ к ним",
+    "en": "find data many need and a legal way to it"
    }
   },
   "hn35573937": {
@@ -131,6 +155,10 @@
     "verdict": "keep",
     "ru": "узкая отрасль: продавцы домов на колёсах платят за свою систему учёта, ИИ её не заменит",
     "en": "narrow trade: dealers pay for their own records system, AI does not replace it"
+   },
+   "needs": {
+    "ru": "понять работу продавцов домов на колёсах: разговоры с владельцами; работать у них не нужно",
+    "en": "learn how manufactured-home dealers work: talks with owners; no need to work there"
    }
   },
   "hn35572542": {
@@ -191,6 +219,10 @@
     "verdict": "keep",
     "ru": "сайты платят за сбор своих посещений - ИИ этого не делает",
     "en": "sites pay to record their own visits - AI does not do that"
+   },
+   "needs": {
+    "ru": "программа и поддержка; отрасль не нужна, но конкурентов много",
+    "en": "software and support; no trade needed, but many competitors"
    }
   },
   "hn33923806": {
@@ -201,6 +233,10 @@
     "verdict": "keep",
     "ru": "фирмы платят за систему, в которой работают с клиентами каждый день",
     "en": "firms pay for a system they use with customers every day"
+   },
+   "needs": {
+    "ru": "понять, как фирмы работают с новыми клиентами; отрасль не нужна",
+    "en": "learn how firms take on new clients; no trade needed"
    }
   },
   "hn35569096": {
@@ -211,6 +247,10 @@
     "verdict": "ai_helps",
     "ru": "магазины платят за готовый предпросмотр на их сайте; ИИ помогает нам сделать его быстрее",
     "en": "shops pay for a working preview on their site; AI helps us build it faster"
+   },
+   "needs": {
+    "ru": "находить магазины именных украшений и подобных товаров и делать им предпросмотр; отрасль не нужна",
+    "en": "find shops with personalised goods and build them a preview; no trade needed"
    }
   },
   "hn35568406": {
@@ -241,6 +281,10 @@
     "verdict": "keep",
     "ru": "сайты платят за сбор своих посещений на своём сервере - ИИ этого не делает",
     "en": "sites pay to record their own visits on their own server - AI does not do that"
+   },
+   "needs": {
+    "ru": "программа и поддержка; отрасль не нужна, но конкурентов много",
+    "en": "software and support; no trade needed, but many competitors"
    }
   }
  }

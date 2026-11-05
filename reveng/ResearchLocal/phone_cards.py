@@ -205,6 +205,8 @@ def signal_cards(root, analysed=()):
         en_age = str(age) + ' months old' if age is not None else 'age not stated'
         ru = [str(s['ru'])[:200], 'Заработал ' + usd(r['last30_usd']) + ' за 30 дней, ' + ru_age + ' (выручка проверена TrustMRR)', AI_RU[s['ai']['verdict']] + s['ai']['ru'][:160]]
         en = [str(s['en'])[:200], 'Made ' + usd(r['last30_usd']) + ' in 30 days, ' + en_age + ' (revenue verified by TrustMRR)', AI_EN[s['ai']['verdict']] + s['ai']['en'][:160]]
+        if s.get('needs'):   # owner 05.11: what the idea needs from us (e.g. an industry insider) - shown, not filtered
+            ru.append('Что нужно от нас: ' + s['needs']['ru'][:160]); en.append('What it needs from us: ' + s['needs']['en'][:160])
         for key, ru_label, en_label in (('pricing', 'Цена', 'Price'), ('channels', 'Откуда клиенты', 'Customers from'), ('team', 'Команда', 'Team')):
             if p.get(key):
                 ru.append(ru_label + ': ' + p[key]); en.append(en_label + ': ' + p[key])
@@ -239,8 +241,8 @@ def hn_cards(root, today=None):
         usd = money({'amount': r['monthly_usd'], 'currency': 'USD'}); d = r.get('date') or ''
         when = d[8:10] + '.' + d[5:7] + '.' + d[:4] if len(d) == 10 else '?'
         out.append(finish({'id': card_id('h', r['id']), 'kind': 'reveng', 'prof': 'рассказ', 'prof_en': 'story', 'text': str(s.get('title') or s['ru'])[:70],
-                           'lines': [str(s['ru'])[:220], 'Говорит, что получает ' + usd + ' в месяц (со слов автора, не проверено)', AI_RU[s['ai']['verdict']] + s['ai']['ru'][:160], 'Написал ' + when + ' на Hacker News'],
-                           'lines_en': [str(s['en'])[:220], 'Says it brings ' + usd + ' a month (self-reported, not verified)', AI_EN[s['ai']['verdict']] + s['ai']['en'][:160], 'Posted ' + d + ' on Hacker News'],
+                           'lines': [str(s['ru'])[:220], 'Говорит, что получает ' + usd + ' в месяц (со слов автора, не проверено)', AI_RU[s['ai']['verdict']] + s['ai']['ru'][:160]] + (['Что нужно от нас: ' + s['needs']['ru'][:160]] if s.get('needs') else []) + ['Написал ' + when + ' на Hacker News'],
+                           'lines_en': [str(s['en'])[:220], 'Says it brings ' + usd + ' a month (self-reported, not verified)', AI_EN[s['ai']['verdict']] + s['ai']['en'][:160]] + (['What it needs from us: ' + s['needs']['en'][:160]] if s.get('needs') else []) + ['Posted ' + d + ' on Hacker News'],
                            'unknown': 'Пересказ ассистента. Не разобрано, сколько стоит начать и что может убить. Вправо - разберу.',
                            'unknown_en': 'Retold by the assistant. Not analysed: cost to start, what kills it. Swipe right and it gets analysed.', 'url': r.get('url')}))
     return out
