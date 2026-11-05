@@ -20,7 +20,6 @@ DISCOVERY = 'https://trustmrr.com/api/ai/discovery'
 PROFILE = 'https://trustmrr.com/startup/%s.md'
 MIN_30D_USD = 500
 MAX_PROFILES = 12
-KEEP = 150
 MONTHS = {k: i + 1 for i, k in enumerate(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'])}
 
 
@@ -101,15 +100,8 @@ def collect(root, stats, offline=False, read=None, today=None):
             except Exception as ex:
                 r['profile_error'] = m.error_text(ex, 100)
             time.sleep(1)
-        # the discovery list shows only the latest 50; projects seen on earlier days are kept (sealed file, up to KEEP)
-        try:
-            old = json.loads((root / 'trustmrr-signals.json').read_text(encoding='utf-8')); claim = old.pop('integrity_sha256', None)
-            if claim == m.sha(json.dumps(old, sort_keys=True, ensure_ascii=False).encode()):
-                now_slugs = {r['slug'] for r in rows}
-                rows += [dict(r, earlier=True) for r in old.get('signals', []) if r.get('slug') not in now_slugs]
-        except (OSError, ValueError):
-            pass
-        result.update(status='read', signals=rows[:KEEP])
+        # no history kept between runs: TrustMRR's terms forbid archiving or reconstructing its database (read 05.11)
+        result.update(status='read', signals=rows)
     except Exception as ex:
         result.update(status='source_unavailable', error=m.error_text(ex, 200), signals=[])
     result['source_requests'] = stats.get('source_requests', 0); result['model_requests'] = 0

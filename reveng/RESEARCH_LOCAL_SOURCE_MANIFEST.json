@@ -1047,8 +1047,8 @@
     },
     {
       "path": "reveng/ResearchLocal/trustmrr_signals.py",
-      "bytes": 7346,
-      "sha256": "b96aedad0a85d4ec61341bfe18afb82e0dd32b3f99389a42a4a7e905595b6e9f",
+      "bytes": 6863,
+      "sha256": "065a94bb927b4d80570c5220d55925ebfd5ecb3d2b994c698552b9a31f46fd7f",
       "change": "new_trustmrr_signals_2026-11-03+signal_cards"
     },
     {
