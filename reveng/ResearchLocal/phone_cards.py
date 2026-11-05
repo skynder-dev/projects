@@ -281,6 +281,37 @@ def clipping_card(root):
                     'unknown_en': 'Figures from the public Content Rewards board. What one clipper earns is not shown. Swipe right and it gets analysed.'})]
 
 
+def demand_card(root):
+    """One card: what people want done by outside help right now (hn-demand.json, sealed; monthly HN freelancer threads).
+    Built from counts only: the kinds of work asked for, how many offers state money, the usual hourly rate."""
+    path = root / 'hn-demand.json'
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding='utf-8')); claim = data.pop('integrity_sha256', None)
+    if claim != sha(json.dumps(data, sort_keys=True, ensure_ascii=False)):
+        raise ValueError('demand seal mismatch; no card written from it')
+    s = data.get('summary') or {}
+    if data.get('status') != 'read' or not s.get('requests'):
+        return []
+    import hn_demand
+    top = s.get('kinds', [])[:3]
+    ru = ['Суть: люди раз в месяц пишут на форуме Hacker News, какую работу хотят отдать исполнителю; это свежий спрос',
+          AI_RU['ai_helps'] + 'платят за готовую работу; ИИ делает её нам быстрее',
+          'Заказов в последних обсуждениях: %d, с указанной оплатой: %d' % (s['requests'], s.get('with_money', 0))]
+    en = ['In short: once a month people on Hacker News post the work they want done by outside help; this is fresh demand',
+          AI_EN['ai_helps'] + 'they pay for finished work; AI makes it faster for us',
+          'Requests in the latest threads: %d, with money stated: %d' % (s['requests'], s.get('with_money', 0))]
+    if top:
+        ru.append('Чаще всего просят: ' + ', '.join('%s (%d)' % (k, n) for k, n in top))
+        en.append('Most asked for: ' + ', '.join('%s (%d)' % (hn_demand.EN.get(k, k), n) for k, n in top))
+    if s.get('median_rate_per_hour_usd'):
+        ru.append('Обычная названная ставка: $%s в час' % s['median_rate_per_hour_usd']); en.append('Typical stated rate: $%s an hour' % s['median_rate_per_hour_usd'])
+    return [finish({'id': 'rv_k_freelance_demand', 'kind': 'reveng', 'prof': 'спрос', 'prof_en': 'demand', 'text': 'Что заказывают у исполнителей сейчас',
+                    'lines': ru[:6], 'lines_en': en[:6], 'url': (data.get('threads') or [{}])[0].get('id') and 'https://news.ycombinator.com/item?id=%s' % data['threads'][0]['id'],
+                    'unknown': 'Это заказы на форуме программистов: перекос в сторону программ. Вправо - разберу, что из этого брать нам.',
+                    'unknown_en': 'Requests on a programmers forum: skewed to software. Swipe right and it gets analysed.'})]
+
+
 def assistant_cards(root):
     """Analyses the assistant wrote in chat from sources it read (assistant-analyses.json): marked as such on the card,
     never as RevEng's own automatic result."""
@@ -319,7 +350,7 @@ def write(root, given_dir=None, today=None):
         pass
     found = signal_cards(root, analysed) + hn_cards(root, today)
     found.sort(key=lambda c: not any(l.startswith(AI_RU['ai_helps']) for l in c['lines']))   # where AI is our tool comes first
-    cards = mine + clipping_card(root) + found + contest_cards(root, today)
+    cards = mine + clipping_card(root) + demand_card(root) + found + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export
