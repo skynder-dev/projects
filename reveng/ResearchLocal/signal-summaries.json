@@ -1,6 +1,6 @@
 {
  "schema": "reveng-signal-summaries-v1",
- "note": "Plain one-sentence retelling by the assistant of the TrustMRR discovery description (trustmrr.com/api/ai/discovery, read 2026-11-04). Not RevEng's own result. A signal without an entry here is not shown on the phone. Each entry also carries the assistant's judgment whether AI in every phone eats it in 2026 (ai.verdict keep/eaten, owner 05.11); eaten and unjudged entries are not shown.",
+ "note": "Plain one-sentence retelling by the assistant of the TrustMRR discovery description (trustmrr.com/api/ai/discovery, read 2026-11-04). Not RevEng's own result. A signal without an entry here is not shown on the phone. Each entry also carries the assistant's judgment whether AI in every phone eats it in 2026 (owner 05.11, then corrected: AI itself is fine as OUR tool). ai.verdict: eaten = sells a function AI gives the buyer for free (not shown); ai_helps = people pay for a result, AI makes our work cheaper (shown first); keep = holds anyway. Unjudged entries are not shown.",
  "summaries": {
   "intentsly": {
    "ru": "Программа для продавцов: сама ищет в LinkedIn, Reddit, X и Facebook людей, которым сейчас нужен похожий товар, и начинает с ними переписку; фирмы платят за программу",
@@ -88,9 +88,9 @@
    "ru": "Программа для фирм, которые травят тараканов и грызунов: заказы, клиенты, учёт; фирмы платят ежемесячно. Запущена во время пандемии",
    "en": "Software for pest control companies: jobs, customers, records; companies pay monthly. Started during the pandemic",
    "ai": {
-    "verdict": "eaten",
-    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
-    "en": "a small 2023 program - now built with AI in an evening"
+    "verdict": "keep",
+    "ru": "фирмы платят за систему, где лежат их заказы и клиенты; сами её не соберут и не станут переносить",
+    "en": "firms pay for the system that holds their jobs and customers; they will not build or move it themselves"
    }
   },
   "hn35568678": {
@@ -98,9 +98,9 @@
    "ru": "Делает маленьким фирмам программы под заказ: сбор данных с сайтов, отчёты; берёт помесячную плату. По его словам, несколько часов работы в неделю",
    "en": "Builds small custom systems for small businesses (data collection, reports) for a monthly fee; a few hours of work a week, he says",
    "ai": {
-    "verdict": "eaten",
-    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
-    "en": "a small 2023 program - now built with AI in an evening"
+    "verdict": "ai_helps",
+    "ru": "платят за готовый результат и поддержку, а не за программу; ИИ лишь ускоряет нам работу",
+    "en": "they pay for a working result and support, not for software; AI just makes the work faster for us"
    }
   },
   "hn35569095": {
@@ -108,9 +108,9 @@
    "ru": "Сервис, которым другие сайты проверяют загружаемые файлы на вирусы и опасное содержимое; платят за количество проверок. Рекламу не покупал",
    "en": "A service other sites use to check uploaded files for malware and unsafe content; paid by usage. No money spent on marketing",
    "ai": {
-    "verdict": "eaten",
-    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
-    "en": "a small 2023 program - now built with AI in an evening"
+    "verdict": "keep",
+    "ru": "держится на собственной базе вирусов и доверии сайтов-клиентов",
+    "en": "rests on its own malware data and the trust of client sites"
    }
   },
   "hn35570182": {
@@ -118,9 +118,9 @@
    "ru": "Продаёт доступ к готовым данным (например, проверка госномеров и документов в Мексике) для чужих программ. Рост: $200, $900, $2 000 в месяц по годам",
    "en": "Sells access to ready data (e.g. Mexican ID checks) for other people's software. Grew $200, $900, $2,000 a month year by year",
    "ai": {
-    "verdict": "eaten",
-    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
-    "en": "a small 2023 program - now built with AI in an evening"
+    "verdict": "keep",
+    "ru": "продаёт доступ к данным, которых у ИИ нет",
+    "en": "sells access to data AI does not have"
    }
   },
   "hn35573937": {
@@ -128,9 +128,9 @@
    "ru": "Программа учёта клиентов и сделок для магазинов, продающих дома на колёсах; около $4 000 в месяц, расходы $400",
    "en": "Customer and deal software for manufactured-home dealers; about $4,000 a month, costs $400",
    "ai": {
-    "verdict": "eaten",
-    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
-    "en": "a small 2023 program - now built with AI in an evening"
+    "verdict": "keep",
+    "ru": "узкая отрасль: продавцы домов на колёсах платят за свою систему учёта, ИИ её не заменит",
+    "en": "narrow trade: dealers pay for their own records system, AI does not replace it"
    }
   },
   "hn35572542": {
@@ -188,9 +188,9 @@
    "ru": "Замена Google Analytics без слежки за посетителями; сайты платят подписку. Двое людей, $2 000 через полтора года, теперь около $4 000",
    "en": "Privacy-friendly website analytics, a Google Analytics replacement; subscription. Two people, $2,000 after 1.5 years, now about $4,000",
    "ai": {
-    "verdict": "eaten",
-    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
-    "en": "a small 2023 program - now built with AI in an evening"
+    "verdict": "keep",
+    "ru": "сайты платят за сбор своих посещений - ИИ этого не делает",
+    "en": "sites pay to record their own visits - AI does not do that"
    }
   },
   "hn33923806": {
@@ -198,9 +198,9 @@
    "ru": "Двое партнёров сделали программу, которая помогает фирмам вводить новых клиентов в работу, и вторую маленькую; около $100 000 в год почти без их участия",
    "en": "Two partners built a client-onboarding product for businesses plus a small second one; about $100,000 a year with little involvement",
    "ai": {
-    "verdict": "eaten",
-    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
-    "en": "a small 2023 program - now built with AI in an evening"
+    "verdict": "keep",
+    "ru": "фирмы платят за систему, в которой работают с клиентами каждый день",
+    "en": "firms pay for a system they use with customers every day"
    }
   },
   "hn35569096": {
@@ -208,9 +208,9 @@
    "ru": "Делал для магазинов именных кулонов и подобных товаров программу: покупатель сразу видит, как будет выглядеть изделие с его надписью",
    "en": "Built preview tools for shops selling custom name pendants and similar items: buyers see the finished piece with their text",
    "ai": {
-    "verdict": "eaten",
-    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
-    "en": "a small 2023 program - now built with AI in an evening"
+    "verdict": "ai_helps",
+    "ru": "магазины платят за готовый предпросмотр на их сайте; ИИ помогает нам сделать его быстрее",
+    "en": "shops pay for a working preview on their site; AI helps us build it faster"
    }
   },
   "hn35568406": {
@@ -238,9 +238,9 @@
    "ru": "Программа статистики посещений, которую покупают один раз и ставят на свой сервер; около $1 500 в месяц без рекламы",
    "en": "Self-hosted website analytics sold as a one-time license; about $1,500 a month with no marketing",
    "ai": {
-    "verdict": "eaten",
-    "ru": "маленькая программа 2023 года - сейчас такое делают с ИИ за вечер",
-    "en": "a small 2023 program - now built with AI in an evening"
+    "verdict": "keep",
+    "ru": "сайты платят за сбор своих посещений на своём сервере - ИИ этого не делает",
+    "en": "sites pay to record their own visits on their own server - AI does not do that"
    }
   }
  }

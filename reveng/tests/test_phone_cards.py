@@ -88,7 +88,7 @@ class Tests(unittest.TestCase):
                            {'id': 'hn2', 'monthly_usd': 9000, 'text': 'SYNTHETIC no summary', 'date': '2023-04-14'}]}
         (self.root / 'hn-income.json').write_text(json.dumps(dict(data, integrity_sha256=pc.sha(json.dumps(data, sort_keys=True, ensure_ascii=False)))), encoding='utf-8')
         (self.root / 'signal-summaries.json').write_text(json.dumps({'summaries': {'hn1': {'title': 'SYNTHETIC t', 'ru': 'SYNTHETIC суть', 'en': 'SYNTHETIC gist', 'ai': {'verdict': 'keep', 'ru': 'SYNTHETIC держится', 'en': 'SYNTHETIC holds'}}, 'hn2': {'ru': 'x', 'en': 'x', 'ai': {'verdict': 'eaten', 'ru': 'x', 'en': 'x'}}}}), encoding='utf-8')
-        self.assertEqual(pc.hn_cards(self.root, today='2026-11-05'), [])   # 2023 stories are too old
+        self.assertEqual(pc.hn_cards(self.root, today='2028-01-01'), [])   # older than 4 years
         cards = pc.hn_cards(self.root, today='2024-01-01')
         self.assertEqual([c['id'] for c in cards], ['rv_h_hn1']); self.assertEqual(cards[0]['text'], 'SYNTHETIC t')
         self.assertEqual(cards[0]['lines'], ['SYNTHETIC суть', 'Говорит, что получает 4 000 USD в месяц (со слов автора, не проверено)', 'Почему ИИ не съест: SYNTHETIC держится', 'Написал 14.04.2023 на Hacker News'])

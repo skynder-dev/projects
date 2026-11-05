@@ -22,7 +22,7 @@ QUERIES = ['profitable side project', 'side project revenue', 'passive income', 
 MIN_COMMENTS = 40
 MAX_THREADS = 10
 MIN_MONTHLY_USD, MAX_MONTHLY_USD = 1000, 300000
-MAX_AGE_YEARS = 1
+MAX_AGE_YEARS = 4
 MONEY_TITLE = re.compile(r'income|revenue|money|profit|MRR|\$|earn|side project|business|Etsy|YouTube|newsletter|print on demand|sell', re.I)
 
 AMOUNT = r'\$\s?(\d{1,3}(?:[,.]\d{3})+|\d+(?:\.\d+)?)\s?(k|K)?'

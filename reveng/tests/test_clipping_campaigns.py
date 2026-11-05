@@ -33,7 +33,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(r['campaigns'][0]['platforms'], ['tiktok', 'youtube']); self.assertEqual(r['source_requests'], 2)
         card = pc.clipping_card(self.root)[0]
         self.assertEqual(card['id'], 'rv_k_clipping_board'); self.assertTrue(card['lines'][0].startswith('Суть: '))
-        self.assertEqual(card['lines'][1], 'Сейчас открыто кампаний: 3, общий бюджет 4 500 USD, уже выплачено 600 USD'); self.assertLessEqual(len(card['lines']), 6)
+        self.assertEqual(card['lines'][2], 'Сейчас открыто кампаний: 3, общий бюджет 4 500 USD, уже выплачено 600 USD'); self.assertLessEqual(len(card['lines']), 6)
     def test_robots_denied(self):
         r = cc.collect(self.root, {'source_requests': 0}, read=self.read('User-Agent: *\nDisallow: /\n'))
         self.assertEqual(r['status'], 'source_unavailable'); self.assertEqual(pc.clipping_card(self.root), [])

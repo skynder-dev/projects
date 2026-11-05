@@ -14,7 +14,9 @@ from pathlib import Path
 
 SCHEMA = 'reveng-phone-cards-v1'
 MIN_CONTEST_PRIZE_USD = 10000
-HN_MAX_AGE_DAYS = 365
+HN_MAX_AGE_DAYS = 1461   # owner 05.11: age itself is not the problem; whether AI ate it is
+AI_RU = {'keep': 'Почему ИИ не съест: ', 'ai_helps': 'ИИ нам в помощь: '}
+AI_EN = {'keep': 'Why AI will not eat it: ', 'ai_helps': 'AI is our tool here: '}
 BUDGET_USD = 100000   # owner 03.11: at most $100 000 to start one idea; a deal needing more capital is not a card
 # the card front keeps only what decides: a missing deadline or prize is said, the rest of the unknown stays on the PC
 KEY_UNKNOWN = {'deadline': ('срок подачи', 'deadline'), 'prize': ('приз', 'prize')}
@@ -196,13 +198,13 @@ def signal_cards(root, analysed=()):
         if r['slug'] in analysed or (age is not None and age > SIGNAL_MAX_AGE_MONTHS) or r['last30_usd'] < SIGNAL_MIN_30D_USD:
             continue
         s = plain.get(r['slug']) or {}
-        if not (s.get('ru') and s.get('en')) or (s.get('ai') or {}).get('verdict') != 'keep':
+        if not (s.get('ru') and s.get('en')) or (s.get('ai') or {}).get('verdict') not in ('keep', 'ai_helps'):
             continue   # no plain description, or AI in every phone does it for free in 2026 (owner 05.11), or not judged yet
         p = r.get('profile') or {}
         ru_age = 'проекту ' + str(age) + ' мес' if age is not None else 'возраст не указан'   # unknown age is shown, not hidden
         en_age = str(age) + ' months old' if age is not None else 'age not stated'
-        ru = [str(s['ru'])[:200], 'Заработал ' + usd(r['last30_usd']) + ' за 30 дней, ' + ru_age + ' (выручка проверена TrustMRR)', 'Почему ИИ не съест: ' + s['ai']['ru'][:160]]
-        en = [str(s['en'])[:200], 'Made ' + usd(r['last30_usd']) + ' in 30 days, ' + en_age + ' (revenue verified by TrustMRR)', 'Why AI will not eat it: ' + s['ai']['en'][:160]]
+        ru = [str(s['ru'])[:200], 'Заработал ' + usd(r['last30_usd']) + ' за 30 дней, ' + ru_age + ' (выручка проверена TrustMRR)', AI_RU[s['ai']['verdict']] + s['ai']['ru'][:160]]
+        en = [str(s['en'])[:200], 'Made ' + usd(r['last30_usd']) + ' in 30 days, ' + en_age + ' (revenue verified by TrustMRR)', AI_EN[s['ai']['verdict']] + s['ai']['en'][:160]]
         for key, ru_label, en_label in (('pricing', 'Цена', 'Price'), ('channels', 'Откуда клиенты', 'Customers from'), ('team', 'Команда', 'Team')):
             if p.get(key):
                 ru.append(ru_label + ': ' + p[key]); en.append(en_label + ': ' + p[key])
@@ -232,13 +234,13 @@ def hn_cards(root, today=None):
         if (r.get('date') or '') < fresh:
             continue   # owner 05.11: stories years old are mostly dead or done by everyone with AI now; only the last year
         s = plain.get(r['id']) or {}
-        if not (s.get('ru') and s.get('en')) or (s.get('ai') or {}).get('verdict') != 'keep':
+        if not (s.get('ru') and s.get('en')) or (s.get('ai') or {}).get('verdict') not in ('keep', 'ai_helps'):
             continue
         usd = money({'amount': r['monthly_usd'], 'currency': 'USD'}); d = r.get('date') or ''
         when = d[8:10] + '.' + d[5:7] + '.' + d[:4] if len(d) == 10 else '?'
         out.append(finish({'id': card_id('h', r['id']), 'kind': 'reveng', 'prof': 'рассказ', 'prof_en': 'story', 'text': str(s.get('title') or s['ru'])[:70],
-                           'lines': [str(s['ru'])[:220], 'Говорит, что получает ' + usd + ' в месяц (со слов автора, не проверено)', 'Почему ИИ не съест: ' + s['ai']['ru'][:160], 'Написал ' + when + ' на Hacker News'],
-                           'lines_en': [str(s['en'])[:220], 'Says it brings ' + usd + ' a month (self-reported, not verified)', 'Why AI will not eat it: ' + s['ai']['en'][:160], 'Posted ' + d + ' on Hacker News'],
+                           'lines': [str(s['ru'])[:220], 'Говорит, что получает ' + usd + ' в месяц (со слов автора, не проверено)', AI_RU[s['ai']['verdict']] + s['ai']['ru'][:160], 'Написал ' + when + ' на Hacker News'],
+                           'lines_en': [str(s['en'])[:220], 'Says it brings ' + usd + ' a month (self-reported, not verified)', AI_EN[s['ai']['verdict']] + s['ai']['en'][:160], 'Posted ' + d + ' on Hacker News'],
                            'unknown': 'Пересказ ассистента. Не разобрано, сколько стоит начать и что может убить. Вправо - разберу.',
                            'unknown_en': 'Retold by the assistant. Not analysed: cost to start, what kills it. Swipe right and it gets analysed.', 'url': r.get('url')}))
     return out
@@ -269,6 +271,8 @@ def clipping_card(root):
     if s.get('top_runners'):
         ru.append('Больше всего кампаний ведут: ' + ', '.join(s['top_runners']) + ' (посредники между брендом и нарезчиками)')
         en.append('Most campaigns are run by: ' + ', '.join(s['top_runners']) + ' (middlemen between brands and clippers)')
+    ru.insert(1, AI_RU['ai_helps'] + 'платят за просмотры, а нарезать ролики ИИ помогает быстро и дёшево')
+    en.insert(1, AI_EN['ai_helps'] + 'brands pay for views; AI makes cutting clips fast and cheap')
     return [finish({'id': 'rv_k_clipping_board', 'kind': 'reveng', 'prof': 'рынок', 'prof_en': 'market', 'text': 'Нарезка роликов: кто и сколько платит сейчас',
                     'lines': ru[:6], 'lines_en': en[:6], 'url': 'https://contentrewards.com/c/discover',
                     'unknown': 'Цифры с открытой доски Content Rewards. Сколько получает один нарезчик - не видно. Вправо - разберу, как на этом заработать.',
@@ -311,7 +315,9 @@ def write(root, given_dir=None, today=None):
             analysed.update(re.findall(r'trustmrr\.com/startup/([a-z0-9-]+)', ' '.join(a.get('sources', []))))
     except (OSError, ValueError):
         pass
-    cards = mine + clipping_card(root) + signal_cards(root, analysed) + hn_cards(root, today) + contest_cards(root, today)
+    found = signal_cards(root, analysed) + hn_cards(root, today)
+    found.sort(key=lambda c: not any(l.startswith(AI_RU['ai_helps']) for l in c['lines']))   # where AI is our tool comes first
+    cards = mine + clipping_card(root) + found + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export
