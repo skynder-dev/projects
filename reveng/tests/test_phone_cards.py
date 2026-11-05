@@ -87,7 +87,8 @@ class Tests(unittest.TestCase):
                            {'id': 'hn2', 'monthly_usd': 9000, 'text': 'SYNTHETIC no summary', 'date': '2023-04-14'}]}
         (self.root / 'hn-income.json').write_text(json.dumps(dict(data, integrity_sha256=pc.sha(json.dumps(data, sort_keys=True, ensure_ascii=False)))), encoding='utf-8')
         (self.root / 'signal-summaries.json').write_text(json.dumps({'summaries': {'hn1': {'title': 'SYNTHETIC t', 'ru': 'SYNTHETIC суть', 'en': 'SYNTHETIC gist'}}}), encoding='utf-8')
-        cards = pc.hn_cards(self.root)
+        self.assertEqual(pc.hn_cards(self.root, today='2026-11-05'), [])   # 2023 stories are too old
+        cards = pc.hn_cards(self.root, today='2024-01-01')
         self.assertEqual([c['id'] for c in cards], ['rv_h_hn1']); self.assertEqual(cards[0]['text'], 'SYNTHETIC t')
         self.assertEqual(cards[0]['lines'], ['SYNTHETIC суть', 'Говорит, что получает 4 000 USD в месяц (со слов автора, не проверено)', 'Написал 14.04.2023 на Hacker News'])
         data['people'][0]['monthly_usd'] = 1   # tampered

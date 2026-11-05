@@ -9,11 +9,12 @@ not known is said on the card. No network, no model.
     python phone_cards.py --root <research root> [--phone-dir <folder>]
 """
 import argparse, hashlib, json, os, re
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 SCHEMA = 'reveng-phone-cards-v1'
 MIN_CONTEST_PRIZE_USD = 10000
+HN_MAX_AGE_DAYS = 365
 BUDGET_USD = 100000   # owner 03.11: at most $100 000 to start one idea; a deal needing more capital is not a card
 # the card front keeps only what decides: a missing deadline or prize is said, the rest of the unknown stays on the PC
 KEY_UNKNOWN = {'deadline': ('срок подачи', 'deadline'), 'prize': ('приз', 'prize')}
@@ -212,11 +213,11 @@ def signal_cards(root, analysed=()):
     return out
 
 
-def hn_cards(root):
+def hn_cards(root, today=None):
     """People on Hacker News who say how much they earn and on what (hn-income.json, sealed). Shown only with a plain
     Russian sentence the assistant wrote from the comment (signal-summaries.json, key = comment id); the figure is what
     the person says, marked as not verified."""
-    path = root / 'hn-income.json'
+    path = root / 'hn-income.json'; today = today or date.today().isoformat()
     if not path.exists():
         return []
     data = json.loads(path.read_text(encoding='utf-8')); claim = data.pop('integrity_sha256', None)
@@ -226,8 +227,10 @@ def hn_cards(root):
         plain = json.loads((root / 'signal-summaries.json').read_text(encoding='utf-8')).get('summaries', {})
     except (OSError, ValueError):
         plain = {}
-    out = []
+    out = []; fresh = (date.fromisoformat(today) - timedelta(days=HN_MAX_AGE_DAYS)).isoformat()
     for r in data.get('people', []):
+        if (r.get('date') or '') < fresh:
+            continue   # owner 05.11: stories years old are mostly dead or done by everyone with AI now; only the last year
         s = plain.get(r['id']) or {}
         if not (s.get('ru') and s.get('en')):
             continue
@@ -308,7 +311,7 @@ def write(root, given_dir=None, today=None):
             analysed.update(re.findall(r'trustmrr\.com/startup/([a-z0-9-]+)', ' '.join(a.get('sources', []))))
     except (OSError, ValueError):
         pass
-    cards = mine + clipping_card(root) + signal_cards(root, analysed) + hn_cards(root) + contest_cards(root, today)
+    cards = mine + clipping_card(root) + signal_cards(root, analysed) + hn_cards(root, today) + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export
