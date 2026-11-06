@@ -312,6 +312,38 @@ def demand_card(root):
                     'unknown_en': 'Requests on a programmers forum: skewed to software. Swipe right and it gets analysed.'})]
 
 
+def youtube_card(root):
+    """One card: what people watch right now across countries (youtube-trends.json, sealed; YouTube Data API)."""
+    path = root / 'youtube-trends.json'
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding='utf-8')); claim = data.pop('integrity_sha256', None)
+    if claim != sha(json.dumps(data, sort_keys=True, ensure_ascii=False)):
+        raise ValueError('youtube seal mismatch; no card written from it')
+    s = data.get('summary') or {}
+    if data.get('status') != 'read' or not s.get('videos'):
+        return []
+    import youtube_trends as yt
+    name = lambda c, i: yt.CATEGORY.get(c, (c, c))[i]
+    top = s.get('top_categories', [])[:4]
+    pick = [r for r in ('US', 'BR', 'IN', 'DE', 'KZ', 'JP') if s.get('by_region', {}).get(r)][:3]
+    ru = ['Суть: какие ролики сейчас в топе YouTube в %d странах; видно, на какие темы идут зрители' % s['regions'],
+          AI_RU['ai_helps'] + 'ролики под эти темы делаем с ИИ; платят просмотры, реклама и заказчики',
+          'Чаще всего в топе: ' + ', '.join('%s (%d)' % (name(c, 0), n) for c, n in top),
+          'Роликов до минуты в топе: %d из %d' % (s.get('under_a_minute', 0), s['videos'])]
+    en = ['In short: what is on top of YouTube right now in %d countries; shows which topics viewers go for' % s['regions'],
+          AI_EN['ai_helps'] + 'we make videos for these topics with AI; paid by views, ads and clients',
+          'Most often on top: ' + ', '.join('%s (%d)' % (name(c, 1), n) for c, n in top),
+          'Videos under a minute on top: %d of %d' % (s.get('under_a_minute', 0), s['videos'])]
+    if pick:
+        ru.append('По странам: ' + '; '.join('%s - %s' % (r, name(s['by_region'][r][0][0], 0)) for r in pick))
+        en.append('By country: ' + '; '.join('%s - %s' % (r, name(s['by_region'][r][0][0], 1)) for r in pick))
+    return [finish({'id': 'rv_k_youtube_trends', 'kind': 'reveng', 'prof': 'спрос', 'prof_en': 'demand', 'text': 'Что смотрят на YouTube сейчас',
+                    'lines': ru[:6], 'lines_en': en[:6], 'url': 'https://www.youtube.com/feed/trending',
+                    'unknown': 'Данные YouTube. Сколько зарабатывают эти каналы - не видно. Вправо - разберу темы и страны.',
+                    'unknown_en': 'Data from YouTube. What these channels earn is not shown. Swipe right and it gets analysed.'})]
+
+
 def assistant_cards(root):
     """Analyses the assistant wrote in chat from sources it read (assistant-analyses.json): marked as such on the card,
     never as RevEng's own automatic result."""
@@ -350,7 +382,7 @@ def write(root, given_dir=None, today=None):
         pass
     found = signal_cards(root, analysed) + hn_cards(root, today)
     found.sort(key=lambda c: not any(l.startswith(AI_RU['ai_helps']) for l in c['lines']))   # where AI is our tool comes first
-    cards = mine + clipping_card(root) + demand_card(root) + found + contest_cards(root, today)
+    cards = mine + clipping_card(root) + youtube_card(root) + demand_card(root) + found + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}
     (root / 'phone-cards.json').write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding='utf-8')
     try:   # the owner's swipes kept in RevEng's own folder too, so they go into RevEng's export

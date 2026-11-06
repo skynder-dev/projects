@@ -20,7 +20,7 @@
       "no external writes or model/live capture"
     ]
   },
-  "application_files": 109,
+  "application_files": 110,
   "buyer_normalization_repair": {
     "publication_status": "not_published",
     "base_source_context_seal_sha256": "aac912b41cd4ee6ad8a04812dcf7a3788ddb87c717d7df3a68338612fd0ca4a3",
@@ -781,8 +781,8 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 29068,
-      "sha256": "a691c3427de4a826bb83b73426eb9edf3f43d93a9e7a1f7848796dfad62460a9",
+      "bytes": 31714,
+      "sha256": "92f6740ba8ad8f05267be7757bf24aedbaff713062d72aaddbcfc0801319d3d8",
       "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines+skip_empty_clean_titles+contests_10k+business_cards+plain_models+models_cap+ways_not_buy+budget_100k+assistant_cards+signal_cards"
     },
     {
@@ -1068,6 +1068,12 @@
       "change": "exact_public_source_import"
     },
     {
+      "path": "reveng/ResearchLocal/youtube_trends.py",
+      "bytes": 5294,
+      "sha256": "7379d3314b90eb1acb95a1fbdd69c16f424f183126e26b8f83afd324cd36c84b",
+      "change": "new_youtube_trends_2026-11-06"
+    },
+    {
       "path": "reveng/tests/TestContestTermsPresentation.cs",
       "bytes": 15990,
       "sha256": "a6377804917bdd8f2afcae474db5f6ccb724aca31965cb8742ecf35277f4d592",
@@ -1280,6 +1286,12 @@
       "bytes": 4322,
       "sha256": "a2647ab68ae947aff83cd013a226e9a432ed8164129f4d6cc1acc6bee9ab20b6",
       "change": "new_trustmrr_signals_offline_contracts_2026-11-03+signal_cards"
+    },
+    {
+      "path": "reveng/tests/test_youtube_trends.py",
+      "bytes": 3004,
+      "sha256": "c113435266010048526054c110ba6827d8070f7cb193d020f6ac1ecd27ac98c2",
+      "change": "new_youtube_trends_offline_contracts_2026-11-06"
     }
   ],
   "followon": {
