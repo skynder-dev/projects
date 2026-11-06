@@ -1,0 +1,2 @@
+using System;using System.IO;using System.Collections.Generic;
+public static class RecheckOwnerJson {public static int Main(string[]args){string path=Path.Combine(args[0],"review-notes.json"),error="";try{DecisionStore.Read(args[0]);}catch(Exception ex){error=ex.Message;}File.WriteAllText(args[1],ManualHypotheses.Serialize(new Dictionary<string,object>{{"input_sha256",ProvenanceAudit.Sha(File.ReadAllText(path))},{"rejected",error!=""},{"error",error},{"source","Actual DecisionStore.Read/LocalJson from frozen RC0009 compiled audit assembly"}}));return error!=""?0:2;}}

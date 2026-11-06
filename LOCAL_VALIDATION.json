@@ -1,0 +1,42 @@
+{
+  "location": "Local Windows only; GitHub Actions not run",
+  "results": [
+    {
+      "project": "social246",
+      "exit_code": 0,
+      "fresh_renamed_copy_with_spaces": true,
+      "PYTHONPATH_removed": true,
+      "production_pin_check_before_and_after": true,
+      "no_network_models_GUI_installation": true
+    },
+    {
+      "project": "reveng028",
+      "exit_code": 0,
+      "fresh_renamed_copy_with_spaces": true,
+      "PYTHONPATH_removed": true,
+      "production_pin_check_before_and_after": true,
+      "no_network_models_GUI_installation": true
+    },
+    {
+      "project": "forgeAlphaZero",
+      "exit_code": 0,
+      "fresh_renamed_copy_with_spaces": true,
+      "PYTHONPATH_removed": true,
+      "production_pin_check_before_and_after": true,
+      "no_network_models_GUI_installation": true
+    }
+  ],
+  "dependency_installation_performed": false,
+  "hosted_dependency_resolution_not_yet_tested": true,
+  "limitations": [
+    "Social media integrity and freshness explicitly stubbed",
+    "RevEng model completion and real Wave/Crawl4AI capture suites excluded",
+    "Forge actual historical responses and installed UI excluded"
+  ],
+  "post_sanitization_recheck": {
+    "social246": "PASS",
+    "forgeAlphaZero": "PASS",
+    "RevEng028": "unchanged from passing native/parser/race run",
+    "machine_specific_path_literals_remaining": 0
+  }
+}

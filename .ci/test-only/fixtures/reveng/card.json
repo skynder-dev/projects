@@ -1,0 +1,18 @@
+{
+  "candidate_id": "ci-fixture-card",
+  "title": "Synthetic WooCommerce COD fixture",
+  "buyer": "Synthetic test role",
+  "problem_hypothesis": "Synthetic checkout configuration question; no actual customer",
+  "solution_hypothesis": "Inspect WooCommerce COD configuration in a synthetic test",
+  "validation_step": "Offline fixture only",
+  "market_category": "website_maintenance",
+  "observed_basis": [],
+  "evidence_ids": [],
+  "risks": [],
+  "missing_evidence": [
+    "All commercial evidence"
+  ],
+  "alternatives_and_limits": "Unknown",
+  "commercial_review": {},
+  "functional_comparisons": []
+}
