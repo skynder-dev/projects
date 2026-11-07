@@ -335,7 +335,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<textarea name='source' rows='8' maxlength='9000' style='width:100%;margin-top:6px' translate='no' required></textarea>"
                 f"<div class='ct-row' style='margin-top:6px'><b>Language</b><select name='lang'>{langs}</select>"
                 f"<b>Length</b><select name='secs'>{lens}</select>"
-                f"<b>Format</b><select name='format'><option value='horizontal'>horizontal</option><option value='vertical'>vertical</option></select></div>"
+                f"</div><div class='ct-row' style='margin-top:6px'>{_format_choice('horizontal')}</div>"
                 f"<label style='display:block;margin-top:6px'><input type='checkbox' name='hold' value='1' checked> Show me the "
                 f"pictures' list first (I read and change it, then the film is made)</label>"
                 f"<div style='margin-top:8px'><button>Make the film</button></div></form></div>")
