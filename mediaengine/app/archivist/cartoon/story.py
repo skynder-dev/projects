@@ -194,8 +194,8 @@ Narrator: <name> (woman or man, narrator)
 <Name> (boy, girl, woman or man, <role>) looks: <age, face, hair, clothes - 12 to 25 English words, always the same>
    <- the 1 to 4 people seen most, one per line
 
-== Picture: <ONE still picture in English: the place, the time of day and light, who does what, the camera (wide shot, close-up, from behind...)> | with: <the names of the people seen in it> | sound: <one or two of: wind, birds, stream, sea, rain, night, room, town, fire> | word: <a word or short phrase written big on the picture, only where the treatment has one>
-Narrator: <one or two short sentences said over this picture>"""
+== Picture: <ONE still picture in English: the place, the time of day and light, who does what, the camera (wide shot, close-up, from behind...)> | with: <the names of the people seen in it> | sound: <one or two of: wind, birds, stream, sea, rain, night, room, town, fire> | word: <a word or short phrase written big on the picture, only where the treatment has one> | seconds: <how long the picture stays, 6 to 20>
+Narrator: <one or two short sentences said over this picture>   <- leave this line out when the film has no narrator"""
 
 RULES = """RULES:
 - Follow the TREATMENT in its order, beat by beat. Do not invent new events, people or endings; do not leave out its key moments.
@@ -204,7 +204,8 @@ RULES = """RULES:
 - Describe only what can be drawn and is in the treatment's world: its time, its things (no phones or cars if it is set long ago).
 - Nothing frightening for children (no ropes like nooses, no weapons pointed, no blood); no text or letters in the pictures except a "word:".
 - "looks:" in English; the descriptions in English; what the narrator says in {lang}.
-- The narrator tells it simply, about {words} words in all; a quiet picture may have no line at all.
+- If the treatment says the film has no dialogue, no narration or no voice-over, write NO narrator lines at all: the pictures and the "word:"s tell it. Otherwise the narrator tells it simply, about {words} words in all; a quiet picture may have no line.
+- The "seconds:" of all pictures add up to about {secs} seconds; longer for a key moment.
 - "word:" at most 5 times in the film, only for words the treatment itself shows on the screen."""
 
 
@@ -217,7 +218,7 @@ def prompt(job: dict) -> str:
         "Make the storyboard of the film described in the TREATMENT below.",
         f"TREATMENT:\n\"\"\"\n{str(job.get('source') or '').strip()[:MAX_SOURCE]}\n\"\"\"",
         FORMAT.format(fmt=job.get("format") or "horizontal"),
-        RULES.format(lo=max(8, n - 4), hi=n + 4, lang=lang, words=int(secs * 1.6)),
+        RULES.format(lo=max(8, n - 4), hi=n + 4, lang=lang, words=int(secs * 1.6), secs=secs),
         "Now write the whole storyboard."])
 
 

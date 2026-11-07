@@ -1343,7 +1343,7 @@ def register(app, page, err_page, e, human_bytes):
                 if not picked:
                     raise F.FilmError("A cartoon needs at least one scene.")
                 script["scenes"] = [old[k] for k in dict.fromkeys(picked)]
-            if not any(s_.get("lines") for s_ in script.get("scenes") or []):
+            if not any(s_.get("lines") or s_.get("draw") for s_ in script.get("scenes") or []):   # (a story may be silent)
                 raise F.FilmError("Nothing is said in the cartoon: write at least one line.")
             new = _make(script, f, keep=(_job(jid) or {}).get("music"))
         except (F.FilmError, vo.VoiceError) as exc:

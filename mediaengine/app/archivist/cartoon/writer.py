@@ -44,7 +44,7 @@ MODELS = {
 }
 MODEL = MODELS["small"]                  # (the one a check of an older version names)
 NEED_FREE = 6 * 10 ** 9
-CTX = 8192
+CTX = 12288                               # (a film's treatment and its storyboard fit: story.py)
 LANGS = {"en": "English", "ru": "Russian", "ro": "Romanian"}
 COUNTRY = {"en": "the United States", "ru": "Russia", "ro": "Romania"}
 MONEY = {"united states": "dollars", "usa": "dollars", "us": "dollars", "america": "dollars", "canada": "Canadian dollars",
