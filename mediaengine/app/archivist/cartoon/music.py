@@ -16,6 +16,7 @@ MOODS = {
     "light": (96, [3, 10, 0, 8], [False, False, True, False], 1.0),        # C G Am F
     "suspense": (84, [0, 8, 5, 7], [True, False, True, False], 0.5),       # Am F Dm E
     "calm": (76, [8, 3, 0, 10], [False, False, True, False], 0.0),         # F C Am G
+    "story": (62, [0, 8, 3, 10], [True, False, False, False], 0.0),        # Am F C G, slow: a tale told
 }
 A2 = 110.0
 

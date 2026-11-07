@@ -309,6 +309,9 @@ def _visual(spec: str, n_lines: int) -> dict | None:
 
 def parse(text: str) -> dict:
     """The script (a dict for film.check_script) from the plain text."""
+    from . import story as ST
+    if ST.is_story(text):                                  # (a story's pictures and what is said over them: story.py)
+        return ST.parse(text)
     lines = [ln.rstrip() for ln in str(text or "").replace("\r", "").split("\n")]
     sc: dict = {"title": "Cartoon", "language": "en", "format": "vertical", "cast": {}, "scenes": []}
     names: dict = {}                                       # name (lower) -> key
@@ -477,6 +480,9 @@ def vis_text(v: dict) -> str:
 def to_text(sc: dict) -> str:
     """A script back as plain text (to change it the same way)."""
     sc = sc if isinstance(sc, dict) else {}                # (a script of odd shapes: what can be read of it)
+    if sc.get("story") or any(isinstance(x, dict) and x.get("draw") for x in sc.get("scenes") or []):
+        from . import story as ST
+        return ST.to_text(sc)
     out = [f"Title: {sc.get('title') or 'Cartoon'}", f"Format: {sc.get('format') or 'vertical'}"]
     if isinstance(sc.get("site"), dict) and sc["site"].get("url"):
         out.append(f"Site: {sc['site']['url']}")

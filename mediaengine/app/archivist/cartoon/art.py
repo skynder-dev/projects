@@ -5,7 +5,7 @@ A folder <HOME>/cartoon/art holds them:
   backgrounds/<bg>.png|jpg          a scene's background (bgs.BACKGROUNDS names: office, city ...), any size, cut to fit
   characters/<key>/<pose>.png       a character (library.key_of of its name) standing, the whole figure on a plain light
                                     background (cut away here); <pose>_open.png: the same with the mouth open
-Poses: base (standing; needed), point, shrug, talk - a gesture without its own picture uses the nearest one (POSE_ART).
+Poses: base (standing; needed), point, shrug, talk, blink (the eyes shut) - a gesture without its own picture uses the nearest one (POSE_ART).
 Nothing here is needed: without pictures a film is drawn as before.
 """
 from __future__ import annotations
@@ -153,14 +153,95 @@ def _sized_pic(p: Path, w: int, h: int, figure: bool) -> tuple:
     return out
 
 
-def draw_background(cv, p: Path) -> None:
-    """A background picture over the whole stage, cut to fit (its middle kept), through the camera's transform."""
+def depth_of(p: Path) -> Path | None:
+    """The picture's depth map (<stem>_depth.png, made by the picture add-on: light is near), if there is one."""
+    q = p.with_name(p.stem + "_depth.png")
+    return q if q.is_file() else None
+
+
+_DEPTH: dict = {}
+
+
+def _depth(q: Path, w: int, h: int) -> np.ndarray:
+    """A depth map sized to (w, h), 0 far .. 1 near, smoothed (a sharp step in it tore the picture apart when it moved)."""
+    key = (str(q), q.stat().st_mtime_ns, w, h)
+    with _lock:
+        if key in _DEPTH:
+            return _DEPTH[key]
+    d = cv2.imdecode(np.fromfile(str(q), np.uint8), cv2.IMREAD_UNCHANGED)
+    if d is None:
+        raise OSError(f"not a depth map: {q.name}")
+    if d.ndim == 3:
+        d = d[..., 0]
+    d = cv2.resize(d.astype(np.float32), (w, h), interpolation=cv2.INTER_LINEAR)
+    lo, hi = np.percentile(d, 2), np.percentile(d, 98)
+    d = np.clip((d - lo) / max(1e-6, hi - lo), 0.0, 1.0)
+    d = cv2.GaussianBlur(d, (0, 0), max(2.0, w / 160.0))
+    with _lock:
+        if len(_DEPTH) > 6:
+            _DEPTH.pop(next(iter(_DEPTH)))
+        _DEPTH[key] = d
+    return d
+
+
+_GRID: dict = {}
+MOVES = ("push", "left", "right", "rise", "pull")
+MARGIN = 1.07                                              # (the picture a little bigger than the screen: room to move)
+
+
+def parallax(pic: np.ndarray, d: np.ndarray, p: float, move: str, amount: float = 1.0, size: tuple | None = None) -> np.ndarray:
+    """The picture seen by a camera that moves a little through it (p: 0 .. 1 through the scene): what is near (light
+    in the depth map) moves more than what is far - depth, not a flat picture sliding. pic is MARGIN times the screen."""
+    h, w = pic.shape[:2]
+    W, H = size or (int(round(w / MARGIN)), int(round(h / MARGIN)))
+    p = p * p * (3 - 2 * p)                                # (eased: starts and stops softly)
+    if _GRID.get("size") != (W, H):
+        _GRID.update(size=(W, H), g=np.mgrid[0:H, 0:W].astype(np.float32))
+    ys, xs = _GRID["g"]
+    dd = cv2.resize(d, (W, H), interpolation=cv2.INTER_LINEAR) if d.shape[:2] != (H, W) else d
+    near = 0.15 + 0.85 * dd
+    cx, cy = W / 2.0, H / 2.0
+    a = 0.028 * amount
+    sx = sy = 1.0
+    dx = dy = 0.0
+    if move in ("push", "pull"):
+        k = p if move == "push" else 1 - p
+        s_ = 1.0 + 0.05 * amount * k * near                # (the near grows more than the far)
+        sx = sy = s_
+        dy = -0.006 * amount * k * near * H
+    elif move in ("left", "right"):
+        dx = (1 if move == "left" else -1) * a * W * (p - 0.5) * 2 * near
+    elif move == "rise":
+        dy = a * H * (p - 0.5) * 2 * near
+    mx = (xs - cx) / sx + cx + dx + (w - W) / 2.0
+    my = (ys - cy) / sy + cy + dy + (h - H) / 2.0
+    return cv2.remap(pic, mx.astype(np.float32), my.astype(np.float32), cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+
+
+def draw_background(cv, p: Path, move: tuple | None = None) -> None:
+    """A background picture over the whole stage, cut to fit (its middle kept), through the camera's transform.
+    move: (share of the scene gone 0 .. 1, how the camera moves, amount) - with a depth map the picture is seen in depth."""
     img, _a = _load(p, False)
     m = cv._m[-1]
     x0, y0 = m[0, 2], m[1, 2]                              # (stage (0, 0) and (SW, SH) in pixels)
     x1, y1 = m[0, 0] * cv.SW + m[0, 2], m[1, 1] * cv.SH + m[1, 2]
     W, H = max(1, int(round(x1 - x0))), max(1, int(round(y1 - y0)))
     ih, iw = img.shape[:2]
+    q = depth_of(p) if move else None
+    if q:
+        try:
+            WW, HH = int(round(W * MARGIN)), int(round(H * MARGIN))
+            k = max(WW / iw, HH / ih)
+            w, h = max(WW, int(math.ceil(iw * k))), max(HH, int(math.ceil(ih * k)))
+            pic, _ = _sized_pic(p, w, h, False)
+            ox, oy = (w - WW) // 2, (h - HH) // 2
+            pic = pic[oy:oy + HH, ox:ox + WW]
+            d = _depth(q, WW, HH)
+            out = parallax(pic, d, float(move[0]), str(move[1]), float(move[2]) if len(move) > 2 else 1.0, (W, H))
+            cv.paste(out, np.ones(out.shape[:2] + (1,), np.float32), int(round(x0)), int(round(y0)))
+            return
+        except (OSError, cv2.error, ValueError):
+            pass                                           # (a broken depth map: the picture as it is)
     k = max(W / iw, H / ih)
     w, h = max(W, int(math.ceil(iw * k))), max(H, int(math.ceil(ih * k)))
     pic, _ = _sized_pic(p, w, h, False)
@@ -190,11 +271,13 @@ def _mouth_state(key: str, opening: float, t: float, hold: float = 0.11) -> bool
 
 
 def draw_character(cv, folder: Path, x: float, y: float, scale: float, look: float, pose: str, mouth: float, t: float,
-                   walk: float | None = None, nod: float = 0.0, height: float = 1.0) -> None:
+                   walk: float | None = None, nod: float = 0.0, height: float = 1.0, blink: float = 0.0) -> None:
     """A picture character with its feet at stage (x, y): the gesture's picture, the mouth open on the loud parts of a
     word, breathing, a step's bounce when walking, turned by look (-1: mirrored; between: narrower while turning)."""
     m_open = _mouth_state(str(folder), (mouth[0] if isinstance(mouth, (tuple, list)) else float(mouth or 0.0)), t)
     p = pose_picture(folder, pose, m_open)
+    if blink > 0.5 and not m_open and walk is None and p.stem == "base":   # (eyes shut a moment: its own picture)
+        p = _find(folder, "blink") or p
     img, _a = _load(p, True)
     ih, iw = img.shape[:2]
     m = cv._m[-1]

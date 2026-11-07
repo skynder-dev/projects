@@ -31,6 +31,9 @@ MODEL = ROOT / "models" / "flux"
 MANIFEST = ROOT / "addon.json"
 WORKER = Path(__file__).resolve().with_name("painter_worker.py")
 REPO, REV = "black-forest-labs/FLUX.2-klein-4B", "e7b7dc27f91deacad38e78976d1f2b499d76a294"
+DEPTH = ROOT / "models" / "depth"                      # (how far each part of a picture is: the camera moves in depth)
+DEPTH_REPO, DEPTH_REV = "depth-anything/Depth-Anything-V2-Small-hf", "5426e4f0f36572d16453bbda7a8389317b1bef99"  # Apache-2.0
+DEPTH_PARTS = ("config.json", "model.safetensors", "preprocessor_config.json")
 MODEL_PARTS = ("model_index.json", "scheduler/", "text_encoder/", "tokenizer/", "transformer/", "vae/")
 TORCH = "2.8.0"
 PACKAGES = [f"torch=={TORCH}", "diffusers==0.42.1", "transformers==5.22.1", "accelerate==1.15.0", "safetensors",
@@ -231,6 +234,7 @@ POSE_PROMPTS = [                                       # (file stem, what the re
     ("point", "pointing to the right with one arm stretched out, mouth closed"),
     ("point_open", "pointing to the right with one arm stretched out, mouth wide open talking"),
     ("shrug", "shrugging with both palms up, mouth closed"),
+    ("blink", "standing facing the viewer, arms down, mouth closed, both eyes closed (blinking), otherwise exactly the same"),
 ]
 PLACES = {
     "office": "an office interior seen from the front, a desk, a big window with a city view, a plant, a shelf with folders",
@@ -279,43 +283,94 @@ def describe(c: dict) -> str:
     return ", ".join(b for b in bits if b)
 
 
-def plan(film: dict, again: bool = False) -> list:
-    """The pictures a film still needs: [{"out", "prompt", "ref" (the base picture of that character), "w", "h"}]
-    (again: all of them anew)."""
+STORY = ("hand-painted 2D animated film still, soft painterly textures, warm muted colors, gentle light, cinematic "
+         "composition, storybook feeling, no text, no letters, no captions, no watermark")
+
+
+def _depth_out(pic: Path) -> str:
+    return str(pic.with_name(pic.stem + "_depth.png"))
+
+
+def story_ref(name: str) -> Path:
+    """Where a story's person is drawn once (all their scenes are drawn from it, so they look the same)."""
+    from .library import key_of
+    return art.root() / "story" / key_of(name) / "ref.png"
+
+
+def plan(film: dict, again: bool = False, only: str = "") -> list:
+    """The pictures a film still needs: [{"out", "prompt", "refs" (pictures it is drawn from), "w", "h", "depth" (where
+    its depth map goes)}] and depth maps still missing ({"out", "depth_of"}). again: all of them anew; only: one scene's
+    picture (its background's name), drawn anew."""
     from .library import key_of
     root = art.root()
     wide = film.get("format") == "horizontal"
+    W_, H_ = (1344, 768) if wide else (768, 1344)
     out = []
-    for name in sorted({s["bg"] for s in film["scenes"]} & set(PLACES)):
+    names = {s["bg"] for s in film["scenes"]}
+    for name in sorted(names & set(PLACES)):
         p = root / "backgrounds" / (name + ("_wide" if wide else "") + ".png")
-        if again or not p.is_file():
+        if (again or not p.is_file()) and not only:
             out.append({"out": str(p), "prompt": f"Empty {PLACES[name]}, no people, {LOOK}, "
-                        f"{'wide' if wide else 'vertical'} composition, no text, no letters, no signs", "ref": None,
-                        "w": 1344 if wide else 768, "h": 768 if wide else 1344, "what": name})
-    for key, c in film["cast"].items():
-        d = root / "characters" / key_of(c.get("name") or key)
-        base = d / "base.png"
-        who = describe(c)
-        if again or not base.is_file():
-            out.append({"out": str(base), "prompt": f"Full body character, {who}, standing straight facing the viewer, arms "
-                        f"down, mouth closed, the whole figure from head to shoes in the frame, {LOOK}, isolated on a {PLAIN}",
-                        "ref": None, "w": 768, "h": 1344, "what": c.get("name") or key})
-        for stem, pose in POSE_PROMPTS:
-            p = d / (stem + ".png")
-            if again or not p.is_file():
-                out.append({"out": str(p), "prompt": f"The same character ({who}), same face, same clothes, same style, {pose}, "
-                            f"full body, {PLAIN}", "ref": str(base), "w": 768, "h": 1344, "what": c.get("name") or key})
+                        f"{'wide' if wide else 'vertical'} composition, no text, no letters, no signs", "refs": [],
+                        "w": W_, "h": H_, "what": name, "depth": _depth_out(p)})
+    story = [s for s in film["scenes"] if s.get("draw")]
+    if story:                                              # a story: its people drawn once, then every scene from them
+        refs = {}
+        for key, c in film["cast"].items():
+            if not c.get("looks"):
+                continue
+            p = story_ref(c.get("name") or key)
+            refs[key] = str(p)
+            if (again or not p.is_file()) and not only:
+                out.append({"out": str(p), "prompt": f"Character sheet: {c['looks']}, full body, standing, front view, "
+                            f"plain white background, {STORY}", "refs": [], "w": 768, "h": 1344,
+                            "what": c.get("name") or key, "seed": 11})
+        for i, s in enumerate(story):
+            p = root / "backgrounds" / (s["bg"] + ("_wide" if wide else "") + ".png")
+            if only and s["bg"] != only:
+                continue
+            if again or only or not p.is_file():
+                who = "; ".join(f"{film['cast'][k].get('name') or k}: {film['cast'][k]['looks']}" for k in s.get("with") or []
+                                if film["cast"].get(k, {}).get("looks"))
+                out.append({"out": str(p), "prompt": f"{s['draw']}" + (f". The people: {who}" if who else "") + f", {STORY}",
+                            "refs": [refs[k] for k in s.get("with") or [] if k in refs],
+                            "w": W_, "h": H_, "what": f"scene {i + 1}", "depth": _depth_out(p),
+                            "seed": int(s.get("seed") or 0) or 7 + i})
+    if film.get("on_screen") is not False and not only:   # (a voice-over film shows nobody standing in it)
+        for key, c in film["cast"].items():
+            d = root / "characters" / key_of(c.get("name") or key)
+            base = d / "base.png"
+            who = describe(c)
+            if again or not base.is_file():
+                out.append({"out": str(base), "prompt": f"Full body character, {who}, standing straight facing the viewer, arms "
+                            f"down, mouth closed, the whole figure from head to shoes in the frame, {LOOK}, isolated on a {PLAIN}",
+                            "refs": [], "w": 768, "h": 1344, "what": c.get("name") or key})
+            for stem, pose in POSE_PROMPTS:
+                p = d / (stem + ".png")
+                if again or not p.is_file():
+                    out.append({"out": str(p), "prompt": f"The same character ({who}), same face, same clothes, same style, {pose}, "
+                                f"full body, {PLAIN}", "refs": [str(base)], "w": 768, "h": 1344, "what": c.get("name") or key})
+    if not only:                                           # (pictures there already, without their depth yet)
+        drawing = {x["out"] for x in out}
+        for name in sorted(names):
+            b = art.background(name, wide=wide)
+            if b and str(b) not in drawing and not art.depth_of(b) and not b.stem.endswith("_depth"):
+                out.append({"out": _depth_out(b), "depth_of": str(b), "what": name})
     return out
 
 
-def start_paint(film: dict, job: str = "", again: bool = False) -> int:
-    """Draws what the film still needs (a thread); the number of pictures to draw."""
+def start_paint(film: dict, job: str = "", again: bool = False, only: str = "", seed: int = 0) -> int:
+    """Draws what the film still needs (a thread); the number of pictures to draw. only: one scene's picture anew (with
+    another seed: another picture of the same words)."""
     if not installed():
         raise PainterError("Install the picture add-on first.")
     with _LOCK:
         if PAINT["state"] == "running":
             raise PainterError("Pictures are being drawn for another cartoon. Wait until they are ready.")
-        todo = plan(film, again)
+        todo = plan(film, again, only)
+        if seed:
+            for x in todo:
+                x["seed"] = seed
         if not todo:
             return 0
         PAINT.update(state="running", done=0, total=len(todo), error="", what="", job=job)
@@ -336,13 +391,21 @@ def _paint(todo: list) -> None:
     left, done, tries, log, started = list(todo), 0, 0, [], time.time()
     try:
         work.mkdir(parents=True, exist_ok=True)
+        if any(x.get("depth") or x.get("depth_of") for x in left) and not standin():
+            try:
+                PAINT.update(what="the depth model (once, 100 MB)")
+                _ensure_depth()
+            except Exception as exc:                       # (no depth: the pictures still drawn, the camera as before)
+                (work / "depth.log").write_text(repr(exc), "utf-8")
+                left = [dict(x, depth=None) for x in left if not x.get("depth_of")]
         while left:
             while (vo._CURRENT.get("id") and vo._CURRENT.get("step") != "waiting for pictures"   # (one waiting for us:
                    and not _PSTOP.is_set()):                                                       # not waited for)   # (a voice-over, a story or a cartoon being made:
                 PAINT.update(what="waiting for the voice-over or cartoon being made")   # the card is theirs first)
                 time.sleep(2)
             req = work / f"paint-{int(time.time())}.json"
-            req.write_text(json.dumps({"model": str(MODEL), "pictures": left, "standin": standin(), "site": str(SITE)}), "utf-8")
+            req.write_text(json.dumps({"model": str(MODEL), "pictures": left, "standin": standin(), "site": str(SITE),
+                                       "depth_model": str(DEPTH)}), "utf-8")
             env = dict(os.environ, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", HF_HUB_DISABLE_TELEMETRY="1")
             env.pop("PYTHONPATH", None)
             # (like the voice add-on's worker: without the program's own packages (-S), only the add-on's folder - a
@@ -368,7 +431,8 @@ def _paint(todo: list) -> None:
             if _PSTOP.is_set():
                 raise PainterError("Stopped. The pictures drawn so far are kept.")
             done += got
-            left = [x for x in left if not (Path(x["out"]).is_file() and Path(x["out"]).stat().st_mtime >= started - 1)]
+            left = [x for x in left if not (Path(x["out"]).is_file() and Path(x["out"]).stat().st_mtime >= started - 1)
+                    and not x.get("depth_of")]             # (a depth map that failed: not a reason to start again)
             if proc.returncode == 0 and not left:
                 break
             tries += 1
@@ -379,6 +443,28 @@ def _paint(todo: list) -> None:
         PAINT.update(state="failed", error=str(exc)[:300])
     finally:
         art.forget()
+
+
+def _ensure_depth() -> None:
+    """The depth model's three files, downloaded once (checked against their pinned version)."""
+    from .. import auto_edit as ae, voice as vo
+    files = [f for f in vo._hf_files(DEPTH_REPO, DEPTH_REV) if f[0] in DEPTH_PARTS]
+    DEPTH.mkdir(parents=True, exist_ok=True)
+    for name, size, kind, want in files:
+        dst = DEPTH / name
+        if vo._file_ok(dst, size, kind, want):
+            continue
+        part = dst.with_name(dst.name + ".part")
+        ae._fetch_resumable(f"https://huggingface.co/{DEPTH_REPO}/resolve/{DEPTH_REV}/{name}", part, size, lambda h: None,
+                            stop=_PSTOP)
+        if not vo._file_ok(part, size, kind, want):
+            part.unlink(missing_ok=True)
+            raise PainterError("The depth model's file is not the exact file.")
+        ae._replace_retry(part, dst)
+
+
+def depth_ready() -> bool:
+    return all((DEPTH / n).is_file() for n in DEPTH_PARTS)
 
 
 def remove_pictures(film: dict) -> int:
@@ -392,6 +478,8 @@ def remove_pictures(film: dict) -> int:
         for p in (root / "backgrounds").glob(name + "_wide.*"):
             p.unlink(missing_ok=True)
             n += 1
+        for p in list((root / "backgrounds").glob(name + "_depth.*")) + list((root / "backgrounds").glob(name + "_wide_depth.*")):
+            p.unlink(missing_ok=True)
     for key, c in film["cast"].items():
         d = root / "characters" / key_of(c.get("name") or key)
         if d.is_dir():

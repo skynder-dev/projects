@@ -724,12 +724,71 @@ def main() -> int:
             left = list((A2.root() / "characters").rglob("*.png")) + list((A2.root() / "backgrounds").glob("*.png"))
         finally:
             os.environ.pop("MEDIAENGINE_PAINTER", None)
-        check("pictures: a film's page offers the picture add-on, it draws the film's people (5 pictures each) and places, "
+        check("pictures: a film's page offers the picture add-on, it draws the film's people (6 pictures each: one with the eyes shut) and places, "
               "the film uses them, and the program's own drawings come back on a button",
-              "Draw the characters and places" in p1 and need == 2 * 5 + 1 and dr.status_code == 302
+              "Draw the characters and places" in p1 and need == 2 * 6 + 1 and dr.status_code == 302
               and PT.PAINT["state"] == "done" and drawn.count("base.png") == 2 and "talk_open.png" in drawn
               and "Draw them again" in p2 and set(used["cast"]) == {"kate", "rick"} and used["bg"]
               and gone.status_code == 302 and not left, (need, PT.PAINT, drawn, used, left))
+        # a film from a document (story.py): its storyboard text, the people drawn once and every picture from them, depth
+        # maps, the camera moving in depth, the place heard; a picture's words changed or drawn again on the film's page
+        from archivist.cartoon import story as ST, textscript as T
+        board = ("Title: The Paper Boat\nFormat: horizontal\nStory: yes\nNarrator: Narrator (man, narrator)\n"
+                 "Tom (boy, the hero) looks: a quiet 9-year-old boy with messy brown hair and a blue sweater\n"
+                 "Ben (boy, his friend) looks: a lively boy with short dark hair and suspenders\n\n"
+                 "== Picture: a misty meadow with a clear creek at dawn, a small paper boat floats | sound: stream, birds\n"
+                 "Narrator: The boat went down the creek.\n\n"
+                 "== Picture: Tom kneels by the creek and folds a paper boat, warm morning light, wide shot | with: Tom | word: KEEP (blue)\n"
+                 "Narrator: Tom folded it from his father's calendar.\n\n"
+                 "== Picture: two boys meet at an old watermill, the wheel turning, afternoon | with: Tom, Ben\n"
+                 "Narrator: Downstream, someone caught it.\n")
+        sb = T.parse(board)
+        again_sb = T.parse(T.to_text(sb))
+        os.environ["MEDIAENGINE_PAINTER"] = "standin"
+        try:
+            sr = c.post("/auto/cartoon/new", data={"text": board, "format": "horizontal", "music": "made", "mood": "story"}, headers=H)
+            sid = next((j["id"] for j in vo.list_jobs() if j.get("kind") == "cartoon_make"), "")
+            t0 = time.time()
+            while sid and vo.read_job(sid)["state"] in ("waiting", "working") and time.time() - t0 < 900:
+                time.sleep(1)
+            sj = vo.read_job(sid) if sid else {}
+            sres = sj.get("result") or {}
+            sfilm = F.check_script(cj.script_of(sid)) if sid else {"scenes": []}
+            pics_ = [A2.background(x["bg"], wide=True) for x in sfilm["scenes"]]
+            depths = [A2.depth_of(x) if x else None for x in pics_]
+            refs_ = sorted(x.parent.name for x in (A2.root() / "story").rglob("ref.png"))
+            moved = audio = 0.0
+            if sj.get("state") == "done":
+                fpath = vo._job_dir(sid) / "film.mp4"
+                a, b = frame(ff, fpath, 0.5, 1920, 1080), frame(ff, fpath, sfilm["scenes"][0]["min"] - 0.6, 1920, 1080)
+                moved = float(np.abs(a - b).mean())
+                cp = subprocess.run([ff, "-v", "error", "-ss", "1", "-t", "2", "-i", str(fpath), "-f", "s16le", "-ac", "1", "-ar", "16000", "-"],
+                                    capture_output=True)
+                pcm = np.frombuffer(cp.stdout, np.int16).astype(np.float32)
+                audio = float(np.sqrt(np.mean(pcm ** 2))) if len(pcm) else 0.0
+            sp = c.get(f"/auto/cartoon/{sid}", headers=H).get_data(as_text=True) if sid else ""
+            old_bg = sfilm["scenes"][1]["bg"] if sid else ""
+            rd = c.post(f"/auto/cartoon/{sid}/scene/1/redraw", data={"d_1": "Tom kneels by the creek at sunset and folds a paper boat"}, headers=H)
+            t0 = time.time()
+            while PT.PAINT["state"] == "running" and time.time() - t0 < 120:
+                time.sleep(0.2)
+            new_sc = F.check_script(cj.script_of(sid))["scenes"][1] if sid else {}
+            new_pic = A2.background(new_sc.get("bg") or "", wide=True)
+        finally:
+            os.environ.pop("MEDIAENGINE_PAINTER", None)
+        check("story: a document's storyboard read (3 pictures, 2 people with their looks, who is in each, a word, the place's sound), "
+              "written back the same", sb.get("on_screen") is False and len(sb["scenes"]) == 3 and sb["scenes"][2]["with"] == ["tom", "ben"]
+              and sb["cast"]["tom"].get("looks") and sb["scenes"][1]["visual"]["text"] == "KEEP" and sb["scenes"][0]["sound"] == ["stream", "birds"]
+              and [x["bg"] for x in again_sb["scenes"]] == [x["bg"] for x in sb["scenes"]] and sb["scenes"][0]["bg"].startswith("s_"),
+              (sb.get("on_screen"), [x.get("with") for x in sb["scenes"]], [x["bg"] for x in again_sb["scenes"]]))
+        check("story: its film made - the people drawn once, every picture from them with a depth map, the camera moving in the "
+              "picture, the place heard under the music", sr.status_code == 302 and sj.get("state") == "done" and refs_ == ["ben", "tom"]
+              and all(pics_) and all(depths) and moved > 1.0 and audio > 30,
+              (sr.status_code, sj.get("state"), sres.get("error"), refs_, pics_, depths, moved, audio))
+        check("story: the film's page shows each picture's words with Draw again; new words give a new picture, the film's script keeps them",
+              "Draw again" in sp and "name='d_1'" in sp and rd.status_code == 302 and new_sc.get("bg") != old_bg
+              and "sunset" in (new_sc.get("draw") or "") and new_pic is not None,
+              (rd.status_code, old_bg, new_sc.get("bg"), new_pic))
         ru = (c.get("/auto/cartoon", headers=H).get_data(as_text=True) + c.get(f"/auto/cartoon/{jid}", headers=H).get_data(as_text=True)
               + c.get("/auto/cartoon/characters", headers=H).get_data(as_text=True)
               + c.get("/auto/cartoon/characters/rick", headers=H).get_data(as_text=True))

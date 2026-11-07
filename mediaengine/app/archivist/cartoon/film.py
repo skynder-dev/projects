@@ -17,11 +17,12 @@ import math
 import re
 import subprocess
 import wave
+import zlib
 from pathlib import Path
 
 import numpy as np
 
-from . import art, bgs, chars as ch, props as P
+from . import ambient as AMB, art, bgs, chars as ch, props as P
 from .draw import INK, STYLES, Canvas, back, ease, lerp, rounded
 
 FPS = 30
@@ -54,6 +55,8 @@ def check_script(sc: dict) -> dict:
                                                                   "glasses", "outfit", "cloth", "tie", "pants", "shoes", "hat",
                                                                   "height")})
         base["voice"] = spec.get("voice") or {}
+        if str(spec.get("looks") or "").strip():           # (how a story's person looks, in words: drawn from it)
+            base["looks"] = re.sub(r"\s+", " ", str(spec["looks"])).strip()[:300]
         if not spec.get("keep_look"):                      # the library's look and voice for this name (Characters page)
             from . import library
             base.update(library.look_of(base["name"]))
@@ -86,10 +89,15 @@ def check_script(sc: dict) -> dict:
         pose = s.get("pose") if isinstance(s.get("pose"), dict) else {}
         bg = str(s.get("bg") or "")
         own = re.fullmatch(r"[a-z0-9_]{1,40}", bg) and art.background(bg, wide=sc.get("format") == "horizontal")
-        scenes.append({"bg": bg if bg in bgs.BACKGROUNDS or own else "city",   # (or a picture of one's own: art.py)
+        drawn = re.fullmatch(r"[a-z0-9_]{1,40}", bg) and str(s.get("draw") or "").strip()   # (a picture still to draw)
+        scenes.append({"bg": bg if bg in bgs.BACKGROUNDS or own or drawn else "city",   # (or a picture of one's own: art.py)
                        "cast": [k for k in (s.get("cast") if isinstance(s.get("cast"), list) else []) if isinstance(k, str) and k in cast][:4],
                        "visual": s.get("visual") if isinstance(s.get("visual"), dict) else None,
                        "lines": lines, "min": min_s,
+                       **({"draw": re.sub(r"\s+", " ", str(s["draw"])).strip()[:700]} if str(s.get("draw") or "").strip() else {}),
+                       **({"with": [k for k in s["with"] if isinstance(k, str) and k in cast][:4]} if isinstance(s.get("with"), list) else {}),
+                       **({"move": s["move"]} if s.get("move") in art.MOVES else {}),
+                       **({"sound": [str(x) for x in s["sound"] if str(x) in AMB.KINDS][:3]} if isinstance(s.get("sound"), list) else {}),
                        "mood": {k: v for k, v in mood.items() if k in cast and v in ch.EMOTIONS},
                        "pose": {k: v for k, v in pose.items() if k in cast and v in ch.POSES}})
     if not scenes:
@@ -102,6 +110,8 @@ def check_script(sc: dict) -> dict:
     out["pictures"] = sc.get("pictures") is not False         # (pictures drawn once, when there are: art.py)
     if sc.get("on_screen") is False:
         out["on_screen"] = False
+    if sc.get("story"):
+        out["story"] = True                                # (pictures drawn for each scene, said over: story.py)
     wear = []                                              # (a shirt print on a character, a short zoom on it at a line:
     for it in (sc.get("wardrobe") if isinstance(sc.get("wardrobe"), list) else [])[:4]:   # Forge's wardrobe.json)
         if (isinstance(it, dict) and it.get("wearer") in cast and str(it.get("print") or "").lower().endswith(".png")
@@ -558,7 +568,9 @@ def _camera(cv: Canvas, film: dict, scene: dict, t: float, names: list, xs: list
     st = t - scene["s"]
     z = 1.0 + 0.045 * min(1.0, st / max(1.0, scene["e"] - scene["s"]))
     pics = pictures(film)
-    if film.get("on_screen") is False and scene["bg"] in pics["bg"]:
+    if _move(film, scene):
+        z = 1.0                                            # (a picture with depth, nobody in front: the camera moves in it)
+    elif film.get("on_screen") is False and scene["bg"] in pics["bg"]:
         z = 1.0 + 0.08 * min(1.0, st / max(1.0, scene["e"] - scene["s"]))   # (a still picture alone: a slow push-in)
     elif pics["cast"] or scene["bg"] in pics["bg"]:
         z = 1.0                                            # (pictures: no slow push-in - resized a pixel at a time they shivered)
@@ -586,6 +598,19 @@ def _camera(cv: Canvas, film: dict, scene: dict, t: float, names: list, xs: list
     return min(max(x, hw), cv.SW - hw), min(max(y, hh), cv.SH - hh), z
 
 
+def _move(film: dict, scene: dict) -> str:
+    """How the camera moves through a scene's picture in depth (art.parallax): a picture background with a depth map and
+    nobody drawn in front of it (people standing on it would slide); the scene's own "move" or one by its picture."""
+    pics = pictures(film)
+    if scene["bg"] not in pics["bg"] or _shown(film, scene) or scene.get("visual") and scene["visual"].get("kind") != "word":
+        return ""
+    if not art.depth_of(Path(pics["bg"][scene["bg"]])):
+        return ""
+    if scene.get("move") in art.MOVES:
+        return scene["move"]
+    return art.MOVES[zlib.crc32(scene["bg"].encode("utf-8")) % len(art.MOVES)]
+
+
 def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
     """One picture of a scene at film time t. mouths: who -> mouth opening now."""
     st = t - scene["s"]
@@ -601,8 +626,12 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
     with cv.at(cv.SW / 2, cv.SH / 2, 0, zoom):
         with cv.at(-cam_x, -cam_y):
             if scene["bg"] in pics["bg"]:
-                art.draw_background(cv, Path(pics["bg"][scene["bg"]]))
+                mv = _move(film, scene)
+                art.draw_background(cv, Path(pics["bg"][scene["bg"]]),
+                                    (min(1.0, max(0.0, st / max(1.0, scene["e"] - scene["s"]))), mv, 1.0) if mv else None)
                 gy = bgs.ground_y(cv)
+            elif scene["bg"] not in bgs.BACKGROUNDS:           # (a picture still to be drawn: a plain one meanwhile)
+                gy = bgs.draw(cv, "paper", t)
             else:
                 gy = bgs.draw(cv, scene["bg"], t)
             if scene.get("visual") and box and not page:
@@ -664,7 +693,7 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                 if key in pics["cast"]:                    # (a picture character: its gesture's picture, the mouth)
                     art.draw_character(cv, Path(pics["cast"][key]), x, gy - hop, sc, turn if walk is None else look,
                                        pose2 if pose2 and mix >= 0.5 else pose, mouths.get(key, 0.0) if speaker == key else 0.0,
-                                       t + k, walk, nod, float(c.get("height") or 1.0))
+                                       t + k, walk, nod, float(c.get("height") or 1.0), blink)
                 else:
                     ch.draw(cv, c, x, gy - hop, sc, turn if walk is None else look, pose, pose2, mix, emo,
                             mouths.get(key, 0.0) if speaker == key else 0.0, blink, t + k, walk, (gzx, gzy), nod=nod, brow=brow,
@@ -738,7 +767,10 @@ def mix(tl: dict, sounds: bool = True) -> np.ndarray:
         n = min(len(a), total - i)
         out[i:i + n] += a[:n] * gain
     for i, s in enumerate(tl["scenes"]):
-        if sounds and i > 0:
+        place = s.get("sound") or (AMB.guess(s.get("draw")) if s.get("draw") else [])
+        if sounds and place:                               # (the sound of the place: wind, a stream, the sea, a room)
+            put(AMB.bed(place, s["e"] - s["s"] + 0.6, seed=i), max(0.0, s["s"] - 0.3), 1.0)
+        if sounds and i > 0 and not place:
             put(_sfx("whoosh"), max(0.0, s["s"] - 0.2), 0.6)
         v = s.get("visual") or {}
         if sounds and v.get("kind") == "contract" and v.get("stamp_at") is not None and int(v["stamp_at"]) < len(s["lines"]):

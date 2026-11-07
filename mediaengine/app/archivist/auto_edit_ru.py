@@ -1201,6 +1201,21 @@ PHRASES = {
     "Installing the story writer": "Устанавливаю сценариста",
     "From a few minutes to half an hour, depending on the internet. You can use MediaEngine meanwhile; closing it stops the download (it continues where it stopped when you press Install again).":
         "От нескольких минут до получаса — зависит от интернета. Пока можно пользоваться MediaEngine; если его закрыть, загрузка остановится (и продолжится с того же места, когда снова нажмёшь «Установить»).",
+    "A film from a document": "Фильм по документу",
+    "Paste a film's treatment or a story. The free model on this PC divides it into pictures, the people are drawn once (the same in every picture), then every picture; the camera moves in each in depth, the place is heard, a narrator tells it. Pictures, not an animation.":
+        "Вставьте описание фильма или рассказ. Бесплатная модель на этом ПК делит его на кадры, героев рисует один раз (они одинаковые во всех кадрах), потом каждый кадр; камера движется в каждом кадре с объёмом, слышно место, рассказчик читает текст. Это картинки, а не анимация.",
+    "Its pictures are drawn by the picture add-on: install it first (Pictures drawn by AI, on a film's page).":
+        "Кадры рисует дополнение для картинок: сначала установите его («Картинки от ИИ» на странице фильма).",
+    "Length": "Длина", "about 3 minutes": "около 3 минут", "about 5 minutes": "около 5 минут", "about 8 minutes": "около 8 минут",
+    "Show me the pictures' list first (I read and change it, then the film is made)":
+        "Сначала покажи список кадров (прочитаю и поправлю, потом соберётся фильм)",
+    "Make the film": "Сделать фильм", "Draw again": "Перерисовать", "a picture of its own": "свой рисунок",
+    "What the picture shows": "Что на кадре",
+    "Another picture of the same words (the words changed: drawn from them)": "Другой рисунок по тем же словам (если слова изменили — по новым)",
+    "slow, like a tale told": "медленная, как сказка",
+    "A story's scenes are drawn by the picture add-on: install it (Cartoon Studio → Pictures drawn by AI), then press Try again.":
+        "Кадры истории рисует дополнение для картинок: установите его (Мультстудия → Картинки от ИИ) и нажмите «Повторить».",
+    "the depth model (once, 100 MB)": "модель глубины (один раз, 100 МБ)",
     "Write a story": "Написать сюжет", "What is it about?": "О чём он?",
     "A topic in a few words - or paste a text (an article, notes, what is said in a video): the story retells it with its own characters. In any language, even in translit; the story's language is chosen below. Or a web page's address (https://…): the characters present the page, and the cartoon shows it.":
         "Тема в нескольких словах — или вставь текст (статью, заметки, то, что говорят в видео): сюжет перескажет его со своими персонажами. На любом языке, можно и транслитом; язык сюжета выбирается ниже. Или адрес сайта (https://…): персонажи расскажут о странице, а мультфильм её покажет.",

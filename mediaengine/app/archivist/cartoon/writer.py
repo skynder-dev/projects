@@ -880,21 +880,29 @@ def do(jid: str, d: Path, job: dict) -> dict:
                 notes.append(re.sub(r"(?s)<think>.*?</think>", "", r["text"]).strip())
             job["source"] = "\n".join(notes)[:MAX_SOURCE]
             (d / "notes.txt").write_text(job["source"], "utf-8")
-        messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt(job)}]
+        from . import story as ST
+        if job.get("mode") == "story":                     # a film's treatment: its pictures, said over (story.py)
+            messages = [{"role": "system", "content": ST.SYSTEM}, {"role": "user", "content": ST.prompt(job)}]
+            expect = 3000
+        else:
+            messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt(job)}]
         best, best_info, best_problem, problem, used = "", {}, "", "", 0
         first = 0.6 if (d / "heard.txt").is_file() else 0.05
         for attempt in range(2):
             used = attempt + 1
             base = first + (0.95 - first) / 2 * attempt
             vo._CURRENT.update(step="writing", progress=base)
-            r = ask(messages, max_tokens=2600, seed=int(job.get("seed") or 0) + attempt,
+            r = ask(messages, max_tokens=3600 if job.get("mode") == "story" else 2600, seed=int(job.get("seed") or 0) + attempt,
                     on_piece=lambda n, base=base, span=(0.95 - first) / 2: vo._CURRENT.update(
                         progress=max(float(vo._CURRENT.get("progress") or 0),
                                      round(min(base + span, base + span * n / expect), 3))),
                     stop=stop)
             text = clean(r["text"], job.get("format") or "", job.get("lang") or "")
-            info, problem = judge(text, secs, job.get("style") if isinstance(job.get("style"), dict)
-                                  and job.get("mode") not in ("adapt", "translate") else None)
+            if job.get("mode") == "story":
+                info, problem = ST.judge(text, secs)
+            else:
+                info, problem = judge(text, secs, job.get("style") if isinstance(job.get("style"), dict)
+                                      and job.get("mode") not in ("adapt", "translate") else None)
             if not problem and r.get("finish") == "length":
                 problem = "it was cut off before its end (it is too long): write it shorter"
             rank = (not problem, info["scenes"], info["words"])
@@ -903,8 +911,8 @@ def do(jid: str, d: Path, job: dict) -> dict:
             if not problem:
                 break
             messages += [{"role": "assistant", "content": r["text"]},
-                         {"role": "user", "content": f"This script cannot be used: {problem}. Write the whole script again, "
-                                                     "exactly in THE FORMAT, with all its scenes."}]
+                         {"role": "user", "content": f"This {'storyboard' if job.get('mode') == 'story' else 'script'} "
+                                                     f"cannot be used: {problem}. Write it all again, exactly in THE FORMAT."}]
     finally:
         box["srv"].close()
     srv = box["srv"]
@@ -1012,7 +1020,7 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
         raise WriterError("Install the story writer first.")
     if installing():
         raise WriterError("The story writer is being installed. Wait until it is ready.")
-    mode = mode if mode in ("topic", "text", "adapt", "translate", "video") else "topic"
+    mode = mode if mode in ("topic", "text", "adapt", "translate", "video", "story") else "topic"
     if mode == "video":
         p = Path(str(video or "").strip().strip('"'))
         if not p.is_file():
@@ -1021,10 +1029,11 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
             raise WriterError("Listening to a video needs the voice add-on (Auto Edit → Voice-over → Install).")
         vo._check_video(p, need_sound=True)
         video = str(p)
-    topic, source = str(topic or "").strip()[:MAX_TOPIC], str(source or "").strip()[:MAX_SOURCE]
+    from . import story as ST
+    topic, source = str(topic or "").strip()[:MAX_TOPIC], str(source or "").strip()[:ST.MAX_SOURCE if mode == "story" else MAX_SOURCE]
     if mode == "topic" and len(topic) < 3:
         raise WriterError("Write what the cartoon is about.")
-    if mode in ("text", "adapt", "translate") and len(source) < 40:
+    if mode in ("text", "adapt", "translate", "story") and len(source) < 40:
         raise WriterError("The text is too short to make a story of it.")
     if mode in ("adapt", "translate") and not T.parse(source)["scenes"]:
         raise WriterError("The story to retell has no scenes.")
@@ -1032,7 +1041,8 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
     name = title or (topic if mode == "topic" else Path(video).stem if mode == "video" else source.split("\n", 1)[0])
     name = re.sub(r"(?i)^(title|название)\s*:\s*", "", name).strip()[:60] or "Story"
     return vo._submit({"kind": "cartoon_write", "mode": mode, "lang": lang, "format": fmt if fmt in ("vertical", "horizontal") else "vertical",
-                       "secs": max(45, min(120, int(secs or 75))), "topic": topic, "source": source,
+                       "secs": (max(60, min(600, int(secs or 300))) if mode == "story" else max(45, min(120, int(secs or 75)))),
+                       "topic": topic, "source": source,
                        "country": str(country or "").strip()[:60], "title": name, "seed": secrets.randbelow(10 ** 6),
                        "video": video if mode == "video" else "",
                        **({"site": site} if site and mode == "text" else {}),

@@ -15,7 +15,7 @@ from . import film as F
 CAPTION_STYLES = ("pop", "box", "classic", "minimal", "single", "block")
 
 
-MUSIC_MOODS = ("light", "suspense", "calm")
+MUSIC_MOODS = ("light", "suspense", "calm", "story")
 
 
 def new_make(script: dict, voices: bool = True, captions: dict | None = None, title: str = "",
@@ -65,6 +65,10 @@ def do(jid: str, d: Path, job: dict) -> dict:
             return {"ok": False, "error": str(exc)}
     film = F.check_script(job["script"])
     stop = lambda: bool(vo._CURRENT.get("cancel"))      # noqa: E731
+    if any(s.get("draw") for s in film["scenes"]):        # a story: its scenes drawn first (the picture add-on)
+        r = _draw_story(film, jid, stop)
+        if r:
+            return {"ok": False, "error": r}
     voices = None
     try:
         if job.get("voices"):
@@ -96,6 +100,40 @@ def do(jid: str, d: Path, job: dict) -> dict:
         shutil.rmtree(d / "render", ignore_errors=True)
     return {"ok": True, "file": "film.mp4", "seconds": r["seconds"], "scenes": r["scenes"], "lines": r["lines"],
             "width": r["width"], "height": r["height"], "voices": bool(voices), "saved": saved, "checks": checks}
+
+
+def _draw_story(film: dict, jid: str, stop) -> str:
+    """A story's people and scenes drawn by the picture add-on before the film is made (what is drawn already is kept);
+    "" when they are there, or why not."""
+    from . import art, painter as PT
+    import time as _t
+    if not PT.installed():
+        return ("A story's scenes are drawn by the picture add-on: install it (Cartoon Studio → Pictures drawn by AI), "
+                "then press Try again.")
+    for _round in range(2):
+        if not PT.plan(film):
+            return ""
+        while PT.PAINT.get("state") == "running":         # (another cartoon's pictures: after them)
+            vo._CURRENT.update(step="waiting for pictures")
+            _t.sleep(2)
+        vo._CURRENT.update(step="waiting for pictures")    # (the painter waits for no one in that step)
+        try:
+            PT.start_paint(film, jid)
+        except PT.PainterError as exc:
+            return str(exc)
+        while PT.PAINT.get("state") == "running":
+            tot = max(1, int(PT.PAINT.get("total") or 1))
+            vo._CURRENT.update(step="waiting for pictures", progress=round(0.01 + 0.5 * int(PT.PAINT.get("done") or 0) / tot, 3))
+            if stop():
+                PT.cancel_paint()
+            _t.sleep(2)
+        art.forget()
+        if stop():
+            return "Stopped."
+        if PT.PAINT.get("state") == "failed":
+            return "The scenes could not be drawn: " + str(PT.PAINT.get("error") or "")
+    missing = [x for x in PT.plan(film) if not x.get("depth_of")]
+    return f"{len(missing)} pictures could not be drawn. Press Try again." if missing else ""
 
 
 def folder() -> Path | None:
