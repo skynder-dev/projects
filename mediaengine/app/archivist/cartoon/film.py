@@ -84,7 +84,9 @@ def check_script(sc: dict) -> dict:
             min_s = 3.0
         mood = s.get("mood") if isinstance(s.get("mood"), dict) else {}
         pose = s.get("pose") if isinstance(s.get("pose"), dict) else {}
-        scenes.append({"bg": s.get("bg") if s.get("bg") in bgs.BACKGROUNDS else "city",
+        bg = str(s.get("bg") or "")
+        own = re.fullmatch(r"[a-z0-9_]{1,40}", bg) and art.background(bg, wide=sc.get("format") == "horizontal")
+        scenes.append({"bg": bg if bg in bgs.BACKGROUNDS or own else "city",   # (or a picture of one's own: art.py)
                        "cast": [k for k in (s.get("cast") if isinstance(s.get("cast"), list) else []) if isinstance(k, str) and k in cast][:4],
                        "visual": s.get("visual") if isinstance(s.get("visual"), dict) else None,
                        "lines": lines, "min": min_s,
@@ -378,7 +380,11 @@ def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: di
     kind = v.get("kind")
     st = t - scene["s"]
     with cv.at(cx, cy, 0, k):
-        if kind == "title":
+        if kind == "word":                                 # (words written in the picture, big, nothing around them)
+            a = ease(min(1.0, max(0.0, (st - float(v.get("from") or 0.5)) / 0.9)))   # (from: seconds into the scene)
+            cv.text(v.get("text") or "", 0, float(v.get("y") or 0), float(v.get("size") or 120), str(v.get("color") or "#ffffff"),
+                    "black", outline="#111111", stroke=6, width=980, height=700, alpha=a)
+        elif kind == "title":
             a = back(_appear(scene, None, t, 0.8))
             with cv.at(0, -120, 0, max(0.01, a)):
                 cv.text(v.get("title") or "", 0, 0, 96, "#ffffff", "black", outline=INK, stroke=8, width=960, height=300)
@@ -552,7 +558,9 @@ def _camera(cv: Canvas, film: dict, scene: dict, t: float, names: list, xs: list
     st = t - scene["s"]
     z = 1.0 + 0.045 * min(1.0, st / max(1.0, scene["e"] - scene["s"]))
     pics = pictures(film)
-    if pics["cast"] or scene["bg"] in pics["bg"]:
+    if film.get("on_screen") is False and scene["bg"] in pics["bg"]:
+        z = 1.0 + 0.08 * min(1.0, st / max(1.0, scene["e"] - scene["s"]))   # (a still picture alone: a slow push-in)
+    elif pics["cast"] or scene["bg"] in pics["bg"]:
         z = 1.0                                            # (pictures: no slow push-in - resized a pixel at a time they shivered)
     shirt = shirt_zoom(film, scene, t)
     if shirt and shirt in names and shirt not in pics["cast"]:
@@ -598,7 +606,7 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
             else:
                 gy = bgs.draw(cv, scene["bg"], t)
             if scene.get("visual") and box and not page:
-                if scene["bg"] not in DARK and (scene["visual"].get("kind") not in ("road", "title")
+                if scene["bg"] not in DARK and (scene["visual"].get("kind") not in ("road", "title", "word")
                                                  or (scene["visual"].get("kind") == "title" and scene["bg"] in INDOOR)):
                     bx, by, bw_, bh_ = box                 # (a light card under a scheme or a paper: it reads on any background)
                     a = ease(min(1.0, (t - scene["s"]) / 0.4))
