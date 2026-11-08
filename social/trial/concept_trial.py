@@ -84,6 +84,8 @@ try:
         rec.setdefault('opportunity_id', rec.get('source_id') or rec.get('page') or rec.get('url'))
         from socialreel.demand_channels import bundle_audience
         TOPIC_AUDIENCE = bundle_audience(rec)
+        if rec.get('source_type') == 'sba' and 'channel' not in rec:
+            TOPIC_AUDIENCE = {'rubric': rec.get('rubric') or 'help_people', 'profession': None, 'people': False}
         raise StopIteration
     if _args.topics:
         from socialreel.topics import top_opportunity_id

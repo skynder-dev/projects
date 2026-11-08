@@ -5,12 +5,12 @@ import copy
 import datetime as dt
 from pathlib import Path
 
-from . import concept_core, grants, studentaid, usagov, govpage
+from . import concept_core, grants, studentaid, usagov, govpage, sba
 from .claims import build_claims as grant_claims
 from .common import ROOT, PipelineError, read_json, sha256_bytes, utc_now, write_json
 
 TOPICS_SCHEMA = "social_topics_v2"
-SOURCE_TYPES = ("grants", "usagov", "studentaid", "scorecard")
+SOURCE_TYPES = ("grants", "usagov", "studentaid", "scorecard", "sba")
 
 
 def acquire(source_type: str, out: Path, *, page: str | None = None, school_id: str | None = None,
@@ -21,6 +21,12 @@ def acquire(source_type: str, out: Path, *, page: str | None = None, school_id: 
         client = govpage.GovPageClient(out / "source")
         record, receipt = client.page(page, fixture=fixture)
         rows = govpage.build_claims(record, receipt)
+    elif source_type == "sba":
+        if not page:
+            raise PipelineError("SBA requires --page")
+        client = sba.SBAClient(out / "source")
+        record, receipt = client.page(page, fixture=fixture)
+        rows = sba.build_claims(record, receipt)
     elif source_type == "usagov":
         if not page:
             raise PipelineError("USA.gov requires --page (a page name from socialreel/usagov.py PAGES or an official URL)")
@@ -76,7 +82,7 @@ def discover_topics(cfg: dict, out: Path, source_types: list[str], *, fixture: P
                     as_of: str | None = None, config_dir: Path | None = None) -> dict:
     from . import topics
     if not source_types or any(source not in SOURCE_TYPES for source in source_types):
-        raise PipelineError("--sources supports grants,usagov,studentaid,scorecard")
+        raise PipelineError("--sources supports grants,usagov,studentaid,scorecard,sba")
     source_types = list(dict.fromkeys(source_types))
     today = dt.datetime.strptime(as_of, "%Y-%m-%d").date() if as_of else utc_now().date()
     catalog = topics._merge(read_json(ROOT / "public_sources_config.json"), cfg.get("public_sources", {}))
@@ -104,6 +110,8 @@ def discover_topics(cfg: dict, out: Path, source_types: list[str], *, fixture: P
             grant_fixture = fixture.parent / manifest["grants_fixture"]
         grant_cfg = copy.deepcopy(cfg)
         grant_cfg.setdefault("topics", {})["seen_file"] = None
+        if "sba" in source_types:
+            grant_cfg["topics"]["small_business_channel"] = True
         result = topics.run(grant_cfg, out / "grants", fixture=grant_fixture, as_of=today.isoformat(), config_dir=config_dir)
         for target, items in ((ranked, result["topics"]), (dropped, result["excluded"])):
             for original in items:
@@ -127,7 +135,7 @@ def discover_topics(cfg: dict, out: Path, source_types: list[str], *, fixture: P
             raise PipelineError("Requested source has no offline fixture entry; live fallback forbidden")
     else:
         for source in source_types:
-            if source in {"usagov", "studentaid"}:
+            if source in {"usagov", "studentaid", "sba"}:
                 jobs.extend({"source_type": source, "page": page} for page in catalog[source]["pages"])
             elif source == "scorecard":
                 schools = catalog[source]["schools"]
@@ -140,14 +148,15 @@ def discover_topics(cfg: dict, out: Path, source_types: list[str], *, fixture: P
                                         school_id=job.get("school_id"), fixture=job.get("fixture"))
         receipts.extend(calls)
         programs = []
-        if record["source_type"] == "usagov":
+        if record["source_type"] in {"usagov", "sba"}:
             from .usagov_facts import select_for_core
             from .usagov_programs import program_units
-            programs = program_units(record, claims)
+            programs = (sba.program_units(record, claims) if record["source_type"] == "sba" else program_units(record, claims))
         for program in programs or [None]:
             scoring_record, selection = record, None
-            if record["source_type"] == "usagov":
-                scoring_record, _, selection = select_for_core(record, claims, cfg, program=program["name"] if program else None)
+            if record["source_type"] in {"usagov", "sba"}:
+                selector = sba.select_for_core if record["source_type"] == "sba" else select_for_core
+                scoring_record, _, selection = selector(record, claims, cfg, program=program["name"] if program else None)
             topic_id = record["topic_id"] + ":" + program["name"] if program else record["topic_id"]
             if topic_id in ids:
                 raise PipelineError("Duplicate public topic ID in configured sources")
@@ -165,7 +174,7 @@ def discover_topics(cfg: dict, out: Path, source_types: list[str], *, fixture: P
             if program:
                 item["program"] = program["name"]
             (dropped if excluded else ranked).append(item)
-    ranked.sort(key=lambda row: (-row["score"]["total"], row["topic_id"]))
+    ranked.sort(key=topics.public_rank_key)
     dropped.sort(key=lambda row: row["topic_id"])
     result = {"schema": TOPICS_SCHEMA, "mode": "fixture" if fixture is not None else "live", "as_of": today.isoformat(),
               "source_types": source_types, "topics": ranked, "excluded": dropped, "sources": receipts,
@@ -221,9 +230,10 @@ def replay_topic(path: Path, out: Path, topic_id: str | None = None):
     # Reparse the verified bytes, rather than trusting editable claims in topics.json.
     parsed, claims, _ = acquire(item["source_type"], out, page=receipt["url"], school_id=record.get("school_id"),
                                 fixture=out / receipt["file"])
-    if item["source_type"] == "usagov" and item["topic_id"] != parsed["topic_id"]:
+    if item["source_type"] in {"usagov", "sba"} and item["topic_id"] != parsed["topic_id"]:
         from .usagov_programs import program_units
-        names = {parsed["topic_id"] + ":" + p["name"]: p["name"] for p in program_units(parsed, claims)}
+        units = sba.program_units(parsed, claims) if item["source_type"] == "sba" else program_units(parsed, claims)
+        names = {parsed["topic_id"] + ":" + p["name"]: p["name"] for p in units}
         if item["topic_id"] not in names:
             raise PipelineError("USA.gov program topic differs from verified snapshot headings")
         parsed["requested_program"] = names[item["topic_id"]]
@@ -240,16 +250,19 @@ def write_bundle(record: dict, claims: list[dict], out: Path, cfg: dict, *, prep
     for name in ("concept_request.json", "concept_inputs.json", "concept_record.json", "concept_claims.json",
                  "claim_selection.json", "request_status.json"):
         (out / name).unlink(missing_ok=True)
-    if program is not None and record["source_type"] != "usagov":
-        raise PipelineError("--program is supported only for USA.gov")
+    if program is not None and record["source_type"] not in {"usagov", "sba"}:
+        raise PipelineError("--program is supported only for USA.gov and SBA.gov")
     write_json(out / "record.json", record)
     write_json(out / "claims.json", claims)
     result = {"source_type": record["source_type"], "claims": len(claims), "accepted": False, "model_called": False}
-    if record["source_type"] in {"usagov", "govpage"}:
+    if record["source_type"] in {"usagov", "govpage", "sba"}:
         from .usagov_facts import select_for_core as select_usagov
         try:
-            record, claims, selection = (govpage.select_for_core(record, claims, cfg)
-                if record["source_type"] == "govpage" else select_usagov(record, claims, cfg, program=program))
+            if record["source_type"] == "govpage":
+                record, claims, selection = govpage.select_for_core(record, claims, cfg)
+            else:
+                selector = sba.select_for_core if record["source_type"] == "sba" else select_usagov
+                record, claims, selection = selector(record, claims, cfg, program=program)
         except PipelineError as error:
             status = {"state": "refused", "reason": str(error), "model_called": False}
             write_json(out / "claim_selection.json", status)

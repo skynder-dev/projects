@@ -175,6 +175,8 @@ def _rubric(rec: dict, cfg: dict) -> str | None:
             if professions:
                 options.append((professions[0]["points"], name))
             continue
+        if name == "small_business_nonprofit" and cfg.get("small_business_channel") and not small_business_main(rec, cfg):
+            continue
         matched = codes.intersection(rules["eligibility_codes"])
         if matched:
             points = max(cfg["audience_points"].get(code, 0) for code in matched)
@@ -448,3 +450,15 @@ def top_opportunity_id(path: Path) -> str:
     if not isinstance(exclusion, dict) or exclusion.get("excluded") is not False:
         raise PipelineError("Top topic is excluded or lacks an exclusion decision")
     return opportunity_id(rows[0].get("opportunity_id"))
+
+
+def small_business_main(record, cfg):
+    """Conservative policy: code 23 confirmed, no unknown types, at least half."""
+    codes, unknown = _categories(record, cfg)
+    return not unknown and "23" in codes and "99" not in codes and len(codes) <= 2
+
+
+def public_rank_key(row):
+    # Prefer the dedicated source within this channel, then existing score/ID.
+    preferred = row.get("rubric") == "small_business_nonprofit" and row.get("source_type") == "sba"
+    return (0 if preferred else 1, -row["score"]["total"], row["topic_id"])
