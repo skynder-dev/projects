@@ -65,7 +65,7 @@ def ask(card: dict, title: str) -> dict:
         'вопрос_модели': card.get('viewer_question_ru', ''), 'чего_нет_модели': card.get('not_answered_ru', '')},
         ensure_ascii=False)
     body = {'model': a.model, 'system': SYSTEM, 'prompt': prompt, 'format': SCHEMA, 'stream': False, 'think': False,
-            'options': {'temperature': 0.2, 'num_ctx': 4096, 'num_predict': 400}}
+            'options': {'temperature': 0.2, 'num_ctx': 4096, 'num_predict': 400, 'num_gpu': 0, 'num_thread': 6}}
     req = urllib.request.Request(a.api + '/api/generate', data=json.dumps(body).encode('utf-8'),
                                  headers={'Content-Type': 'application/json'}, method='POST')
     with urllib.request.urlopen(req, timeout=1800) as r:
@@ -85,6 +85,21 @@ def check(t: dict) -> list:
     return bad
 
 
+# the model must exist on this PC; otherwise the largest Qwen there is used and the report says so
+try:
+    with urllib.request.urlopen(a.api + '/api/tags', timeout=30) as r:
+        _names = [m.get('name', '') for m in json.loads(r.read().decode('utf-8')).get('models', [])]
+except Exception as e:  # noqa: BLE001
+    _names = []
+    print(f'model list failed: {e!r}')
+print('models here: ' + ', '.join(_names))
+if _names and a.model not in _names:
+    _alt = [n for n in _names if 'qwen' in n and any(x in n for x in ('27b', '32b', '14b'))]
+    if not _alt:
+        print(f'model {a.model} not found and no bigger Qwen; no cards')
+        sys.exit(0)
+    print(f'model {a.model} not found, using {_alt[0]}')
+    a.model = _alt[0]
 cards, report = [], []
 for path in a.trials:
     d = json.loads(Path(path).read_text(encoding='utf-8'))
