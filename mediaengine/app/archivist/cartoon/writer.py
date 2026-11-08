@@ -951,7 +951,8 @@ def _make_settings(make: dict) -> dict:
             "drawing": make.get("drawing") if make.get("drawing") in STYLES else "flat",
             **({"pace": make.get("pace")} if make.get("pace") in PACES else {}),
             **({"caption_look": {k: str(look[k])[:20] for k in ("color", "size", "position") if look.get(k)}} if look else {}),
-            **({"hold": True} if make.get("hold") else {})}
+            **({"hold": True} if make.get("hold") else {}),
+            **({"quality": "better"} if make.get("quality") == "better" else {})}   # (a story's pictures drawn carefully)
 
 
 def _make_film(story: str, job: dict, title: str) -> dict:
@@ -965,6 +966,8 @@ def _make_film(story: str, job: dict, title: str) -> dict:
     if job.get("site") and not script.get("site"):
         script["site"] = {"url": job["site"]}
     script["drawing"] = m["drawing"]
+    if m.get("quality") == "better":
+        script["quality"] = "better"
     from . import reference as R
     script["pace"] = m.get("pace") or R.pace_of(job.get("style"))   # (the rhythm of a reference: the film's pauses too)
     if job.get("mode") in ("adapt", "translate"):          # another language: its voices; the film's own people
