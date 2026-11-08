@@ -3,7 +3,7 @@
   {
    "id": "so_usagov-1_C1",
    "kind": "social",
-   "prof": "Помощь с отоплением",
+   "prof": "Помощь людям: Помощь с отоплением",
    "text": "If your energy bills are too high, there is help available.",
    "lines": [
     "Могут ли ваши счета за отопление или кондиционирование быть оплачены, если ваш доход низкий?",
@@ -16,7 +16,7 @@
   {
    "id": "so_usagov-1_C2",
    "kind": "social",
-   "prof": "Помощь с отоплением",
+   "prof": "Помощь людям: Помощь с отоплением",
    "text": "You can apply online in some cases or visit your local office.",
    "lines": [
     "Что нужно сделать прямо сейчас, чтобы узнать, имеете ли вы право на помощь?",
@@ -29,7 +29,7 @@
   {
    "id": "so_usagov-1_C3",
    "kind": "social",
-   "prof": "Помощь с отоплением",
+   "prof": "Помощь людям: Помощь с отоплением",
    "text": "If your utilities were disconnected, you can get help to restore them.",
    "lines": [
     "Что делать, если ваши коммунальные услуги уже были отключены?",
@@ -42,7 +42,7 @@
   {
    "id": "so_usagov-2_C1",
    "kind": "social",
-   "prof": "Невостребованные деньги",
+   "prof": "Помощь людям: Невостребованные деньги",
    "text": "Former US employees: check for owed back pay and pensions.",
    "lines": [
     "Вы когда-нибудь работали или жили в США, но теперь не можете найти свои старые зарплатные чеки или пенсионные документы?",
@@ -55,7 +55,7 @@
   {
    "id": "so_usagov-2_C2",
    "kind": "social",
-   "prof": "Невостребованные деньги",
+   "prof": "Помощь людям: Невостребованные деньги",
    "text": "FHA mortgage owners and veterans: check for government refunds.",
    "lines": [
     "У вас есть дом с ипотекой от FHA или вы ветеран? Узнайте, может ли правительство вернуть вам деньги.",
@@ -68,7 +68,7 @@
   {
    "id": "so_usagov-2_C3",
    "kind": "social",
-   "prof": "Невостребованные деньги",
+   "prof": "Помощь людям: Невостребованные деньги",
    "text": "Stop looking everywhere: there is no single place for all funds.",
    "lines": [
     "Существует ли единое место, где можно найти все неучтенные деньги в США?",
@@ -81,7 +81,7 @@
   {
    "id": "so_usagov-3_C1",
    "kind": "social",
-   "prof": "Налоговые возвраты",
+   "prof": "Помощь людям: Налоговые возвраты",
    "text": "Did you earn money but not file? You might still get a refund.",
    "lines": [
     "Вы не подавали декларацию, но заработали деньги? Возможно, вы всё ещё имеете право на возврат налога.",
@@ -94,7 +94,7 @@
   {
    "id": "so_usagov-3_C2",
    "kind": "social",
-   "prof": "Налоговые возвраты",
+   "prof": "Помощь людям: Налоговые возвраты",
    "text": "Online check failed? Use the automated phone system to skip the wait.",
    "lines": [
     "Проверили статус онлайн и ничего не нашли? Вот как обойти длинные очереди по телефону.",
@@ -107,7 +107,7 @@
   {
    "id": "so_usagov2-1_C1",
    "kind": "social",
-   "prof": "Законы о зарплате",
+   "prof": "Помощь людям: Законы о зарплате",
    "text": "Is your paycheck really fair? Learn your rights.",
    "lines": [
     "Ваш работодатель платит вам меньше минимальной ставки или не дает сверхурочных? Узнайте свои права.",
@@ -120,7 +120,7 @@
   {
    "id": "so_usagov2-1_C2",
    "kind": "social",
-   "prof": "Законы о зарплате",
+   "prof": "Помощь людям: Законы о зарплате",
    "text": "Are you really an independent contractor? Check your status.",
    "lines": [
     "Вам говорят, что вы независимый подрядчик, но вы работаете как сотрудник? Проверьте, не произошла ли ошибка в классификации.",
@@ -133,7 +133,7 @@
   {
    "id": "so_usagov2-2_C1",
    "kind": "social",
-   "prof": "Травма на работе",
+   "prof": "Помощь людям: Травма на работе",
    "text": "Workers' comp can help if you get hurt at work.",
    "lines": [
     "Вы получили травму на работе? Узнайте, может ли программа по страхованию от несчастных случаев помочь вам получить выплаты.",
@@ -146,7 +146,7 @@
   {
    "id": "so_usagov2-2_C2",
    "kind": "social",
-   "prof": "Травма на работе",
+   "prof": "Помощь людям: Травма на работе",
    "text": "Your employer type decides where to file your claim.",
    "lines": [
     "Работаете ли вы у частного работодателя или на федеральном уровне? Это определит, куда подавать заявление.",
@@ -159,7 +159,7 @@
   {
    "id": "so_usagov2-2_C3",
    "kind": "social",
-   "prof": "Травма на работе",
+   "prof": "Помощь людям: Травма на работе",
    "text": "Denied? You can still appeal the decision.",
    "lines": [
     "Ваша заявка была отклонена? Узнайте, что вы можете сделать, чтобы оспорить это решение.",
@@ -172,7 +172,7 @@
   {
    "id": "so_usagov3-1_C1",
    "kind": "social",
-   "prof": "Помощь студентам",
+   "prof": "Учёба: Помощь студентам",
    "text": "Stop thinking only about loans. There is more help available.",
    "lines": [
     "Как узнать, на какие деньги можно учиться бесплатно или с помощью работы?",
@@ -185,7 +185,7 @@
   {
    "id": "so_usagov3-1_C2",
    "kind": "social",
-   "prof": "Помощь студентам",
+   "prof": "Учёба: Помощь студентам",
    "text": "Don't guess the price. Calculate it accurately before you apply.",
    "lines": [
     "Как выбрать колледж, который реально affordable?",
@@ -198,7 +198,7 @@
   {
    "id": "so_usagov3-1_C3",
    "kind": "social",
-   "prof": "Помощь студентам",
+   "prof": "Учёба: Помощь студентам",
    "text": "Struggling to pay? Contact your servicer before consequences get serious.",
    "lines": [
     "Что делать, если вы уже взяли кредит и не можете платить?",
@@ -211,7 +211,7 @@
   {
    "id": "so_usagov3-2_C1",
    "kind": "social",
-   "prof": "«Бесплатных денег нет»",
+   "prof": "Помощь людям: «Бесплатных денег нет»",
    "text": "Stop looking for free money from the government—it does not exist for individuals.",
    "lines": [
     "Правительство не дает «бесплатных денег» частным лицам: как отличить реальную помощь от мошенничества?",
@@ -224,7 +224,7 @@
   {
    "id": "so_usagov3-2_C2",
    "kind": "social",
-   "prof": "«Бесплатных денег нет»",
+   "prof": "Помощь людям: «Бесплатных денег нет»",
    "text": "Need cash for school or a business? Federal loans exist, but grants are for organizations only.",
    "lines": [
     "Какие типы федеральных кредитов доступны для образования, малого бизнеса и жилья?",
@@ -237,7 +237,7 @@
   {
    "id": "so_usagov3-2_C3",
    "kind": "social",
-   "prof": "«Бесплатных денег нет»",
+   "prof": "Помощь людям: «Бесплатных денег нет»",
    "text": "Struggling to buy a home or recover from a disaster? Government programs can help.",
    "lines": [
     "Где найти помощь от правительства при покупке дома или после стихийного бедствия?",
@@ -250,7 +250,7 @@
   {
    "id": "so_usagov3-3_C1",
    "kind": "social",
-   "prof": "Трудная ситуация",
+   "prof": "Помощь людям: Трудная ситуация",
    "text": "Facing financial hardship? Learn how to apply for government programs to help with food, bills, housing, and more.",
    "lines": [
     "Вы теряете еду или счета? Узнайте, как получить помощь прямо сейчас.",
@@ -263,7 +263,7 @@
   {
    "id": "so_usagov3-3_C2",
    "kind": "social",
-   "prof": "Трудная ситуация",
+   "prof": "Помощь людям: Трудная ситуация",
    "text": "Struggling with phone, internet, or energy bills? Learn about government programs to help pay for them.",
    "lines": [
     "Можно ли получить помощь по счетам за свет и интернет?",
@@ -276,7 +276,7 @@
   {
    "id": "so_usagov3-3_C3",
    "kind": "social",
-   "prof": "Трудная ситуация",
+   "prof": "Помощь людям: Трудная ситуация",
    "text": "Need emergency housing or rent help? Find out how to get assistance and learn about affordable housing programs.",
    "lines": [
     "Как получить экстренную помощь с жильем или арендой?",
@@ -289,7 +289,7 @@
   {
    "id": "so_usagov3-4_C1",
    "kind": "social",
-   "prof": "Помощь с жильём",
+   "prof": "Помощь людям: Помощь с жильём",
    "text": "Don't let your home fall apart or get you kicked out.",
    "lines": [
     "Ваш дом в опасности? Узнайте, как найти программы помощи с ремонтом или избежать выселения.",
@@ -302,7 +302,7 @@
   {
    "id": "so_usagov3-4_C2",
    "kind": "social",
-   "prof": "Помощь с жильём",
+   "prof": "Помощь людям: Помощь с жильём",
    "text": "Need a place to live? Check these popular housing options.",
    "lines": [
     "Как получить информацию о программах аренды и покупки жилья?",
@@ -315,7 +315,7 @@
   {
    "id": "so_usagov3-4_C3",
    "kind": "social",
-   "prof": "Помощь с жильём",
+   "prof": "Помощь людям: Помощь с жильём",
    "text": "Think housing help is the same everywhere? Think again.",
    "lines": [
     "Можно ли найти помощь с арендой или покупкой жилья прямо сейчас?",
@@ -328,7 +328,7 @@
   {
    "id": "so_usagov3-5_C1",
    "kind": "social",
-   "prof": "После бедствия",
+   "prof": "Помощь людям: После бедствия",
    "text": "Are you in a presidentially declared disaster area?",
    "lines": [
     "Если ваш район был официально объявлен пострадавшим от стихийного бедствия президентом, как вы можете получить помощь с жильем и едой?",
@@ -341,7 +341,7 @@
   {
    "id": "so_usagov3-5_C2",
    "kind": "social",
-   "prof": "После бедствия",
+   "prof": "Помощь людям: После бедствия",
    "text": "Your area isn't eligible? Don't assume you're alone.",
    "lines": [
     "Что делать, если ваш район не был объявлен пострадавшим от стихийного бедствия президентом?",
@@ -354,7 +354,7 @@
   {
    "id": "so_usagov3-5_C3",
    "kind": "social",
-   "prof": "После бедствия",
+   "prof": "Помощь людям: После бедствия",
    "text": "Utility bills, credit cards, student debt—help exists.",
    "lines": [
     "Помимо жилья и еды, какие еще счета можно оплатить после бедствия?",
@@ -363,6 +363,110 @@
    ],
    "unknown": "Процедура подачи заявок для этих счетов не описана в источнике.",
    "rev": "c9610a013d2cf762"
+  },
+  {
+   "id": "so_ch1_C2",
+   "kind": "social",
+   "prof": "Малый бизнес и НКО: жильё (ROSS)",
+   "text": "Is your resident association eligible for this grant?",
+   "lines": [
+    "Может ли ваш клуб или ассоциация жителей подать заявку? Проверьте требования к статусу некоммерческой организации.",
+    "Зритель узнает, что резидентские ассоциации (RA) и многосемейные владельцы могут подавать заявки, если они имеют местный некоммерческий статус или статус 501(c)(3). Зритель поймет, что физические лица, иностранные сущности и единоличные предприятия не имеют права на получение грантов.",
+    "Источник: grants.gov/search-results-detail/361994"
+   ],
+   "unknown": "Источник не содержит деталей о том, как именно проверить статус 501(c)(3) или получить местную регистрацию.",
+   "rev": "bc385d0a84b78ec8"
+  },
+  {
+   "id": "so_ch4_C3",
+   "kind": "social",
+   "prof": "Профессии: уволенные рабочие",
+   "text": "Not sure which grant type fits your situation? Check the source text.",
+   "lines": [
+    "Что делать, если вы работаете в пострадавшем районе: как связаться с правильным агентством и где найти полные инструкции по подаче заявки?",
+    "Вы узнаете, что есть разные типы грантов (Disaster Recovery vs Employment Recovery) с разными категориями эligibility. Вы поймете, что для получения полной информации нужно обратиться к Change 1 к TEGL No. 09-24.",
+    "Источник: grants.gov/search-results-detail/362325"
+   ],
+   "unknown": "Источник не содержит конкретных инструкций по подаче заявки; он лишь указывает, где найти дополнительную информацию (TEGL No. 09-24).",
+   "rev": "3b6454446ac8c5b1"
+  },
+  {
+   "id": "so_ch5_C1",
+   "kind": "social",
+   "prof": "Профессии: учителя",
+   "text": "Are you a K-14 teacher in engineering or computer science looking for a paid summer research experience?",
+   "lines": [
+    "Как учителю инженерии или информатики получить опыт летнего исследования и улучшить свои навыки?",
+    "Учитель узнает, что эта программа оплачивает его участие в летнем исследовании, помогает ему освоить новые темы (инженерия/компьютерные науки) и дает инструменты для улучшения уроков в классе.",
+    "Источник: grants.gov/search-results-detail/350802"
+   ],
+   "unknown": "Источник не указывает конкретные суммы стипендии или условия отбора отдельных учителей, только общую цель программы.",
+   "rev": "9394a30d0543be86"
+  },
+  {
+   "id": "so_ch5_C2",
+   "kind": "social",
+   "prof": "Профессии: учителя",
+   "text": "Don't try to apply alone; you need your US university or community college to submit the proposal on your behalf.",
+   "lines": [
+    "Что нужно сделать учителю прямо сейчас, чтобы его школа могла участвовать в этой федеральной программе?",
+    "Учитель узнает, что подавать заявку может только аккредитованное учебное заведение (IHE) в США от имени своих преподавателей; ему нужно инициировать разговор с руководством школы или деканом факультета инженерии/информатики.",
+    "Источник: grants.gov/search-results-detail/350802"
+   ],
+   "unknown": "Источник не содержит деталей о том, как именно учитель должен убедить администрацию школы (шаги переговоров или шаблоны писем).",
+   "rev": "9394a30d0543be86"
+  },
+  {
+   "id": "so_ch5_C3",
+   "kind": "social",
+   "prof": "Профессии: учителя",
+   "text": "Turn your summer into a research experience that directly improves how you teach engineering and computer science.",
+   "lines": [
+    "Как участие в этой программе поможет учителю стать лучше и понять, как преподавать сложные инженерные темы?",
+    "Учитель узнает, что программа способствует взаимному обмену опытом между школой и университетом, помогая учителю углубить свои знания в инженерии/компьютерных науках и адаптировать их для класса.",
+    "Источник: grants.gov/search-results-detail/350802"
+   ],
+   "unknown": "Источник не описывает конкретные темы исследований или длительность летних программ, только общие цели.",
+   "rev": "9394a30d0543be86"
+  },
+  {
+   "id": "so_ch7_C1",
+   "kind": "social",
+   "prof": "Учёба: помощь студентам",
+   "text": "Stop paying to apply for free money.",
+   "lines": [
+    "Как узнать, имеешь ли ты право на финансовую помощь для колледжа?",
+    "Вы узнаете, что Free Application for Federal Student Aid (FAFSA) — это бесплатный инструмент для проверки права на гранты, стипендии и работу в обмен на обучение.",
+    "Источник: usa.gov/financial-aid"
+   ],
+   "unknown": "Сколько именно денег вы получите или какие конкретные суммы доступны.",
+   "rev": "d82f98c7d175569a"
+  },
+  {
+   "id": "so_ch7_C2",
+   "kind": "social",
+   "prof": "Учёба: помощь студентам",
+   "text": "Don't pick a school you can't afford.",
+   "lines": [
+    "Как выбрать колледж, который реально по карману?",
+    "Вы научитесь использовать онлайн-калькуляторы для оценки стоимости конкретного колледжа и сравнения школ перед выбором.",
+    "Источник: usa.gov/financial-aid"
+   ],
+   "unknown": "Какие именно калькуляторы лучше использовать или какие школы дешевле всего.",
+   "rev": "d82f98c7d175569a"
+  },
+  {
+   "id": "so_ch7_C3",
+   "kind": "social",
+   "prof": "Учёба: помощь студентам",
+   "text": "Struggling to pay? Contact your servicer now.",
+   "lines": [
+    "Что делать, если ты уже бросил платить по студенческому кредиту?",
+    "Вы поймете, что при возникновении проблем с оплатой нужно сразу связаться со своим кредитным оператором (loan servicer), чтобы вернуть платежи в нормальное русло.",
+    "Источник: usa.gov/financial-aid"
+   ],
+   "unknown": "Какие именно последствия наступят при неоплате или какие конкретные шаги оператор предпримет.",
+   "rev": "d82f98c7d175569a"
   }
  ]
 }
