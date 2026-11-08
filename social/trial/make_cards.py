@@ -40,6 +40,8 @@ SYSTEM = ('Ты редактор. Пиши простым разговорным
 
 def channel(stages: dict) -> str:
     ta = stages.get('topic_audience') or {}
+    if ta.get('channel') in {'Помощь людям', 'Учёба', 'Малый бизнес и НКО', 'Профессии'}:
+        return ta['channel']
     title = str((stages.get('source') or {}).get('title') or '')
     if re.search(r'student|financial aid|college|school', title, re.I) and ta.get('people'):
         return 'Учёба'

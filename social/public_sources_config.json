@@ -14,6 +14,9 @@
       "disaster"
     ]
   },
+  "govpage": {
+    "hosts": ["www.irs.gov", "www.ssa.gov", "www.sba.gov", "www.va.gov", "www.hud.gov", "www.fema.gov", "www.fns.usda.gov", "www.medicare.gov"]
+  },
   "studentaid": {
     "pages": [
       "pell",

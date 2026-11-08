@@ -5,7 +5,7 @@ import copy
 import datetime as dt
 from pathlib import Path
 
-from . import concept_core, grants, studentaid, usagov
+from . import concept_core, grants, studentaid, usagov, govpage
 from .claims import build_claims as grant_claims
 from .common import ROOT, PipelineError, read_json, sha256_bytes, utc_now, write_json
 
@@ -15,7 +15,13 @@ SOURCE_TYPES = ("grants", "usagov", "studentaid", "scorecard")
 
 def acquire(source_type: str, out: Path, *, page: str | None = None, school_id: str | None = None,
             fixture: Path | None = None) -> tuple[dict, list[dict], list[dict]]:
-    if source_type == "usagov":
+    if source_type == "govpage":
+        if not page:
+            raise PipelineError("govpage requires --url")
+        client = govpage.GovPageClient(out / "source")
+        record, receipt = client.page(page, fixture=fixture)
+        rows = govpage.build_claims(record, receipt)
+    elif source_type == "usagov":
         if not page:
             raise PipelineError("USA.gov requires --page (a page name from socialreel/usagov.py PAGES or an official URL)")
         client = usagov.USAGovClient(out / "source")
@@ -239,10 +245,11 @@ def write_bundle(record: dict, claims: list[dict], out: Path, cfg: dict, *, prep
     write_json(out / "record.json", record)
     write_json(out / "claims.json", claims)
     result = {"source_type": record["source_type"], "claims": len(claims), "accepted": False, "model_called": False}
-    if record["source_type"] == "usagov":
-        from .usagov_facts import select_for_core
+    if record["source_type"] in {"usagov", "govpage"}:
+        from .usagov_facts import select_for_core as select_usagov
         try:
-            record, claims, selection = select_for_core(record, claims, cfg, program=program)
+            record, claims, selection = (govpage.select_for_core(record, claims, cfg)
+                if record["source_type"] == "govpage" else select_usagov(record, claims, cfg, program=program))
         except PipelineError as error:
             status = {"state": "refused", "reason": str(error), "model_called": False}
             write_json(out / "claim_selection.json", status)
