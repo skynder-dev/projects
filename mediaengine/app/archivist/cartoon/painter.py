@@ -489,11 +489,16 @@ def _paint(todo: list, quality: str = "fast") -> None:
         art.forget()
 
 
-CHECK_ASK = ("You check pictures for an animated film before they are used. Look closely at every person and animal: count "
-        "arms, hands, legs and fingers; look for impossible or twisted body positions, melted or doubled faces, and for "
-        "any letters or writing. Answer only with JSON: {\"ok\": true or false, \"problems\": [\"short description of "
-        "each defect\"]}. ok is false if there is any extra or missing limb, a deformed hand, a twisted body, a broken "
-        "face, or any letters.")
+# the checker is asked twice: it writes out what it can read (letters are drawn wrong by the picture model, and the
+# words of a film are put on the picture by the program, never drawn - any it reads is a fault: measured on the owner's
+# PC it read every garbled title and calendar), then it goes through the people one by one (weaker: it passed most
+# broken hands it was shown - a second look, not a guarantee)
+ASK_TEXT = ("Write out every letter, word or number you can see anywhere in this picture, exactly as it looks, even if it "
+            "is garbled. If there is none, answer NONE.")
+ASK_BODIES = ("For each person in this picture, one line: who they are, how many arms, hands and legs you can see, and "
+              "whether any hand, finger, arm, leg or face looks deformed, melted, doubled, extra, missing or bent in an "
+              "impossible way. Be strict and look closely; small figures too. End with a last line: VERDICT: OK or "
+              "VERDICT: BROKEN.")
 
 
 def _checks() -> dict:
@@ -516,17 +521,18 @@ def problems_of(pic) -> list:
     return list(_checks().get(str(pic)) or [])
 
 
-def _verdict(text: str) -> list:
-    """The problems from the checker's answer ([] for a good picture; unreadable: treated as good, not drawn again)."""
-    m = re.search(r"\{.*\}", str(text or ""), re.S)
-    try:
-        v = json.loads(m.group(0)) if m else {}
-    except ValueError:
-        v = {}
-    probs = [str(x).strip()[:120] for x in (v.get("problems") or []) if str(x).strip()]
-    if v.get("ok") is False and not probs:
-        probs = ["something is wrong in the picture"]
-    return [] if v.get("ok") is True else probs[:5]
+def _verdict(text: str, bodies: str) -> list:
+    """The problems from the checker's two answers ([] for a good picture)."""
+    probs = []
+    t = re.sub(r"\s+", " ", str(text or "")).strip()
+    if t and not re.fullmatch(r"(?i)[\W_]*none[\W_]*", t) and re.search(r"[^\W_]", t):
+        probs.append("letters drawn in the picture: " + t[:80])
+    m = re.search(r"VERDICT\s*:\s*(OK|BROKEN)", str(bodies or ""), re.I)
+    if m and m.group(1).upper() == "BROKEN":
+        why = [ln.strip(" -*") for ln in str(bodies).splitlines() if re.search(r"(?i)deform|extra|missing|melt|doubl|twist|impossib", ln)
+               and not re.search(r"(?i)\bno (deform|extra|missing)|none|normal", ln)]
+        probs.append(("a broken body: " + why[0][:90]) if why else "a broken body")
+    return probs
 
 
 def _look(items: list) -> list:
@@ -553,11 +559,14 @@ def _look(items: list) -> list:
             if not os.path.isfile(x["out"]):
                 continue
             b64 = base64.b64encode(Path(x["out"]).read_bytes()).decode("ascii")
-            msg = [{"role": "user", "content": [{"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}},
-                                                {"type": "text", "text": CHECK_ASK}]}]
+            said = []
             try:
-                r = srv.chat(msg, max_tokens=200, temperature=0.0, seed=1, stop=lambda: _PSTOP.is_set(), timeout=600)
-                probs = _verdict(r.get("text"))
+                for ask in (ASK_TEXT, ASK_BODIES):
+                    msg = [{"role": "user", "content": [{"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}},
+                                                        {"type": "text", "text": ask}]}]
+                    r = srv.chat(msg, max_tokens=400, temperature=0.0, seed=1, stop=lambda: _PSTOP.is_set(), timeout=600)
+                    said.append(r.get("text") or "")
+                probs = _verdict(said[0], said[1])
             except W.WriterError as exc:
                 if str(exc) == "Stopped.":
                     raise PainterError("Stopped. The pictures drawn so far are kept.")
