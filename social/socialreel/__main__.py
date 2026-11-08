@@ -44,7 +44,18 @@ def main(argv=None):
     s.add_argument("--prepare-request", action="store_true", help="attempt existing core admission; never calls a model")
     from .concept_choose_cli import add_parser
     add_parser(sub)
+    from .newsletter import add_parser as newsletter_parser
+    newsletter_parser(sub)
     a = ap.parse_args(argv)
+
+    if a.cmd == "newsletter":
+        from .newsletter import run as newsletter_run
+        try:
+            print(json.dumps(newsletter_run(a), ensure_ascii=True))
+            return 0
+        except (PipelineError, OSError, ValueError, KeyError, TypeError) as error:
+            print(f"NEWSLETTER FAILED: {error}", file=sys.stderr)
+            return 2
 
     if a.cmd == "concepts":
         from .concept_choose_cli import run as run_concepts
@@ -129,7 +140,7 @@ def write_index(pub: Path):
                         f"| `{r['video']['sha256'][:16]}` | [mp4](runs/{d.name}/reel.mp4) |")
     extra = "\nRetracted runs: see [RETRACTED.md](RETRACTED.md).\n" if (pub / "RETRACTED.md").exists() else ""
     (pub / "README.md").write_text(
-        "# Social Reels — results\n\nAccepted Reels (newest first). `latest/` = full package of the newest one; "
+        "# Social Reels â€” results\n\nAccepted Reels (newest first). `latest/` = full package of the newest one; "
         "full packages of every run are in that run's Actions artifact.\n" + extra + "\n"
         "| Run | Length | Writer | Video SHA-256 | Video |\n|---|---|---|---|---|\n" + "\n".join(rows) + "\n")
 

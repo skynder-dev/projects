@@ -145,6 +145,28 @@ if a.merge and Path(a.merge).exists():
         old = []
 ids = {c['id'] for c in cards}
 merged = [c for c in old if c.get('id') not in ids] + cards
+
+
+def end_question(i: int, card: dict, pool: list) -> str:
+    """Owner rule 08.11.2026: the video ends with a question viewers answer in one word - their state, or a pick of two
+    next topics from the same channel. Made by the program (no model), so the Russian is always clean."""
+    ch, _, me = card['prof'].partition(': ')
+    others = []
+    for c in pool:
+        och, _, topic = str(c.get('prof', '')).partition(': ')
+        topic = topic.strip().rstrip('.?!')
+        if och == ch and topic and topic != me and topic not in others and len(topic) <= 40:
+            others.append(topic)
+    if i % 2 and len(others) >= 2:
+        low = [t[0].lower() + t[1:] if len(t) > 1 and not t[1].isupper() else t for t in others[-2:]]
+        return f'Что разобрать дальше: {low[0]} или {low[1]}?'
+    return 'Какой штат разобрать следующим?'
+
+
+for i, c in enumerate(cards):
+    q = end_question(i, c, merged)
+    c['ask_ru'] = q
+    c['lines'].insert(2, 'Вопрос в конце: ' + q)
 Path(a.out).write_text(json.dumps({'cards': merged}, ensure_ascii=False, indent=1), encoding='utf-8')
 print(f'cards: {len(cards)} new, {len(merged)} total')
 print('\n'.join(report))
