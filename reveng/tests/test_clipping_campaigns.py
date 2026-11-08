@@ -24,13 +24,18 @@ class Tests(unittest.TestCase):
     def read(self, robots='User-Agent: *\nAllow: /\nDisallow: /api/\n'):
         def r(url, stats, cap=0):
             stats['source_requests'] += 1
-            return robots.encode() if url.endswith('robots.txt') else PAGE.encode()
+            if url.endswith('robots.txt'): return robots.encode()
+            if '/c/campaigns/id2' in url: return b'<a href="https://drive.google.com/drive/folders/x">raw</a> https://www.youtube.com/watch?v=1'
+            if '/c/campaigns/' in url: return b'SYNTHETIC no links'
+            return PAGE.encode()
         return r
     def test_parse_and_card(self):
         r = cc.collect(self.root, {'source_requests': 0}, read=self.read())
         self.assertEqual(r['status'], 'read'); self.assertEqual(len(r['campaigns']), 3)   # duplicate id dropped
         self.assertEqual(r['summary'], {'campaigns': 3, 'budget_usd': 4500, 'spent_usd': 600, 'median_per_1k_usd': 1.0, 'top_categories': ['Gaming', 'Music'], 'top_runners': ['A', 'B']})
-        self.assertEqual(r['campaigns'][0]['platforms'], ['tiktok', 'youtube']); self.assertEqual(r['source_requests'], 2)
+        self.assertEqual(r['campaigns'][0]['platforms'], ['tiktok', 'youtube']); self.assertEqual(r['source_requests'], 2 + 3)   # board + 3 campaign pages
+        c2 = [c for c in r['campaigns'] if c['id'] == 'id2'][0]; self.assertEqual(c2['file_hosts'], ['Google Drive']); self.assertTrue(c2['youtube_or_twitch'])
+        c1 = [c for c in r['campaigns'] if c['id'] == 'id1'][0]; self.assertEqual(c1['file_hosts'], []); self.assertFalse(c1['youtube_or_twitch'])
         card = pc.clipping_card(self.root)[0]
         self.assertEqual(card['id'], 'rv_k_clipping_board'); self.assertTrue(card['lines'][0].startswith('Суть: '))
         self.assertEqual(card['lines'][2], 'Сейчас открыто кампаний: 3, общий бюджет 4 500 USD, уже выплачено 600 USD'); self.assertLessEqual(len(card['lines']), 6)
