@@ -37,8 +37,10 @@ WORD_CHANNEL = [(r'student|college|fafsa|scholarship|pell|school', 'Учёба')
 WANT = re.compile(r'benefit|assist|aid|help|grant|loan|refund|tax|credit|unemploy|food|snap|housing|rent|energy|'
                   r'unclaimed|wage|pay|retire|disab|medicaid|medicare|insurance|student|fafsa|apply|eligib|'
                   r'forgiv|debt|disaster|veteran|small business|scam|fraud', re.I)
-SKIP = re.compile(r'login|log-in|sign-?in|signin|account|password|search|status|tracking|'
-                  r'portal|auth|verify|captcha|cookie|privacy|contact-us|404|error', re.I)
+SKIP = re.compile(r'login|logout|log-in|sign-?in|signin|sign-?up|account|password|search|status|track|callback|'
+                  r'portal|auth|verify|two-step|captcha|cookie|privacy|contact-us|404|error|/my-|/my$|'
+                  r'make-payment|direct-pay|/payments|recover|default\.aspx|nonimmigrant|visa', re.I)
+SKIP_HOST = re.compile(r'(^|\.)(state\.gov|login\.gov|ceac\.state\.gov)$', re.I)
 
 
 def get(path: str):
@@ -77,12 +79,15 @@ for path in FILES:
         continue
     files.append(meta)
     live = 'realtime' in path
+    if rows(doc):
+        files[-1]['fields'] = sorted(rows(doc)[0].keys())
     for r in rows(doc):
         url = r.get('page') or r.get('fullPageUrl') or r.get('page_url') or ''
         host = r.get('domain') or r.get('hostName') or ''
         title = (r.get('page_title') or r.get('pageTitle') or '').strip()
         views = int(float(r.get('pageviews') or r.get('screenPageViews') or r.get('active_visitors')
-                          or r.get('activeUsers') or 0))
+                          or r.get('activeUsers') or r.get('active_users') or r.get('visits') or r.get('sessions')
+                          or r.get('users') or 0))
         if not url:
             continue
         if not url.startswith('http'):
@@ -90,7 +95,8 @@ for path in FILES:
         p = urllib.parse.urlparse(url)
         host = host or p.netloc
         text = f'{p.path} {title}'
-        if not WANT.search(text) or SKIP.search(p.path) and not WANT.search(title):
+        if (not WANT.search(text) or SKIP.search(f'{p.path} {title}') or SKIP_HOST.search(p.netloc)
+                or p.path.strip('/') == ''):
             continue
         key = (p.netloc.lower().removeprefix('www.') + p.path.rstrip('/')).lower()
         e = pages.setdefault(key, {'url': f'https://{p.netloc}{p.path}', 'host': p.netloc, 'title': title,
@@ -124,6 +130,7 @@ for e in ranked[:150]:
     hosts[e['host']] = hosts.get(e['host'], 0) + 1
 lines.append('\nСайты, чаще всего в спросе (что подключать следующим): ' +
              ', '.join(f'{h} {n}' for h, n in sorted(hosts.items(), key=lambda x: -x[1])[:12]))
+lines.append('\nПоля файлов: ' + '; '.join(f"{m['path']}={','.join(m.get('fields', []))}" for m in files[:3]))
 if errors:
     lines.append('\nНе открылись: ' + '; '.join(errors))
 (OUT / 'demand_summary.txt').write_text('\n'.join(lines) + '\n', encoding='utf-8')
