@@ -110,6 +110,8 @@ def check_script(sc: dict) -> dict:
     out["pictures"] = sc.get("pictures") is not False         # (pictures drawn once, when there are: art.py)
     if sc.get("on_screen") is False:
         out["on_screen"] = False
+    if sc.get("quality") == "better":
+        out["quality"] = "better"                          # (its pictures drawn slower and looked at: painter.py)
     if sc.get("story"):
         out["story"] = True                                # (pictures drawn for each scene, said over: story.py)
     wear = []                                              # (a shirt print on a character, a short zoom on it at a line:

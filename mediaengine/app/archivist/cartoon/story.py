@@ -100,13 +100,16 @@ def parse(text: str) -> dict:
                     scene["move"] = v.lower()
             sc["scenes"].append(scene)
             continue
-        hm = re.match(r"(?i)^(title|format|language|story|narrator)\s*:\s*(.*)$", ln)
+        hm = re.match(r"(?i)^(title|format|language|story|narrator|quality)\s*:\s*(.*)$", ln)
         if hm and not sc["scenes"]:
             key, val = hm.group(1).lower(), hm.group(2).strip()
             if key == "title":
                 sc["title"] = val[:120] or "Story"
             elif key == "format":
                 sc["format"] = "vertical" if val.lower().startswith("vert") else "horizontal"
+            elif key == "quality":
+                if val.lower().startswith(("better", "лучше", "slow")):
+                    sc["quality"] = "better"
             elif key == "language":
                 sc["language"] = val[:5].lower() or "en"
             elif key == "narrator":
@@ -151,6 +154,8 @@ def to_text(sc: dict) -> str:
     if sc.get("language") and sc["language"] != "en":
         out.append(f"Language: {sc['language']}")
     out.append("Story: yes")
+    if sc.get("quality") == "better":
+        out.append("Quality: better")
     for k, c in cast.items():
         g = "woman" if c.get("female") else "man"
         if k == nar:

@@ -345,8 +345,10 @@ def _port() -> int:
 class Server:
     """llama.cpp's server for one story: started, asked, stopped. gpu=False: the processor only."""
 
-    def __init__(self, gpu: bool = True, track: bool = True, log: Path | None = None, model: Path | None = None):
+    def __init__(self, gpu: bool = True, track: bool = True, log: Path | None = None, model: Path | None = None,
+                 extra: list | None = None):
         self.gpu, self.track = gpu, track
+        self.extra = list(extra or [])                    # (more of the server's options: a model that sees pictures)
         self.model = model or _model_path()
         self.build = "vulkan" if gpu else "cpu"
         self.port, self.key = _port(), secrets.token_hex(16)
@@ -360,7 +362,7 @@ class Server:
         cmd = base + ["-m", str(self.model), "-c", str(CTX), "--host", "127.0.0.1", "--port", str(self.port),
                       "--api-key", self.key, "-np", "1", "--jinja", "--no-webui"]
         # the graphics card: as many layers as fit (the server's own 'auto'); the processor: no card at all
-        return cmd + ([] if self.gpu else ["-ngl", "0", "--device", "none"])
+        return cmd + self.extra + ([] if self.gpu else ["-ngl", "0", "--device", "none"])
 
     def start(self, stop=lambda: False, timeout: float = 600) -> "Server":
         from .. import auto_edit as ae, voice as vo
@@ -538,13 +540,14 @@ def _remember_gpu(ok: bool | None) -> None:
         pass
 
 
-def open_server(stop=lambda: False, track: bool = True, log: Path | None = None, model: Path | None = None) -> Server:
+def open_server(stop=lambda: False, track: bool = True, log: Path | None = None, model: Path | None = None,
+                extra: list | None = None) -> Server:
     """On the graphics card when there is one and it starts; the processor otherwise."""
     card = gpu_name()
     if card == "" or gpu_failed():                         # (no card the Vulkan build can use, or one that failed: the processor)
-        return Server(False, track, log, model).start(stop)
+        return Server(False, track, log, model, extra).start(stop)
     try:
-        srv = Server(True, track, log, model).start(stop)
+        srv = Server(True, track, log, model, extra).start(stop)
         if card:
             srv.device = card
         return srv
@@ -553,7 +556,7 @@ def open_server(stop=lambda: False, track: bool = True, log: Path | None = None,
             raise
         first = str(exc)
     try:
-        return Server(False, track, log, model).start(stop)
+        return Server(False, track, log, model, extra).start(stop)
     except WriterError as exc:
         if str(exc) == "Stopped.":
             raise
@@ -921,6 +924,8 @@ def do(jid: str, d: Path, job: dict) -> dict:
                                       "Press Try again, or say the topic in other words."}
     if job.get("site") and not re.search(r"(?im)^site\s*:", best):
         best = f"Site: {job['site']}\n" + best             # (the page the story is about: shown in the film's scenes)
+    if job.get("mode") == "story" and (job.get("make") or {}).get("quality") == "better" and not re.search(r"(?im)^quality\s*:", best):
+        best = re.sub(r"(?im)^(story\s*:.*)$", r"\1\nQuality: better", best, count=1)   # (the pictures drawn carefully)
     (d / "story.txt").write_text(best, "utf-8")
     out = {"ok": True, "file": "story.txt", "title": best_info.get("title") or "", "scenes": best_info["scenes"],
            "words": best_info["words"], "lines": best_info["lines"], "attempts": used, "device": srv.device,

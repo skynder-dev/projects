@@ -1202,6 +1202,11 @@ PHRASES = {
     "From a few minutes to half an hour, depending on the internet. You can use MediaEngine meanwhile; closing it stops the download (it continues where it stopped when you press Install again).":
         "От нескольких минут до получаса — зависит от интернета. Пока можно пользоваться MediaEngine; если его закрыть, загрузка остановится (и продолжится с того же места, когда снова нажмёшь «Установить»).",
     "A film from a document": "Фильм по документу",
+    "Pictures": "Кадры", "Fast": "Быстро", "Better, slow (for the night)": "Лучше, медленно (на ночь)",
+    "A slower, more careful picture model; then a model that sees pictures looks at each one for extra or missing hands and legs, twisted bodies, broken faces and letters, and a bad one is drawn again (up to 3 times). Several times slower; 13 GB downloaded once.":
+        "Более медленная и аккуратная модель рисования; потом модель, которая видит картинки, проверяет каждый кадр: лишние или недостающие руки и ноги, вывернутые позы, сломанные лица, буквы — и плохой кадр перерисовывается (до 3 раз). В несколько раз дольше; один раз скачивается 13 ГБ.",
+    "The picture check found:": "Проверка кадра нашла:",
+    "the better quality's models (once, 13 GB)": "модели для качества «Лучше» (один раз, 13 ГБ)",
     "Paste a film's treatment or a story. The free model on this PC divides it into pictures, the people are drawn once (the same in every picture), then every picture; the camera moves in each in depth, the place is heard, a narrator tells it. Pictures, not an animation.":
         "Вставьте описание фильма или рассказ. Бесплатная модель на этом ПК делит его на кадры, героев рисует один раз (они одинаковые во всех кадрах), потом каждый кадр; камера движется в каждом кадре с объёмом, слышно место, рассказчик читает текст. Это картинки, а не анимация.",
     "Its pictures are drawn by the picture add-on: install it first (Pictures drawn by AI, on a film's page).":

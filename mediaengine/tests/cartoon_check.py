@@ -789,6 +789,24 @@ def main() -> int:
               "Draw again" in sp and "name='d_1'" in sp and rd.status_code == 302 and new_sc.get("bg") != old_bg
               and "sunset" in (new_sc.get("draw") or "") and new_pic is not None,
               (rd.status_code, old_bg, new_sc.get("bg"), new_pic))
+        # the better quality: each picture looked at (a stand-in checker finds an extra hand once), the bad one drawn again
+        os.environ["MEDIAENGINE_PAINTER"] = "standin"
+        try:
+            qb = T.parse(board.replace("Story: yes", "Story: yes\nQuality: better").replace(
+                "two boys meet at an old watermill", "two boys juggling apples at an old watermill"))
+            qf = F.check_script(qb)
+            PT.start_paint(qf, "")
+            t0 = time.time()
+            while PT.PAINT["state"] == "running" and time.time() - t0 < 120:
+                time.sleep(0.2)
+            jug = A2.background(qf["scenes"][2]["bg"], wide=True)
+            qrep = json.loads((A2.root() / "checks.json").read_text("utf-8")) if (A2.root() / "checks.json").is_file() else {}
+        finally:
+            os.environ.pop("MEDIAENGINE_PAINTER", None)
+        check("story: the better quality - every picture looked at, one found with an extra hand drawn again and then found good",
+              qf.get("quality") == "better" and "Quality: better" in T.to_text(qf) and PT.PAINT["state"] == "done" and jug
+              and qrep.get(str(jug)) == [] and os.path.exists(str(jug) + ".seen") and PT.PAINT["done"] > PT.PAINT["total"] - 1,
+              (qf.get("quality"), PT.PAINT, jug, qrep))
         ru = (c.get("/auto/cartoon", headers=H).get_data(as_text=True) + c.get(f"/auto/cartoon/{jid}", headers=H).get_data(as_text=True)
               + c.get("/auto/cartoon/characters", headers=H).get_data(as_text=True)
               + c.get("/auto/cartoon/characters/rick", headers=H).get_data(as_text=True))

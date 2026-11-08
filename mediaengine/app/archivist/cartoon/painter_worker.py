@@ -95,11 +95,19 @@ def flux(job):
         for group in (plain, by_ref):
             if not group:
                 continue
-            pipe = Flux2KleinPipeline.from_pretrained(job["model"], torch_dtype=torch.bfloat16)
+            better = job.get("quality") == "better" and os.path.isfile(os.path.join(job.get("base") or "", "transformer", "config.json"))
+            if better:                                     # (the undistilled model: slower, more careful; guidance)
+                from diffusers import Flux2Transformer2DModel
+                tr = Flux2Transformer2DModel.from_pretrained(os.path.join(job["base"], "transformer"), torch_dtype=torch.bfloat16)
+                pipe = Flux2KleinPipeline.from_pretrained(job["model"], transformer=tr, torch_dtype=torch.bfloat16, is_distilled=False)
+            else:
+                pipe = Flux2KleinPipeline.from_pretrained(job["model"], torch_dtype=torch.bfloat16)
             pipe.enable_sequential_cpu_offload()
             for _n, p in group:
-                kw = dict(prompt=p["prompt"], height=p["h"], width=p["w"], num_inference_steps=4,
+                kw = dict(prompt=p["prompt"], height=p["h"], width=p["w"], num_inference_steps=20 if better else 4,
                           generator=torch.Generator("cuda").manual_seed(int(p.get("seed") or 7)))
+                if better:
+                    kw["guidance_scale"] = 4.0
                 refs = []
                 for r in _refs(p):
                     if os.path.isfile(r):

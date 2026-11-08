@@ -316,6 +316,10 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div class='muted' style='font-size:13px;margin-top:4px'>The model translates it and changes the names, the money "
                 f"and the offices to the country's own; the scenes and pictures stay. The new story opens to read before the cartoon.</div></form>")
 
+    QUALITY_TIP = ("A slower, more careful picture model; then a model that sees pictures looks at each one for extra or "
+                   "missing hands and legs, twisted bodies, broken faces and letters, and a bad one is drawn again (up to 3 "
+                   "times). Several times slower; 13 GB downloaded once.")
+
     def _story_card() -> str:
         """A film from a document (story.py): a treatment's pictures drawn on this PC, said over, the camera in depth."""
         if not W.installed():
@@ -336,6 +340,9 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div class='ct-row' style='margin-top:6px'><b>Language</b><select name='lang'>{langs}</select>"
                 f"<b>Length</b><select name='secs'>{lens}</select>"
                 f"</div><div class='ct-row' style='margin-top:6px'>{_format_choice('horizontal')}</div>"
+                f"<div class='ct-row' style='margin-top:6px'><b>Pictures</b>"
+                f"<label><input type='radio' name='quality' value='fast' checked> Fast</label>"
+                f"<label title='{e(QUALITY_TIP)}'><input type='radio' name='quality' value='better'> Better, slow (for the night)</label></div>"
                 f"<label style='display:block;margin-top:6px'><input type='checkbox' name='hold' value='1' checked> Show me the "
                 f"pictures' list first (I read and change it, then the film is made)</label>"
                 f"<div style='margin-top:8px'><button>Make the film</button></div></form></div>")
@@ -671,8 +678,15 @@ def register(app, page, err_page, e, human_bytes):
             if s["bg"] not in BG_LABELS:                   # (a picture of its own: kept unless another is chosen)
                 bgsel = f"<option value='{e(s['bg'])}' selected>{e('a picture of its own')}</option>" + bgsel
             drawn = ""
+            if s.get("draw"):                              # (what the picture check found and could not mend)
+                from .cartoon import art as _art, painter as _PT
+                _b = _art.background(s["bg"], wide=film.get("format") == "horizontal")
+                _probs = _PT.problems_of(_b) if _b else []
+                if _probs:
+                    drawn += (f"<div class='callout card' style='margin:4px 0;font-size:13px'>{e('The picture check found:')} "
+                              f"<span translate='no'>{e('; '.join(_probs))}</span></div>")
             if s.get("draw"):                              # (a story's picture: its words, drawn again on a press)
-                drawn = (f"<div class='ct-row' style='margin-top:4px'><textarea name='d_{i}' rows='2' maxlength='700' "
+                drawn += (f"<div class='ct-row' style='margin-top:4px'><textarea name='d_{i}' rows='2' maxlength='700' "
                          f"style='flex:1;min-width:240px' translate='no' title='What the picture shows'>{e(s['draw'])}</textarea>"
                          f"<button class='btn2' formaction='/auto/cartoon/{jid}/scene/{i}/redraw' "
                          f"title='Another picture of the same words (the words changed: drawn from them)'>Draw again</button></div>")
@@ -1162,6 +1176,7 @@ def register(app, page, err_page, e, human_bytes):
                 jid = W.new_write("story", f.get("lang") or "en", f.get("format") or "horizontal", secs,
                                   source=str(f.get("source") or ""),
                                   make={"voices": True, "captions": None, "music": "made", "mood": "story", "camera": "still",
+                                        **({"quality": "better"} if f.get("quality") == "better" else {}),
                                         **({"hold": True} if f.get("hold") == "1" else {})})
             except (W.WriterError, vo.VoiceError) as exc:
                 return err_page(str(exc), "/auto/cartoon#story")
