@@ -16,8 +16,9 @@ import urllib.request
 from .claims import _src
 from .common import PipelineError, sha256_bytes, utc_now
 
-LABELS = {"usagov": "USA.gov", "studentaid": "Federal Student Aid", "scorecard": "College Scorecard"}
+LABELS = {"usagov": "USA.gov", "studentaid": "Federal Student Aid", "scorecard": "College Scorecard", "sba": "SBA.gov"}
 HTML_HOSTS = {"usagov": ("www.usa.gov", "usa.gov"), "studentaid": ("studentaid.gov", "www.studentaid.gov")}
+HTML_HOSTS["sba"] = ("www.sba.gov", "sba.gov")
 SECTION_RULES = {
     "who_it_is_for": r"\b(who|eligib\w*|qualif\w*|income|students?|households?|workers?)\b",
     "what_you_get": r"\b(benefits?|help|assistance|aid|grants?|receive|provides?|payments?)\b",

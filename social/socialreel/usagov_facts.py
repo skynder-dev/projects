@@ -173,9 +173,9 @@ class USAGovHTML(MainHTML):
         return self.text(title).strip(), title.path, units
 
 
-def build_claims(record):
-    if record.get("source_type") != "usagov" or record.get("source_label") != "USA.gov":
-        raise PipelineError("USA.gov source kind/label mismatch")
+def build_claims(record, *, source_type="usagov", source_label="USA.gov"):
+    if record.get("source_type") != source_type or record.get("source_label") != source_label:
+        raise PipelineError(f"{source_label} source kind/label mismatch")
     receipt = record["provenance"]
     lead_units = [u for u in record["sections"] if u["kind"] == "lead"]
     lead = "\n".join(u["text"] for u in lead_units)
@@ -194,7 +194,7 @@ def build_claims(record):
         return row
 
     page = claim("identity", quote, "page", page_locator, title=record["title"], lead=lead)
-    page["statement"] = "USA.gov page:\n" + quote
+    page["statement"] = source_label + " page:\n" + quote
     rows = [page]
     for unit in record["sections"]:
         if unit["kind"] == "lead":

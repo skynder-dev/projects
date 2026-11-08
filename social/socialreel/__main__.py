@@ -28,10 +28,10 @@ def main(argv=None):
     t.add_argument("--out", required=True, help="directory for topics.json and exact source snapshots")
     t.add_argument("--fixture", help="offline Grants.gov export or multi-source manifest; no API request")
     t.add_argument("--as-of", help="scoring date, YYYY-MM-DD (default: current UTC date)")
-    t.add_argument("--sources", help="comma-separated grants,usagov,studentaid,scorecard (default: grants)")
+    t.add_argument("--sources", help="comma-separated grants,usagov,studentaid,scorecard,sba (default: grants)")
     s = sub.add_parser("source", help="official source to record, claims and existing concept-core inputs")
     origin = s.add_mutually_exclusive_group(required=True)
-    origin.add_argument("--source", choices=("usagov", "studentaid", "scorecard"))
+    origin.add_argument("--source", choices=("usagov", "studentaid", "scorecard", "sba"))
     origin.add_argument("--topics", type=Path, help="replay a typed topics.json bundle offline")
     s.add_argument("--topic-id", help="topic_id from --topics; default is the first ranked topic")
     s.add_argument("--page", help="configured page name or approved official URL")
@@ -63,8 +63,8 @@ def main(argv=None):
     if a.cmd == "source":
         from .source_intake import acquire, replay_topic, write_bundle
         try:
-            if a.program is not None and a.source and a.source != "usagov":
-                raise PipelineError("--program is supported only for USA.gov")
+            if a.program is not None and a.source and a.source not in {"usagov", "sba"}:
+                raise PipelineError("--program is supported only for USA.gov and SBA.gov")
             if a.topics:
                 if a.fixture:
                     raise PipelineError("--topics replays its own snapshots; do not combine with --fixture")

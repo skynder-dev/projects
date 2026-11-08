@@ -30,5 +30,17 @@
     "conditions": 25,
     "novelty": 10,
     "missing_penalty": 2
+  },
+  "sba": {
+    "pages": [
+      "loans",
+      "7a",
+      "microloans",
+      "sbir_sttr",
+      "grants",
+      "local_assistance",
+      "disaster",
+      "contracting"
+    ]
   }
 }

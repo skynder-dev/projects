@@ -82,7 +82,8 @@ try:
                 summary.append('source: ' + str(rec.get('title')) + ' | claim selection REFUSED: ' + str(_s.get('reason'))[:400])
                 done('selection_refused')
         rec.setdefault('opportunity_id', rec.get('source_id') or rec.get('page') or rec.get('url'))
-        TOPIC_AUDIENCE = {'rubric': 'help_people', 'profession': None, 'people': True}
+        TOPIC_AUDIENCE = {'rubric': rec.get('rubric') or 'help_people', 'profession': None,
+                          'people': rec.get('source_type') != 'sba'}
         raise StopIteration
     if _args.topics:
         from socialreel.topics import top_opportunity_id
