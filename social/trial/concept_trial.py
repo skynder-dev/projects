@@ -134,7 +134,10 @@ report['stages']['topic_audience'] = TOPIC_AUDIENCE
 report['stages']['source'] = {'opportunity_id': rec.get('opportunity_id'), 'title': rec.get('title'),
                               'agency': rec.get('agency_name'), 'close_date': str(rec.get('close_date')),
                               'applicant_types': rec.get('applicant_types'), 'keyword': _args.keyword,
-                              'api_calls': len(client.calls)}
+                              'api_calls': len(client.calls),
+                              'url': rec.get('url') or rec.get('source_url') or (
+                                  f"https://www.grants.gov/search-results-detail/{rec.get('opportunity_id')}"
+                                  if not _args.bundle and rec.get('opportunity_id') else None)}
 summary.append(f"source: {rec.get('opportunity_id')} | {rec.get('title')} | closes {rec.get('close_date')}")
 summary.append('applicants: ' + '; '.join(rec.get('applicant_types') or ['(not listed)'])[:300])
 
