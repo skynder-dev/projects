@@ -730,6 +730,18 @@ def prompt(job: dict) -> str:
             f"- Translate everything that is said and every label in the visuals into natural spoken {n} (not word for word).\n"
             + keywords,
             "SCRIPT:\n\n" + str(job.get("source") or "").strip()[:MAX_SOURCE], f"Now write the whole script in {n}."])
+    if job.get("mode") == "facts":                         # (checked facts from an official page: nothing else)
+        f = job.get("facts") or {}
+        hook = (f.get("hook_ru") if lang == "ru" else f.get("hook")) or f.get("hook") or ""
+        end = (f.get("end_question_ru") if lang == "ru" else "") or f.get("end_question") or ""
+        return "\n\n".join([
+            "Write a short cartoon script: a host presents what the official page says, to a viewer who needs it. Use ONLY "
+            "the FACTS below (exact quotes from the official page), in simple spoken words.",
+            FACTS_RULES.format(hook=hook, end=end or "one question viewers answer in one word (their state, or a pick of two)",
+                               missing=f.get("not_in_source_ru") or f.get("not_in_source") or "-",
+                               angle=f.get("angle_ru") or f.get("angle") or "-", rules=f.get("rules") or "-"),
+            f"FACTS (from {f.get('source_url')}):\n\"\"\"\n{str(job.get('source') or '').strip()[:MAX_SOURCE]}\n\"\"\"",
+            _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script from the FACTS."])
     if job.get("mode") == "text" and job.get("site"):      # (a web page about an opportunity: a short, useful review)
         return "\n\n".join(["Write a short cartoon script that presents the opportunity described in the TEXT (a web "
                             "page) to a viewer who could use it. Use only its facts and numbers, in your own words.",
@@ -742,6 +754,19 @@ def prompt(job: dict) -> str:
                             _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script about the TEXT."])
     return "\n\n".join([f"Write a new cartoon script.\n\nTOPIC: {str(job.get('topic') or '').strip()[:MAX_TOPIC]}" + _topic_note(str(job.get('topic') or ''), lang) + where,
                         _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script about the TOPIC."])
+
+
+FACTS_RULES = """RULES FOR THIS VIDEO (they come before everything else):
+- The first line is the hook, said by the host: "{hook}" (in the script's language, the same meaning).
+- Only what the FACTS say. Keep every condition they give (who, when, unless...). No promises ("you will get"), no
+  advice beyond them, no numbers, names, dates or steps they do not have. The host shows the official page and says
+  "the official page says..."; the host never claims to be an expert, a lawyer or an official.
+- NOT IN THE SOURCE (never say or suggest it): {missing}
+- The angle: {angle}
+- 4 to 6 short scenes, one chain: hook - what it is - who it is for, with its conditions - what the page says to do -
+  where to read it (the official page, shown).
+- The last line, said by the host: {end}
+- The channel's own rules: {rules}"""
 
 
 REVIEW_RULES = """RULES FOR THIS REVIEW (they come before everything else):
@@ -1017,9 +1042,38 @@ def _listen(d: Path, job: dict) -> dict:
     return {"ok": True, "text": text}
 
 
+def read_facts(data) -> dict:
+    """A video's checked facts (a file of the owner's Social project: id, hook, source_url, facts [{quote, sha256}],
+    rules ...), as a dict or its JSON text; what is wrong with it, as WriterError."""
+    if isinstance(data, (str, bytes)):
+        try:
+            data = json.loads(data)
+        except ValueError:
+            raise WriterError("The facts file is not a JSON file.")
+    if not isinstance(data, dict):
+        raise WriterError("The facts file is not a video's facts.")
+    url = str(data.get("source_url") or "").strip()
+    facts = [x for x in (data.get("facts") or []) if isinstance(x, dict) and str(x.get("quote") or "").strip()]
+    if not re.match(r"https?://", url) or not facts:
+        raise WriterError("The facts file has no official page (source_url) or no facts with quotes.")
+    keep = ("id", "channel", "topic", "audience", "hook", "hook_ru", "angle_ru", "viewer_question_ru", "end_question_ru",
+            "not_in_source_ru", "rules")
+    out = {k: str(data.get(k) or "")[:600] for k in keep if data.get(k)}
+    out["id"] = re.sub(r"[^\w.-]", "", str(data.get("id") or "facts"))[:60] or "facts"
+    out["source_url"] = url[:500]
+    out["facts"] = [{"quote": re.sub(r"\s+", " ", str(x["quote"])).strip()[:1200], "sha256": str(x.get("sha256") or "")[:64]}
+                    for x in facts[:20]]
+    return out
+
+
+def facts_text(f: dict) -> str:
+    """The facts as the writer reads them: numbered quotes."""
+    return "\n".join(f"{i}. \"{x['quote']}\"" for i, x in enumerate(f["facts"], 1))
+
+
 def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75, topic: str = "", source: str = "",
               country: str = "", title: str = "", video: str = "", style: dict | None = None,
-              make: dict | None = None, cast: dict | None = None, site: str = "") -> str:
+              make: dict | None = None, cast: dict | None = None, site: str = "", facts: dict | None = None) -> str:
     """A story to write (a job of the queue). Mode "translate": a film's story in another language (the same people);
     "adapt": retold for viewers in another country. cast: the film's own people ({"cast": ..., "narrator": ...}) - the
     new story's people get their looks and voices (in the same order)."""
@@ -1028,7 +1082,12 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
         raise WriterError("Install the story writer first.")
     if installing():
         raise WriterError("The story writer is being installed. Wait until it is ready.")
-    mode = mode if mode in ("topic", "text", "adapt", "translate", "video", "story") else "topic"
+    mode = mode if mode in ("topic", "text", "adapt", "translate", "video", "story", "facts") else "topic"
+    if mode == "facts":                                    # a video from checked facts (a file of the owner's Social project)
+        facts = read_facts(facts)
+        site = facts["source_url"]
+        source = facts_text(facts)
+        title = title or facts.get("topic") or facts.get("hook") or facts["id"]
     if mode == "video":
         p = Path(str(video or "").strip().strip('"'))
         if not p.is_file():
@@ -1041,7 +1100,7 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
     topic, source = str(topic or "").strip()[:MAX_TOPIC], str(source or "").strip()[:ST.MAX_SOURCE if mode == "story" else MAX_SOURCE]
     if mode == "topic" and len(topic) < 3:
         raise WriterError("Write what the cartoon is about.")
-    if mode in ("text", "adapt", "translate", "story") and len(source) < 40:
+    if mode in ("text", "adapt", "translate", "story", "facts") and len(source) < 40:
         raise WriterError("The text is too short to make a story of it.")
     if mode in ("adapt", "translate") and not T.parse(source)["scenes"]:
         raise WriterError("The story to retell has no scenes.")
@@ -1053,7 +1112,8 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
                        "topic": topic, "source": source,
                        "country": str(country or "").strip()[:60], "title": name, "seed": secrets.randbelow(10 ** 6),
                        "video": video if mode == "video" else "",
-                       **({"site": site} if site and mode == "text" else {}),
+                       **({"site": site} if site and mode in ("text", "facts") else {}),
+                       **({"facts": facts} if mode == "facts" else {}),
                        **({"style": style} if isinstance(style, dict) and style and mode not in ("adapt", "translate") else {}),
                        **({"make": _make_settings(make)} if isinstance(make, dict) else {}),
                        **({"cast": cast} if isinstance(cast, dict) and isinstance(cast.get("cast"), dict) and mode in ("adapt", "translate")

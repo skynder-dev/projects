@@ -1202,6 +1202,13 @@ PHRASES = {
     "From a few minutes to half an hour, depending on the internet. You can use MediaEngine meanwhile; closing it stops the download (it continues where it stopped when you press Install again).":
         "От нескольких минут до получаса — зависит от интернета. Пока можно пользоваться MediaEngine; если его закрыть, загрузка остановится (и продолжится с того же места, когда снова нажмёшь «Установить»).",
     "A film from a document": "Фильм по документу",
+    "A video from checked facts": "Ролик по фактам",
+    "A facts file (from Social: an official page and exact quotes from it). The script uses only those facts, starts with its hook and shows the official page.":
+        "Файл фактов (от Social: официальная страница и точные цитаты из неё). Сценарий берёт только эти факты, начинается с его крючка и показывает официальную страницу.",
+    "or paste the file here": "или вставьте файл сюда", "Show me the script first": "Сначала покажи сценарий",
+    "Write the script": "Написать сценарий",
+    "The facts file is not a JSON file.": "Файл фактов — не JSON.", "The facts file is not a video's facts.": "Это не файл фактов ролика.",
+    "The facts file has no official page (source_url) or no facts with quotes.": "В файле фактов нет официальной страницы (source_url) или фактов с цитатами.",
     "Pictures": "Кадры", "Fast": "Быстро", "Better, slow (for the night)": "Лучше, медленно (на ночь)",
     "A slower, more careful picture model; then a model that sees pictures looks at each one for extra or missing hands and legs, twisted bodies, broken faces and letters, and a bad one is drawn again (up to 3 times). Several times slower; 13 GB downloaded once.":
         "Более медленная и аккуратная модель рисования; потом модель, которая видит картинки, проверяет каждый кадр: лишние или недостающие руки и ноги, вывернутые позы, сломанные лица, буквы — и плохой кадр перерисовывается (до 3 раз). В несколько раз дольше; один раз скачивается 13 ГБ.",

@@ -320,6 +320,25 @@ def register(app, page, err_page, e, human_bytes):
                    "missing hands and legs, twisted bodies, broken faces and letters, and a bad one is drawn again (up to 3 "
                    "times). Several times slower; 13 GB downloaded once.")
 
+    def _facts_card() -> str:
+        """A video from checked facts: a file of the owner's Social project (an official page, exact quotes)."""
+        if not W.installed():
+            return ""
+        langs = "".join(f"<option value='{k}' translate='no'>{e(v)}</option>" for k, v in LANG_LABELS.items())
+        return (f"<div class='card' id='facts'><h2 style='margin-top:0'>A video from checked facts</h2>"
+                f"<div class='muted' style='font-size:13px'>A facts file (from Social: an official page and exact quotes "
+                f"from it). The script uses only those facts, starts with its hook and shows the official page.</div>"
+                f"<form method='post' action='/auto/cartoon/write' enctype='multipart/form-data' "
+                f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                f"<input type='hidden' name='mode' value='facts'>"
+                f"<div class='ct-row' style='margin-top:6px'><input type='file' name='facts_file' accept='.json,application/json'></div>"
+                f"<textarea name='facts_json' rows='4' maxlength='400000' style='width:100%;margin-top:6px' "
+                f"placeholder='{e('or paste the file here')}'></textarea>"
+                f"<div class='ct-row' style='margin-top:6px'><b>Language</b><select name='lang'>{langs}</select></div>"
+                f"<div class='ct-row' style='margin-top:6px'>{_format_choice('vertical')}</div>"
+                f"<label style='display:block;margin-top:6px'><input type='checkbox' name='hold' value='1' checked> Show me "
+                f"the script first</label><div style='margin-top:8px'><button>Write the script</button></div></form></div>")
+
     def _story_card() -> str:
         """A film from a document (story.py): a treatment's pictures drawn on this PC, said over, the camera in depth."""
         if not W.installed():
@@ -589,7 +608,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div class='lead'>A short 2D cartoon made by MediaEngine: its own characters (the same in every episode), "
                 f"scenes, schemes of money and charts, the characters' voices and captions - one MP4. Change any line, "
                 f"background or feeling and make it again.</div>"
-                + f"</div>{_READY}{_writer_card()}{_story_card()}"
+                + f"</div>{_READY}{_writer_card()}{_facts_card()}{_story_card()}"
                 + (f"<div class='card' id='films' style='margin-top:14px'><h2 style='margin-top:0'>My cartoons and stories</h2>{rows}</div>" if rows else "")
                 + f"{_study_card()}"
                 f"<div class='card' id='new' style='margin-top:14px'><h2 style='margin-top:0'>New cartoon</h2>"
@@ -778,7 +797,7 @@ def register(app, page, err_page, e, human_bytes):
     def _story_page(j: dict):
         jid, res = j["id"], j.get("result") or {}
         asked = {"topic": "Topic", "text": "Retelling a text", "adapt": "Retelling a story for another country",
-                 "translate": "A cartoon in another language", "video": "Retelling a video", "story": "A film from a document"}.get(j.get("mode"), "")
+                 "translate": "A cartoon in another language", "video": "Retelling a video", "story": "A film from a document", "facts": "A video from checked facts"}.get(j.get("mode"), "")
         what = str(j.get("topic") or j.get("source") or "")
         if j.get("mode") == "video":
             heard = vo._job_dir(jid) / "heard.txt"
@@ -1167,6 +1186,16 @@ def register(app, page, err_page, e, human_bytes):
             except S.SiteError as exc:
                 return err_page(str(exc), "/auto/cartoon")
             site_url, about = about, page["text"]
+        if f.get("mode") == "facts":                       # a video from checked facts (a Social file)
+            up = request.files.get("facts_file")
+            data = up.read(400_000).decode("utf-8", "replace") if up and up.filename else str(f.get("facts_json") or "")
+            try:
+                jid = W.new_write("facts", f.get("lang") or "en", f.get("format") or "vertical", 60, facts=data,
+                                  make={"voices": True, "captions": "on", "music": "made", "mood": "calm",
+                                        **({"hold": True} if f.get("hold") == "1" else {})})
+            except (W.WriterError, vo.VoiceError) as exc:
+                return err_page(str(exc), "/auto/cartoon#facts")
+            return redirect(f"/auto/cartoon/{jid}")
         if f.get("mode") == "story":                       # a film from a document (story.py)
             try:
                 secs = int(f.get("secs") or 300)

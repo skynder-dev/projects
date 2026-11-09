@@ -565,6 +565,30 @@ def main() -> int:
         check("an author's style forgotten: its videos' studies stay", not R.style_entry(stid) and gone.status_code == 400
               and bool(R.reference_of(sid)) and bool(R.reference_of(sid_calm)), gone.status_code)
 
+        # a video from checked facts (a Social file): only its quotes, its hook first, the official page shown
+        sample = {"id": "so_test_C1", "channel": "Help", "topic": "Contractor or employee",
+                  "hook": "Think you're a contractor but work like an employee?", "hook_ru": "Думаете, вы подрядчик?",
+                  "not_in_source_ru": "Нет шагов для жалобы.", "source_url": "https://www.usa.gov/wage-laws",
+                  "facts": [{"quote": "Job misclassification happens when a company incorrectly says you are an independent "
+                                      "contractor instead of an employee. This affects your pay, benefits, and protection.",
+                             "sha256": "9341e3c5"}],
+                  "rules": "Only these facts; keep every condition; no promises."}
+        bad = c.post("/auto/cartoon/write", data={"mode": "facts", "facts_json": "{\"id\": \"x\"}", "lang": "en"}, headers=H)
+        fr = c.post("/auto/cartoon/write", data={"mode": "facts", "facts_json": json.dumps(sample), "lang": "en", "hold": "1"}, headers=H)
+        fj = next((j for j in vo.list_jobs() if j.get("kind") == "cartoon_write" and j.get("mode") == "facts"), {})
+        fjob = vo.read_job(fj["id"]) if fj else {}
+        fp = W.prompt(fjob) if fjob else ""
+        if fj:
+            vo.cancel_job(fj["id"])
+            t0 = time.time()
+            while vo.read_job(fj["id"])["state"] in ("waiting", "working") and time.time() - t0 < 60:
+                time.sleep(0.3)
+        check("a video from checked facts: the file read (its quotes, its official page), the prompt starts from its hook and "
+              "keeps to its facts; a file without facts refused", bad.status_code == 400 and fr.status_code == 302
+              and fjob.get("site") == "https://www.usa.gov/wage-laws" and "Job misclassification" in (fjob.get("source") or "")
+              and "Think you're a contractor" in fp and "Only what the FACTS say" in fp and "Нет шагов" in fp,
+              (bad.status_code, fr.status_code, fjob.get("site"), fp[:200]))
+
         rm = c.post("/auto/cartoon/writer/remove", headers=H)
         check("Remove: the story writer's files are gone, the stories stay", rm.status_code == 302 and not W.installed()
               and not W.BIN.exists() and not W.MODEL_DIR.exists() and W.story_of(jid), rm.status_code)
