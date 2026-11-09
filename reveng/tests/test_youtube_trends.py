@@ -15,6 +15,9 @@ class Tests(unittest.TestCase):
     def tearDown(self): self.t.cleanup()
     def read(self, url, stats, cap=0):
         stats['source_requests'] += 1
+        if '/search?' in url: return json.dumps({'items': [{'id': {'videoId': 'tv1'}}, {'id': {'videoId': 'tv2'}}]}).encode()
+        if 'id=tv1' in url: return json.dumps({'items': [{'id': 'tv1', 'snippet': {'title': 'SYNTHETIC a', 'channelTitle': 'c'}, 'statistics': {'viewCount': '5'}},
+                                                         {'id': 'tv2', 'snippet': {'title': 'SYNTHETIC b', 'channelTitle': 'c'}, 'statistics': {'viewCount': '50'}}]}).encode()
         cat = '20' if 'regionCode=US' in url else '10'
         return json.dumps({'items': [{'id': 'v%d' % stats['source_requests'], 'snippet': {'title': 'SYNTHETIC', 'channelTitle': 'c', 'categoryId': cat, 'publishedAt': '2026-11-05T00:00:00Z'},
                                       'statistics': {'viewCount': '1000'}, 'contentDetails': {'duration': 'PT45S'}}]}).encode()
@@ -23,7 +26,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(r['status'], 'source_unavailable'); self.assertEqual(r['source_requests'], 0); self.assertEqual(pc.youtube_card(self.root), [])
     def test_read_and_card(self):
         r = yt.collect(self.root, {'source_requests': 0}, key=KEY, read=self.read)
-        self.assertEqual(r['status'], 'read'); self.assertEqual(r['summary']['videos'], len(yt.REGIONS)); self.assertEqual(r['source_requests'], len(yt.REGIONS))
+        self.assertEqual(r['status'], 'read'); self.assertEqual(r['summary']['videos'], len(yt.REGIONS)); self.assertEqual(r['source_requests'], len(yt.REGIONS) + 2 * len(yt.TOPICS))
+        first = list(r['topics'].values())[0]; self.assertEqual([v['id'] for v in first], ['tv2', 'tv1'])   # most viewed first
         self.assertEqual(r['summary']['top_categories'][0], ['10', len(yt.REGIONS) - 1] if isinstance(r['summary']['top_categories'][0], list) else ('10', len(yt.REGIONS) - 1))
         self.assertEqual(r['summary']['under_a_minute'], len(yt.REGIONS))
         self.assertNotIn(KEY, (self.root / 'youtube-trends.json').read_text(encoding='utf-8'))

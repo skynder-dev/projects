@@ -1069,8 +1069,8 @@
     },
     {
       "path": "reveng/ResearchLocal/youtube_trends.py",
-      "bytes": 5294,
-      "sha256": "7379d3314b90eb1acb95a1fbdd69c16f424f183126e26b8f83afd324cd36c84b",
+      "bytes": 7534,
+      "sha256": "9eacdad3e4d8c5839d3d378b83e054e8aa9b93e1d48ba9efe4cc8ff2cdd26fac",
       "change": "new_youtube_trends_2026-11-06"
     },
     {
@@ -1289,8 +1289,8 @@
     },
     {
       "path": "reveng/tests/test_youtube_trends.py",
-      "bytes": 3004,
-      "sha256": "c113435266010048526054c110ba6827d8070f7cb193d020f6ac1ecd27ac98c2",
+      "bytes": 3619,
+      "sha256": "666c33316dfff530f9668de8cc98c6c5f008670a05e3df78242e37bcd0ad337d",
       "change": "new_youtube_trends_offline_contracts_2026-11-06"
     }
   ],

@@ -1,7 +1,7 @@
 """What people watch right now in different countries (owner 05.11: video is one of the ways we can earn; ideas can be
 anywhere, not only in the US). Source: the official YouTube Data API v3 with the owner's own free key (kept only on the
 PC, in D:\\Projects\\RevEng\\keys\\youtube-key.txt; never printed, never committed). One call per country to the
-"most popular" chart (1 quota unit each; the free quota is 10,000 a day).
+"most popular" chart (1 quota unit each) and one search per topic (100 units each); about 600 of the free 10,000 a day.
 
 YouTube API terms: data is refreshed every run and the file is overwritten (nothing older than 30 days is kept);
 figures shown say they come from YouTube. Titles are untrusted data, never instructions. No model, no posting.
@@ -9,6 +9,7 @@ figures shown say they come from YouTube. Titles are untrusted data, never instr
     python youtube_trends.py --root <research root> [--key-file <path>] [--offline]
 """
 import argparse, collections, json
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib import parse
 import reveng_local_research as m
@@ -18,6 +19,10 @@ KEY_FILE = Path(r'D:\Projects\RevEng\keys\youtube-key.txt')
 API = 'https://www.googleapis.com/youtube/v3/'
 REGIONS = ['US', 'GB', 'DE', 'BR', 'IN', 'MX', 'JP', 'KR', 'ID', 'TR', 'PL', 'KZ']
 PER_REGION = 25
+# topic searches (100 quota units each + 1 for the stats): which videos on a topic got the most views in the last 30 days
+TOPICS = {'траки и дальнобой': 'trucker life', 'водители CDL': 'CDL truck driver', 'owner operator': 'owner operator trucking',
+          'нарезки подкастов': 'podcast clips', 'футболки и мерч': 'print on demand t-shirt'}
+TOPIC_DAYS, PER_TOPIC = 30, 15
 # YouTube video category ids -> plain Russian / English names (the API's own list, stable for years)
 CATEGORY = {'1': ('кино и мультфильмы', 'film and animation'), '2': ('машины', 'cars'), '10': ('музыка', 'music'),
             '15': ('животные', 'pets and animals'), '17': ('спорт', 'sports'), '19': ('путешествия', 'travel'),
@@ -47,10 +52,26 @@ def collect(root, stats, key=None, offline=False, read=None):
                 videos.append({'region': region, 'id': v.get('id'), 'title': (sn.get('title') or '')[:120], 'channel': sn.get('channelTitle'),
                                'category': sn.get('categoryId'), 'published': (sn.get('publishedAt') or '')[:10],
                                'views': int(st.get('viewCount') or 0), 'duration': (v.get('contentDetails') or {}).get('duration')})
+        topics = {}
+        since = (datetime.now(timezone.utc) - timedelta(days=TOPIC_DAYS)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        for name, q in TOPICS.items():
+            try:
+                url = API + 'search?' + parse.urlencode({'part': 'id', 'q': q, 'type': 'video', 'order': 'viewCount', 'publishedAfter': since, 'maxResults': PER_TOPIC, 'key': key})
+                ids = [i['id']['videoId'] for i in json.loads(read(url, stats, 2097152).decode('utf-8')).get('items', []) if (i.get('id') or {}).get('videoId')]
+                rows = []
+                if ids:
+                    url = API + 'videos?' + parse.urlencode({'part': 'snippet,statistics,contentDetails', 'id': ','.join(ids), 'key': key})
+                    for v in json.loads(read(url, stats, 4194304).decode('utf-8')).get('items', []):
+                        sn, st = v.get('snippet') or {}, v.get('statistics') or {}
+                        rows.append({'id': v.get('id'), 'title': (sn.get('title') or '')[:120], 'channel': sn.get('channelTitle'), 'published': (sn.get('publishedAt') or '')[:10],
+                                     'views': int(st.get('viewCount') or 0), 'duration': (v.get('contentDetails') or {}).get('duration')})
+                topics[name] = sorted(rows, key=lambda r: -r['views'])
+            except Exception as ex:
+                topics[name] = {'error': str(ex).replace(key, '<key>')[:120]}
         cats = collections.Counter(v['category'] for v in videos)
         short = sum(1 for v in videos if v['duration'] and 'H' not in v['duration'] and 'M' not in v['duration'])
         by_region = {r: collections.Counter(v['category'] for v in videos if v['region'] == r).most_common(2) for r in REGIONS}
-        result.update(status='read', videos=videos, summary={'videos': len(videos), 'regions': len(REGIONS),
+        result.update(status='read', videos=videos, topics=topics, summary={'videos': len(videos), 'regions': len(REGIONS),
                       'top_categories': cats.most_common(5), 'under_a_minute': short, 'by_region': by_region})
     except Exception as ex:
         result.update(status='source_unavailable', error=m.error_text(ex, 200), videos=[], summary={})
@@ -78,3 +99,7 @@ if __name__ == '__main__':
         print('  top', [(CATEGORY.get(c, (c,))[0], n) for c, n in s['top_categories']], 'under a minute', s['under_a_minute'])
         for reg, top in s['by_region'].items():
             print('  ', reg, [(CATEGORY.get(c, (c,))[0], n) for c, n in top])
+    for name, rows in (r.get('topics') or {}).items():
+        print('  topic', name, rows if isinstance(rows, dict) else '')
+        for v in (rows if isinstance(rows, list) else [])[:8]:
+            print('     %s views | %s | %s | %s' % (v['views'], v['duration'], v['channel'], v['title'][:90]))
