@@ -299,6 +299,10 @@ def build_request(record,claims,cfg,*,source_evidence=None):
               'Source quotes and technical IDs stay unchanged. No post-output translation or repair. Return only schema JSON.')
     # 03.11.2026 editorial guidance: four live trials gave three eligibility-checklist cards per record
     # ("who can apply", "how much", "is matching required"), flat hooks and invented qualifiers.
+    # 08.11.2026 owner: a video that only says "there is none" is not interesting - viewers leave.
+    system += (' NEGATIVE FACTS: never build a concept or a hook on what does not exist or is not available. If the '
+               'source says something is not offered, use it at most as a short setup and lead with what the viewer '
+               'CAN get or do according to the source.')
     system += (' EDITORIAL: the viewer is a person scrolling short videos, described by topic_direction, not the '
                'grant office of the applicant. A good concept answers: why should this viewer care, and what can they '
                'concretely do or check. Each concept must use a different editorial approach and name it in the first '

@@ -281,6 +281,11 @@ for c in proposal.get('concepts', []):
     for w in _PRESSURE:
         if w in low:
             issues.append(f"{c['id']}: pressure wording: {w}")
+# 08.11.2026 owner: "no grants, go away" videos are not interesting - flag hooks that lead with a negative
+for c in proposal.get('concepts', []):
+    h = str(c.get('hook', '')).strip().lower()
+    if _re.match(r"(there (are|is) no|no |stop |don'?t |you can'?t|there'?s no|it'?s not|never )", h):
+        issues.append(f"{c['id']}: hook leads with a negative (owner rule 08.11)")
 # the viewer must not be told they can apply or get the money when only organizations can apply
 _types = ' '.join(rec.get('applicant_types') or []).lower()
 if 'individual' not in _types and not (TOPIC_AUDIENCE or {}).get('people'):
