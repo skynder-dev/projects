@@ -462,8 +462,8 @@
     },
     {
       "path": "reveng/ResearchLocal/clipping_campaigns.py",
-      "bytes": 6882,
-      "sha256": "c0c08c9071dcb815aaf820a5cb28be5c171bb4235c5389cf0b06a67952228bf2",
+      "bytes": 9031,
+      "sha256": "603682d93e88588a1d801265ffbb3dfcf03dca285156b7269ea68707e3ff0cd3",
       "change": "new_clipping_campaigns_2026-11-05"
     },
     {
@@ -781,8 +781,8 @@
     },
     {
       "path": "reveng/ResearchLocal/phone_cards.py",
-      "bytes": 31714,
-      "sha256": "92f6740ba8ad8f05267be7757bf24aedbaff713062d72aaddbcfc0801319d3d8",
+      "bytes": 32436,
+      "sha256": "2f42ebe01764351b0dee2cb6b310e234ca6bdd7a5e78d24d31f9b34527f90c45",
       "change": "new_phone_cards_2026-11-01+bilingual_short_unknown+dig_in_rules_export_2026-11-01+premiere_rule+deal_route_lines+skip_empty_clean_titles+contests_10k+business_cards+plain_models+models_cap+ways_not_buy+budget_100k+assistant_cards+signal_cards"
     },
     {
@@ -1159,8 +1159,8 @@
     },
     {
       "path": "reveng/tests/test_clipping_campaigns.py",
-      "bytes": 3968,
-      "sha256": "67ab13062c5ea7cd631d0b556e665b025a638619efe4848a8aecb7a38f114654",
+      "bytes": 4748,
+      "sha256": "315df4d707d3cc6f92265c4fb0a5dc6638d65034a8260b264023de6cc511e95a",
       "change": "new_clipping_campaigns_offline_contracts_2026-11-05"
     },
     {

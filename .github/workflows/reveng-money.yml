@@ -20,7 +20,7 @@ jobs:
       - name: Collect
         run: |
           mkdir -p "$RUNNER_TEMP/research"
-          cd reveng/ResearchLocal && python -B clipping_campaigns.py --root "$RUNNER_TEMP/research" | grep -E -A1 "files: " | grep -v '^--' | head -10 | while IFS= read -r l; do echo "::notice::$l"; done
+          cd reveng/ResearchLocal && python -B clipping_campaigns.py --root "$RUNNER_TEMP/research" | grep -E "^read|earned:|budget, " | head -10 | while IFS= read -r l; do echo "::notice::$l"; done
       - uses: actions/upload-artifact@v4
         with:
           name: clipping-campaigns

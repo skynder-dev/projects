@@ -268,6 +268,11 @@ def clipping_card(root):
     if s.get('median_per_1k_usd'):
         ru.append('Обычная ставка: $%s за 1000 просмотров (у половины кампаний меньше)' % s['median_per_1k_usd'])
         en.append('Typical rate: $%s per 1000 views (half the campaigns pay less)' % s['median_per_1k_usd'])
+    if s.get('median_per_clip_usd') is not None:   # owner 09.11: what people really get, from the board's own figures
+        ru.insert(2, 'Реально: обычный ролик приносит $%s (%s просмотров); лучший нарезчик кампании - $%s, рекорд $%s (после комиссии 7%%)' % (
+            s['median_per_clip_usd'], s['median_views_per_clip'], s['median_top_clipper_usd'], s['best_top_clipper_usd']))
+        en.insert(2, 'Really: a typical clip earns $%s (%s views); a campaign\'s best clipper $%s, record $%s (after the 7%% fee)' % (
+            s['median_per_clip_usd'], s['median_views_per_clip'], s['median_top_clipper_usd'], s['best_top_clipper_usd']))
     if s.get('top_categories'):
         ru.append('Чаще всего про: ' + ', '.join(s['top_categories'])); en.append('Mostly about: ' + ', '.join(s['top_categories']))
     if s.get('top_runners'):

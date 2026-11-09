@@ -10,7 +10,7 @@ import clipping_campaigns as cc, phone_cards as pc, reveng_local_research as m
 def camp(i, brand, total, spent, rate, cat):
     c = {'campaign': {'availableBudgetRaw': total - spent, 'brand': brand, 'budgetSpentRaw': spent, 'budgetTotalRaw': total, 'category': cat,
                       'creatorCountRaw': 3, 'id': 'id%d' % i, 'platforms': ['tiktok', 'youtube'], 'title': 'SYNTHETIC %d' % i, 'payoutSortRaw': rate, 'type': 'cpm'},
-         'metrics': {'budgetSpentCents': 1}}
+         'metrics': {'approvedSubmissionCount': 10, 'budgetSpentCents': 1, 'leaderboard': [{'rank': 2, 'totalViews': 100000, 'username': 'x'}, {'rank': 1, 'totalViews': 500000, 'username': 'y'}], 'totalViews': 1000000}, 'servingId': 's'}
     return json.dumps(c)
 
 PAGE = '<script>self.__next_f.push([1,"' + (('[' + ','.join([camp(1, 'A', 1000, 100, 1.0, 'Gaming'), camp(2, 'A', 3000, 0, 2.0, 'Music'),
@@ -32,6 +32,11 @@ class Tests(unittest.TestCase):
     def test_parse_and_card(self):
         r = cc.collect(self.root, {'source_requests': 0}, read=self.read())
         self.assertEqual(r['status'], 'read'); self.assertEqual(len(r['campaigns']), 3)   # duplicate id dropped
+        c1 = [c for c in r['campaigns'] if c['id'] == 'id1'][0]
+        self.assertEqual(c1['top_views'], [500000, 100000]); self.assertEqual(c1['approved'], 10); self.assertEqual(c1['total_views'], 1000000)
+        self.assertEqual(cc.earnings(c1), {'top_usd': [465, 93], 'per_clip_usd': 93.0, 'views_per_clip': 100000})   # rate $1, 7% fee
+        self.assertNotIn('"username"', (self.root / 'clipping-campaigns.json').read_text(encoding='utf-8'))
+        for k in ('median_per_clip_usd', 'median_views_per_clip', 'median_top_clipper_usd', 'best_top_clipper_usd'): r['summary'].pop(k)
         self.assertEqual(r['summary'], {'campaigns': 3, 'budget_usd': 4500, 'spent_usd': 600, 'median_per_1k_usd': 1.0, 'top_categories': ['Gaming', 'Music'], 'top_runners': ['A', 'B']})
         self.assertEqual(r['campaigns'][0]['platforms'], ['tiktok', 'youtube']); self.assertEqual(r['source_requests'], 2 + 3)   # board + 3 campaign pages
         c2 = [c for c in r['campaigns'] if c['id'] == 'id2'][0]; self.assertEqual(c2['file_hosts'], ['Google Drive']); self.assertTrue(c2['youtube_or_twitch'])
