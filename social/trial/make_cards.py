@@ -45,6 +45,8 @@ def channel(stages: dict) -> str:
     title = str((stages.get('source') or {}).get('title') or '')
     if re.search(r'student|financial aid|college|school', title, re.I) and ta.get('people'):
         return 'Учёба'
+    if re.search(r'business|nonprofit|entrepreneur', title, re.I):   # 08.11: usa.gov/start-business went to "help people"
+        return 'Малый бизнес и НКО'
     if ta.get('people'):
         page = str((stages.get('source') or {}).get('opportunity_id') or '')
         for k, v in PAGES_RU.items():
