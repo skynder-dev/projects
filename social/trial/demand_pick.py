@@ -8,6 +8,7 @@ import argparse
 import json
 import math
 import sys
+import time
 import urllib.parse
 from pathlib import Path
 
@@ -81,6 +82,8 @@ def pick(demand, out, *, per_channel=3, used_path=None, client_factory=None, cfg
         try:
             factory = client_factory or (lambda kind, directory: (
                 govpage.GovPageClient(directory) if kind == "govpage" else usagov.USAGovClient(directory)))
+            if client_factory is None:
+                time.sleep(2)  # 08.11.2026: bursts of requests to one site failed live; be gentle
             client = factory(source, bundle / "source")
             record, receipt = client.page(url)
             # USA.gov shares its existing structural parser; demand still needs real prose.
@@ -111,9 +114,10 @@ def main(argv=None):
     ap.add_argument("demand", type=Path)
     ap.add_argument("out", type=Path)
     ap.add_argument("--per-channel", type=int, default=3)
+    ap.add_argument("--used", type=Path, help="JSON array of page URLs already used (default social/demand_used.json)")
     args = ap.parse_args(argv)
     try:
-        result = pick(read_json(args.demand), args.out, per_channel=args.per_channel)
+        result = pick(read_json(args.demand), args.out, per_channel=args.per_channel, used_path=args.used)
     except (PipelineError, OSError, ValueError) as error:
         print(f"DEMAND PICK FAILED: {error}", file=sys.stderr)
         return 2
