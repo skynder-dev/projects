@@ -478,7 +478,9 @@ def _paint(todo: list, quality: str = "fast") -> None:
                 _save_checks(report)
                 if not bad:
                     break
-                again = [dict(x["item"], seed=int(x["item"].get("seed") or 7) + 1000 * (rnd + 1)) for x in bad]
+                again = [dict(x["item"], seed=int(x["item"].get("seed") or 7) + 1000 * (rnd + 1),
+                              prompt=_unwritten(x["item"]["prompt"]) if any(str(q).startswith("letters") for q in x["problems"])
+                              else x["item"]["prompt"]) for x in bad]
                 PAINT.update(total=PAINT["total"] + len(again))
                 _run_worker(again, quality, work, state)
                 looked = [x["item"] for x in bad]
@@ -499,6 +501,16 @@ ASK_BODIES = ("For each person in this picture, one line: who they are, how many
               "whether any hand, finger, arm, leg or face looks deformed, melted, doubled, extra, missing or bent in an "
               "impossible way. Be strict and look closely; small figures too. End with a last line: VERDICT: OK or "
               "VERDICT: BROKEN.")
+
+
+def _unwritten(prompt: str) -> str:
+    """A picture's words with nothing to write on it: quoted words, 'the word X', 'labeled/reading ...' taken out, and
+    blank surfaces asked for (the model draws letters wherever words ask for them - the same words drew them again)."""
+    t = re.sub(r"[\"“”«»][^\"“”«»]{0,60}[\"“”«»]", "", str(prompt or ""))
+    t = re.sub(r"(?i)\b(with|showing|reading|that reads|labell?ed|written|marked|titled|saying)\b[^,.;]{0,40}?\b(word|words|text|letters|title|sign)\b[^,.;]*", "", t)
+    t = re.sub(r"(?i:\b(labell?ed|reading|that reads|saying|marked|titled|written|with)\b)\s+[A-Z][A-Z' -]{1,30}\b", "", t)
+    t = re.sub(r"(?i)\b(calendar|book|page|paper|sign|poster|letter|newspaper)\b", r"blank \1", t)
+    return re.sub(r"\s+", " ", t).strip(" ,") + ", every surface plain and blank, absolutely no writing, no letters, no numbers"
 
 
 def _checks() -> dict:
