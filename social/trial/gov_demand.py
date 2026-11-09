@@ -39,7 +39,7 @@ WANT = re.compile(r'benefit|assist|aid|help|grant|loan|refund|tax|credit|unemplo
                   r'forgiv|debt|disaster|veteran|small business|scam|fraud', re.I)
 SKIP = re.compile(r'login|logout|log-in|sign-?in|signin|sign-?up|account|password|search|status|track|callback|'
                   r'portal|auth|verify|two-step|captcha|cookie|privacy|contact|404|error|/my-|/my$|'
-                  r'make-payment|direct-pay|/payments|recover|default\.aspx|nonimmigrant|visa', re.I)
+                  r'make-payment|direct-pay|/payments|recover|default\.aspx|nonimmigrant|visa|professionals|tax-pros', re.I)
 SKIP_HOST = re.compile(r'(^|\.)(state\.gov|login\.gov|ceac\.state\.gov)$', re.I)
 
 

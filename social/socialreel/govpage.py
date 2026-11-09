@@ -24,7 +24,7 @@ def allowed_hosts():
     return tuple(hosts)
 
 
-INTERACTIVE = re.compile(r"(?:^|[/_.-])(?:log-?in|sign-?in|login|signin|auth|account|payments?|pay|tools?|calculators?|calculate|forms?)(?:$|[/_.-])", re.I)
+INTERACTIVE = re.compile(r"(?:^|[/_.-])(?:log-?in|sign-?in|login|signin|auth|account|payments?|pay|tools?|calculators?|calculate|estimators?|forms?)(?:$|[/_.-])", re.I)
 JS_SHELL = re.compile(r"(?:enable|requires?|turn on)\s+(?:your\s+)?javascript|javascript\s+(?:is\s+)?(?:required|disabled)", re.I)
 RELATED = re.compile(r"(?:^|[\s_-])(?:related|breadcrumb|navigation|menu|sidebar|social-share|page-feedback)(?:$|[\s_-])", re.I)
 
