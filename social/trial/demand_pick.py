@@ -41,6 +41,17 @@ def source_for(url):
     return "govpage"
 
 
+args_flatten_used = True
+
+
+def flatten_strings(v):
+    if isinstance(v, str):
+        return [v]
+    if isinstance(v, dict):
+        v = v.get("value", list(v.values()))
+    return [x for item in (v if isinstance(v, list) else []) for x in flatten_strings(item)]
+
+
 def pick(demand, out, *, per_channel=3, used_path=None, client_factory=None, cfg=None):
     if type(per_channel) is not int or per_channel < 1:
         raise PipelineError("--per-channel must be a positive integer")
@@ -48,6 +59,8 @@ def pick(demand, out, *, per_channel=3, used_path=None, client_factory=None, cfg
         raise PipelineError("demand.json must contain a pages array")
     used_path = Path(used_path) if used_path is not None else SOCIAL / "demand_used.json"
     values = read_json(used_path) if used_path.exists() else []
+    if args_flatten_used and used_path != SOCIAL / "demand_used.json":
+        values = flatten_strings(values)  # 09.11.2026: Windows PowerShell wrote the PC's list as {"value": [...]}
     if not isinstance(values, list) or any(not isinstance(v, str) for v in values):
         raise PipelineError("demand_used.json must be an array of URL strings")
     used = {identity(v) for v in values}
