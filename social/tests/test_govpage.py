@@ -31,6 +31,16 @@ class GovPageTests(OfflineSourceCase):
         return govpage.GovPageClient(self.home / "source").page(
             url, fixture=ROOT / f"fixtures/govpage_{agency}_synthetic.html")
 
+    def test_irs_layout_sidebar_body_and_title_before_main(self):
+        # 08.11.2026 live irs.gov: <body class="layout-sidebar-first"> and the page h1 just before <main>
+        rec, receipt = govpage.GovPageClient(self.home / "source").page(
+            "https://www.irs.gov/refunds", fixture=ROOT / "fixtures/govpage_irs_layout_synthetic.html")
+        self.assertEqual(rec["title"], "Synthetic IRS information guide")
+        text = rec["description"]
+        self.assertIn("Help is not guaranteed", text)
+        self.assertNotIn("RELATED NOISE", text)
+        self.assertTrue(govpage.build_claims(rec, receipt))
+
     def test_four_agencies_exact_provenance_and_complete_conditions(self):
         for agency in ("irs", "ssa", "sba", "va"):
             with self.subTest(agency=agency):

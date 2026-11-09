@@ -10,7 +10,7 @@ import urllib.request
 from pathlib import Path
 
 from .common import ROOT, PipelineError, read_json, sha256_bytes
-from .public_sources import HTML_HOSTS, LABELS, OfficialRedirects, SourceClient, html_record, official_url
+from .public_sources import Node, HTML_HOSTS, LABELS, OfficialRedirects, SourceClient, html_record, official_url
 from .usagov_facts import USAGovHTML, build_claims as structural_claims, _select_units
 
 
@@ -43,6 +43,18 @@ def page_url(url, hosts=None):
     return url
 
 
+RELATED_TOKENS = {"related", "breadcrumb", "breadcrumbs", "navigation", "menu", "sidebar", "social-share", "page-feedback"}
+
+
+def related_label(attrs):
+    """08.11.2026: irs.gov puts "layout-sidebar-first" on <body>; a substring match dropped the whole page.
+    Match whole id/class tokens (and the aria-label as words) instead."""
+    tokens = set((str(attrs.get("id", "")) + " " + str(attrs.get("class", ""))).lower().split())
+    if tokens & RELATED_TOKENS or any(t.startswith(("related-", "breadcrumb")) for t in tokens):
+        return True
+    return bool(re.search(r"\b(related|breadcrumbs?|sidebar|social share|page feedback)\b", str(attrs.get("aria-label", "")), re.I))
+
+
 class GovPageRedirects(OfficialRedirects):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         page_url(newurl, self.hosts)
@@ -56,7 +68,7 @@ class GovPageHTML(USAGovHTML):
         label = " ".join(str(attrs.get(k, "")) for k in ("id", "class", "aria-label"))
         return (super().skipped(node) or node.tag in {"header", "footer"}
                 or attrs.get("role") in {"banner", "navigation", "contentinfo", "search"}
-                or bool(RELATED.search(label)))
+                or (node.tag not in {"html", "body", "main"} and related_label(attrs)))
 
     def extract(self):
         nodes = list(self.nodes())
@@ -74,6 +86,13 @@ class GovPageHTML(USAGovHTML):
                 raise PipelineError("govpage refuses interactive forms/login/payment pages")
             if node.tag in {"input", "select", "textarea"}:
                 raise PipelineError("govpage refuses interactive tools/calculators")
+        if not any(n.tag == "h1" and self.text(n).strip() for n in self.nodes(main)):
+            # 08.11.2026: irs.gov renders the page title <h1> in a block just before <main>. Use it only when the whole
+            # document has exactly one distinct non-empty h1 text; the locator still says it came from outside main.
+            outside = {re.sub(r"\s+", " ", self.text(n)).strip() for n in nodes if n.tag == "h1"} - {""}
+            if len(outside) == 1:
+                main.children.insert(0, Node("h1", {"data-social-title": "outside-main"}, main.path + "/h1[0]",
+                                             [next(iter(outside))]))
         if JS_SHELL.search(self.text(main)):
             raise PipelineError("govpage refuses a JavaScript-dependent shell")
         title, locator, units = super().extract()
