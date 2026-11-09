@@ -89,8 +89,9 @@ def parse(text: str) -> dict:
                     cm = re.search(r"\(([a-z]+)\)\s*$", v)
                     if cm and cm.group(1) in WORD_COLORS:
                         col, v = WORD_COLORS[cm.group(1)], v[:cm.start()].strip()
-                    if v:
-                        scene["visual"] = {"kind": "word", "text": v.strip('"«»')[:60], "color": col}
+                    v = v.strip('"«»\' ')
+                    if v and not re.fullmatch(r"(?i)(none|no|n/?a|nothing|null|-+|—|нет|ничего)\.?", v):   # ("word: none")
+                        scene["visual"] = {"kind": "word", "text": v[:60], "color": col}
                 elif k in ("seconds", "secs", "секунд"):
                     try:
                         scene["min"] = max(3.0, min(30.0, float(v)))
@@ -199,7 +200,7 @@ Narrator: <name> (woman or man, narrator)
 <Name> (boy, girl, woman or man, <role>) looks: <age, face, hair, clothes - 12 to 25 English words, always the same>
    <- the 1 to 4 people seen most, one per line
 
-== Picture: <ONE still picture in English: the place, the time of day and light, who does what, the camera (wide shot, close-up, from behind...)> | with: <the names of the people seen in it> | sound: <one or two of: wind, birds, stream, sea, rain, night, room, town, fire> | word: <a word or short phrase written big on the picture, only where the treatment has one> | seconds: <how long the picture stays, 6 to 20>
+== Picture: <ONE still picture in English: the place, the time of day and light, who does what, the camera (wide shot, close-up, from behind...)> | with: <the names of the people seen in it> | sound: <one or two of: wind, birds, stream, sea, rain, night, room, town, fire> | word: <a word or short phrase the program writes big over the picture, only where the treatment has one - otherwise leave "word:" out> | seconds: <how long the picture stays, 6 to 20>
 Narrator: <one or two short sentences said over this picture>   <- leave this line out when the film has no narrator"""
 
 RULES = """RULES:
@@ -207,7 +208,8 @@ RULES = """RULES:
 - {lo} to {hi} pictures. Every picture shows something new: another place, another moment or another camera.
 - Each picture's description stands alone (the painter sees one at a time): name the place and the light again every time; use the people's names only in "with:".
 - Describe only what can be drawn and is in the treatment's world: its time, its things (no phones or cars if it is set long ago).
-- Nothing frightening for children (no ropes like nooses, no weapons pointed, no blood); no text or letters in the pictures except a "word:".
+- Nothing frightening for children (no ropes like nooses, no weapons pointed, no blood).
+- The picture model cannot write: never ask for writing, letters, numbers, a title, a calendar page or a sign in "Picture:" (say "a calendar", not what is written on it); a word that must be seen goes in "word:".
 - "looks:" in English; the descriptions in English; what the narrator says in {lang}.
 - If the treatment says the film has no dialogue, no narration or no voice-over, write NO narrator lines at all: the pictures and the "word:"s tell it. Otherwise the narrator tells it simply, about {words} words in all; a quiet picture may have no line.
 - The "seconds:" of all pictures add up to about {secs} seconds; longer for a key moment.
