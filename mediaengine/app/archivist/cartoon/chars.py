@@ -84,12 +84,15 @@ def make(name: str, role: str = "", seed: str | None = None, **over) -> dict:
                                             role + " " + name):
         over["female"] = False
     female = over.pop("female", rnd.random() < 0.45)
-    style = rnd.choice(["bob", "long", "ponytail", "curly"] if female else ["short", "side", "spiky", "bald", "curly", "buzz"])
+    # (no curls on men: grey curls drew a judge's wig, a square head - the owner)
+    style = rnd.choice(["bob", "long", "ponytail", "curly"] if female else ["short", "side", "spiky", "bald", "buzz"])
     c = {
         "name": name, "role": role, "female": bool(female),
         "build": rnd.choice(["thin", "medium", "medium", "heavy"]),
         "height": round(rnd.uniform(0.94, 1.06), 3),
-        "skin": rnd.choice(SKINS), "hair": rnd.choice(HAIRS), "hair_style": style,
+        "skin": rnd.choice(SKINS), "hair": (hair := rnd.choice(HAIRS)), "hair_style":
+            ("ponytail" if female and hair in ("#e7e2d8", "#8f8f96") and style in ("bob", "long") else style),  # (white hair
+            # around a face read as a hood)
         "face": rnd.choice(["round", "oval", "square"]),
         "beard": (rnd.choice(["none", "none", "mustache", "stubble", "full"]) if not female else "none"),
         "glasses": rnd.random() < 0.3,

@@ -124,6 +124,11 @@ def parse(text: str) -> dict:
         sm = re.match(r"^([^:]{1,40}?)\s*(?:\([^)]*\))?\s*:\s*(.+)$", ln)
         if sm and sc["scenes"]:
             who = names.get(sm.group(1).strip().lower())
+            if who is None and sm.group(1).strip().lower() in ("narrator", "рассказчик", "voice", "voice-over"):
+                who = sc.get("narrator")
+            inner = re.match(r"^([^:\"]{1,30}?)\s*:\s*(.+)$", sm.group(2))   # ("Narrator: Clara: ..." - the name not said)
+            if inner and inner.group(1).strip().lower() in names:
+                who, sm = names[inner.group(1).strip().lower()], inner
             if who is None:
                 who = sc.get("narrator") or person("Narrator", "man", narrator=True)
                 if not sc.get("narrator"):

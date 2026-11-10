@@ -759,8 +759,9 @@ def prompt(job: dict) -> str:
 FACTS_RULES = """RULES FOR THIS VIDEO (they come before everything else):
 - The first line is the hook, said by the host: "{hook}" (in the script's language, the same meaning).
 - Only what the FACTS say. Keep every condition they give (who, when, unless...). No promises ("you will get"), no
-  advice beyond them, no numbers, names, dates or steps they do not have. The host shows the official page and says
-  "the official page says..."; the host never claims to be an expert, a lawyer or an official.
+  advice beyond them, no numbers, names, dates or steps they do not have. The host shows the official page; say ONCE,
+  early, that this is what the official page says - then just tell it, in plain words (never repeat "the official page
+  says"). The host never claims to be an expert, a lawyer or an official.
 - NOT IN THE SOURCE (never say or suggest it): {missing}
 - The angle: {angle}
 - 4 to 6 short scenes, one chain: hook - what it is - who it is for, with its conditions - what the page says to do -

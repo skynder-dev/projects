@@ -250,6 +250,7 @@ def draw_background(cv, p: Path, move: tuple | None = None) -> None:
     cv.paste(pic, np.ones(pic.shape[:2] + (1,), np.float32), int(round(x0)), int(round(y0)))
 
 
+OPEN_MOUTHS = False
 HEIGHT = 700.0                                             # (a picture character as tall as a drawn one: its units)
 
 
@@ -274,7 +275,8 @@ def draw_character(cv, folder: Path, x: float, y: float, scale: float, look: flo
                    walk: float | None = None, nod: float = 0.0, height: float = 1.0, blink: float = 0.0) -> None:
     """A picture character with its feet at stage (x, y): the gesture's picture, the mouth open on the loud parts of a
     word, breathing, a step's bounce when walking, turned by look (-1: mirrored; between: narrower while turning)."""
-    m_open = _mouth_state(str(folder), (mouth[0] if isinstance(mouth, (tuple, list)) else float(mouth or 0.0)), t)
+    # (the mouth stays shut: a drawn picture swapped for its open-mouthed one looked cheap - the owner: "better shut")
+    m_open = OPEN_MOUTHS and _mouth_state(str(folder), (mouth[0] if isinstance(mouth, (tuple, list)) else float(mouth or 0.0)), t)
     p = pose_picture(folder, pose, m_open)
     if blink > 0.5 and not m_open and walk is None and p.stem == "base":   # (eyes shut a moment: its own picture)
         p = _find(folder, "blink") or p
