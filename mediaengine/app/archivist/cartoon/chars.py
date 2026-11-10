@@ -442,6 +442,8 @@ def _head(cv: Canvas, c: dict, b: dict, emotion: str, mouth, blink: float, gaze:
     skin = c.get("skin", "#efc29f")
     hair = c.get("hair", "#2b211c")
     style = c.get("hair_style", "short")
+    if style == "curly" and not c.get("female") and c.get("hair") in ("#e7e2d8", "#8f8f96"):   # (grey curls on a man: a wig)
+        style = "short"
     cy = -hh / 2 - 6
     cv.rect(-18, -26, 36, 34, shade(skin, -0.08), INK, 3, 8)              # the neck
     if style in ("long", "ponytail", "bob", "curly"):                       # hair behind the head
