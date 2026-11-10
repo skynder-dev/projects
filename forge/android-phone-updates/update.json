@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "packageName": "dev.forge.app",
-  "versionCode": 13,
-  "versionName": "0.4.6",
+  "versionCode": 14,
+  "versionName": "0.4.7",
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/skynder-dev/projects/main/forge/android-phone-updates/Forge-0.4.6.apk",
-  "sha256": "68125d726f000669b49ddc92b1f20aa6f45b54aea353eb587d3a7a65c2d646b7",
-  "sizeBytes": 1266071,
+  "apkUrl": "https://raw.githubusercontent.com/skynder-dev/projects/main/forge/android-phone-updates/Forge-0.4.7.apk",
+  "sha256": "6aa7339c05704574b8e86616b55f40d9bf045a2c6aba43bc5bdbe6a13043186d",
+  "sizeBytes": 1270167,
   "signingCertSha256": "9b8e651b78287cab3fc37047433efeec16c6f3cc70d7f0837307bd9d3467ebaf"
 }
