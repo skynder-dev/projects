@@ -383,9 +383,10 @@ def write(root, given_dir=None, today=None):
     try:
         for a in json.loads((root / 'assistant-analyses.json').read_text(encoding='utf-8')).get('analyses', []):
             analysed.update(re.findall(r'trustmrr\.com/startup/([a-z0-9-]+)', ' '.join(a.get('sources', []))))
+            analysed.update('hn' + x for x in re.findall(r'news\.ycombinator\.com/item\?id=(\d+)', ' '.join(a.get('sources', []))))
     except (OSError, ValueError):
         pass
-    found = signal_cards(root, analysed) + hn_cards(root, today)
+    found = signal_cards(root, analysed) + [c for c in hn_cards(root, today) if c['id'][5:] not in analysed]
     found.sort(key=lambda c: not any(l.startswith(AI_RU['ai_helps']) for l in c['lines']))   # where AI is our tool comes first
     cards = mine + clipping_card(root) + youtube_card(root) + demand_card(root) + found + contest_cards(root, today)
     payload = {'schema': SCHEMA, 'cards': cards}

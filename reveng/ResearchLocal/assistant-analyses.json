@@ -62,6 +62,163 @@
     "https://trustmrr.com/startup/bytemail",
     "https://trustmrr.com/startup/lumabar"
    ]
+  },
+  {
+   "id": "rv_a_vertical_software",
+   "title": "Программа для одной узкой отрасли",
+   "title_en": "Software for one narrow trade",
+   "lines": [
+    "Суть: программа учёта заказов и клиентов для одной отрасли (дезинсекторы, продавцы домов на колёсах); фирмы платят каждый месяц",
+    "Старт: $10-40 тыс. (2-4 месяца работы разработчика с ИИ) + 10-20 разговоров с владельцами фирм",
+    "Расходы в месяц: $200-1 000 (серверы, поддержка) + время на продажи (отраслевые выставки, звонки)",
+    "Срок до денег: первые платящие через 3-9 месяцев; $4-5 тыс. в месяц - примерно через 1,5-2 года (так у авторов)",
+    "Что убьёт: крупные готовые системы в отрасли; долгие продажи; без человека изнутри отрасли не понять, что нужно"
+   ],
+   "lines_en": [
+    "In short: job and customer software for one trade (pest control, manufactured-home dealers); firms pay monthly",
+    "Start: $10-40k (2-4 months of a developer with AI) + 10-20 talks with business owners",
+    "Monthly: $200-1,000 (servers, support) + selling time (trade shows, calls)",
+    "Time to money: first payers in 3-9 months; $4-5k a month in about 1.5-2 years (as the authors report)",
+    "What kills it: big existing systems in the trade; long sales; without an insider you miss what is needed"
+   ],
+   "unknown": "Разбор ассистента; суммы старта и расходов - оценка, не замер. Авторы: дезинсекторы - со слов $100 тыс./мес; дома на колёсах - $4 тыс./мес при расходах $400; онбординг клиентов - $100 тыс./год. Не проверено.",
+   "unknown_en": "Assistant analysis; start and monthly costs are estimates. Authors say: pest control $100k/mo; home dealers $4k/mo with $400 costs; client onboarding $100k/yr. Not verified.",
+   "sources": [
+    "https://news.ycombinator.com/item?id=35568449",
+    "https://news.ycombinator.com/item?id=35573937",
+    "https://news.ycombinator.com/item?id=33923806"
+   ],
+   "made": "2026-11-10"
+  },
+  {
+   "id": "rv_a_data_access",
+   "title": "Продажа доступа к данным для чужих программ",
+   "title_en": "Selling data access to other software",
+   "lines": [
+    "Суть: собрать данные, которые нужны многим программам (проверка номеров, документов), и продавать к ним доступ поштучно",
+    "Старт: $2-10 тыс. + главное - законный источник данных",
+    "Расходы в месяц: $100-500 (серверы) + плата за сами данные, если они платные",
+    "Срок до денег: медленно - у автора $200, $900, $2 000 в месяц по годам",
+    "Что убьёт: источник закроют или запретят перепродажу; законы о личных данных (в Мексике и США строгие)"
+   ],
+   "lines_en": [
+    "In short: gather data many programs need (number or document checks) and sell access per request",
+    "Start: $2-10k + above all a legal data source",
+    "Monthly: $100-500 (servers) + data fees if the data is paid",
+    "Time to money: slow - the author made $200, $900, $2,000 a month year by year",
+    "What kills it: the source closes or bans resale; personal data laws (strict in Mexico and the US)"
+   ],
+   "unknown": "Разбор ассистента; оценки. Слабое место - законность: прежде чем браться, нужно найти источник, который прямо разрешает перепродажу.",
+   "unknown_en": "Assistant analysis; estimates. Weak spot is legality: first find a source that explicitly allows resale.",
+   "sources": [
+    "https://news.ycombinator.com/item?id=35570182"
+   ],
+   "made": "2026-11-10"
+  },
+  {
+   "id": "rv_a_web_analytics",
+   "title": "Статистика посещений сайтов без слежки",
+   "title_en": "Privacy-friendly website analytics",
+   "lines": [
+    "Суть: замена Google Analytics, которая не следит за посетителями; сайты платят подписку или покупают один раз",
+    "Старт: $5-20 тыс. (программа) - но бесплатные готовые аналоги уже есть",
+    "Расходы в месяц: $200-2 000 (хранение данных растёт вместе с клиентами)",
+    "Срок до денег: у авторов $2 тыс. через 1,5 года, потом $4 тыс.; другой - $1,5 тыс. без рекламы",
+    "Что убьёт: рынок занят (Plausible, Fathom, бесплатные Umami и Matomo); выделиться почти нечем"
+   ],
+   "lines_en": [
+    "In short: a Google Analytics replacement that does not track visitors; sites pay a subscription or once",
+    "Start: $5-20k (software) - but free ready alternatives exist",
+    "Monthly: $200-2,000 (data storage grows with customers)",
+    "Time to money: authors reached $2k after 1.5 years, then $4k; another $1.5k with no ads",
+    "What kills it: crowded market (Plausible, Fathom, free Umami and Matomo); little room to stand out"
+   ],
+   "unknown": "Разбор ассистента; оценки. Вывод: слабая идея для нас - поздно входить.",
+   "unknown_en": "Assistant analysis; estimates. Verdict: weak for us - too late to enter.",
+   "sources": [
+    "https://news.ycombinator.com/item?id=35571172",
+    "https://news.ycombinator.com/item?id=33925738"
+   ],
+   "made": "2026-11-10"
+  },
+  {
+   "id": "rv_a_small_addon",
+   "title": "Маленькое дополнение в чужом магазине приложений",
+   "title_en": "A small add-on in someone else's app store",
+   "lines": [
+    "Суть: маленький инструмент внутри чужой платформы (таблицы цен для сайтов, дополнение к Word); покупатели находят его в магазине самой платформы",
+    "Старт: $1-10 тыс.; программу с ИИ можно сделать за недели",
+    "Расходы в месяц: $50-300; доля платформы обычно 15-30%",
+    "Срок до денег: месяцы; у автора таблиц цен - около $6 тыс. в месяц в свободное время",
+    "Что убьёт: платформа сама встроит то же (в Word уже есть ИИ-помощник); ИИ делает таблицы цен бесплатно"
+   ],
+   "lines_en": [
+    "In short: a small tool inside someone else's platform (pricing tables for sites, a Word add-in); buyers find it in the platform's own store",
+    "Start: $1-10k; with AI the software takes weeks",
+    "Monthly: $50-300; the platform usually takes 15-30%",
+    "Time to money: months; the pricing-table author makes about $6k a month part-time",
+    "What kills it: the platform builds the same in (Word already has an AI assistant); AI makes pricing tables for free"
+   ],
+   "unknown": "Разбор ассистента; оценки. Канал продаж - магазин платформы, это плюс; риск, что платформа съест идею, высокий.",
+   "unknown_en": "Assistant analysis; estimates. The sales channel is the platform store (a plus); high risk the platform eats it.",
+   "sources": [
+    "https://news.ycombinator.com/item?id=35573381",
+    "https://news.ycombinator.com/item?id=33930824"
+   ],
+   "made": "2026-11-10"
+  },
+  {
+   "id": "rv_a_clipping_tool",
+   "title": "Продавать программу для нарезки роликов",
+   "title_en": "Selling an AI clipping tool",
+   "lines": [
+    "Суть: подписка на программу, которая сама нарезает короткие ролики из длинного видео",
+    "Старт: у нас программа уже есть (MediaEngine), продавать её - отдельная работа: сайт, оплата, поддержка",
+    "Расходы в месяц: видеокарты в облаке дорогие, если клиентов много; на нашем ПК - только для себя",
+    "Срок до денег: месяцы; у ScaleReach $1,8 тыс. за 30 дней",
+    "Что убьёт: десятки таких сервисов (Opus Clip и др.), цены падают. Вывод: программу не продавать, а самим зарабатывать нарезкой"
+   ],
+   "lines_en": [
+    "In short: a subscription for software that cuts short clips from long videos",
+    "Start: we already have it (MediaEngine); selling it is separate work: site, payments, support",
+    "Monthly: cloud GPUs are costly with many users; our PC is for ourselves only",
+    "Time to money: months; ScaleReach made $1.8k in 30 days",
+    "What kills it: dozens of such tools (Opus Clip and others), falling prices. Verdict: do not sell the tool, earn by clipping ourselves"
+   ],
+   "unknown": "Разбор ассистента; оценки.",
+   "unknown_en": "Assistant analysis; estimates.",
+   "sources": [
+    "https://trustmrr.com/startup/scalereach"
+   ],
+   "made": "2026-11-10"
+  },
+  {
+   "id": "rv_a_clipping_work",
+   "title": "Нарезка роликов за просмотры (в работе у Social)",
+   "title_en": "Clipping for views (Social runs it)",
+   "lines": [
+    "Суть: режем ролики из исходников кампаний и выкладываем в TikTok и Reels; бренд платит за каждую 1000 просмотров",
+    "Старт: $0 - аккаунты бесплатные, режет MediaEngine на нашем ПК",
+    "Расходы в месяц: ~$0; площадка берёт 7% с выплат",
+    "Срок до денег: 2-4 недели (выплаты раз в 7 дней после проверки просмотров)",
+    "Сколько: обычный ролик ~$20 (~12 тыс. просмотров); лучший нарезчик кампании ~$680, рекорд ~$4 800",
+    "Что убьёт: аккаунты не растут; ролики не одобряют; бюджет кампании кончился; подозрение в накрутке"
+   ],
+   "lines_en": [
+    "In short: cut clips from campaign sources and post to TikTok and Reels; the brand pays per 1000 views",
+    "Start: $0 - free accounts, MediaEngine cuts on our PC",
+    "Monthly: ~$0; the platform takes 7% of payouts",
+    "Time to money: 2-4 weeks (payouts every 7 days after views are checked)",
+    "How much: a typical clip ~$20 (~12k views); a campaign's best clipper ~$680, record ~$4,800",
+    "What kills it: accounts do not grow; clips rejected; campaign budget ends; suspected fake views"
+   ],
+   "unknown": "Разбор ассистента по цифрам доски Content Rewards (грубо, не по всем кампаниям). Ждёт владельца: регистрация, проверка личности, аккаунт TikTok.",
+   "unknown_en": "Assistant analysis from Content Rewards board figures (rough). Waiting on the owner: sign-up, ID check, TikTok account.",
+   "sources": [
+    "https://contentrewards.com/c/discover",
+    "https://contentrewards.com/faqs"
+   ],
+   "made": "2026-11-10"
   }
  ]
 }
