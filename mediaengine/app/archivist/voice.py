@@ -511,34 +511,42 @@ def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None, trac
     env.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
     log = work.parent / "worker.log"          # next to the work folder: kept when the pieces are cleaned away
     res: dict = {}
-    with log.open("a", encoding="utf-8", errors="replace") as lf:
-        proc = subprocess.Popen([_python(), "-S", "-E", "-B", "-X", "utf8", str(WORKER), str(jf)], stdout=subprocess.PIPE,
-                                stderr=lf, stdin=subprocess.DEVNULL, text=True, encoding="utf-8", errors="replace", env=env,
-                                cwd=str(work), **process_kwargs(below_normal=True))
-        ae._attach_job_object(proc)
-        _track(proc, track)
-        t0 = time.time()
-        killer = threading.Timer(timeout, proc.kill)
-        killer.start()
-        try:
-            for line in proc.stdout:
-                lf.write(line)
-                try:
-                    msg = json.loads(line)
-                except ValueError:
-                    continue
-                if not isinstance(msg, dict):      # (a library printing a number or a list: not one of ours)
-                    continue
-                if "result" in msg:
-                    res = msg["result"] or {}
-                elif on_line:
-                    on_line(msg)
-            proc.wait()
-        finally:
-            killer.cancel()
-            _untrack(proc, track)
+    for attempt in (1, 2):                    # a worker that dies without a word (a crash while loading) gets one more go
+        cut = False
+        with log.open("a", encoding="utf-8", errors="replace") as lf:
+            if attempt > 1:
+                lf.write("--- the worker stopped without an answer; trying once more\n")
+            proc = subprocess.Popen([_python(), "-S", "-E", "-B", "-X", "utf8", str(WORKER), str(jf)], stdout=subprocess.PIPE,
+                                    stderr=lf, stdin=subprocess.DEVNULL, text=True, encoding="utf-8", errors="replace", env=env,
+                                    cwd=str(work), **process_kwargs(below_normal=True))
+            ae._attach_job_object(proc)
+            _track(proc, track)
+            t0 = time.time()
+            killer = threading.Timer(timeout, proc.kill)
+            killer.start()
+            try:
+                for line in proc.stdout:
+                    lf.write(line)
+                    try:
+                        msg = json.loads(line)
+                    except ValueError:
+                        continue
+                    if not isinstance(msg, dict):      # (a library printing a number or a list: not one of ours)
+                        continue
+                    if "result" in msg:
+                        res = msg["result"] or {}
+                    elif on_line:
+                        on_line(msg)
+                proc.wait()
+            finally:
+                killer.cancel()
+                _untrack(proc, track)
+            cut = time.time() - t0 >= timeout
+            if not res:
+                lf.write(f"--- the worker ended with exit code {proc.returncode}\n")
+        if res or cut or _CURRENT.get("cancel") or QUITTING:
+            break
     if not res:
-        cut = time.time() - t0 >= timeout
         res = {"ok": False, "error": "The voice worker took too long and was stopped." if cut else
                "The voice worker stopped without an answer (details: worker.log in the job folder)."}
     return res
