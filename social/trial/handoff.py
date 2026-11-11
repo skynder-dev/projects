@@ -56,8 +56,32 @@ def claims_of(trial: dict) -> dict:
     return out
 
 
+def page_claims(paths):
+    """Fallback (11.11.2026): idea files of some runs were overwritten; facts rebuilt from the same official page.
+    Maps 'host/path' -> list of claims (whole page, the concept's own key list is lost)."""
+    out = {}
+    for p in paths:
+        try:
+            d = json.loads(Path(p).read_text(encoding='utf-8'))
+        except Exception:  # noqa: BLE001
+            continue
+        rows = d.get('claims', d) if isinstance(d, dict) else d
+        if not isinstance(rows, list) or not rows or not isinstance(rows[0], dict) or 'quote' not in rows[0]:
+            continue
+        for c in rows:
+            u = str(c.get('source_url') or (c.get('source') or {}).get('url') or '')
+            key = u.split('://')[-1].removeprefix('www.').rstrip('/')
+            if key:
+                out.setdefault(key, []).append({'key': c.get('key'), 'quote': c.get('quote'), 'locator': c.get('locator'),
+                    'sha256': (c.get('source') or {}).get('sha256') or (c.get('source') or {}).get('excerpt_sha256'),
+                    'source_url': u})
+    return out
+
+
 def main(argv):
     cards_path, dec_path, out = Path(argv[0]), Path(argv[1]), Path(argv[2])
+    pages = page_claims([a for a in argv[3:] if 'claims' in Path(a).name])  # concept_claims.json from 'socialreel source'
+    argv = [a for a in argv if 'claims' not in Path(a).name]
     out.mkdir(parents=True, exist_ok=True)
     cards = {c['id']: c for c in json.loads(cards_path.read_text(encoding='utf-8'))['cards']}
     dec = verdicts(json.loads(dec_path.read_text(encoding='utf-8')))
@@ -76,17 +100,22 @@ def main(argv):
         card = cards.get(cid)
         parts = cid.split('_')
         trial = trials.get(parts[1]) if len(parts) >= 3 else None
-        if not card or not trial:
+        src_line = line(card, 'Источник:') if card else ''
+        concept, scope = None, 'concept'
+        if card and trial:
+            concept = next((c for c in trial['stages']['proposal']['concepts'] if c.get('id') == parts[-1]), None)
+        if concept:
+            claims = claims_of(trial)
+            keys = concept.get('basis_claim_keys') or concept.get('claim_keys') or concept.get('claims') or concept.get('facts') or []
+            keys = [k if isinstance(k, str) else (k.get('key') or k.get('claim_key')) for k in keys]
+            facts = [claims[k] for k in keys if k in claims]
+        elif card and src_line.removeprefix('www.').rstrip('/') in pages:
+            facts, scope = pages[src_line.removeprefix('www.').rstrip('/')], 'whole_page'
+            concept = {'angle_ru': ''}
+            trial = {'stages': {'source': {'url': facts[0]['source_url']}}}
+        else:
             missing.append(cid)
             continue
-        concept = next((c for c in trial['stages']['proposal']['concepts'] if c.get('id') == parts[-1]), None)
-        if not concept:
-            missing.append(cid)
-            continue
-        claims = claims_of(trial)
-        keys = concept.get('basis_claim_keys') or concept.get('claim_keys') or concept.get('claims') or concept.get('facts') or []
-        keys = [k if isinstance(k, str) else (k.get('key') or k.get('claim_key')) for k in keys]
-        facts = [claims[k] for k in keys if k in claims]
         if not facts:
             missing.append(cid + ' (no cited facts)')
             continue
@@ -97,7 +126,7 @@ def main(argv):
                'end_question_ru': card.get('ask_ru') or line(card, 'Вопрос в конце:'),
                'not_in_source_ru': card.get('unknown', ''), 'script': '',
                'source_url': (trial['stages'].get('source') or {}).get('url'), 'facts': facts,
-               'owner_decision': v, 'status': 'ready_for_script', 'rules': RULES}
+               'facts_scope': scope, 'owner_decision': v, 'status': 'ready_for_script', 'rules': RULES}
         (out / f'{cid}.json').write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding='utf-8')
         made.append(cid)
     print(f'handoff: made {len(made)}: {", ".join(made)}')
