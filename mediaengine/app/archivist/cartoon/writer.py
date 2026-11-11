@@ -759,9 +759,8 @@ def prompt(job: dict) -> str:
 FACTS_RULES = """RULES FOR THIS VIDEO (they come before everything else):
 - The first line is the hook, said by the host: "{hook}" (in the script's language, the same meaning).
 - Only what the FACTS say. Keep every condition they give (who, when, unless...). No promises ("you will get"), no
-  advice beyond them, no numbers, names, dates or steps they do not have. The host shows the official page; say ONCE,
-  early, that this is what the official page says - then just tell it, in plain words (never repeat "the official page
-  says"). The host never claims to be an expert, a lawyer or an official.
+  advice beyond them, no numbers, names, dates or steps they do not have. The page itself is shown on screen, so NO line says
+  "the official page says" - just tell the facts in plain words; only the last scene says where to read it. The host never claims to be an expert, a lawyer or an official.
 - NOT IN THE SOURCE (never say or suggest it): {missing}
 - The angle: {angle}
 - 4 to 6 short scenes, one chain: hook - what it is - who it is for, with its conditions - what the page says to do -
@@ -880,16 +879,18 @@ def judge_facts(text: str, f: dict) -> str:
     if cut:
         return f"a line is left unfinished (\"{cut[0][:60]}\"): every line is a whole sentence"
     body = [ln["text"] for s in sc["scenes"][:-1] for ln in s["lines"]]      # (the last scene shows where to read it)
-    page = sum(1 for ln in body if re.search(r"(?i)official page|the page says|the site says", ln))
-    if page > 2:
-        return (f"\"the official page\" is said in {page} lines: say ONCE, early, that this is what the official page "
-                "says, then just tell the facts in plain words (and show the page at the end)")
+    page = sum(1 for ln in body if re.search(r"(?i)official page|the page says|the site says", ln)) \
+        - (1 if any(re.search(r"(?i)official page", ln) and _WHERE.search(ln) for ln in body) else 0)
+    if page:
+        return (f"\"the official page\" is said in {page} lines: the page is shown on screen, so no line says it - just "
+                "tell the facts in plain words; only the last scene says where to read it")
     return ""
 
 
 _PAGE_PREFIX = re.compile(r"(?i)^(?:but |and |so )?(?:the )?official page (?:also )?(?:says|shows|tells you)(?: that)?\s*[:,]?\s*")
 _PAGE_ONLY = re.compile(r"(?i)^(?:this is what the official page says|the official page (?:has more details|is here|says)|"
                         r"you can read the full information on the official page|i can check the official page!?)\s*[.!…]*$")
+_WHERE = re.compile(r"(?i)\bwhere\b|\bhere\b|usa\.gov|\.gov/|\bcheck\b|\bread\b|\bvisit\b")
 _SPEECH = re.compile(r"^([A-Z][\w .'-]*?)((?:\s*\([^)]*\))?(?:\s*\[bubble\])?)\s*:\s*(.*)$")
 
 
@@ -911,13 +912,15 @@ def tidy_facts(text: str, f: dict) -> str:
     lines = text.split("\n")
     heads = [i for i, ln in enumerate(lines) if ln.startswith("==")]
     last = heads[-1] if heads else len(lines)
-    out, said, page_said = [], set(), False
+    end = heads[-2] if len(heads) > 1 else last           # (the end: where to read it, the question)
+    out, said, page_said, where_said = [], set(), True, False      # (the page is on screen: no line says it before the last scene)
     for i, ln in enumerate(lines):
-        if not heads or i < heads[0] or i >= last:
+        if not heads or i < heads[0]:
             out.append(ln)
             continue
         if ln.startswith("=="):
             parts = [x.strip() for x in ln[2:].split("|")]
+            parts = [re.sub(r"(?i)^(title:\s*[^/]*?)\s*/\s*[^/]*official[^/]*$", r"\1", x) for x in parts]
             out.append("== " + " | ".join([parts[0]] + [x for x in parts[1:] if not alien(x)]))
             continue
         m = _SPEECH.match(ln)
@@ -925,7 +928,9 @@ def tidy_facts(text: str, f: dict) -> str:
             out.append(ln)
             continue
         who, how, body = m.group(1), m.group(2), m.group(3).strip()
-        if re.search(r"(?i)official page", body):
+        if re.search(r"(?i)official page", body) and _WHERE.search(body) and not where_said and i >= end:
+            where_said = True                           # (the one line that says where to read it stays)
+        elif re.search(r"(?i)official page", body):
             if page_said:
                 if _PAGE_ONLY.match(body):
                     continue
@@ -935,6 +940,8 @@ def tidy_facts(text: str, f: dict) -> str:
                     body = body[3:]
                 elif shows and re.match(r"(?i)(where|how|what)\b", body):
                     body = "Here is " + body[0].lower() + body[1:]
+                if re.search(r"(?i)official page", body):
+                    continue                            # (a line still about the page, not a fact: left out)
             elif _PAGE_ONLY.match(body):
                 body = "This is what the official page says."
             page_said = True
@@ -948,8 +955,8 @@ def tidy_facts(text: str, f: dict) -> str:
         if not body or alien(body):
             continue
         key = re.sub(r"[^a-z0-9]+", " ", body.lower()).strip()
-        if key in said:
-            continue
+        if key in said or (len(key) > 25 and any(key in k or k in key for k in said if len(k) > 25)):
+            continue                                    # (said before, or the same said again with a word more or less)
         said.add(key)
         out.append(f"{who}{how}: {body[0].upper() + body[1:]}")
     keep, block = [], []                        # a scene with no line left is left out

@@ -401,7 +401,8 @@ def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: di
             with cv.at(0, -120, 0, max(0.01, a)):
                 cv.text(v.get("title") or "", 0, 0, 96, "#ffffff", "black", outline=INK, stroke=8, width=960, height=300)
             if v.get("sub"):
-                cv.text(v["sub"], 0, 150, 52, ink, "black", width=900, alpha=ease(_appear(scene, None, t - 0.5, 0.6)))
+                cv.text(v["sub"], 0, 150, 56, "#ffffff", "black", outline=INK, stroke=6, width=900,
+                        alpha=ease(_appear(scene, None, t - 0.5, 0.6)))      # (white with an outline: seen on any picture)
             P.money_bag(cv, -300 + math.sin(st * 2) * 10, 300, 1.0)
             for i in range(3):
                 P.coin(cv, 220 + i * 90, 300 - abs(math.sin(st * 3 + i)) * 60, 1.0, st * 4 + i)
