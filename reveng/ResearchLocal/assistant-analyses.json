@@ -69,20 +69,20 @@
    "title_en": "Software for one narrow trade",
    "lines": [
     "Суть: программа учёта заказов, маршрутов и клиентов для одной отрасли; фирмы платят каждый месяц.",
-    "Лучшее: коммерческая уборка офисов. Около 68 тыс. фирм, 61% из них — с меньше чем 5 сотрудниками. Программ именно под коммерческую уборку мало.",
-    "Вторая: дезинсекция. Около 16,5 тыс. фирм. FieldRoutes от $350 в месяц, PestPac $29 на техника, GorillaDesk от $49. Между дорогими и дешёвыми есть зазор.",
-    "Не брать: сантехника и HVAC. Около 111 тыс. фирм, но там уже сильные платформы (ServiceTitan, Housecall Pro).",
+    "Широкие отрасли уже заняты. Уборка офисов (~68 тыс. фирм): Swept $30–225 в месяц (50 тыс. уборщиков в неделю), CleanGuru $79–159, Clean Smarts от $25, Janitorial Manager.",
+    "Дезинсекция (~16,5 тыс. фирм): FieldRoutes от $350, PestPac $29 на техника, GorillaDesk от $49. Садоводство: Jobber и LawnPro от $27–39. HVAC: ServiceTitan.",
+    "Вывод: вход только в очень узкую нишу (как у авторов с HN: продавцы домов на колёсах, Wi-Fi в общежитиях), которую нашёл человек изнутри отрасли.",
     "Старт $10–40 тыс., расходы $200–1 000 в месяц, первые деньги через 3–9 месяцев. Это оценка, не замер."
    ],
    "lines_en": [
     "In short: software for orders, routes and customers for one trade; firms pay monthly.",
-    "Best: commercial office cleaning. About 68k firms, 61% with fewer than 5 employees. Few programs are built for commercial cleaning.",
-    "Second: pest control. About 16.5k firms. FieldRoutes from $350/mo, PestPac $29 per tech, GorillaDesk from $49. There is a gap between expensive and cheap tools.",
-    "Skip: plumbing and HVAC. About 111k firms, but strong platforms are already there (ServiceTitan, Housecall Pro).",
-    "Start $10-40k, costs $200-1,000/mo, first money in 3-9 months. These are estimates, not measured."
+    "Broad trades are taken. Office cleaning (~68k firms): Swept $30-225/mo (50k cleaners weekly), CleanGuru $79-159, Clean Smarts from $25, Janitorial Manager.",
+    "Pest control (~16.5k firms): FieldRoutes from $350, PestPac $29/tech, GorillaDesk from $49. Landscaping: Jobber, LawnPro from $27-39. HVAC: ServiceTitan.",
+    "Takeaway: only a very narrow niche works (like HN authors: manufactured-home dealers, dorm Wi-Fi), found by an industry insider.",
+    "Start $10-40k, costs $200-1,000/mo, first money in 3-9 months. Estimates, not measured."
    ],
-   "unknown": "Цифры по фирмам — Census County Business Patterns 2023, но взяты со сторонних сайтов (vantainsights, mewayz, startbusinessbystate); на census.gov не сверены. Для дезинсекции 16,5 тыс. — это группа 56171, не точный код 561710. Цены — с Software Advice, GetApp, Capterra, CostBench; сайты расходятся (Jobber: $27–49 в месяц). Не проверено: какие фирмы реально платят и сколько. По коммерческой уборке нет цен Swept и Launch27. Дома на колёсах (авторы: $4 тыс./мес) не разбирались. Вывод про «ИИ не съест» — моё предположение: большие программы сами добавляют ИИ-функции, узкая отрасль с простыми нуждами менее уязвима.",
-   "unknown_en": "Firm counts are Census CBP 2023 taken from third-party sites (vantainsights, mewayz, startbusinessbystate); not checked on census.gov. Pest control 16.5k is group 56171, not exact 561710. Prices from Software Advice, GetApp, Capterra, CostBench; sites disagree (Jobber $27-49/mo). Not verified: which firms actually pay and how much. No Swept or Launch27 prices for commercial cleaning. Manufactured-home dealers (authors: $4k/mo) not researched. The 'AI won't eat it' point is my assumption.",
+   "unknown": "Цифры по фирмам — Census County Business Patterns 2023, но взяты со сторонних сайтов (vantainsights, mewayz, startbusinessbystate); на census.gov не сверены. Для дезинсекции 16,5 тыс. — это группа 56171, не точный код 561710. Цены — с Software Advice, GetApp, Capterra, CostBench; сайты расходятся (Jobber: $27–49 в месяц). Не проверено: какие фирмы реально платят и сколько. 11.11 исправлено: вчера писал, что программ для уборки офисов мало — это неверно. Дома на колёсах (авторы: $4 тыс./мес) не разбирались. Вывод про «ИИ не съест» — моё предположение: большие программы сами добавляют ИИ-функции, узкая отрасль с простыми нуждами менее уязвима.",
+   "unknown_en": "Firm counts are Census CBP 2023 taken from third-party sites (vantainsights, mewayz, startbusinessbystate); not checked on census.gov. Pest control 16.5k is group 56171, not exact 561710. Prices from Software Advice, GetApp, Capterra, CostBench; sites disagree (Jobber $27-49/mo). Not verified: which firms actually pay and how much. Corrected 11.11: commercial cleaning is not underserved. Manufactured-home dealers (authors: $4k/mo) not researched. The 'AI won't eat it' point is my assumption.",
    "sources": [
     "https://vantainsights.com/industry/561720-janitorial-services",
     "https://data.mewayz.com/industry/janitorial-services/",
@@ -93,9 +93,13 @@
     "https://us.fitgap.com/search/pest-control-software/affordable",
     "https://vantainsights.com/industry/23822-plumbing-heating-air-conditioning",
     "https://vantainsights.com/industry/561730-landscaping-services",
-    "https://costbench.com/software/lawn-care-software/jobber-lawn/"
+    "https://costbench.com/software/lawn-care-software/jobber-lawn/",
+    "https://www.capterra.com/p/148615/Swept/pricing/",
+    "https://sweptworks.com/",
+    "https://costbench.com/software/cleaning-service-software/janitorial-manager/",
+    "https://www.sourceforge.net/software/product/CleanGuru/alternatives"
    ],
-   "made": "2026-11-10"
+   "made": "2026-11-11"
   },
   {
    "id": "rv_a_data_access",

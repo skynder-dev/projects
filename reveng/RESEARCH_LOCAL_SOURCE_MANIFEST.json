@@ -410,8 +410,8 @@
     },
     {
       "path": "reveng/ResearchLocal/assistant-analyses.json",
-      "bytes": 19631,
-      "sha256": "26d87ef8209d067195084d0acee4a4c0bed13fe3f1d1d6b599fa6f6348cdddc4",
+      "bytes": 20023,
+      "sha256": "74c5ea958efe5b8b67afb0522147470bc9a23570197b02d5bbaf9e16c046a704",
       "change": "new_assistant_analyses_2026-11-03"
     },
     {
