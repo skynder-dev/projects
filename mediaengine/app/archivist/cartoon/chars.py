@@ -460,7 +460,7 @@ def _head(cv: Canvas, c: dict, b: dict, emotion: str, mouth, blink: float, gaze:
     for side in (-1, 1):                                                   # ears
         cv.ellipse(side * hw / 2, cy + 6, 16, 22, skin, INK, 3.5)
     face = c.get("face", "oval")
-    r = {"round": hw / 2, "oval": hw / 2.3, "square": hw / 4}.get(face, hw / 2.4)
+    r = {"round": hw / 2, "oval": hw / 2.05, "square": hw / 2.2}.get(face, hw / 2.1)   # (a boxy head read as square: all are rounded now)
     cv.poly(rounded(-hw / 2, cy - hh / 2, hw, hh, r, 8), skin, INK, 4)
     cv.ellipse(-hw * 0.28, cy + hh * 0.17, 14, 8, shade(skin, -0.06))       # cheeks
     cv.ellipse(hw * 0.28, cy + hh * 0.17, 14, 8, shade(skin, -0.06))
