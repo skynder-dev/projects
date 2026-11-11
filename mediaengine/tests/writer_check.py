@@ -593,11 +593,22 @@ def main() -> int:
         head = "Title: X\nFormat: vertical\nNarrator: Nora (woman, narrator)\n\n== Home | title: A\n"
         j_num = W.judge_facts(head + "Nora (explain): If you work more than 40 hours a week, you get paid more.\n", ff)
         j_cut = W.judge_facts(head + "Nora (explain): The page says...\n", ff)
-        j_page = W.judge_facts(head + "".join("Nora (explain): The official page says this, %s.\n" % k for k in ("first", "again", "and again")), ff)
+        j_page = W.judge_facts(head + "".join("Nora (explain): The official page says this, %s.\n" % k for k in ("first", "again", "and again")) + "== Home | phone\nNora (ask): What is your state?\n", ff)
         j_ok = W.judge_facts(head + "Nora (explain): The official page says you may be called a contractor instead of an employee.\n", ff)
         check("a facts video's script: a number the facts do not have, a line left unfinished, 'the official page' said "
               "again and again are sent back to the writer; a script that keeps to the facts passes",
               "40" in j_num and "unfinished" in j_cut and "3 lines" in j_page and j_ok == "", (j_num, j_cut, j_page, j_ok))
+
+        messy = (head + "Nora (explain): This is what the official page says.\n"
+                 "Nora (explain): The official page says: \"You may be called a contractor instead of an employee.\"\n"
+                 "Sam (think): If you work more than 40 hours a week...\n"
+                 "== Office | bars: paid $8.00\nNora (explain): The official page says to read it.\n"
+                 "Nora (explain): The official page has more details.\n== Home | phone\nNora (ask): What is your state?\n")
+        tidy = W.tidy_facts(messy, ff)
+        check("a facts video's script is made to keep to its facts whatever the model wrote: 'the official page says' "
+              "only the first time, a number the facts do not have and a picture label with one left out, the last scene "
+              "kept", W.judge_facts(tidy, ff) == "" and "40" not in tidy and "$8" not in tidy and "Read it." in tidy
+              and tidy.count("official page") == 1 and "What is your state?" in tidy, tidy)
 
         rm = c.post("/auto/cartoon/writer/remove", headers=H)
         check("Remove: the story writer's files are gone, the stories stay", rm.status_code == 302 and not W.installed()

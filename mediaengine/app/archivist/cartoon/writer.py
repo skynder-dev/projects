@@ -879,11 +879,88 @@ def judge_facts(text: str, f: dict) -> str:
     cut = [ln for ln in said if re.search(r"(\.\.\.|…)\s*$", ln.strip())]
     if cut:
         return f"a line is left unfinished (\"{cut[0][:60]}\"): every line is a whole sentence"
-    page = sum(1 for ln in said if re.search(r"(?i)official page|the page says|the site says", ln))
+    body = [ln["text"] for s in sc["scenes"][:-1] for ln in s["lines"]]      # (the last scene shows where to read it)
+    page = sum(1 for ln in body if re.search(r"(?i)official page|the page says|the site says", ln))
     if page > 2:
         return (f"\"the official page\" is said in {page} lines: say ONCE, early, that this is what the official page "
                 "says, then just tell the facts in plain words (and show the page at the end)")
     return ""
+
+
+_PAGE_PREFIX = re.compile(r"(?i)^(?:but |and |so )?(?:the )?official page (?:also )?(?:says|shows|tells you)(?: that)?\s*[:,]?\s*")
+_PAGE_ONLY = re.compile(r"(?i)^(?:this is what the official page says|the official page (?:has more details|is here|says)|"
+                        r"you can read the full information on the official page|i can check the official page!?)\s*[.!…]*$")
+_SPEECH = re.compile(r"^([A-Z][\w .'-]*?)((?:\s*\([^)]*\))?(?:\s*\[bubble\])?)\s*:\s*(.*)$")
+
+
+def tidy_facts(text: str, f: dict) -> str:
+    """A facts video's script made to keep to its facts whatever the small model wrote: 'the official page says' kept
+    only the first time (after that the fact is just said), a line with a number the facts do not have is left out
+    (so is a picture's label with one), a line left unfinished is ended or left out, a line said twice is said once,
+    a scene left with no line is left out. The last scene (where to read it, the question) is kept as written."""
+    src = " ".join([x.get("quote", "") for x in f.get("facts") or []]
+                   + [f.get(k) or "" for k in ("hook", "end_question_ru", "rules")] + ["a pick of two"]).lower()
+    digits = set(re.findall(r"\d+(?:[.,]\d+)?", src))
+    words = set(re.findall(r"[a-z]+", src))
+
+    def alien(s):
+        low = s.lower()
+        return any(n not in digits for n in re.findall(r"\d+(?:[.,]\d+)?", low)) or \
+            any(w in NUMBER_WORDS and w not in words and NUMBER_WORDS[w] not in digits for w in re.findall(r"[a-z]+", low))
+
+    lines = text.split("\n")
+    heads = [i for i, ln in enumerate(lines) if ln.startswith("==")]
+    last = heads[-1] if heads else len(lines)
+    out, said, page_said = [], set(), False
+    for i, ln in enumerate(lines):
+        if not heads or i < heads[0] or i >= last:
+            out.append(ln)
+            continue
+        if ln.startswith("=="):
+            parts = [x.strip() for x in ln[2:].split("|")]
+            out.append("== " + " | ".join([parts[0]] + [x for x in parts[1:] if not alien(x)]))
+            continue
+        m = _SPEECH.match(ln)
+        if not m:
+            out.append(ln)
+            continue
+        who, how, body = m.group(1), m.group(2), m.group(3).strip()
+        if re.search(r"(?i)official page", body):
+            if page_said:
+                if _PAGE_ONLY.match(body):
+                    continue
+                shows = re.match(r"(?i)^(?:but |and |so )?(?:the )?official page (?:also )?shows\b", body)
+                body = _PAGE_PREFIX.sub("", body).strip()
+                if re.match(r"(?i)to [a-z]", body):          # "it says to search ..." -> "Search ..."
+                    body = body[3:]
+                elif shows and re.match(r"(?i)(where|how|what)\b", body):
+                    body = "Here is " + body[0].lower() + body[1:]
+            elif _PAGE_ONLY.match(body):
+                body = "This is what the official page says."
+            page_said = True
+        if len(body) > 1 and body[0] in "\"“'" and body[-1] in "\"”'":
+            body = body[1:-1].strip()
+        if re.search(r"(\.\.\.|…)$", body):
+            body = re.sub(r"\s*(\.\.\.|…)$", "", body).rstrip(",;: ")
+            if len(body.split()) < 4 or re.search(r"(?i)\b(if|because|when|and|or|but|the|a|to)$", body):
+                continue
+            body += "."
+        if not body or alien(body):
+            continue
+        key = re.sub(r"[^a-z0-9]+", " ", body.lower()).strip()
+        if key in said:
+            continue
+        said.add(key)
+        out.append(f"{who}{how}: {body[0].upper() + body[1:]}")
+    keep, block = [], []                        # a scene with no line left is left out
+    for ln in out + ["==END"]:
+        if ln.startswith("=="):
+            if block and (not block[0].startswith("==") or any(_SPEECH.match(x) for x in block[1:])):
+                keep += block
+            block = [ln]
+        else:
+            block.append(ln)
+    return "\n".join(keep).rstrip() + "\n"
 
 
 # ------------------------------------------------------------------------------------------------- the job
@@ -992,6 +1069,9 @@ def do(jid: str, d: Path, job: dict) -> dict:
         best = f"Site: {job['site']}\n" + best             # (the page the story is about: shown in the film's scenes)
     if job.get("mode") == "story" and (job.get("make") or {}).get("quality") == "better" and not re.search(r"(?im)^quality\s*:", best):
         best = re.sub(r"(?im)^(story\s*:.*)$", r"\1\nQuality: better", best, count=1)   # (the pictures drawn carefully)
+    if job.get("mode") == "facts":
+        best = tidy_facts(best, job.get("facts") or {})
+        best_problem = judge_facts(best, job.get("facts") or {})
     (d / "story.txt").write_text(best, "utf-8")
     out = {"ok": True, "file": "story.txt", "title": best_info.get("title") or "", "scenes": best_info["scenes"],
            "words": best_info["words"], "lines": best_info["lines"], "attempts": used, "device": srv.device,
