@@ -589,6 +589,16 @@ def main() -> int:
               and "Think you're a contractor" in fp and "Only what the FACTS say" in fp and "Нет шагов" in fp,
               (bad.status_code, fr.status_code, fjob.get("site"), fp[:200]))
 
+        ff = W.read_facts(sample)
+        head = "Title: X\nFormat: vertical\nNarrator: Nora (woman, narrator)\n\n== Home | title: A\n"
+        j_num = W.judge_facts(head + "Nora (explain): If you work more than 40 hours a week, you get paid more.\n", ff)
+        j_cut = W.judge_facts(head + "Nora (explain): The page says...\n", ff)
+        j_page = W.judge_facts(head + "".join("Nora (explain): The official page says this, %s.\n" % k for k in ("first", "again", "and again")), ff)
+        j_ok = W.judge_facts(head + "Nora (explain): The official page says you may be called a contractor instead of an employee.\n", ff)
+        check("a facts video's script: a number the facts do not have, a line left unfinished, 'the official page' said "
+              "again and again are sent back to the writer; a script that keeps to the facts passes",
+              "40" in j_num and "unfinished" in j_cut and "3 lines" in j_page and j_ok == "", (j_num, j_cut, j_page, j_ok))
+
         rm = c.post("/auto/cartoon/writer/remove", headers=H)
         check("Remove: the story writer's files are gone, the stories stay", rm.status_code == 302 and not W.installed()
               and not W.BIN.exists() and not W.MODEL_DIR.exists() and W.story_of(jid), rm.status_code)

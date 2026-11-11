@@ -849,6 +849,43 @@ def judge(text: str, secs: int = 75, style: dict | None = None) -> tuple[dict, s
     return info, ""
 
 
+NUMBER_WORDS = {"two": "2", "three": "3", "four": "4", "five": "5", "six": "6", "seven": "7", "eight": "8",
+                "nine": "9", "ten": "10", "eleven": "11", "twelve": "12", "fifteen": "15", "twenty": "20", "thirty": "30",
+                "forty": "40", "fifty": "50", "sixty": "60", "hundred": "100", "thousand": "1000", "million": "1000000",
+                "billion": "1000000000", "percent": "%", "half": "half", "double": "double", "triple": "triple"}
+
+
+def judge_facts(text: str, f: dict) -> str:
+    """What is wrong with a facts video's script against its facts ('' when it is fine): a number the facts do not
+    have, a line left unfinished, "the official page says" in more than two lines."""
+    sc = T.parse(text)
+    said = [ln["text"] for s in sc["scenes"] for ln in s["lines"]]
+    src = " ".join([x.get("quote", "") for x in f.get("facts") or []] + [f.get(k) or "" for k in ("hook", "end_question_ru", "rules")]
+                   + ["a pick of two"]).lower()
+    src_digits = set(re.findall(r"\d+(?:[.,]\d+)?", src))
+    src_words = set(re.findall(r"[a-z]+", src))
+    alien = []
+    for line in said:
+        low = line.lower()
+        for n in re.findall(r"\d+(?:[.,]\d+)?", low):
+            if n not in src_digits:
+                alien.append(n)
+        for w in re.findall(r"[a-z]+", low):
+            if w in NUMBER_WORDS and w not in src_words and NUMBER_WORDS[w] not in src_digits:
+                alien.append(w)
+    if alien:
+        return ("it says numbers the FACTS do not have (" + ", ".join(dict.fromkeys(alien)) + "): say only what the FACTS "
+                "say, or leave the number out")
+    cut = [ln for ln in said if re.search(r"(\.\.\.|…)\s*$", ln.strip())]
+    if cut:
+        return f"a line is left unfinished (\"{cut[0][:60]}\"): every line is a whole sentence"
+    page = sum(1 for ln in said if re.search(r"(?i)official page|the page says|the site says", ln))
+    if page > 2:
+        return (f"\"the official page\" is said in {page} lines: say ONCE, early, that this is what the official page "
+                "says, then just tell the facts in plain words (and show the page at the end)")
+    return ""
+
+
 # ------------------------------------------------------------------------------------------------- the job
 
 def do(jid: str, d: Path, job: dict) -> dict:
@@ -917,12 +954,13 @@ def do(jid: str, d: Path, job: dict) -> dict:
             messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt(job)}]
         best, best_info, best_problem, problem, used = "", {}, "", "", 0
         first = 0.6 if (d / "heard.txt").is_file() else 0.05
-        for attempt in range(2):
+        tries = 3 if job.get("mode") == "facts" else 2
+        for attempt in range(tries):
             used = attempt + 1
-            base = first + (0.95 - first) / 2 * attempt
+            base = first + (0.95 - first) / tries * attempt
             vo._CURRENT.update(step="writing", progress=base)
             r = ask(messages, max_tokens=3600 if job.get("mode") == "story" else 2600, seed=int(job.get("seed") or 0) + attempt,
-                    on_piece=lambda n, base=base, span=(0.95 - first) / 2: vo._CURRENT.update(
+                    on_piece=lambda n, base=base, span=(0.95 - first) / tries: vo._CURRENT.update(
                         progress=max(float(vo._CURRENT.get("progress") or 0),
                                      round(min(base + span, base + span * n / expect), 3))),
                     stop=stop)
@@ -932,6 +970,8 @@ def do(jid: str, d: Path, job: dict) -> dict:
             else:
                 info, problem = judge(text, secs, job.get("style") if isinstance(job.get("style"), dict)
                                       and job.get("mode") not in ("adapt", "translate") else None)
+            if not problem and job.get("mode") == "facts":
+                problem = judge_facts(text, job.get("facts") or {})
             if not problem and r.get("finish") == "length":
                 problem = "it was cut off before its end (it is too long): write it shorter"
             rank = (not problem, info["scenes"], info["words"])
