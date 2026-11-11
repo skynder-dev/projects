@@ -879,18 +879,20 @@ def judge_facts(text: str, f: dict) -> str:
     if cut:
         return f"a line is left unfinished (\"{cut[0][:60]}\"): every line is a whole sentence"
     body = [ln["text"] for s in sc["scenes"][:-1] for ln in s["lines"]]      # (the last scene shows where to read it)
-    page = sum(1 for ln in body if re.search(r"(?i)official page|the page says|the site says", ln)) \
-        - (1 if any(re.search(r"(?i)official page", ln) and _WHERE.search(ln) for ln in body) else 0)
+    page = sum(1 for ln in body if _PAGE_RE.search(ln)) \
+        - (1 if any(_PAGE_RE.search(ln) and _WHERE.search(ln) for ln in body) else 0)
     if page:
         return (f"\"the official page\" is said in {page} lines: the page is shown on screen, so no line says it - just "
                 "tell the facts in plain words; only the last scene says where to read it")
     return ""
 
 
-_PAGE_PREFIX = re.compile(r"(?i)^(?:but |and |so )?(?:the )?official page (?:also )?(?:says|shows|tells you)(?: that)?\s*[:,]?\s*")
+_PAGE_RE = re.compile(r"(?i)\b(?:official page|the (?:web ?)?(?:page|site)|this (?:web ?)?(?:page|site))\b")
+_PAGE_PREFIX = re.compile(r"(?i)^(?:but |and |so |also )?(?:the |this )?(?:official )?(?:web ?)?(?:page|site) (?:also )?"
+                          r"(?:says|shows|tells you|gives you|lists|explains|has)(?: that)?\s*[:,]?\s*")
 _PAGE_ONLY = re.compile(r"(?i)^(?:this is what the official page says|the official page (?:has more details|is here|says)|"
                         r"you can read the full information on the official page|i can check the official page!?)\s*[.!…]*$")
-_WHERE = re.compile(r"(?i)\bwhere\b|\bhere\b|usa\.gov|\.gov/|\bcheck\b|\bread\b|\bvisit\b")
+_WHERE = re.compile(r"(?i)\bwhere\b|\bhere\b|usa\.gov|\.gov/|\bcheck (?:it|the|this)\b|\bread\b|\bvisit\b")
 _SPEECH = re.compile(r"^([A-Z][\w .'-]*?)((?:\s*\([^)]*\))?(?:\s*\[bubble\])?)\s*:\s*(.*)$")
 
 
@@ -928,19 +930,21 @@ def tidy_facts(text: str, f: dict) -> str:
             out.append(ln)
             continue
         who, how, body = m.group(1), m.group(2), m.group(3).strip()
-        if re.search(r"(?i)official page", body) and _WHERE.search(body) and not where_said and i >= end:
+        if _PAGE_RE.search(body) and _WHERE.search(body) and not where_said and i >= end:
             where_said = True                           # (the one line that says where to read it stays)
-        elif re.search(r"(?i)official page", body):
+        elif _PAGE_RE.search(body):
             if page_said:
                 if _PAGE_ONLY.match(body):
                     continue
-                shows = re.match(r"(?i)^(?:but |and |so )?(?:the )?official page (?:also )?shows\b", body)
+                shows = re.match(r"(?i)^(?:but |and |so |also )?(?:the |this )?(?:official )?(?:web ?)?(?:page|site) (?:also )?(?:shows|gives you|lists)\b", body)
                 body = _PAGE_PREFIX.sub("", body).strip()
                 if re.match(r"(?i)to [a-z]", body):          # "it says to search ..." -> "Search ..."
                     body = body[3:]
                 elif shows and re.match(r"(?i)(where|how|what)\b", body):
                     body = "Here is " + body[0].lower() + body[1:]
-                if re.search(r"(?i)official page", body):
+                elif shows and re.match(r"(?i)(you )?(the )?steps\b", body):
+                    body = "Here are " + re.sub(r"(?i)^(you )?(the )?", "the ", body)
+                if _PAGE_RE.search(body):
                     continue                            # (a line still about the page, not a fact: left out)
             elif _PAGE_ONLY.match(body):
                 body = "This is what the official page says."
