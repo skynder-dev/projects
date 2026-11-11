@@ -1,0 +1,23 @@
+voxcpm_model_path: D:\a\_temp\home-voice\addons\voice\models\voxcpm, zipenhancer_model_path: None, enable_denoiser: False
+D:\a\_temp\home-voice\addons\voice\site\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+Loading AudioVAE from pytorch: D:\a\_temp\home-voice\addons\voice\models\voxcpm\audiovae.pth
+Running on device: cpu, dtype: bfloat16
+Loading model from safetensors: D:\a\_temp\home-voice\addons\voice\models\voxcpm\model.safetensors
+Loaded VoxCPM2Model
+{"progress": 0.02, "step": "loading", "device": "cpu"}
+{"device": "cpu"}
+{"progress": 0.05, "step": "speaking", "chunk": 1, "chunks": 1, "attempt": 1}
+--- the worker ended with exit code 3221225501
+voxcpm_model_path: D:\a\_temp\home-voice\addons\voice\models\voxcpm, zipenhancer_model_path: None, enable_denoiser: False
+D:\a\_temp\home-voice\addons\voice\site\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+Loading AudioVAE from pytorch: D:\a\_temp\home-voice\addons\voice\models\voxcpm\audiovae.pth
+Running on device: cpu, dtype: bfloat16
+Loading model from safetensors: D:\a\_temp\home-voice\addons\voice\models\voxcpm\model.safetensors
+Loaded VoxCPM2Model
+--- the worker stopped without an answer; trying once more
+{"progress": 0.02, "step": "loading", "device": "cpu"}
+{"device": "cpu"}
+{"progress": 0.05, "step": "speaking", "chunk": 1, "chunks": 1, "attempt": 1}
+--- the worker ended with exit code 3221225501
