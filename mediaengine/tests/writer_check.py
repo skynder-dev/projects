@@ -623,6 +623,10 @@ def main() -> int:
         except W.WriterError as e:
             wd = str(e)
         check("a facts file the owner withdrew (status: withdrawn) is not made", "withdrawn" in wd, wd)
+        meta = W.tidy_facts("Title: X\n\n== Home\nNora: Help is here.\nTom: That\u2019s all it says. No more, no less.\n"
+                            "Nora: It says to learn the warning signs of identity theft.\n== Board\nNora: What is your state?", ff)
+        check("talk about the page instead of the facts is taken out ('That's all it says'; 'It says to learn X' -> 'Learn X')",
+              "all it says" not in meta and "Learn the warning signs" in meta, meta)
 
         rm = c.post("/auto/cartoon/writer/remove", headers=H)
         check("Remove: the story writer's files are gone, the stories stay", rm.status_code == 302 and not W.installed()

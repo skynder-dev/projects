@@ -977,7 +977,40 @@ def tidy_facts(text: str, f: dict) -> str:
             block = [ln]
         else:
             block.append(ln)
-    return vary_places("\n".join(keep).rstrip() + "\n", f)
+    return vary_places(_no_meta("\n".join(keep).rstrip() + "\n"), f)
+
+
+_META_DROP = re.compile(r"(?i)^(?:that'?s all (?:it|the page) says|no (?:other|more) (?:steps|details) (?:are )?given|"
+                        r"it (?:doesn'?t|does not) say|it only says|it'?s (?:all )?(?:written|right) (?:here|there)|"
+                        r"no more,? no less)")
+_META_PREFIX = re.compile(r"(?i)^(?:and |but |so )?(?:it|this|the rules?|the irs|they) (?:also )?(?:says?|tells? you|explains?)"
+                          r"(?: that)?(?: to)?\s*[:,]?\s*")
+
+
+def _no_meta(text: str) -> str:
+    """The small model's talk about the page instead of the facts ("It says to learn...", "That's all it says") taken out:
+    the viewer sees the page on screen; a line says the fact itself."""
+    out = []
+    for ln in text.split("\n"):
+        m = re.match(r"^([^:=][^:]{0,40}?:\s*)(.*)$", ln)
+        if not m or ln.lower().startswith(("title:", "site:", "cast:", "format:")):
+            out.append(ln)
+            continue
+        who, body = m.group(1), m.group(2)
+        plain = body.replace("\u2019", "'")
+        if _META_DROP.match(plain) or re.match(r"(?i)^it(?:'s| is) written\b", plain):
+            continue
+        cut = re.sub(r"(?i),?\s*but (?:it|the page) (?:doesn'?t|does not) say\b.*$", ".", plain)
+        if cut != plain:
+            body = plain = cut
+            continue
+        new = _META_PREFIX.sub("", plain, count=1)
+        if new != plain:
+            if len(new.split()) < 3:
+                continue
+            body = new[0].upper() + new[1:]
+        out.append(who + body)
+    return "\n".join(out)
 
 
 _TOPIC_PLACES = (                  # what a topic is about -> the backgrounds that show it (the owner: not all home and office)
