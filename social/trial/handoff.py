@@ -6,9 +6,11 @@ Usage: python -I handoff.py CARDS_JSON DECISIONS_JSON OUT_DIR TRIAL_JSON [TRIAL_
 """
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
+NEGATIVE = re.compile(r"(there (are|is) no|no |stop |don'?t |you can'?t|there'?s no|it'?s not|never |not )", re.I)
 RULES = ('Only these facts; keep every condition; no promises; on-screen source link; the host shows the official page, '
          'never poses as an expert. End with one question viewers answer in one word (their state, or a pick of two).')
 
@@ -98,6 +100,9 @@ def main(argv):
         if v not in ('like', 'now') or (out / f'{cid}.json').exists():
             continue
         card = cards.get(cid)
+        if card and NEGATIVE.match(str(card.get('text', '')).strip()):   # owner rule 08.11, applies to old likes too
+            missing.append(cid + ' (negative hook, owner rule 08.11)')
+            continue
         parts = cid.split('_')
         trial = trials.get(parts[1]) if len(parts) >= 3 else None
         src_line = line(card, 'Источник:') if card else ''
