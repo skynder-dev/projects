@@ -230,6 +230,40 @@
     "https://contentrewards.com/faqs"
    ],
    "made": "2026-11-10"
+  },
+  {
+   "id": "rv_a_clipping_platforms",
+   "made": "2026-11-12",
+   "title": "Где ещё платят за нарезку, кроме Content Rewards",
+   "title_en": "Other clipping platforms besides Content Rewards",
+   "lines": [
+    "Суть: Content Rewards (это Whop) — самая крупная доска. ClipFarm и Clipping Culture — не отдельные площадки, а агентства, которые выставляют кампании на ту же доску. Мы их уже видим.",
+    "Второй реальный вариант — Vyro (за ним MrBeast). В рекламе $3 за 1000 просмотров, но по факту на кампаниях $1–2. Не больше $1 000 за ролик, засчитывается от 1 000 просмотров.",
+    "Вывод в Vyro: от $10, раз в неделю, через Stripe или PayPal. Деньги «зависают», пока кампания не закончится и не пройдёт проверка просмотров.",
+    "Остальные (Clipping.net $0,40–3, ClipAffiliates, ClipFlip) мельче. Большинство обзоров пишут сами площадки о себе — верить осторожно.",
+    "Что делать: зарегистрироваться ещё и на Vyro — это бесплатно, без подписчиков. Тот же ролик можно нести в обе площадки, если правила кампаний разрешают. Старт $0, деньги через 2–4 недели."
+   ],
+   "lines_en": [
+    "In short: Content Rewards (Whop) is the biggest board. ClipFarm and Clipping Culture are agencies that post campaigns on that same board; we already see them.",
+    "The second real option is Vyro (MrBeast-backed). Advertised $3 per 1,000 views, but listed campaigns pay $1-2. Max $1,000 per post, counts from 1,000 views.",
+    "Vyro payout: from $10, once a week, via Stripe or PayPal. Money stays pending until the campaign ends and views are verified.",
+    "Others (Clipping.net $0.40-3, ClipAffiliates, ClipFlip) are smaller. Most reviews are written by platforms about themselves.",
+    "Action: also join Vyro (free, no follower minimum). The same clip may go to both if campaign rules allow. Start $0, money in 2-4 weeks."
+   ],
+   "unknown": "Комиссия Content Rewards: на странице доски было 7%, обзоры пишут о 10% (у Whop и на стороне бренда, и с выплат) — сверить в кабинете после регистрации. Минимальный вывод у Vyro разные обзоры называют по-разному ($10 или «не опубликован»). Даёт ли Vyro файлы-исходники для MedEng — не проверено; правила Vyro для программ не читались (раньше: адрес перенаправляет), подключать программой не будем, только вручную. Площадок, которые берут деньги с нарезчика, среди найденных нет; платные «курсы по нарезке» — не брать.",
+   "unknown_en": "Content Rewards fee: 7% on the board page vs 10% in reviews; check in the dashboard. Vyro minimum payout reported as $10 or unpublished. Whether Vyro gives source files is unverified; Vyro is not read by program, manual only. None of the found platforms charge clippers; skip paid clipping courses.",
+   "sources": [
+    "https://www.builtbyfoundry.io/blog/what-is-clipping-1-dollar-per-1000-views-50-campaigns",
+    "https://www.clipaffiliates.com/blog/vyro-review",
+    "https://www.clipaffiliates.com/blog/clipaffiliates-vs-vyro",
+    "https://www.thekeyword.co/news/mrbeast-launches-vyro-a-video-clipping-platform",
+    "https://www.clipspeed.ai/blog/vyro-clipping-platform-mrbeast-guide.html",
+    "https://www.clipaffiliates.com/blog/clipping-cpm-rates-2026",
+    "https://findclout.com/blog/airrack-clipfarm",
+    "https://www.opus.pro/blog/best-clipping-agencies",
+    "https://whop.com/blog/airrack-x-whop/",
+    "https://www.clipspeed.ai/blog/whop-content-rewards-clipping-guide.html"
+   ]
   }
  ]
 }
