@@ -134,8 +134,14 @@ def _left(path: str, img) -> int:
         part = img[: min(len(img), 4000)].astype(np.int16)
         diff = np.abs(part - part[:, :1]).max(axis=2) > 40
         cols = np.where(diff.mean(axis=0) > 0.002)[0]
-        _LEFT[path] = int(cols[0]) if len(cols) else 0
-    return _LEFT[path]
+        _LEFT[path] = (int(cols[0]), int(cols[-1])) if len(cols) else (0, len(img[0]) - 1)
+    return _LEFT[path][0]
+
+
+def _right(path: str, img) -> int:
+    """Where a page's content ends on the right (its last column that is not the page's own background)."""
+    _left(path, img)
+    return _LEFT[path][1]
 
 
 def draw(cv, path: str, box: tuple, k0: float, k1: float, t: float) -> None:
@@ -150,15 +156,16 @@ def draw(cv, path: str, box: tuple, k0: float, k1: float, t: float) -> None:
     m = cv._m[-1]
     s = math.sqrt(abs(m[0, 0] * m[1, 1] - m[0, 1] * m[1, 0]))
     W, H = max(8, int(bw * 0.92 * s)), max(8, int(bh * 0.92 * s))
-    zoom = 1.7                                             # (a page's whole width makes its text unreadable on a phone:
-    scale = zoom * W / iw                                  # its middle, larger - where a page's main text is)
+    left, right = _left(path, img), _right(path, img)      # (a page's whole width makes its text unreadable on a phone:
+    col = max(1, right - left + 24)                        # its text column, as large as the box takes it - never cut at
+    scale = min(2.6 * W / iw, max(W / iw, W / col))        # the right edge, the owner: text out of its frame)
     view = int(H / scale)
     e = t * t * (3 - 2 * t)
     top = int((k0 + (k1 - k0) * e) * max(0, ih - view))
     full_w = int(iw * scale)
     pic, _ = art._sized_pic(Path(path), full_w, int(ih * scale), False)
     y0 = int(top * scale)
-    x0 = max(0, min(full_w - W, int(_left(path, img) * scale) - 12))   # (from where the page's text starts)
+    x0 = max(0, min(full_w - W, int(left * scale) - 12))  # (from where the page's text starts)
     pic = pic[y0:y0 + H, x0:x0 + W]
     crop = None
     x = m[0, 0] * cx + m[0, 1] * cy + m[0, 2] - W / 2

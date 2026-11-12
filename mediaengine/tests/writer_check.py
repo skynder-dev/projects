@@ -610,6 +610,19 @@ def main() -> int:
               "only the first time, a number the facts do not have and a picture label with one left out, the last scene "
               "kept", W.judge_facts(tidy, ff) == "" and "40" not in tidy and "$8" not in tidy and "contractor" in tidy
               and tidy.count("official page") <= 1 and "The page gives" not in tidy and "What is your state?" in tidy, tidy)
+        homes = [ln for ln in tidy.split("\n") if ln.startswith("== Home") or ln.startswith("== Office")]
+        check("a facts video's backgrounds show its topic: at most one scene at Home or in an Office before the last "
+              "(a wage video: a building site, a street)", len([h for h in homes if h]) <= 2
+              and ("== Building site" in tidy or "== City street" in tidy or "== City hall" in tidy), tidy)
+        neg = W.judge_facts("Title: X\n\n== Home\nNora: Stop looking for free money.\n== Board\nNora: What is your state?", ff)
+        check("a facts video whose hook starts with 'stop' is sent back (the owner: say what the viewer CAN get)",
+              "hook" in neg, neg)
+        try:
+            W.read_facts(dict(ff, status="withdrawn"))
+            wd = ""
+        except W.WriterError as e:
+            wd = str(e)
+        check("a facts file the owner withdrew (status: withdrawn) is not made", "withdrawn" in wd, wd)
 
         rm = c.post("/auto/cartoon/writer/remove", headers=H)
         check("Remove: the story writer's files are gone, the stories stay", rm.status_code == 302 and not W.installed()

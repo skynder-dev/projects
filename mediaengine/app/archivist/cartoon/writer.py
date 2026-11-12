@@ -757,7 +757,10 @@ def prompt(job: dict) -> str:
 
 
 FACTS_RULES = """RULES FOR THIS VIDEO (they come before everything else):
-- The first line is the hook, said by the host: "{hook}" (in the script's language, the same meaning).
+- The first line is the hook, said by the host: "{hook}" (in the script's language, the same meaning). The hook says what
+  the viewer CAN get or do; it never starts with "stop", "don't", "no", "never" or "there is no".
+- Backgrounds show the topic (a Bank for a loan, a School for college, a Hospital for health, a Shop for a business, a
+  Building site or a City street for work): at most one scene at Home or in an Office.
 - Only what the FACTS say. Keep every condition they give (who, when, unless...). No promises ("you will get"), no
   advice beyond them, no numbers, names, dates or steps they do not have. The page itself is shown on screen, so NO line says
   "the official page says" - just tell the facts in plain words; only the last scene says where to read it. The host never claims to be an expert, a lawyer or an official.
@@ -863,6 +866,8 @@ def judge_facts(text: str, f: dict) -> str:
                    + ["a pick of two"]).lower()
     src_digits = set(re.findall(r"\d+(?:[.,]\d+)?", src))
     src_words = set(re.findall(r"[a-z]+", src))
+    if said and _NEGATIVE_HOOK.match(said[0]) or _NEGATIVE_HOOK.match(sc.get("title") or ""):
+        return ("the hook starts with \"stop / don't / no\": the first line says what the viewer CAN get or do")
     alien = []
     for line in said:
         low = line.lower()
@@ -887,6 +892,7 @@ def judge_facts(text: str, f: dict) -> str:
     return ""
 
 
+_NEGATIVE_HOOK = re.compile(r"(?i)^\W*(?:stop|don'?t|do not|no\b|never|there (?:is|are) no|nothing|forget|quit)\b")
 _PAGE_RE = re.compile(r"(?i)\b(?:official page|the (?:web ?)?(?:page|site)|this (?:web ?)?(?:page|site))\b")
 _PAGE_PREFIX = re.compile(r"(?i)^(?:but |and |so |also )?(?:the |this )?(?:official )?(?:web ?)?(?:page|site) (?:also )?"
                           r"(?:says|shows|tells you|gives you|lists|explains|has)(?: that)?\s*[:,]?\s*")
@@ -971,7 +977,44 @@ def tidy_facts(text: str, f: dict) -> str:
             block = [ln]
         else:
             block.append(ln)
-    return "\n".join(keep).rstrip() + "\n"
+    return vary_places("\n".join(keep).rstrip() + "\n", f)
+
+
+_TOPIC_PLACES = (                  # what a topic is about -> the backgrounds that show it (the owner: not all home and office)
+    (r"health|medic|hospital|doctor|insurance|cobra|chip\b|injur|illness", ("Hospital", "City hall")),
+    (r"school|college|student|teacher|fafsa|tuition|universit|educat|scholarship", ("School", "City hall")),
+    (r"loan|bank|lender|credit|debt|money|savings?|retire|pension|refund|tax", ("Bank", "City hall")),
+    (r"business|shop|store|startup|entrepreneur|sba\b|customer", ("Shop", "Bank")),
+    (r"worker|wage|overtime|paycheck|job|employ|labor|construction", ("Building site", "City street")),
+    (r"grant|program|benefit|government|federal|state|apply|application", ("City hall", "City street")),
+)
+_INDOOR = ("Home", "Office")
+
+
+def vary_places(text: str, f: dict) -> str:
+    """A facts video's backgrounds made to show its topic: the small model puts nearly every scene at Home or in an
+    Office; after the first one, the next ones go to the places the topic is about (a bank for a loan, a school for
+    college, a building site for wages...), the last scene stays where it is."""
+    topic = " ".join([str(f.get(k) or "") for k in ("topic", "hook", "audience")] +
+                     [x.get("quote", "") for x in (f.get("facts") or [])[:6]]).lower()
+    want: list[str] = []
+    for pat, places in _TOPIC_PLACES:
+        if re.search(pat, topic):
+            want += [p for p in places if p not in want]
+    want = (want or ["City street", "City hall"]) + ["City street"]
+    lines = text.split("\n")
+    heads = [i for i, ln in enumerate(lines) if ln.startswith("== ")]
+    seen_indoor, k = False, 0
+    for i in heads[:-1]:
+        m = re.match(r"^== ([^|]+?)\s*(\|.*)?$", lines[i])
+        if not m or m.group(1).strip() not in _INDOOR:
+            continue
+        if not seen_indoor:
+            seen_indoor = True
+            continue
+        lines[i] = "== " + want[k % len(want)] + (" " + m.group(2) if m.group(2) else "")
+        k += 1
+    return "\n".join(lines)
 
 
 # ------------------------------------------------------------------------------------------------- the job
@@ -1188,6 +1231,10 @@ def read_facts(data) -> dict:
     facts = [x for x in (data.get("facts") or []) if isinstance(x, dict) and str(x.get("quote") or "").strip()]
     if not re.match(r"https?://", url) or not facts:
         raise WriterError("The facts file has no official page (source_url) or no facts with quotes.")
+    if str(data.get("status") or "").strip().lower() == "withdrawn":
+        raise WriterError("This video was withdrawn by its owner (status: withdrawn): it is not made.")
+    if str(data.get("owner_decision") or "like").strip().lower() not in ("like", "take", "yes"):
+        raise WriterError("The owner has not taken this video (owner_decision is not like): it is not made.")
     keep = ("id", "channel", "topic", "audience", "hook", "hook_ru", "angle_ru", "viewer_question_ru", "end_question_ru",
             "not_in_source_ru", "rules")
     out = {k: str(data.get(k) or "")[:600] for k in keep if data.get(k)}
