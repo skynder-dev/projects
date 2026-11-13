@@ -625,6 +625,13 @@ def main() -> int:
         check("a facts file the owner withdrew (status: withdrawn) is not made", "withdrawn" in wd, wd)
         meta = W.tidy_facts("Title: X\n\n== Home\nNora: Help is here.\nTom: That\u2019s all it says. No more, no less.\n"
                             "Nora: It says to learn the warning signs of identity theft.\n== Board\nNora: What is your state?", ff)
+        rep = W.tidy_facts("Title: X\n\n== Building site | flow: Employer -> Employee $X\nNora: You can request the refund form "
+                           "through your local benefits office before the filing deadline.\n== Board\nEli: What if I missed it?\n"
+                           "Nora: You can still request the refund form through the local benefits office before the deadline.\n"
+                           "== Home\nNora: What is your state?", ff)
+        check("a blank like '$X' leaves the picture; the same point said again in other words goes, with the question "
+              "it answered", "$X" not in rep and rep.count("refund form") == 1 and "missed it" not in rep
+              and "What is your state?" in rep, rep)
         check("talk about the page instead of the facts is taken out ('That's all it says'; 'It says to learn X' -> 'Learn X')",
               "all it says" not in meta and "Learn the warning signs" in meta, meta)
 

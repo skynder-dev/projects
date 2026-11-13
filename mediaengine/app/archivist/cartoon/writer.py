@@ -892,6 +892,24 @@ def judge_facts(text: str, f: dict) -> str:
     return ""
 
 
+_PLACEHOLDER = re.compile(r"\s*(?:\$X+\b|\bX{2,}\b|\[[^\]]*\]|<[^>]*>)")
+_FILLER = set("that this with your from have they there their what when will would could should about into only even "
+            "still also just been were does here more some them then than very".split())
+
+
+def _same_point(key: str, said: set) -> bool:
+    """The same point said again in other words (the small model's "within three years of the filing deadline" three
+    times): five or more of its real words, and nearly all of them, already in one earlier line."""
+    words = {w for w in key.split() if len(w) > 3 and w not in _FILLER}
+    if len(words) < 5:
+        return False
+    for k in said:
+        other = {w for w in k.split() if len(w) > 3 and w not in _FILLER}
+        if len(words & other) >= 5 and len(words & other) >= 0.7 * len(words):
+            return True
+    return False
+
+
 _NEGATIVE_HOOK = re.compile(r"(?i)^\W*(?:stop|don'?t|do not|no\b|never|there (?:is|are) no|nothing|forget|quit)\b")
 _PAGE_RE = re.compile(r"(?i)\b(?:official page|the (?:web ?)?(?:page|site)|this (?:web ?)?(?:page|site))\b")
 _PAGE_PREFIX = re.compile(r"(?i)^(?:but |and |so |also )?(?:the |this )?(?:official )?(?:web ?)?(?:page|site) (?:also )?"
@@ -929,6 +947,7 @@ def tidy_facts(text: str, f: dict) -> str:
         if ln.startswith("=="):
             parts = [x.strip() for x in ln[2:].split("|")]
             parts = [re.sub(r"(?i)^(title:\s*[^/]*?)\s*/\s*[^/]*official[^/]*$", r"\1", x) for x in parts]
+            parts = [_PLACEHOLDER.sub("", x).replace("  ", " ").strip() for x in parts]   # ("Employee $X": a blank)
             out.append("== " + " | ".join([parts[0]] + [x for x in parts[1:] if not alien(x)]))
             continue
         m = _SPEECH.match(ln)
@@ -965,8 +984,10 @@ def tidy_facts(text: str, f: dict) -> str:
         if not body or alien(body):
             continue
         key = re.sub(r"[^a-z0-9]+", " ", body.lower()).strip()
-        if key in said or (len(key) > 25 and any(key in k or k in key for k in said if len(k) > 25)):
-            continue                                    # (said before, or the same said again with a word more or less)
+        if key in said or (len(key) > 25 and any(key in k or k in key for k in said if len(k) > 25)) or _same_point(key, said):
+            if out and _SPEECH.match(out[-1]) and out[-1].rstrip().endswith("?"):
+                out.pop()                               # (a question whose answer was a repeat goes with it)
+            continue                                    # (said before, or the same said again in other words)
         said.add(key)
         out.append(f"{who}{how}: {body[0].upper() + body[1:]}")
     keep, block = [], []                        # a scene with no line left is left out
