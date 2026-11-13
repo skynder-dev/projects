@@ -511,11 +511,14 @@ def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None, trac
     env.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
     log = work.parent / "worker.log"          # next to the work folder: kept when the pieces are cleaned away
     res: dict = {}
-    for attempt in (1, 2):                    # a worker that dies without a word (a crash while loading) gets one more go
+    for attempt in (1, 2, 3):                 # a worker that dies without a word (a crash while loading) gets more goes
         cut = False
+        if attempt > 1:
+            waited = _wait_for_room(attempt)
         with log.open("a", encoding="utf-8", errors="replace") as lf:
             if attempt > 1:
-                lf.write("--- the worker stopped without an answer; trying once more\n")
+                lf.write(f"--- the worker stopped without an answer; trying again (after {waited} s, "
+                         f"when the pictures were not being drawn); memory now: {_memory_note()}\n")
             proc = subprocess.Popen([_python(), "-S", "-E", "-B", "-X", "utf8", str(WORKER), str(jf)], stdout=subprocess.PIPE,
                                     stderr=lf, stdin=subprocess.DEVNULL, text=True, encoding="utf-8", errors="replace", env=env,
                                     cwd=str(work), **process_kwargs(below_normal=True))
@@ -543,13 +546,57 @@ def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None, trac
                 _untrack(proc, track)
             cut = time.time() - t0 >= timeout
             if not res:
-                lf.write(f"--- the worker ended with exit code {proc.returncode}\n")
+                lf.write(f"--- the worker ended with exit code {proc.returncode}; memory: {_memory_note()}\n")
         if res or cut or _CURRENT.get("cancel") or QUITTING:
             break
     if not res:
         res = {"ok": False, "error": "The voice worker took too long and was stopped." if cut else
                "The voice worker stopped without an answer (details: worker.log in the job folder)."}
     return res
+
+
+def _memory_note() -> str:
+    """The card's and the PC's free memory, for worker.log (why a worker died while loading)."""
+    note = []
+    try:
+        out = subprocess.run(["nvidia-smi", "--query-gpu=memory.used,memory.total", "--format=csv,noheader,nounits"],
+                             capture_output=True, text=True, timeout=10, **process_kwargs()).stdout.strip()
+        if out:
+            used, total = [x.strip() for x in out.splitlines()[0].split(",")[:2]]
+            note.append(f"card {used}/{total} MB used")
+    except Exception:
+        pass
+    try:
+        import ctypes
+
+        class _M(ctypes.Structure):
+            _fields_ = [("l", ctypes.c_ulong), ("load", ctypes.c_ulong), ("total", ctypes.c_ulonglong),
+                        ("avail", ctypes.c_ulonglong), ("pt", ctypes.c_ulonglong), ("pa", ctypes.c_ulonglong),
+                        ("vt", ctypes.c_ulonglong), ("va", ctypes.c_ulonglong), ("x", ctypes.c_ulonglong)]
+        m = _M(); m.l = ctypes.sizeof(_M)
+        if ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(m)):
+            note.append(f"PC {m.avail // 2**20}/{m.total // 2**20} MB free, page file {m.pa // 2**20} MB free")
+    except Exception:
+        pass
+    return "; ".join(note) or "unknown"
+
+
+def _wait_for_room(attempt: int) -> int:
+    """Before a voice worker is started again: wait until the picture add-on is not drawing (the two loading big models at
+    once on one card crashed the voice while it loaded: exit code 0xC0000005, the owner's PC 11-12.11), then a pause."""
+    t0 = time.time()
+    try:
+        from .cartoon import painter
+        while painter.PAINT.get("state") == "running" and time.time() - t0 < 1800 \
+                and not _CURRENT.get("cancel") and not QUITTING:
+            time.sleep(5)
+    except Exception:                         # (no picture add-on: nothing to wait for)
+        pass
+    pause = 60 * (attempt - 1)               # (60 s, then 120 s: what held the memory may let go)
+    while pause > 0 and not _CURRENT.get("cancel") and not QUITTING:
+        time.sleep(1)
+        pause -= 1
+    return int(time.time() - t0)
 
 
 def _seconds(video) -> float:
