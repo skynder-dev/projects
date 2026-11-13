@@ -757,8 +757,9 @@ def prompt(job: dict) -> str:
 
 
 FACTS_RULES = """RULES FOR THIS VIDEO (they come before everything else):
-- The first line is the hook, said by the host: "{hook}" (in the script's language, the same meaning). The hook says what
-  the viewer CAN get or do; it never starts with "stop", "don't", "no", "never" or "there is no".
+- The first scene is ONE line: the hook, said by the host, at most 12 words. It starts with the money or the thing the
+  viewer gets, in plain words ("The government can pay part of your heating bill."; "Your old boss may still owe you
+  money."), built on: "{hook}". Never a general "help is available", never "if you are...", never "stop", "don't", "no".
 - Backgrounds show the topic (a Bank for a loan, a School for college, a Hospital for health, a Shop for a business, a
   Building site or a City street for work): at most one scene at Home or in an Office.
 - Only what the FACTS say. Keep every condition they give (who, when, unless...). No promises ("you will get"), no
@@ -868,6 +869,9 @@ def judge_facts(text: str, f: dict) -> str:
     src_words = set(re.findall(r"[a-z]+", src))
     if said and _NEGATIVE_HOOK.match(said[0]) or _NEGATIVE_HOOK.match(sc.get("title") or ""):
         return ("the hook starts with \"stop / don't / no\": the first line says what the viewer CAN get or do")
+    if said and (not _GAIN.search(" ".join(said[0].split()[:7])) or _WEAK_HOOK.search(said[0])):
+        return ("the first line does not hook: it must name the money or the thing the viewer gets in its first words "
+                "(pay, money, refund, owed, free, cash, $...), not \"help is available\"")
     alien = []
     for line in said:
         low = line.lower()
@@ -920,6 +924,10 @@ def _same_point(key: str, said: set) -> bool:
     return False
 
 
+_GAIN = re.compile(r"(?i)\b(?:pay|pays|paid|money|cash|refund|refunds|owe[sd]?|free|grant|loan|\$\d|dollars?|"
+                   r"bills?|benefits?|check|wages?|pension|food|rent|coverage|insurance|save|discount)\b|\$")
+_WEAK_HOOK = re.compile(r"(?i)^\W*if\b|help is available|there is help|help may be available|learn (?:about|more)|"
+                        r"some programs|^\W*(?:former|current|are you|do you)\b")
 _NEGATIVE_HOOK = re.compile(r"(?i)^\W*(?:stop|don'?t|do not|no\b|never|there (?:is|are) no|nothing|forget|quit)\b")
 _PAGE_RE = re.compile(r"(?i)\b(?:official page|the (?:web ?)?(?:page|site)|this (?:web ?)?(?:page|site))\b")
 _PAGE_PREFIX = re.compile(r"(?i)^(?:but |and |so |also )?(?:the |this )?(?:official )?(?:web ?)?(?:page|site) (?:also )?"
@@ -957,7 +965,8 @@ def tidy_facts(text: str, f: dict) -> str:
         if ln.startswith("=="):
             parts = [x.strip() for x in ln[2:].split("|")]
             parts = [re.sub(r"(?i)^(title:\s*[^/]*?)\s*/\s*[^/]*official[^/]*$", r"\1", x) for x in parts]
-            parts = [_PLACEHOLDER.sub("", x).replace("  ", " ").strip() for x in parts]   # ("Employee $X": a blank)
+            parts = [_PLACEHOLDER.sub("", x).replace("  ", " ").strip() for x in parts]
+            parts = [re.sub(r"(?i)^(title:\s*[^/]*?)\s*/.*$", r"\1", x) for x in parts]   # (no small print under a title)   # ("Employee $X": a blank)
             out.append("== " + " | ".join([parts[0]] + [x for x in parts[1:] if not alien(x)]))
             continue
         m = _SPEECH.match(ln)
@@ -1008,7 +1017,23 @@ def tidy_facts(text: str, f: dict) -> str:
             block = [ln]
         else:
             block.append(ln)
-    return vary_places(_no_meta("\n".join(keep).rstrip() + "\n"), f)
+    return vary_places(_one_line_hook(_no_meta("\n".join(keep).rstrip() + "\n")), f)
+
+
+def _one_line_hook(text: str) -> str:
+    """The first scene: the hook alone (seven seconds of a still title and a general "help is available" before
+    anything - the owner 13.11: "nobody stays to the part that matters"); its other lines open the next scene."""
+    lines = text.split("\n")
+    heads = [i for i, ln in enumerate(lines) if ln.startswith("== ")]
+    if len(heads) < 2:
+        return text
+    a, b = heads[0], heads[1]
+    speech = [i for i in range(a + 1, b) if _SPEECH.match(lines[i])]
+    if len(speech) < 2:
+        return text
+    moved = [lines[i] for i in speech[1:]]
+    rest = [ln for i, ln in enumerate(lines[:b]) if i not in speech[1:]]
+    return "\n".join(rest + [lines[b]] + moved + lines[b + 1:])
 
 
 _META_DROP = re.compile(r"(?i)^(?:that'?s all (?:it|the page) says|no (?:other|more) (?:steps|details) (?:are )?given|"

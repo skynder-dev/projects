@@ -294,6 +294,9 @@ WALK_IN = 0.9                  # seconds a character takes to walk in
 
 # ------------------------------------------------------------------------------------------------- the picture
 
+MIXED_PICTURE = 0.8                                        # (a picture's 700 units against a drawn one's ~560)
+
+
 def _layout(cv: Canvas, n: int, visual: bool) -> tuple[list, float, tuple | None]:
     """Where the characters stand (x of each), their size, and the visual's box (cx, cy, w, h)."""
     gy = bgs.ground_y(cv)
@@ -695,9 +698,13 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                     walk, look, pose, pose2, emo = st * 9.0, -side, "idle", None, emo
                     gzx, nod, brow, hop = 0.6 * look, 0.0, 0.0, 0.0
                 if key in pics["cast"]:                    # (a picture character: its gesture's picture, the mouth)
+                    # (beside a drawn character a picture is made its height: the host as a picture next to two drawn
+                    # people was half as big again - the owner 13.11: "she is twice as big as the man")
+                    mixed = any(n_ not in pics["cast"] for n_ in names)
                     art.draw_character(cv, Path(pics["cast"][key]), x, gy - hop, sc, turn if walk is None else look,
                                        pose2 if pose2 and mix >= 0.5 else pose, mouths.get(key, 0.0) if speaker == key else 0.0,
-                                       t + k, walk, nod, float(c.get("height") or 1.0), blink)
+                                       t + k, walk, nod, float(c.get("height") or 1.0) * (MIXED_PICTURE if mixed else 1.0),
+                                       blink)
                 else:
                     ch.draw(cv, c, x, gy - hop, sc, turn if walk is None else look, pose, pose2, mix, emo,
                             mouths.get(key, 0.0) if speaker == key else 0.0, blink, t + k, walk, (gzx, gzy), nod=nod, brow=brow,

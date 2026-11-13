@@ -65,6 +65,10 @@ def _voice_for(c: dict, key: str, lang: str = "en", narrator: bool = False) -> t
         # English recording garbled it (voice add-on check, run 40616952980); a voice from a description said it
         who = "woman" if c.get("female") else "man"
         v = {"kind": "describe", "text": f"A clear, warm {who}'s narrator voice, calm and friendly, speaking naturally."}
+    if v.get("kind") == "host" and c.get("female"):
+        # (a woman as the host: the program's own voice is a man's - Nora Vale, the facts videos' host, spoke with a
+        # man's voice: the owner 13.11 "a man's voice, completely". Her own voice from a description instead)
+        v = {}
     if not v and (c.get("female") or not narrator):
         # (no voice of its own: the program's own voice is a man's, a narrator's - a woman, or a second man, spoke with
         # it too: "an aunt with a commanding man's voice". A voice from a description fitting the person instead,

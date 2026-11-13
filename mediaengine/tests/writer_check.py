@@ -590,16 +590,16 @@ def main() -> int:
               (bad.status_code, fr.status_code, fjob.get("site"), fp[:200]))
 
         ff = W.read_facts(sample)
-        head = "Title: X\nFormat: vertical\nNarrator: Nora (woman, narrator)\n\n== Home | title: A\n"
+        head = "Title: X\nFormat: vertical\nNarrator: Nora (woman, narrator)\n\n== Home | title: A\nNora (explain): Your boss may owe you pay.\n"
         j_num = W.judge_facts(head + "Nora (explain): If you work more than 40 hours a week, you get paid more.\n", ff)
         j_cut = W.judge_facts(head + "Nora (explain): The page says...\n", ff)
         j_page = W.judge_facts(head + "".join("Nora (explain): The official page says this, %s.\n" % k for k in ("first", "again", "and again")) + "== Home | phone\nNora (ask): What is your state?\n", ff)
-        j_ok = W.judge_facts(head + "Nora (explain): The official page says you may be called a contractor instead of an employee.\n", ff)
+        j_ok = W.judge_facts(head + "Nora (explain): Your boss may owe you pay.\nNora (explain): The official page says you may be called a contractor instead of an employee.\n", ff)
         check("a facts video's script: a number the facts do not have, a line left unfinished, 'the official page' said "
               "again and again are sent back to the writer; a script that keeps to the facts passes",
               "40" in j_num and "unfinished" in j_cut and "3 lines" in j_page and j_ok == "", (j_num, j_cut, j_page, j_ok))
 
-        messy = (head + "Nora (explain): This is what the official page says.\n"
+        messy = (head + "Nora (explain): Your boss may owe you pay.\nNora (explain): This is what the official page says.\n"
                  "Nora (explain): The official page says: \"You may be called a contractor instead of an employee.\"\n"
                  "Sam (think): If you work more than 40 hours a week...\n"
                  "== Office | bars: paid $8.00\nNora (explain): The official page says to read it.\n"
@@ -614,6 +614,14 @@ def main() -> int:
         check("a facts video's backgrounds show its topic: at most one scene at Home or in an Office before the last "
               "(a wage video: a building site, a street)", len([h for h in homes if h]) <= 2
               and ("== Building site" in tidy or "== City street" in tidy or "== City hall" in tidy), tidy)
+        weak = W.judge_facts("Title: X\n\n== Home\nNora: If your energy bills are too high, there is help available.\n"
+                             "== Board\nNora: What is your state?", ff)
+        check("a facts video whose first line does not hook ('If your bills are too high, there is help available') is "
+              "sent back: the money first (the owner 13.11)", "hook" in weak, weak)
+        one = W.tidy_facts("Title: X / for people\n\n== City street | title: X / for people\nNora: Your boss may owe you pay.\n"
+                           "Nora: Some programs can help.\n== Board\nNora: What is your state?", ff)
+        check("a facts video's first scene is the hook alone, no small print under its title", "title: X / for" not in one
+              and one.index("Some programs") > one.index("== Board"), one)
         neg = W.judge_facts("Title: X\n\n== Home\nNora: Stop looking for free money.\n== Board\nNora: What is your state?", ff)
         check("a facts video whose hook starts with 'stop' is sent back (the owner: say what the viewer CAN get)",
               "hook" in neg, neg)
