@@ -264,6 +264,35 @@
     "https://whop.com/blog/airrack-x-whop/",
     "https://www.clipspeed.ai/blog/whop-content-rewards-clipping-guide.html"
    ]
+  },
+  {
+   "id": "rv_a_narrow_niches",
+   "made": "2026-11-13",
+   "title": "Узкие ниши: кто реально зарабатывает на программе для одной отрасли",
+   "title_en": "Narrow niches: who actually earns from software for one trade",
+   "lines": [
+    "Программа для фирм по борьбе с вредителями: $100 тыс. в месяц, один основатель, начал в пандемию (HN, 2023). Значит, даже при FieldRoutes и PestPac место нашлось.",
+    "Программа для продавцов домов на колёсах: ~$4 тыс. в месяц, расходы $400. Старые программы в отрасли закрылись после 2008 года, конкурентов почти нет.",
+    "Wi-Fi для студенческих общежитий (Mino): $20–30 тыс. за установку плюс ~$650 в месяц с каждого клиента. Сам автор называет это «очень узко».",
+    "Доступ к госданным Мексики через API (apitude.co): от $200 до $9 тыс. в месяц за 4 года. Неамериканская ниша, но есть риск по законности данных.",
+    "Общее: отрасль, где большие программы ушли или не дошли; плата за установку плюс помесячно; автор знал отрасль изнутри. ИИ такое не заменяет — это учёт и железо, а не текст."
+   ],
+   "lines_en": [
+    "Pest control software: $100k/mo, solo founder, started in the pandemic (HN, 2023). Room existed despite FieldRoutes and PestPac.",
+    "CRM for manufactured-home dealers: ~$4k/mo, $400 costs. Older vendors died after 2008; almost no competitors.",
+    "Student housing Wi-Fi (Mino): $20-30k per setup plus ~$650/mo per customer. The author calls it 'super niche'.",
+    "Mexican government data via API (apitude.co): $200 to $9k/mo over 4 years. Non-US niche, but data legality risk.",
+    "Common: a trade big vendors left or never reached; setup fee plus monthly; the founder knew the trade. AI doesn't replace this — it's operations and hardware, not text."
+   ],
+   "unknown": "Все истории с Hacker News 2022–2023 (2,5–3,5 года назад); что с ними сейчас — не проверено. Суммы — со слов авторов, не проверены. Как основатель программы для дезинсекции нашёл клиентов — в комментарии не сказано. Это примеры, а не готовая ниша для нас: нужна своя отрасль, которую кто-то из нас знает изнутри.",
+   "unknown_en": "All stories are HN 2022-2023; current state unverified; figures self-reported. How the pest control founder found customers isn't stated. Examples, not a ready niche for us: we need a trade one of us knows from inside.",
+   "sources": [
+    "https://news.ycombinator.com/item?id=35568449",
+    "https://news.ycombinator.com/item?id=35573937",
+    "https://news.ycombinator.com/item?id=35571647",
+    "https://news.ycombinator.com/item?id=35570182",
+    "https://news.ycombinator.com/item?id=35568678"
+   ]
   }
  ]
 }
