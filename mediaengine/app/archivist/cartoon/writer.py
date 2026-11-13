@@ -897,9 +897,19 @@ _FILLER = set("that this with your from have they there their what when will wou
             "still also just been were does here more some them then than very".split())
 
 
+def _grams(key: str) -> set:
+    """A line's two-word runs with a real word in them ("three years", "filing deadline")."""
+    w = re.findall(r"[a-z0-9']+", key.lower())
+    return {" ".join(w[i:i + 2]) for i in range(len(w) - 1)
+            if any(len(x) > 4 and x not in _FILLER for x in w[i:i + 2])}
+
+
 def _same_point(key: str, said: set) -> bool:
     """The same point said again in other words (the small model's "within three years of the filing deadline" three
     times): five or more of its real words, and nearly all of them, already in one earlier line."""
+    mine = _grams(key)                       # (the same two words in two lines already: a third time is too many)
+    if mine and any(sum(1 for k in said if g in _grams(k)) >= 2 for g in mine):
+        return True
     words = {w for w in key.split() if len(w) > 3 and w not in _FILLER}
     if len(words) < 5:
         return False
