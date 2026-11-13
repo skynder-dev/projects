@@ -1,0 +1,75 @@
+0.00.039.617 I srv  llama_server: initializing ...
+0.00.039.642 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.039.801 I srv  init_listene: The UI is disabled
+0.00.039.812 I srv  init_listene: Use --ui/--no-ui (or deprecated --webui/--no-webui) to enable/disable
+0.00.053.790 I srv    load_model: loading model 'D:\a\_temp\home-writer\addons\writer\model\qwen3-4b-instruct-2507-q8_0.gguf'
+0.00.372.139 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.974.770 I cmn          init: llama threadpool init, n_threads = 2
+0.02.304.800 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 12288, kv_unified = 'false'
+0.02.314.531 I srv  server_run_i: model loaded
+0.02.314.564 I srv  server_on_li: listening on http://127.0.0.1:60266
+0.02.544.517 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 0, t_last = -1
+0.02.544.596 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+2.21.887.892 I slot print_timing: id  0 | task 0 | n_gen =    100, tg =   3.88 t/s, tg_3s =   3.92 t/s
+2.25.096.697 I slot print_timing: id  0 | task 0 | n_gen =    112, tg =   3.87 t/s, tg_3s =   3.74 t/s
+2.28.112.510 I slot print_timing: id  0 | task 0 | n_gen =    123, tg =   3.85 t/s, tg_3s =   3.65 t/s
+2.31.405.348 I slot print_timing: id  0 | task 0 | n_gen =    135, tg =   3.83 t/s, tg_3s =   3.64 t/s
+2.34.517.511 I slot print_timing: id  0 | task 0 | n_gen =    146, tg =   3.80 t/s, tg_3s =   3.53 t/s
+2.37.568.367 I slot print_timing: id  0 | task 0 | n_gen =    157, tg =   3.79 t/s, tg_3s =   3.61 t/s
+2.40.651.617 I slot print_timing: id  0 | task 0 | n_gen =    168, tg =   3.77 t/s, tg_3s =   3.57 t/s
+2.43.663.138 I slot print_timing: id  0 | task 0 | n_gen =    179, tg =   3.77 t/s, tg_3s =   3.65 t/s
+2.46.707.372 I slot print_timing: id  0 | task 0 | n_gen =    190, tg =   3.76 t/s, tg_3s =   3.61 t/s
+2.49.760.829 I slot print_timing: id  0 | task 0 | n_gen =    201, tg =   3.75 t/s, tg_3s =   3.60 t/s
+2.53.019.142 I slot print_timing: id  0 | task 0 | n_gen =    213, tg =   3.74 t/s, tg_3s =   3.68 t/s
+2.56.179.838 I slot print_timing: id  0 | task 0 | n_gen =    226, tg =   3.76 t/s, tg_3s =   4.11 t/s
+2.59.183.047 I slot print_timing: id  0 | task 0 | n_gen =    239, tg =   3.79 t/s, tg_3s =   4.33 t/s
+3.02.394.465 I slot print_timing: id  0 | task 0 | n_gen =    252, tg =   3.80 t/s, tg_3s =   4.05 t/s
+3.05.477.869 I slot print_timing: id  0 | task 0 | n_gen =    265, tg =   3.82 t/s, tg_3s =   4.22 t/s
+3.08.535.100 I slot print_timing: id  0 | task 0 | n_gen =    278, tg =   3.84 t/s, tg_3s =   4.25 t/s
+3.11.548.426 I slot print_timing: id  0 | task 0 | n_gen =    291, tg =   3.86 t/s, tg_3s =   4.31 t/s
+3.14.604.208 I slot print_timing: id  0 | task 0 | n_gen =    304, tg =   3.87 t/s, tg_3s =   4.25 t/s
+3.17.615.162 I slot print_timing: id  0 | task 0 | n_gen =    317, tg =   3.89 t/s, tg_3s =   4.32 t/s
+3.20.725.024 I slot print_timing: id  0 | task 0 | n_gen =    330, tg =   3.90 t/s, tg_3s =   4.18 t/s
+3.23.728.957 I slot print_timing: id  0 | task 0 | n_gen =    343, tg =   3.92 t/s, tg_3s =   4.33 t/s
+3.26.810.751 I slot print_timing: id  0 | task 0 | n_gen =    356, tg =   3.93 t/s, tg_3s =   4.22 t/s
+3.29.840.305 I slot print_timing: id  0 | task 0 | n_gen =    369, tg =   3.94 t/s, tg_3s =   4.29 t/s
+3.32.950.505 I slot print_timing: id  0 | task 0 | n_gen =    382, tg =   3.95 t/s, tg_3s =   4.18 t/s
+3.36.053.720 I slot print_timing: id  0 | task 0 | n_gen =    395, tg =   3.95 t/s, tg_3s =   4.19 t/s
+3.39.185.453 I slot print_timing: id  0 | task 0 | n_gen =    408, tg =   3.96 t/s, tg_3s =   4.15 t/s
+3.42.343.022 I slot print_timing: id  0 | task 0 | n_gen =    421, tg =   3.96 t/s, tg_3s =   4.12 t/s
+3.45.464.362 I slot print_timing: id  0 | task 0 | n_gen =    434, tg =   3.97 t/s, tg_3s =   4.16 t/s
+3.48.622.403 I slot print_timing: id  0 | task 0 | n_gen =    447, tg =   3.97 t/s, tg_3s =   4.12 t/s
+3.51.806.090 I slot print_timing: id  0 | task 0 | n_gen =    460, tg =   3.98 t/s, tg_3s =   4.08 t/s
+3.54.979.393 I slot print_timing: id  0 | task 0 | n_gen =    473, tg =   3.98 t/s, tg_3s =   4.10 t/s
+3.58.150.497 I slot print_timing: id  0 | task 0 | n_gen =    486, tg =   3.98 t/s, tg_3s =   4.10 t/s
+4.01.269.783 I slot print_timing: id  0 | task 0 | n_gen =    499, tg =   3.99 t/s, tg_3s =   4.17 t/s
+4.04.488.607 I slot print_timing: id  0 | task 0 | n_gen =    512, tg =   3.99 t/s, tg_3s =   4.04 t/s
+4.07.700.043 I slot print_timing: id  0 | task 0 | n_gen =    525, tg =   3.99 t/s, tg_3s =   4.05 t/s
+4.10.870.719 I slot print_timing: id  0 | task 0 | n_gen =    538, tg =   3.99 t/s, tg_3s =   4.10 t/s
+4.14.054.553 I slot print_timing: id  0 | task 0 | n_gen =    551, tg =   4.00 t/s, tg_3s =   4.08 t/s
+4.17.308.788 I slot print_timing: id  0 | task 0 | n_gen =    564, tg =   4.00 t/s, tg_3s =   3.99 t/s
+4.20.478.130 I slot print_timing: id  0 | task 0 | n_gen =    577, tg =   4.00 t/s, tg_3s =   4.10 t/s
+4.23.652.533 I slot print_timing: id  0 | task 0 | n_gen =    590, tg =   4.00 t/s, tg_3s =   4.10 t/s
+4.26.862.884 I slot print_timing: id  0 | task 0 | n_gen =    603, tg =   4.00 t/s, tg_3s =   4.05 t/s
+4.30.045.688 I slot print_timing: id  0 | task 0 | n_gen =    616, tg =   4.00 t/s, tg_3s =   4.08 t/s
+4.33.275.746 I slot print_timing: id  0 | task 0 | n_gen =    629, tg =   4.00 t/s, tg_3s =   4.02 t/s
+4.36.498.649 I slot print_timing: id  0 | task 0 | n_gen =    642, tg =   4.00 t/s, tg_3s =   4.03 t/s
+4.39.739.804 I slot print_timing: id  0 | task 0 | n_gen =    655, tg =   4.00 t/s, tg_3s =   4.01 t/s
+4.42.785.601 I slot print_timing: id  0 | task 0 | n_gen =    667, tg =   4.00 t/s, tg_3s =   3.94 t/s
+4.46.015.810 I slot print_timing: id  0 | task 0 | n_gen =    680, tg =   4.00 t/s, tg_3s =   4.02 t/s
+4.49.039.646 I slot print_timing: id  0 | task 0 | n_gen =    692, tg =   4.00 t/s, tg_3s =   3.97 t/s
+4.52.147.299 I slot print_timing: id  0 | task 0 | n_gen =    704, tg =   4.00 t/s, tg_3s =   3.86 t/s
+4.55.207.150 I slot print_timing: id  0 | task 0 | n_gen =    716, tg =   4.00 t/s, tg_3s =   3.92 t/s
+4.58.277.600 I slot print_timing: id  0 | task 0 | n_gen =    728, tg =   4.00 t/s, tg_3s =   3.91 t/s
+5.01.347.422 I slot print_timing: id  0 | task 0 | n_gen =    740, tg =   4.00 t/s, tg_3s =   3.91 t/s
+5.04.368.137 I slot print_timing: id  0 | task 0 | n_gen =    752, tg =   4.00 t/s, tg_3s =   3.97 t/s
+5.07.399.474 I slot print_timing: id  0 | task 0 | n_gen =    764, tg =   3.99 t/s, tg_3s =   3.96 t/s
+5.10.637.791 I slot print_timing: id  0 | task 0 | n_gen =    777, tg =   4.00 t/s, tg_3s =   4.01 t/s
+5.13.647.730 I slot print_timing: id  0 | task 0 | n_gen =    789, tg =   3.99 t/s, tg_3s =   3.99 t/s
+5.16.707.407 I slot print_timing: id  0 | task 0 | n_gen =    801, tg =   3.99 t/s, tg_3s =   3.92 t/s
+5.18.440.131 I slot print_timing: id  0 | task 0 | prompt eval time =  113850.80 ms /  1654 tokens (   68.83 ms per token,    14.53 tokens per second)
+5.18.440.149 I slot print_timing: id  0 | task 0 |        eval time =  202043.45 ms /   808 tokens (  250.36 ms per token,     3.99 tokens per second)
+5.18.440.151 I slot print_timing: id  0 | task 0 |       total time =  315894.25 ms /  2462 tokens
+5.18.440.156 I slot print_timing: id  0 | task 0 |    graphs reused =        804
+5.18.440.159 I slot print_timing: id  0 | task 0 |   graph reallocs =          0    /     0        (same size) / (changed size)
+5.18.440.594 I slot      release: id  0 | task 0 | stop processing: n_tokens = 2461, truncated = 0

@@ -1,0 +1,56 @@
+Title: Why a City Hospital Pays Three Times More for the Same Medicine
+Format: vertical
+Language: en
+Narrator: Dana (woman, narrator)
+Dr. Lee (man, hospital doctor)
+Mara (woman, pharmacy manager)
+Ben (man, drug supplier)
+Tom (man, city procurement officer)
+
+== Hospital | title: Why a City Hospital Pays Three Times More / for the Same Medicine
+Dana (wave, neutral): A hospital buys medicine. It should be simple, right?
+Dana (explain, sly): But sometimes, it costs three times more. Let’s see why.
+
+== Office | tender: TENDER; must be FDA-approved; only one brand allowed; delivery in 7 days
+Dana: The hospital posts a tender for pain relief pills.
+Tom (point, sly): Only one brand is accepted. FDA-approved. Fast delivery.
+
+== Shop | bag: "PainRelief X – 100 pills"
+Mara (show paper, worried): We need this medicine. Patients are in pain.
+Dr. Lee (talk, sad): No alternatives. The only one we have.
+
+== Board | compare: PainRelief X $500 vs PainRelief X $1,500
+Dana: The real market price is five hundred dollars per box.
+Dana: But the hospital pays one thousand five hundred. Three times more.
+
+== Office | contract: CONTRACT; price $1,500; stamp APPROVED; "only one supplier"
+Tom (rubbs hands, happy): Approved! Only one supplier fits the rules.
+Ben (smiles, sly) [bubble]: We win. And we get a bonus.
+
+== Board | flow: Hospital budget -> Ben’s Co $1,500; Ben’s Co -> Pharmacy $500; Ben’s Co -> Tom 30% kickback
+Dana: The hospital pays one thousand five hundred.
+Dana: Ben’s Co keeps five hundred for the pharmacy.
+Dana: And thirty percent — four hundred fifty dollars — goes to Tom.
+
+== Home | counter: $500 -> $1,000 -> $1,500
+Mara (think, worried): The pills are the same. Why so much more?
+Dr. Lee (point up, surprised): Patients get no better care. Just more money.
+
+== Night | timeline: April 1 – tender posted; April 3 – only one bid; April 5 – contract signed; April 8 – medicine delivered
+Dana: The tender went live in April.
+Dana: Only one bid came in. Signed on the fifth. Delivered by the eighth.
+
+== Board | bars: fair price $500, paid $1,500 (three times)
+Dana: One box of medicine. Fair price is five hundred.
+Dana: Paid three times that — one thousand five hundred.
+
+== City hall | list: Red flags; Only one supplier; No price comparison; Kickback 30%; Delivery too fast
+Mara (point, angry): How to spot this?
+Mara (point up): One supplier. No competition. Fast delivery.
+Mara (shake head): And a kickback — thirty percent. That’s not fair.
+Dana (wave, happy): Watch the tender. Ask: Who wrote it? Who profits?
+
+== Hospital | title: Why a City Hospital Pays Three Times More / for the Same Medicine
+Dana (explain, calm): When a hospital pays three times more for the same medicine,
+Dana (point up): It’s not about quality. It’s about who controls the rules.
+Dana (sly): And every dollar comes from your taxes. Watch the tender — and ask who wrote it.

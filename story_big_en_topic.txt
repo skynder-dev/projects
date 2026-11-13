@@ -1,0 +1,53 @@
+Title: Why a City Hospital Pays Three Times More for the Same Medicine
+Format: vertical
+Language: en
+Narrator: Dana (woman, narrator)
+Dr. Helen (woman, hospital director)
+Mr. Baker (man, hospital administrator)
+Cliff (man, pharmacy owner)
+Tina (woman, nurse)
+Sam (man, city official)
+
+== Hospital | title: Why a City Hospital / Pays Three Times More for the Same Medicine
+Dana (wave, neutral): A hospital buys medicine. Simple, right?
+Dana (explain, sly): Let's see how it ends up costing three times more.
+
+== Office | tender: TENDER; 5 years experience; special supplier only; 3 days to apply
+Dana: The hospital announces a tender for medicine.
+Mr. Baker (present, sly): Only one supplier fits the rules.
+Sam (point, neutral): A special supplier. Three days to apply.
+
+== Shop | compare: Generic pill $15 vs Brand pill $45
+Dana: The generic pill costs fifteen dollars.
+Tina (facepalm, worried) [bubble]: But we have to buy the brand one!
+Cliff (thumbs up, happy): That’s what the tender says.
+
+== Office | contract: CONTRACT; price $3 000 000; stamp APPROVED
+Dana: The hospital pays three million dollars for the same medicine.
+Dr. Helen (happy, wave): Approved! We get the best for our patients.
+
+== Board | flow: Hospital budget -> PharmaCo $3M; PharmaCo -> Generic pills $500K; PharmaCo -> Officials kickback
+Dana: The hospital pays three million to PharmaCo.
+Dana: PharmaCo sells generic pills for five hundred thousand.
+Dana: And the difference quietly goes back to the officials who signed.
+
+== Hospital | bag: $3M
+Tina (sad, scratch head) [bubble]: Why do we pay so much more?
+Dr. Helen (hands on hips, neutral): We have no choice. The tender says so.
+
+== Board | percent: 30% kickback
+Sam (sneaky, happy) [bubble]: A little extra for the trouble.
+Dana: Thirty percent of the money goes back to the officials who wrote the tender.
+
+== Board | bars: fair price 1.5, paid three times 4.5 M
+Dana: One medicine. Paid three times the fair price.
+Dana: And every dollar of it came from patients and taxpayers.
+
+== City hall | list: Red flags; Only one bidder; Rushed deadlines; Price far above market
+Tina (explain, angry): How to spot it?
+Tina (point): One bidder and rushed deadlines.
+Tina (point up): And a price far above the market.
+
+== Board | timeline: Jan 2023 tender / Feb 2023 contract signed / Jun 2023 medicine delivered
+Dana: Follow the money. And ask who wrote the tender.
+Dana (wave, happy): The next time, look for red flags. You’ll know what to do.

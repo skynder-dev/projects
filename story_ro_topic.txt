@@ -1,0 +1,54 @@
+Title: Cum o firmă de administrare bani câștigă pe o renovare a scării blocului
+Format: vertical
+Language: ro
+Narrator: Ana (woman, narrator)
+Igor (man, administrator)
+Livia (woman, building manager)
+Tiberiu (man, contractor)
+Sonia (woman, resident)
+
+== Home | title: Cum o firmă de administrare bani câștigă pe o renovare a scării blocului / care nu s-a făcut niciodată
+Ana (wave, happy): Un bloc cu scări vechi. Renovarea ar trebui să fie simplă, nu?
+Ana (explain, sly): Dar în realitate, unele firme câștigă milioane... din nicio renovare.
+
+== Building site | road: repair
+Sonia (point up, surprised) [bubble]: Scările sunt în starea de 1987! Nu au fost renovate niciodată.
+Ana: Oamenii spun că e nevoie de renovare. Dar cine a spus?
+
+== Office | tender: TENDER; "scări cu acoperire de beton"; "fără schimbări structurale"; "doar o singură etapă"
+Ana: O firmă de administrare bani, BaniPlus, scrie un concurs.
+Ana: Spune că e nevoie doar de acoperirea scărilor. Fără schimbări structurale.
+Livia (rub hands, sly): Cât de simplu! E perfect pentru noi.
+
+== Office | contract: CONTRACT; price 320 000 lei; stamp APPROVED; "fără verificare a condițiilor"
+Ana: BaniPlus câștigă cu o preț de 320.000 lei.
+Igor (thumbs up, happy): A fost aprobat! Nu au fost verificate condițiile.
+
+== Board | flow: Budget -> BaniPlus 320 000 lei; BaniPlus -> Tiberiu 50 000 lei; BaniPlus -> Igor 15% kickback
+Ana: Oamenii din bloc plătesc 320.000 lei.
+Ana: Firma îi dă Tiberiu, contractorul, 50.000 lei pentru a face lucrurile.
+Ana: Iar 15% din total – 48.000 lei – se duce la Igor, care a scris contractul.
+
+== Home | bag: "48.000 lei într-o pungă"
+Tiberiu (sneaky, happy) [bubble]: Nu am făcut nimic. Am doar spus că e posibil.
+Ana: Niciun lucru nu a fost făcut. Scările rămân ca în 1987.
+
+== Night | magnifier: "fără verificare a condițiilor"
+Livia (scratches head, worried): De ce nu a fost verificat dacă scările sunt în stare?
+Ana: Firma a spus că e suficient să acopere betonul. Nu a spus că trebuie verificate structurile.
+
+== Board | bars: Real need 10 m², covered 2 m², price 320 000 lei
+Ana: Scările au nevoie de 10 metri pătrați de renovare.
+Ana: Dar doar 2 metri pătrați au fost acoperiți.
+Ana: Prețul a fost plătit pentru tot ce era scris în contract.
+
+== City hall | list: Red flags; "fără verificare"; "doar o singură etapă"; "preț mai mare decât ești"
+Livia (point, angry): Cum să știi dacă e o falsificare?
+Livia (point up): Verifică dacă scările sunt în stare.
+Livia (point): Când nu există verificare a condițiilor – atunci e un risc.
+Ana (facepalm, sly): Înțelegi acum: o firmă de administrare bani câștigă din nicio renovare.
+
+== Home | title: Cum o firmă de administrare bani câștigă pe o renovare a scării blocului
+Ana (sits, calm): Nu este o greșeală. Este o schemă.
+Ana (explain, neutral): Când nu se verifică ce trebuie făcut – și doar o firmă scrie contractul – atunci ei câștigă.
+Ana (point up, clear): Verifică tot: ce e nevoie, cine a scris, și dacă a fost făcut.
