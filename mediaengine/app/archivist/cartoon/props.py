@@ -52,7 +52,8 @@ def document(cv: Canvas, x, y, s=1.0, title="CONTRACT", lines=6, written=1.0, pr
     with cv.at(x, y, rot, s * k):
         cv.poly(rounded(-150, -200, 300, 400, 10), PAPER, INK, 4)
         cv.poly([(110, -200), (150, -160), (110, -160)], shade(PAPER, -0.12), INK, 3)
-        cv.text(title, 0, -158, 30, INK, "black")
+        tw = cv.text_width(title, 30, "black")        # (a long title made smaller to stay on the paper, not past its edge)
+        cv.text(title, -14, -158, 30 * min(1.0, 220 / tw) if tw else 30, INK, "black")   # (clear of the folded corner)
         n = int(lines * max(0.0, min(1.0, written)) + 0.999)
         for i in range(n):
             frac = min(1.0, lines * written - i)

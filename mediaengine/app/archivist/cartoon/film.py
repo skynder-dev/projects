@@ -530,7 +530,8 @@ def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: di
         elif kind == "magnifier":
             P.document(cv, -60, 20, 1.1, v.get("title") or "TENDER", 7, 1.0, v.get("price") or "", 1.0, 3)
             ph = st * 0.9
-            P.magnifier(cv, -60 + math.cos(ph) * 110, -40 + math.sin(ph * 1.3) * 120, 1.2)
+            # (the glass moves over the lines, below the title: it never hides the words the scene is about)
+            P.magnifier(cv, -60 + math.cos(ph) * 100, 40 + math.sin(ph * 1.3) * 60, 1.2)
 
 
 def _bubble_for(cv: Canvas, ln: dict, x: float, top_y: float, t: float):
