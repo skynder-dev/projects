@@ -181,6 +181,10 @@ def pictures(film: dict) -> dict:
                 f = art.character(c.get("name") or key)
                 if f:
                     got["cast"][key] = str(f)
+            if got["cast"] and len(got["cast"]) < len(film.get("cast") or {}):
+                # (some people pictures, some drawn: all drawn - a picture among drawn people looks like it is from
+                # another cartoon, stands still, its mouth does not move; the owner 14.11)
+                got["cast"] = {}
         film["_pictures"] = got
     return got
 

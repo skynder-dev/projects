@@ -692,6 +692,11 @@ def prompt(job: dict) -> str:
         h = library.host(lang)
     except Exception:
         h = None
+    if job.get("mode") == "facts":
+        # (a facts video's host: a drawn man like the others, not the library's picture host - the owner 14.11: "she is
+        # from another cartoon, does not move, a man's voice; put a man who fits the voice")
+        h = None
+        rules += f"\n- The narrator is {FACTS_HOST} (man, narrator); write this name exactly as here."
     if h and job.get("mode") not in ("adapt", "translate"):
         who = "woman" if (h.get("look") or {}).get("female") else "man"
         rules += (f"\n- The narrator is {h['name']} ({who}, narrator) - the same host as in the earlier films; write "
@@ -928,6 +933,7 @@ _GAIN = re.compile(r"(?i)\b(?:pay|pays|paid|money|cash|refund|refunds|owe[sd]?|f
                    r"bills?|benefits?|check|wages?|pension|food|rent|coverage|insurance|save|discount)\b|\$")
 _WEAK_HOOK = re.compile(r"(?i)^\W*if\b|help is available|there is help|help may be available|learn (?:about|more)|"
                         r"some programs|^\W*(?:former|current|are you|do you)\b")
+FACTS_HOST = "Dan Brooks"                                  # (drawn by the program, the program's own man's voice)
 _NEGATIVE_HOOK = re.compile(r"(?i)^\W*(?:stop|don'?t|do not|no\b|never|there (?:is|are) no|nothing|forget|quit)\b")
 _PAGE_RE = re.compile(r"(?i)\b(?:official page|the (?:web ?)?(?:page|site)|this (?:web ?)?(?:page|site))\b")
 _PAGE_PREFIX = re.compile(r"(?i)^(?:but |and |so |also )?(?:the |this )?(?:official )?(?:web ?)?(?:page|site) (?:also )?"
