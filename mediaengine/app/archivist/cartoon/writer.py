@@ -874,7 +874,7 @@ def judge_facts(text: str, f: dict) -> str:
     src_words = set(re.findall(r"[a-z]+", src))
     if said and _NEGATIVE_HOOK.match(said[0]) or _NEGATIVE_HOOK.match(sc.get("title") or ""):
         return ("the hook starts with \"stop / don't / no\": the first line says what the viewer CAN get or do")
-    if said and (not _GAIN.search(" ".join(said[0].split()[:7])) or _WEAK_HOOK.search(said[0])):
+    if said and not _hook_ok(said[0]):
         return ("the first line does not hook: it must name the money or the thing the viewer gets in its first words "
                 "(pay, money, refund, owed, free, cash, $...), not \"help is available\"")
     alien = []
@@ -929,8 +929,8 @@ def _same_point(key: str, said: set) -> bool:
     return False
 
 
-_GAIN = re.compile(r"(?i)\b(?:pay|pays|paid|money|cash|refund|refunds|owe[sd]?|free|grant|loan|\$\d|dollars?|"
-                   r"bills?|benefits?|check|wages?|pension|food|rent|coverage|insurance|save|discount)\b|\$")
+_GAIN = re.compile(r"(?i)\b(?:pay|pays|paid|money|cash|refund|refunds|owe[sd]?|free|grant|grants|loan|loans|dollars?|"
+                   r"benefits?|wages?|pensions?|save|saves|discount|back pay)\b|\$")
 _WEAK_HOOK = re.compile(r"(?i)^\W*if\b|help is available|there is help|help may be available|learn (?:about|more)|"
                         r"some programs|^\W*(?:former|current|are you|do you)\b")
 FACTS_HOST = "Dan Brooks"                                  # (drawn by the program, the program's own man's voice)
@@ -1023,7 +1023,45 @@ def tidy_facts(text: str, f: dict) -> str:
             block = [ln]
         else:
             block.append(ln)
-    return vary_places(_one_line_hook(_no_meta("\n".join(keep).rstrip() + "\n")), f)
+    return vary_places(_one_line_hook(_promote_hook(_no_meta("\n".join(keep).rstrip() + "\n"))), f)
+
+
+def _hook_ok(body: str) -> bool:
+    return bool(_GAIN.search(" ".join(body.split()[:8]))) and not _WEAK_HOOK.search(body) \
+        and not _NEGATIVE_HOOK.match(body) and not body.rstrip().endswith("?") \
+        and not re.search(r"(?i)\b(?:too (?:low|high|much)|can'?t afford|i (?:need|work|used)|wage and hour|we|our|my|i)\b", body)
+
+
+def _promote_hook(text: str) -> str:
+    """When the model's first line does not hook ("If your bills are too high, there is help available" after three
+    tries), the first line of the film that names the money ("The LIHEAP program helps pay for heating...") is said
+    first by the host instead (the owner 13-14.11: the money in the first seconds)."""
+    lines = text.split("\n")
+    heads = [i for i, ln in enumerate(lines) if ln.startswith("== ")]
+    if len(heads) < 2:
+        return text
+    host = next((re.sub(r"\s*\(.*$", "", ln.split(":", 1)[1]).strip() for ln in lines[:heads[0]]
+                 if ln.lower().startswith("narrator:")), "")
+    speech = [i for i, ln in enumerate(lines) if i > heads[0] and _SPEECH.match(ln)]
+    if not speech:
+        return text
+    opening = [i for i in speech if i < heads[1]]
+    if opening and _hook_ok(lines[opening[0]].split(":", 1)[1].strip()):
+        return text
+    hosted = [i for i in speech if host and lines[i].startswith(host)]
+    for i in hosted + [i for i in speech if i not in hosted]:
+        if opening and i == opening[0]:
+            continue
+        b = lines[i].split(":", 1)[1].strip()
+        if _hook_ok(b) and len(b.split()) <= 20 and i != speech[-1]:
+            who = re.sub(r"\s*\(.*$", "", lines[opening[0]].split(":", 1)[0]).strip() if opening else host
+            del lines[i]
+            if opening:
+                lines[opening[0]] = f"{who}: {b}"
+            elif who:
+                lines.insert(heads[0] + 1, f"{who}: {b}")
+            return "\n".join(lines)
+    return text
 
 
 def _one_line_hook(text: str) -> str:

@@ -622,6 +622,12 @@ def main() -> int:
                            "Nora: Some programs can help.\n== Board\nNora: What is your state?", ff)
         check("a facts video's first scene is the hook alone, no small print under its title", "title: X / for" not in one
               and one.index("Some programs") > one.index("== Board"), one)
+        prom = W.tidy_facts("Title: X\nNarrator: Dan (man, narrator)\n\n== Home | title: X\nDan: If your bills are too high, "
+                            "there is help available.\n== City hall\nAnna: My bill is too much.\nDan: The program helps pay "
+                            "for heating and cooling.\n== Board\nDan: What is your state?", ff)
+        check("a facts video's weak first line gives way to the host's line that names the money (said first)",
+              prom.split("== City hall")[0].strip().endswith("helps pay for heating and cooling.")
+              and "there is help available" not in prom, prom)
         neg = W.judge_facts("Title: X\n\n== Home\nNora: Stop looking for free money.\n== Board\nNora: What is your state?", ff)
         check("a facts video whose hook starts with 'stop' is sent back (the owner: say what the viewer CAN get)",
               "hook" in neg, neg)
