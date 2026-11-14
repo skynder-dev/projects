@@ -1,0 +1,198 @@
+PASS pieces of at most ~220 characters
+PASS no word lost or doubled in the pieces
+PASS a longer pause after a paragraph
+PASS empty text: no pieces
+PASS a sentence that ends in 'no.' ends there
+PASS sentences are not cut after Mr. / e.g. / p.m. / an initial
+PASS the word check: the same words written another way are not errors (20% / twenty percent, e-mail / email ...)
+PASS the word check: a missing or wrong word still counts
+PASS script words kept as written ('here's', 'ten')
+PASS a word not heard gets a time after its neighbour
+PASS times never go backwards
+PASS without a script: what was heard
+PASS captions of at most 4 words, a phrase ends at punctuation
+PASS captions never overlap
+PASS SRT numbered with times (offset added)
+PASS ASS: the frame size, karaoke words (classic)
+PASS ASS: the default style shows each word in color in turn, with the program's font
+PASS look 'one word at a time': one word per caption, held until the next word
+PASS look 'one word at a time' on a caption of several words (edited, or made in another look): in turn
+PASS look 'word on a color block': a block of the color behind each word as it is said, the word dark on it
+PASS ASS: a brace in the text cannot become a tag
+PASS page without the add-on: install card
+PASS a voice-over before installing: refused in words
+PASS the home of Auto Edit links the page only when it is released
+PASS the recordings of the ready voices ship with the program
+PASS a stand-in add-on counts as installed
+PASS Russian letters with English chosen: refused in words (not a voice-over of nonsense)
+PASS a voice-over is accepted
+PASS the voice-over is made
+PASS its WAV, words and captions are there
+PASS the default voice is used with its own words
+PASS the ready voice goes with its own setting (cfg 1.6)
+PASS loudness finishing only (no 'microphone' option)
+PASS the player gets the sound in pieces (Range)
+PASS captions download with a readable name
+PASS only the job's own files are served
+PASS the page lists it with a player and 'Put it on a video'
+PASS normal pace by default (no speed change, the pieces' own pauses)
+PASS pace: a bit faster with long pauses kept with the job
+PASS pace: the pauses between the pieces are longer
+PASS pace: the voice is 8% shorter (faster, by time-stretch)
+PASS pace: the captions' times follow the faster voice
+PASS pace: the next form starts with the pace used last
+PASS pace: the list says it (normal is not said)
+PASS pace: anything unknown is the normal pace
+PASS an add-on from before the pick offers the new engine (once, a button)
+PASS without it, the voice 9_2 is said as before (VoxCPM2)
+PASS the button installs only what is missing (the add-on is there)
+PASS with both there: 'already installed'
+PASS with the new engine: no offer, the page says which voice goes where
+PASS engine: the voice 9_2 in 'en' -> qwen
+PASS engine: the voice 9_2 in 'ru' -> qwen
+PASS engine: the voice 9_2 in 'auto' -> qwen
+PASS engine: the voice 9_2 in 'uk' -> voxcpm
+PASS engine: the voice 9_2 in 'auto' -> voxcpm
+PASS engine: the voice 9_2 in 'auto' -> voxcpm
+PASS engine: the voice 9_2 in 'auto' -> qwen
+PASS engine: 9_2 continues its English recording in English, takes only its timbre in Russian (round 15)
+PASS engine: a voice recorded in Russian continues its recording in Russian
+PASS engine: a voice from a description stays on VoxCPM2
+PASS Try again waits while the add-on is being installed (the new engine too)
+PASS a reel saved lately is offered in the video fields
+PASS a preview before the voice is put on the video
+PASS the voice onto a video is accepted
+PASS the video with the voice is made and checked
+PASS it lasts as long as the voice (the video's last picture held)
+PASS captions were burned (ASS written)
+PASS the captions can be seen in the picture (not only written)
+PASS the original video was only read
+PASS a copy is saved next to the reels ('<name> - voice.mp4')
+PASS that copy takes no second place on the same disk (one file, two names)
+PASS its sound is AAC at 48 kHz
+PASS an odd-sized video without sound gets the voice (made even)
+PASS '0,5' is half a second
+PASS a start time that is not a number: refused in words
+PASS the HDR test video is HLG as FFmpeg reads it (else the next check proves nothing)
+PASS an HDR (HLG) phone video gets normal colours (BT.709)
+PASS Try again makes it again
+PASS the copy saved by the earlier make is not touched (the new video gets its own copy)
+PASS Try again from an old page on a finished job does nothing
+PASS captions for a video's own speech
+PASS text on a video without the voice add-on
+PASS the text form is on the page without the add-on
+PASS the title can be seen at the top (and is gone after its time)
+PASS the program's own font is the one drawn (Montserrat, with Cyrillic)
+PASS a preview picture of the text
+PASS a box hugs its text (the renderer's own font size, measured)
+PASS a title in the captions' place goes next to them
+PASS a word with a no-break space or only an emoji breaks no style
+PASS a preview at the very end (sound longer than the picture)
+PASS a text after the end of the video: refused in words
+PASS from a saved reel: its path is filled in the video fields
+PASS a path that is not a file is not filled in
+PASS typed text: hardly any letters at first, all of them a second later
+PASS sliding text comes up into its place
+PASS the preview can show where the platforms' buttons are
+PASS a look saved with a name is offered in the forms
+PASS and deleted
+PASS a look without a name: said in words
+PASS odd looks sent by hand: no server error
+PASS a cover picture, full size, saved next to the reels
+PASS a preview of a missing video: said in words
+PASS a text time that is not a number: refused in words
+PASS a 2K video is made at 1080x1920 with its text laid out for it
+PASS a failing graphics-card encoder falls back to the processor
+PASS a small copy for messengers, next to the reels
+PASS the page says where it is
+PASS the editor lists the captions
+PASS the editor's preview
+PASS the edited video is made with the voice, checked
+PASS the fixed word, the chosen style and the text at the end are in it
+PASS the next forms start with the look chosen last
+PASS the end text sits in the last 3 seconds
+PASS the editor of a video's own captions (its words kept)
+PASS lines split, moved and added keep their own times
+PASS a voice-over itself (no video) is not edited here: said in words
+PASS a recording saved as my voice, used at once and listed (chosen next time)
+PASS my voice is chosen like a ready one
+PASS my voice on the one-page form too
+PASS a saved voice is deleted
+PASS a recording too short to keep: said in words
+PASS a wrong saved-voice name: no harm
+PASS refused in words: no text
+PASS refused in words: unknown voice
+PASS refused in words: short description
+PASS refused in words: missing recording
+PASS refused in words: too long
+PASS a voice-over that does not exist
+PASS a video that does not exist
+PASS Try again on a voice this version no longer has: said in words
+PASS Try again after an update: the voice's recording of this build
+PASS the one-page form: the video filled in, a made voice-over offered, a new one possible
+PASS its preview shows the voice's captions and the text
+PASS a video with a made voice, its captions and a text, in one go
+PASS and it can be edited afterwards
+PASS a new voice-over is made first, then the video with it
+PASS *stars* in a script: not said, the word kept in the color in the captions
+PASS captions of the video's own speech on the same page
+PASS speech captions keep the speech's own times (no voice start added)
+PASS no voice: the video's own sound kept
+PASS 'keep the video's own sound' is shown with no voice too (not a hidden field)
+PASS a video whose voice-over is not made: said so
+PASS a preview with 300 caption lines
+PASS odd caption times sent to the editor: no server error
+PASS typed text is complete while it is shown, its shadow appears with each letter
+PASS music under the voice, looped to the end (the song is there at the very end, the 1-s song looped)
+PASS a video with a voice is at the platforms' loudness (about -14 LUFS, peaks under -1 dB)
+PASS a video whose song was moved can still be made again (without it)
+PASS music alone: quiet is quieter than loud
+PASS emphasis: after a quote; a lone star marks nothing; an open mark ends with its sentence
+PASS a music file that is not there: refused in words
+PASS my text timed to the speech: its own words (and marks), the speech's times
+PASS captions of a voice without a voice: refused in words
+PASS nothing to add: refused in words
+PASS several videos: the form offers more videos (paths, Choose…, saved reels)
+PASS several videos: one new video each, in order (a video twice, also written another way: once)
+PASS several videos: each video's own speech is heard
+PASS several videos: each made with its own speech's captions, the text and the music
+PASS several videos: each lasts as long as its own video
+PASS several videos: one missing - nothing made, said which
+PASS several videos: a text after the end of one of them - refused, naming it
+PASS several videos: a file that is not a video - nothing made, said which
+PASS several videos: a shared choice wrong - said without blaming a video
+PASS several videos: the exact text of a speech is for one video - refused in words
+PASS one video ticked twice: still one, its exact text kept
+PASS an unknown voice choice: no voice (captions of a voice refused)
+PASS several videos: at most 30 at once
+PASS several videos with a new voice: made once, then put on each
+PASS a shared voice-over that fails: the videos waiting for it say so
+PASS one Try again on the voice-over makes it and the videos that waited for it
+PASS the pace chosen on the one-page form goes with the new voice
+PASS the original video is byte for byte as it was after everything
+PASS a picture shorter than its sound is held to the end, with the end text on it
+PASS non-square pixels: made 1920x1080 with square pixels (not stretched)
+PASS a time typed as hundreds of digits: refused in words
+PASS the file picker with an odd request: an answer, not a server error
+PASS a voice onto a sound file (no picture): refused before anything is made
+PASS captions of a video without sound: refused before listening
+PASS words in brackets stay in the captions (they are said)
+PASS Don't make it: a waiting job leaves the queue, said 'Stopped.'
+PASS Stop: the video being made stops at once (its FFmpeg killed, not run to the end), said 'Stopped.'
+PASS Try again on the video, then on its voice-over: both made (the video waits for its voice)
+PASS Stop before the process starts still stops it
+PASS pixel shape read from the video itself, not its cover picture
+PASS a song chosen as the video: said in words (not FFmpeg's code)
+PASS install: a fresh install - both parts, recorded, the engine's packages never from the CUDA index
+PASS install: the new engine fails on a fresh install - the main part works (recorded with its size)
+PASS install: then only the new engine (the main part kept, no model downloaded twice)
+PASS install: the internet gone while the engine downloads - the add-on still works
+PASS install: the engine does not start - the main part kept, said in words
+PASS install: Remove takes both parts away
+PASS the page in Russian
+PASS no English left of the main texts
+PASS the editor in Russian
+PASS the one-page form in Russian
+PASS delete removes the job's folder
+PASS busy is empty when nothing runs
+{"passed": 197, "total": 197}
