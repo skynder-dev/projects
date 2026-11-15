@@ -288,8 +288,13 @@ def _shown(sc: dict, scene: dict) -> list:
     if sc.get("on_screen") is False:                       # (a voice-over film: the pictures alone, nobody in them)
         return []
     names = list(scene.get("cast") or [])
-    if not names and any(x["who"] == sc.get("narrator") for x in scene.get("lines") or []):
+    speaks = any(x["who"] == sc.get("narrator") for x in scene.get("lines") or [])
+    if not names and speaks:
         names = [sc["narrator"]]
+    elif speaks and sc.get("site") and sc.get("narrator") not in names:
+        # (a film about a web page: its host stands in every scene he speaks in - a voice from nobody on screen,
+        # the owner 15.11: "a voice off screen, who is it?")
+        names = [sc["narrator"]] + names[:2]
     return names
 
 

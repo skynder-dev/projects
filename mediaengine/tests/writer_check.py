@@ -609,7 +609,7 @@ def main() -> int:
         check("a facts video's script is made to keep to its facts whatever the model wrote: 'the official page says' "
               "only the first time, a number the facts do not have and a picture label with one left out, the last scene "
               "kept", W.judge_facts(tidy, ff) == "" and "40" not in tidy and "$8" not in tidy and "contractor" in tidy
-              and tidy.count("official page") <= 1 and "The page gives" not in tidy and "What is your state?" in tidy, tidy)
+              and tidy.count("official page") <= 1 and "The page gives" not in tidy and "Check if you qualify" in tidy, tidy)
         homes = [ln for ln in tidy.split("\n") if ln.startswith("== Home") or ln.startswith("== Office")]
         check("a facts video's backgrounds show its topic: at most one scene at Home or in an Office before the last "
               "(a wage video: a building site, a street)", len([h for h in homes if h]) <= 2
@@ -645,7 +645,7 @@ def main() -> int:
                            "== Home\nNora: What is your state?", ff)
         check("a blank like '$X' leaves the picture; the same point said again in other words goes, with the question "
               "it answered", "$X" not in rep and rep.count("refund form") == 1 and "missed it" not in rep
-              and "What is your state?" in rep, rep)
+              and "Check if you qualify" in rep, rep)
         check("talk about the page instead of the facts is taken out ('That's all it says'; 'It says to learn X' -> 'Learn X')",
               "all it says" not in meta and "Learn the warning signs" in meta, meta)
 

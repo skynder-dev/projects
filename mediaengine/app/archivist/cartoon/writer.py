@@ -742,7 +742,10 @@ def prompt(job: dict) -> str:
         return "\n\n".join([
             "Write a short cartoon script: a host presents what the official page says, to a viewer who needs it. Use ONLY "
             "the FACTS below (exact quotes from the official page), in simple spoken words.",
-            FACTS_RULES.format(hook=hook, end=end or "one question viewers answer in one word (their state, or a pick of two)",
+            FACTS_RULES.format(hook=hook, end=end or ("what to do now, in one short sentence tied to this topic (where to "
+                                                     "check or apply), then one short question about the viewer's own case "
+                                                     "with THIS topic (\"Have you applied yet?\"); never \"What is your "
+                                                     "state?\""),
                                missing=f.get("not_in_source_ru") or f.get("not_in_source") or "-",
                                angle=f.get("angle_ru") or f.get("angle") or "-", rules=f.get("rules") or "-"),
             f"FACTS (from {f.get('source_url')}):\n\"\"\"\n{str(job.get('source') or '').strip()[:MAX_SOURCE]}\n\"\"\"",
@@ -1087,6 +1090,10 @@ _META_PREFIX = re.compile(r"(?i)^(?:and |but |so )?(?:it|this|the rules?|the irs
                           r"(?: that)?(?: to)?\s*[:,]?\s*")
 
 
+_BARE_STATE = re.compile(r"(?i)^\W*(?:so,?\s*)?(?:what(?:'s| is) your state|which state (?:are you in|do you live in)|"
+                         r"what state (?:are you in|do you live in))\W*$")
+
+
 def _no_meta(text: str) -> str:
     """The small model's talk about the page instead of the facts ("It says to learn...", "That's all it says") taken out:
     the viewer sees the page on screen; a line says the fact itself."""
@@ -1098,6 +1105,9 @@ def _no_meta(text: str) -> str:
             continue
         who, body = m.group(1), m.group(2)
         plain = body.replace("\u2019", "'")
+        if _BARE_STATE.match(plain):                 # (out of nowhere at the end - the owner 15.11: "not on topic")
+            out.append(who + "Check if you qualify: the link is on screen.")
+            continue
         if _META_DROP.match(plain) or re.match(r"(?i)^it(?:'s| is) written\b", plain):
             continue
         cut = re.sub(r"(?i),?\s*but (?:it|the page) (?:doesn'?t|does not) say\b.*$", ".", plain)
