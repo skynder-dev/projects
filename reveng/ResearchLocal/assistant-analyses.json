@@ -293,6 +293,34 @@
     "https://news.ycombinator.com/item?id=35570182",
     "https://news.ycombinator.com/item?id=35568678"
    ]
+  },
+  {
+   "id": "rv_a_orphaned_software",
+   "made": "2026-11-15",
+   "title": "Сироты закрытых программ: где старую программу закрывают, а клиенты остаются",
+   "title_en": "Orphans of discontinued software",
+   "lines": [
+    "Метод без знания отрасли: искать объявления «программу закрываем» в узких отраслях. Клиенты обязаны куда-то переехать — им нужна замена или помощь с переездом.",
+    "Австралия и Новая Зеландия: Bp Software закрыла программу для смежной медицины (Bp Allied — 31.07.2026), программа для оптометристов VIP.net уходит в поддержку только исправлений с 31.12.2026. Ниша не в США.",
+    "Microsoft Publisher закрыт с октября 2026: у церквей, школ и мелких фирм остались файлы .pub. Нужен перенос файлов и шаблонов — маленькая услуга или программа.",
+    "Большие системы (SAP ECC — около 17 тыс. фирм останутся на старой к 2027, Epicor, Dynamics GP) — не для нас: там зарабатывают сертифицированные внедренцы.",
+    "Старт $0–5 тыс. (поиск и разговоры), расходы малые, деньги через 1–3 месяца, если продавать услугу переезда; программа-замена дольше. Убьёт: продавец сам предложит переход со скидкой."
+   ],
+   "lines_en": [
+    "A method that needs no insider: look for 'we are discontinuing' notices in narrow trades. Customers must move — they need a replacement or migration help.",
+    "Australia/NZ: Bp Software ended Bp Allied (31 Jul 2026); optometry VIP.net goes maintenance-only from 31 Dec 2026. A non-US niche.",
+    "Microsoft Publisher discontinued Oct 2026: churches, schools and small firms are left with .pub files. Converting files and templates is a small service or tool.",
+    "Big systems (SAP ECC — ~17k firms still on it in 2027, Epicor, Dynamics GP) are not for us: certified implementers earn there.",
+    "Start $0-5k, small costs, money in 1-3 months if selling migration service; a replacement product takes longer. Killer: the vendor offers a discounted upgrade path."
+   ],
+   "unknown": "Сколько клиентов у Bp Allied и VIP.net и кто их уже переманивает — не проверено. Спрос на перенос файлов Publisher не измерен: Canva и Affinity уже открывают .pub, значит услуга может оказаться ненужной. Это первые находки метода; дальше — еженедельный поиск таких объявлений.",
+   "unknown_en": "Bp customer counts and who is already courting them: unknown. Publisher migration demand unmeasured; Canva/Affinity import .pub. First findings; next is a weekly scan for such notices.",
+   "sources": [
+    "https://digital.mivision.com.au/collections/mivision-journal-august-2026/bp-software-sunsets-vip-and-allied-platforms",
+    "https://windowsreport.com/microsoft-is-cutting-off-office-2021-support-in-less-than-a-month/",
+    "https://www.jdsupra.com/legalnews/lessons-from-a-major-software-2288423/",
+    "https://www.enterprisetimes.co.uk/2026/01/09/epicor-to-sunset-on-premises-products/"
+   ]
   }
  ]
 }
