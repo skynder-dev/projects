@@ -1,0 +1,91 @@
+{
+    "phase":  "layout",
+    "checks":  {
+                   "window_rendered":  {
+                                           "pass":  true,
+                                           "detail":  ""
+                                       },
+                   "app_version_reported":  {
+                                                "pass":  true,
+                                                "detail":  "2.24.1-forge-fourth-review"
+                                            },
+                   "ru_no_untranslated_ui_text":  {
+                                                      "pass":  true,
+                                                      "detail":  ""
+                                                  },
+                   "ru_no_english_sentences":  {
+                                                   "pass":  true,
+                                                   "detail":  ""
+                                               },
+                   "layout_widths_reached":  {
+                                                 "pass":  true,
+                                                 "detail":  "screen 1920; 1024-\u003e1024, 1366-\u003e1366, 1920-\u003e1920"
+                                             },
+                   "layout_no_clipped_text_1366_1920":  {
+                                                            "pass":  true,
+                                                            "detail":  ""
+                                                        },
+                   "layout_clipped_text_1024_info":  {
+                                                         "pass":  true,
+                                                         "detail":  ""
+                                                     },
+                   "only_discover_snapshot_api":  {
+                                                      "pass":  true,
+                                                      "detail":  "discover_snapshot"
+                                                  },
+                   "no_network":  {
+                                      "pass":  true,
+                                      "detail":  ""
+                                  },
+                   "no_unexpected_errors":  {
+                                                "pass":  true,
+                                                "detail":  ""
+                                            }
+               },
+    "api":  [
+                "discover_snapshot"
+            ],
+    "errors":  [
+
+               ],
+    "confirms":  [
+
+                 ],
+    "screenshots":  [
+                        "layout-w1024-home.png",
+                        "layout-w1024-discover.png",
+                        "layout-w1024-ideas.png",
+                        "layout-w1024-artwork.png",
+                        "layout-w1024-checks.png",
+                        "layout-w1024-publish.png",
+                        "layout-w1024-portfolio.png",
+                        "layout-w1024-performance.png",
+                        "layout-w1366-home.png",
+                        "layout-w1366-discover.png",
+                        "layout-w1366-ideas.png",
+                        "layout-w1366-artwork.png",
+                        "layout-w1366-checks.png",
+                        "layout-w1366-publish.png",
+                        "layout-w1366-portfolio.png",
+                        "layout-w1366-performance.png",
+                        "layout-w1920-home.png",
+                        "layout-w1920-discover.png",
+                        "layout-w1920-ideas.png",
+                        "layout-w1920-artwork.png",
+                        "layout-w1920-checks.png",
+                        "layout-w1920-publish.png",
+                        "layout-w1920-portfolio.png",
+                        "layout-w1920-performance.png"
+                    ],
+    "fatal":  null,
+    "network":  0,
+    "clipped":  {
+
+                },
+    "untranslated_strict":  [
+
+                            ],
+    "untranslated_loose":  [
+
+                           ]
+}
