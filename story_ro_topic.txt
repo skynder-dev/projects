@@ -1,0 +1,59 @@
+Title: Cum o firmă de administrare bani câștigă pe o renovare a scării blocului
+Format: vertical
+Language: ro
+Narrator: Ana (woman, narrator)
+Diana (woman, manager)
+Vlad (man, resident)
+Ilie (man, construction boss)
+Livia (woman, inspector)
+
+== Home | title: Cum o firmă de administrare bani câștigă pe o renovare a scării blocului
+Ana (wave, happy): Un bloc cu scări vechi. Renovarea ar trebui să fie simplă, nu?
+Ana (explain, sly): Dar în realitate, unele firme profită de o „renovare” care nu există niciodată.
+
+== Building site | road: repair
+Vlad (point up, worried) [bubble]: Scara e deteriorată. Nu se poate sta în ea!
+Ana: Un bloc din centrul orașului are scări vechi, încălzite la 28 grade.
+Ana: Oamenii spun că trebuie renovate. Dar cine decide?
+
+== Office | tender: TENDER; must be done in 3 months; new steel bars; must include fire safety
+Ana: O firmă de administrare a baniului lansează un licitație oficială.
+Diana (read, sly): Trebuie făcut în trei luni, cu bare noi și siguranță la incendiu.
+Vlad (scratches head, surprised) [bubble]: De ce nu e vorba de o scări cu 12 metri?
+
+== Office | contract: CONTRACT; price 380 000 lei; stamp APPROVED; must be completed in 3 months
+Ana: Firma „Sistem Casa” câștigă cu un preț de 380.000 lei.
+Diana (thumbs up, happy): A fost aprobat! Nu există concurenți.
+
+== Board | bars: fair price 120 000, paid 380 000; difference 260 000
+Ana: Prețul just ar fi fost 120.000 lei.
+Ana: Dar s-a plătit 380.000 – o diferență de 260.000 lei.
+Ilie (rubbing hands, sly) [bubble]: Cât mai mare e prețul, atât mai mult profit.
+
+== Office | flow: City budget -> Sistem Casa 380 000; Sistem Casa -> Ilie 150 000; Sistem Casa -> Diana 40 000
+Ana: Bani publici ajung la „Sistem Casa” pentru renovare.
+Ana: Apoi, 150.000 lei se duc la Ilie, bossul de construcții.
+Ana: Iar 40.000 lei – direct la Diana, care a scris licitația.
+
+== Home | visual: empty stairs | no renovation work
+Vlad (facepalm, sad) [bubble]: Nu s-a făcut nimic! Scara e exact cum era!
+Ana: O renovare „planificată” nu a fost făcută.
+Ana: Doar un document oficial a fost emis.
+
+== Board | compare: Real work 0 m² vs promised 25 m²
+Ana: În realitate, nicio scări nu s-a renovat.
+Ana: A fost promis 25 metri pătrați de lucrări.
+Ana: Dar zero metri au fost realizați.
+
+== City hall | list: Red flags; No actual work; Price far above fair value; Only one bidder; Tender written by manager
+Livia (point, angry): Ce trebuie să observi?
+Livia (point up): Nu există lucrări. Prețul e de 380.000 lei.
+Livia (point): Doar o firmă a fost lansată. Iar managerul a scris licitația.
+Ana (sits, calm): Verifică dacă există lucrări fizice.
+Ana (wave, happy): Dacă nu, atunci firma a câștigat fără a face nimic.
+
+== Night | bag: 260 000 lei
+Ana (explain, sad): Firma a câștigat pe baza unui fals nevoie.
+Ana (point up): Bani publici au fost folosiți pentru a face un „proiect” care nu există.
+Ana (final, clear): Când o renovare nu se face, dar se scrie ca s-a făcut – cine câștigă?
+Ana (sly, final): Firma de administrare a baniului. Ea câștigă cu o furtună de bani.

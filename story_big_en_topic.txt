@@ -1,0 +1,47 @@
+Title: Why a City Hospital Pays Three Times More for the Same Medicine
+Format: vertical
+Language: en
+Narrator: Dana (woman, narrator)
+Dr. Elaine (woman, hospital director)
+Mr. Price (man, hospital administrator)
+Larry (man, supplier)
+Sally (woman, nurse)
+Tom (man, inspector)
+
+== Hospital | title: Why a City Hospital / Pays Three Times More for the Same Medicine
+Dana (wave, neutral): A hospital needs medicine. Simple, right?
+Dana (explain, sly): Let's see how it ends up costing three times more.
+
+== Office | tender: TENDER; 5 years of experience; local supplier only; 3 days to apply
+Dana: The hospital posts a tender for medicine. A fair price is about one point two million dollars.
+Mr. Price (present, sly): We need a local supplier. It's better for the community.
+
+== Shop | compare: Brand X $120 / bottle vs Brand Y $45 / bottle
+Sally (think, worried) [bubble]: Why is Brand X so much more expensive?
+Dana: Larry, the only supplier, offers Brand X at three times the price of Brand Y.
+
+== Office | contract: CONTRACT; price $3 600 000; stamp APPROVED
+Mr. Price (point up, happy): Approved! It’s the best for our patients.
+Dr. Elaine (cross, worried) [bubble]: This is not right.
+
+== Board | flow: Hospital budget -> Larry $3.6M; Larry -> Medicine $1.2M; Larry -> Officials kickback
+Dana: The hospital pays Larry three point six million.
+Dana: Larry spends one point two million on the medicine.
+Dana: And the rest quietly goes back to the officials who signed.
+
+== Hospital | bag: $2.4M
+Larry (rubs hands, sly) [bubble]: That’s a nice profit.
+Tom (magnifier, worried) [bubble]: Where did this money go?
+
+== Board | percent: 60% kickback
+Dana: Larry keeps sixty percent of the money as a kickback.
+Tom (facepalm, sad): This is how the system works.
+
+== Office | list: Red flags; Only one supplier; Rushed deadlines; Price far above the market
+Sally (explain, angry): How to spot it?
+Sally (point): Only one supplier and rushed deadlines.
+Sally (point up): And a price way above the market.
+
+== Hospital | board: fair price $1.2M vs paid $3.6M
+Dana: One medicine. Paid three times the fair price.
+Dana (wave, happy): Follow the money. And ask who wrote the tender.

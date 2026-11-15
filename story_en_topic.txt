@@ -1,0 +1,50 @@
+Title: Why a City Hospital Pays Three Times More for the Same Medicine
+Format: vertical
+Language: en
+Narrator: Dana (woman, narrator)
+Dr. Lena (woman, hospital doctor)
+Mr. Ford (man, pharmacy buyer)
+Miles Pike (man, medicine supplier)
+Cindy (woman, hospital admin)
+
+== Hospital | title: Why a City Hospital Pays Three Times More / for the Same Medicine
+Dana (wave, curious): A single dose of painkiller. Should cost just a few hundred dollars.
+Dana (explain, sly): But some hospitals pay three times more. How?
+
+== Office | contract: CONTRACT; price $360 000; stamp APPROVED; for 12 months supply
+Dr. Lena (point up, worried): The contract says we buy 12 months of painkillers.
+Mr. Ford (shows money, neutral): Price is $360,000. That’s $300 per dose.
+
+== Shop | tender: TENDER; only one brand; must be delivered in 7 days; no generics allowed
+Dana (explain, sly): The hospital issued a tender with strict rules.
+Mr. Ford (rubbing hands, happy): Only one brand. No generics. Fast delivery.
+
+== Board | compare: Market price $120 vs hospital price $360
+Cindy (think, surprised): Market price is just $120 per dose.
+Cindy (point, angry): We’re paying three times more. That’s not fair.
+
+== Office | timeline: March 1 — tender issued; March 5 — only one bid received; March 8 — contract signed
+Dana (explain, neutral): The tender was open for seven days.
+Dana (point, sad): Only Miles Pike submitted a bid. No competition.
+
+== Hospital | bag: "360,000 in medicine for 12 months"
+Mr. Ford (smiles, sly) [bubble]: We’ll deliver on time. No issues.
+Dr. Lena (facepalm, worried) [bubble]: The same medicine. Just more expensive.
+
+== Board | percent: 30% kickback to hospital staff
+Dana (magnifier, angry): The contract includes a 30% kickback clause.
+Mr. Pike (sneaky, happy): For "service and loyalty."
+
+== Home | flow: Hospital budget -> Miles Pike $360K; Pike -> Staff kickback $108K; Pike -> Profit $152K
+Dana (explain, sly): The hospital pays $360,000.
+Dana (point, angry): $108,000 goes to staff as a "bonus."
+Dana (rub hands): And Pike keeps $152,000 in profit.
+
+== Shop | list: Red flags; Only one supplier; No generics allowed; Price 3 times market; Kickback clause
+Cindy (point, angry): These are red flags.
+Cindy (sits, serious): No competition. No cheaper options. A kickback? That’s not medicine — that’s a scheme.
+
+== Hospital | lesson: Watch for one supplier, no generics, prices far above market
+Dana (wave, happy): Next time, ask: Who wrote the tender?
+Dana (point up): If only one bid is accepted, or prices are three times higher — it’s not fair.
+Dana (smile): Always check the rules. And who benefits.
