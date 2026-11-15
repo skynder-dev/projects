@@ -1,0 +1,42 @@
+PASS bundle: the program without the runtime
+PASS bundle: what is new, with Russian
+PASS automatic updates: on by default, said on the page
+PASS automatic updates: turned off on the page (and remembered)
+PASS automatic updates: nothing happens where updates are turned off
+PASS automatic updates: work running - not installed, tried again later
+PASS automatic updates: no answer from GitHub changes nothing on the page
+PASS automatic updates: the last check is said on the page
+PASS automatic updates: a newer build of the same runtime is installed by itself
+PASS automatic updates: each attempt in its log
+PASS page: nothing is asked online before the button
+PASS top bar: an Update button only in an installed build
+PASS check: a newer version is found
+PASS apply: the progress page
+PASS apply: the new build is installed next to the old one
+PASS apply: the runtime is reused (hard links, no second copy)
+PASS apply: nothing half-made is left
+PASS the new folder counts as a MediaEngine version (Check this PC lists it)
+PASS apply again: the finished folder is reused
+PASS Check this PC: the new build is listed with only its own bytes (the shared runtime is not freed by removing it)
+PASS a check while an install runs leaves it alone
+PASS check() refuses while an install thread is alive
+PASS Update now twice: one install thread
+PASS Quit / switch / restart wait while an update downloads
+PASS ...but not its own last step (the switch)
+PASS version order with alpha / beta numbers
+PASS leftovers of an interrupted attempt are cleaned
+PASS an older build on GitHub: this is the newest
+PASS an older build is never installed
+PASS another runtime: the full installer is needed, with its page
+PASS another runtime: nothing is installed
+PASS a damaged download is refused
+PASS a file outside its folder is refused
+PASS a download bigger than announced is refused
+PASS nothing published yet
+PASS no connection
+PASS the address can only be changed to this PC
+PASS turned off
+PASS a build without runtime.txt (before the button existed): install once with Setup
+PASS not an installed build
+PASS Russian: every state of the update page
+{"passed": 41, "total": 41}

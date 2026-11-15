@@ -1,0 +1,12 @@
+PASS analysis_makes_clips
+PASS composition_keeps_its_clip
+PASS hand_made_crop_kept
+PASS no_duplicate_moments
+PASS composer_second_render_replaces_the_first
+PASS composer_owner_copies_and_handed_off_renders_kept
+PASS composer_order_kept_while_rendering
+PASS composer_private_during_render_not_kept
+PASS composer_a_moment_taken_out_the_rest_close_up
+PASS composer_hidden_moments_taken_out
+PASS composer_deleted_with_its_mp4s_not_the_owners_copy
+{'passed': 11, 'total': 11}

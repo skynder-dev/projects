@@ -1,0 +1,10 @@
+PASS build_done
+PASS unplugged_project_says_so
+PASS unplugged_home_card_says_so
+PASS unplugged_reel_still_plays
+PASS unplugged_new_build_refused_clearly
+PASS unplugged_export_still_works
+PASS unplugged_nothing_deleted
+PASS plugged_back_build_works
+PASS no_network_attempts
+{'passed': 9, 'total': 9}

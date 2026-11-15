@@ -1,0 +1,9 @@
+made test footage in 642 s: ['4K_boat.MOV 343 MB', '4K_walk.mp4 482 MB', 'long_1080p.mp4 1319 MB']
+PASS heavy_build_done
+PASS heavy_nothing_timed_out
+PASS heavy_social_hd
+PASS heavy_cut_from_original
+PASS heavy_uses_several_sources
+PASS heavy_ai_build_done_two_videos_at_once
+PASS heavy_ai_second_project_analyses_nothing
+{"build_s": 305.9, "reel_s": 29.97, "ai_build_s": 539.1, "ai_stage_s": {"analyze": 406.37, "finish": 52.09, "inputs": 2.54, "render": 62.53, "select": 8.46, "trim": 6.81}, "ai_timing": {"analyse_s": 621.2, "clip_workers": 1, "clips_cached": 0, "clips_cut": 24, "clips_measured": 24, "clips_s": 167.98, "cpu_busy": 1.0, "cpus": 4, "dense_s": 344.91, "model_s": 5.81, "score_s": 6.93, "scout_s": 264.31, "shared_cache": true, "videos_analysed": 3, "workers": 2}, "ai_again_s": 116.8, "ai_again_stage_s": {"analyze": 0.12, "finish": 52.62, "inputs": 0.14, "render": 62.9, "select": 0.0, "trim": 0.71}, "passed": 7, "total": 7}

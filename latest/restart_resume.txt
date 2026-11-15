@@ -1,0 +1,8 @@
+PASS a build was running when the app stopped
+PASS next start: the stopped build is marked as stopped unexpectedly
+PASS ...and made again by itself (once)
+PASS a second unexpected stop: interrupted, Retry (no loop)
+PASS Retry queues it
+PASS the retried build runs, then Quit
+PASS after Quit: interrupted (Retry), not made again by itself
+{"passed": 7, "total": 7}

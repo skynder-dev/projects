@@ -1,0 +1,1 @@
+fixtures ready: ['broken.mp4', 'clip_1.mp4', 'clip_2 copy.mp4', 'clip_2.mp4', 'clip_3.mp4', 'clip_4.mp4', 'clip_5.mp4', 'clip_6.mp4', 'clip_7.mp4'] ['clip_1.mp4', 'clip_3.mp4']

@@ -1,0 +1,14 @@
+PASS fixtures: three videos made
+PASS add: videos at the end with their whole length, what is not a video said; an AVI is not played by a browser
+PASS save: order, cuts and sound kept; an end past the video's end and a too short piece corrected; a file not added and an unknown format refused
+PASS the MP4: 1080x1920 for 9:16, the pieces in their order (blue, red, green), as long as the pieces, sound where it was kept and silence where it was turned off or missing; saved in Edits; the edit remembers it
+PASS the MP4 in every format: 1920x1080, 1080x1080, 1080x1350
+PASS an empty edit and a moved video are said before anything is made
+PASS pages: the list, a new edit from the form, the editor with its data; videos added by path and from the downloads; a name with a folder in it refused
+PASS pages: only the edit's own videos are given to the page (by their key; ranges for seeking), a frame picture, a playable copy of the AVI
+PASS pages: the page's changes saved (title, format, cut, order), its MP4 made from the page and listed, played
+PASS pages: in Russian, no English left (also in hints)
+ * Serving Flask app 'archivist.web'
+ * Debug mode: off
+PASS in a real browser: the video plays, split (S), remove (Delete), undo (Ctrl+Z), a piece's end dragged, the last piece dragged to the start, saved by itself; the MP4 made from the page; no script errors
+{"passed": 11, "total": 11}
