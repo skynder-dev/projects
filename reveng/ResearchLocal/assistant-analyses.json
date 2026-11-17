@@ -330,6 +330,38 @@
     "https://www.randgroup.com/insights/sage/sage-businessvision-end-of-life-what-users-need-to-know/",
     "https://www.civicplus.help/meetings-select/docs/important-product-updates-essential-open-drupal-7"
    ]
+  },
+  {
+   "id": "rv_a_price_hike_refugees",
+   "made": "2026-11-17",
+   "title": "Беглецы от подорожания: кто уходит от программ из-за цен",
+   "title_en": "Price-hike refugees",
+   "lines": [
+    "QuickBooks Desktop: у одной фирмы цена выросла с $1 106 в 2021 до $4 149 в 2026. Intuit снова поднял цены с 1 февраля и с октября 2026. Многие не хотят облако и хотят свою программу на компьютере.",
+    "Harvest (учёт времени для фрилансеров): после покупки Bending Spoons у части клиентов продление подорожало на 1 500% (BBC, август 2026). HoneyBook: +63–89%. Xero в Новой Зеландии — новые цены с 1 октября 2026.",
+    "Салоны и студии бегут от Mindbody ($139–599 в месяц), но замен уже много: Square бесплатно, Vagaro $30, GlossGenius от $24.",
+    "Вывод: почти везде замены уже есть и дешёвые. Свободное место одно — люди, которые не хотят подписку и облако (как многие на QuickBooks Desktop). Им нужна программа с разовой оплатой или помощь с переездом.",
+    "Для нас это слабее «сирот»: бухгалтерию писать долго и рискованно (налоги, зарплата). Реально — услуга переезда с QuickBooks Desktop, но этим уже занимаются бухгалтеры. Старт $0, деньги через 1–2 месяца, убьёт: конкуренция бухгалтеров."
+   ],
+   "lines_en": [
+    "QuickBooks Desktop: one firm went from $1,106 in 2021 to $4,149 in 2026. Intuit raised prices again Feb and Oct 2026. Many refuse cloud and want local software.",
+    "Harvest (freelancer time tracking): after Bending Spoons bought it, some renewals rose 1,500% (BBC, Aug 2026). HoneyBook +63-89%. Xero NZ new prices from 1 Oct 2026.",
+    "Salons/studios leave Mindbody ($139-599/mo) but alternatives abound: Square free, Vagaro $30, GlossGenius from $24.",
+    "Takeaway: cheap alternatives already exist almost everywhere. The open spot: people who refuse subscriptions and cloud (many QuickBooks Desktop users) — they need a one-time-license tool or migration help.",
+    "Weaker for us than orphans: accounting software is long and risky (tax, payroll). Realistic: QuickBooks Desktop migration service, but bookkeepers already do it. Start $0, money in 1-2 months; killer: bookkeeper competition."
+   ],
+   "unknown": "Цена $1 106 → $4 149 — со слов одного клиента на форуме Intuit, не средняя. Сколько пользователей QuickBooks Desktop осталось — не найдено. Цифра 1 500% у Harvest — для части клиентов, не для всех. Форумы прочитаны только через поиск.",
+   "unknown_en": "$1,106 → $4,149 is one customer's forum post, not an average. Remaining QuickBooks Desktop user count not found. Harvest 1,500% applies to some customers. Forums read via search only.",
+   "sources": [
+    "https://quickbooks.intuit.com/learn-support/en-us/other-questions/re-longtime-customer-deeply-disappointed-by-quickbooks-pricing/01/1601621",
+    "https://www.gotomyerp.com/quickbooks-desktop-2026-pricing-changes/",
+    "https://quickbooks.intuit.com/community/other-questions-9/qb-desktop-price-increase-375055",
+    "https://www.subscriptioninsider.com/blog/harvest-pricing-change-sends-some-renewals-up-1-500",
+    "https://software-roi-guide.kit.com/posts/3-signs-your-software-platform-is-about-to-increase-its-prices",
+    "https://www.accountantsdaily.com.au/technology/22732-xero-price-hike-has-some-accountants-looking-for-alternatives",
+    "https://www.costbench.com/compare/booker-mindbody-vs-square-appointments/",
+    "https://studiogrowth.com/mindbody-competitors/"
+   ]
   }
  ]
 }
