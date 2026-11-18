@@ -362,6 +362,39 @@
     "https://www.costbench.com/compare/booker-mindbody-vs-square-appointments/",
     "https://studiogrowth.com/mindbody-competitors/"
    ]
+  },
+  {
+   "id": "rv_a_new_rules",
+   "made": "2026-11-18",
+   "title": "Новые правила 2026–2027, из-за которых мелкому бизнесу придётся что-то купить",
+   "title_en": "New 2026-2027 rules that force small firms to buy something",
+   "lines": [
+    "Дальнобой (США): в 2026 FMCSA правила в основном отменяла (бумаги ELD, самоотчёт о штрафах). Но готовит проверку знаний для новых перевозчиков перед выдачей разрешения — новое предложение ждут в ноябре 2026. Если примут — нужна подготовка к тесту. Для truckers.work.",
+    "Взносы UCR для перевозчиков, брокеров и экспедиторов с 2027 года вырастут в среднем на 20%. Новых покупок не требует, но это тема для контента.",
+    "Доступность сайтов госорганов (США): крупные города и округа — до апреля 2027, мелкие — до апреля 2028. Мелким муниципалитетам и спецрайонам придётся переделать сайты — это услуга.",
+    "Электронные счета в Европе: Бельгия — с января 2026 для всех; Польша — малые с января 2027; Германия — отправка для оборота больше €800 тыс. с 2027, для всех с 2028; Франция — малые с сентября 2027; Испания — программы для счетов должны быть сертифицированы с 2027.",
+    "Налог на онлайн-программы в Калифорнии и Колорадо с 1 января 2027. Вывод: лучшее для нас — сайты мелких госорганов под доступность (срок 2028) и подготовка к тесту для новых перевозчиков, если правило примут."
+   ],
+   "lines_en": [
+    "Trucking (US): in 2026 FMCSA mostly rolled rules back (ELD manual, conviction self-reporting). But it plans a knowledge check for new carriers before authority — supplemental proposal expected Nov 2026. If adopted: test prep demand. For truckers.work.",
+    "UCR fees for carriers, brokers, forwarders rise ~20% on average from 2027. No purchase forced, but content material.",
+    "Government website accessibility (US): large cities/counties by April 2027, small ones by April 2028. Small municipalities and special districts must fix sites — a service.",
+    "EU e-invoicing: Belgium all from Jan 2026; Poland small from Jan 2027; Germany issuing >€800k from 2027, all from 2028; France small from Sep 2027; Spain invoicing software must be certified from 2027.",
+    "SaaS sales tax in California and Colorado from 1 Jan 2027. Takeaway: best for us — accessibility for small government sites (2028 deadline) and test prep for new carriers if the rule passes."
+   ],
+   "unknown": "Правило о проверке знаний для новых перевозчиков ещё не принято — только в плане FMCSA. Сколько мелких госорганов не готовы к доступности сайтов и кто уже продаёт им переделку — не проверено. Европейские счета — тяжёлая тема с налогами, там уже крупные игроки (Descartes, Seeburger, SPS Commerce). Часть источников — блоги (beancount.io), даты сверены с govinfo.gov только для правил FMCSA и UCR.",
+   "unknown_en": "The new-carrier knowledge rule is not adopted — only on FMCSA's agenda. How many small governments aren't ready and who sells them remediation: unchecked. EU e-invoicing is tax-heavy with big players. Some sources are blogs; only FMCSA/UCR dates checked on govinfo.gov.",
+   "sources": [
+    "https://www.govinfo.gov/content/pkg/FR-2026-06-22/html/2026-12448.htm",
+    "https://trucksafe.com/post/fmcsa-s-2026-regulatory-agenda-everything-trucking-companies-need-to-know",
+    "https://www.govinfo.gov/content/pkg/FR-2026-09-01/html/2026-17893.htm",
+    "https://www.dwt.com/blogs/broadband-advisor/2026/09/state-tech-vendor-accessibility-requirements-doj",
+    "https://ecorpit.com/us-uk-compliance-calendar-2027-software-teams/",
+    "https://econnect.eu/en/blog/mandatory-e-invoicing-in-2026-which-countries-are-affected-0",
+    "https://www.signaturit.com/?p=44601",
+    "https://softco.com/blog/germany-e-invoicing-mandate-2026-update/",
+    "https://sales.tax/sales-tax-updates/sales-tax-changes-missed-kentucky-california-colorado-saas-2026/"
+   ]
   }
  ]
 }
