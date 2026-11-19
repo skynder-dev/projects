@@ -395,6 +395,38 @@
     "https://softco.com/blog/germany-e-invoicing-mandate-2026-update/",
     "https://sales.tax/sales-tax-updates/sales-tax-changes-missed-kentucky-california-colorado-saas-2026/"
    ]
+  },
+  {
+   "id": "rv_a_closed_services",
+   "made": "2026-11-19",
+   "title": "Закрытые сервисы 2025–2026: остались ли брошенные пользователи, которые заплатят",
+   "title_en": "Services closed in 2025-2026: abandoned users who would pay?",
+   "lines": [
+    "TV Time (учёт сериалов, миллионы людей) закрылся 15.07.2026. Владелец сам сказал: бесплатный сервис держать дорого, а платить за него никто не хотел. Значит, денег там нет.",
+    "InkFrog (программа для продавцов на eBay, принадлежала Wix) закрылась 01.06.2026, на переезд дали месяц. Платящие продавцы есть, но их сразу разобрали готовые конкуренты (GeekSeller и др.).",
+    "Ещё закрылись: магазин приложений Setapp Mobile в ЕС (16.02.2026), стриминг DLive (апрель 2026), VPN Samsung Max (50 млн пользователей, 15.06.2026), криптоплощадка NoOnes (2,5 млн пользователей, август 2026).",
+    "Вывод: бытовые бесплатные сервисы — пустой путь, их люди не оплачивают. Платят только за рабочие инструменты (продавцы, авторы), но там замены появляются за недели.",
+    "Тема слабая. Лучше остаются «сироты» рабочих программ (перевод файлов Publisher) и узкие отрасли."
+   ],
+   "lines_en": [
+    "TV Time (show tracking, millions of users) closed 15 Jul 2026. The owner said the free service was too costly and nobody wanted a paid version — no money there.",
+    "InkFrog (eBay seller tool, Wix-owned) closed 1 Jun 2026 with a month's notice. Paying sellers existed but competitors (GeekSeller etc.) took them right away.",
+    "Also closed: EU app store Setapp Mobile (16 Feb 2026), DLive streaming (Apr 2026), Samsung Max VPN (50M users, 15 Jun 2026), NoOnes crypto (2.5M users, Aug 2026).",
+    "Takeaway: free consumer services are a dead end — people won't pay. Only work tools (sellers, creators) have payers, and replacements appear within weeks.",
+    "Weak theme. Orphans of work software (Publisher file conversion) and narrow trades remain better."
+   ],
+   "unknown": "Сколько продавцов было у InkFrog — не найдено. Закрытие StreamElements (инструменты для стримеров) упомянуто в новостях мая 2026, подробности не проверены.",
+   "unknown_en": "InkFrog seller count unknown. StreamElements shutdown mentioned in May 2026 news; details unchecked.",
+   "sources": [
+    "https://tribune.com.pk/story/2616137/the-end-of-tv-time-popular-tracking-app-announces-shutdown?amp=1",
+    "https://techcrunch.com/2026/07/02/popular-tv-tracking-app-tv-time-is-shutting-down-as-company-focuses-on-ai",
+    "https://www.valueaddedresource.net/inkfrog-shut-down/",
+    "https://www.valueaddedresource.net/inkfrog-ebay-alternative-solutions/",
+    "https://www.macrumors.com/2026/01/15/setapp-mobile-eu-app-store-closing-next-month/",
+    "https://streamer.guide/blog/dlive-ceasing-operations-2026",
+    "https://www.neowin.net/amp/samsung-is-shutting-down-yet-another-app-used-by-millions/",
+    "https://cryptorank.io/news/feed/6c2dd-noones-shutdown-2026-crypto-closures"
+   ]
   }
  ]
 }
