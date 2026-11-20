@@ -427,6 +427,36 @@
     "https://www.neowin.net/amp/samsung-is-shutting-down-yet-another-app-used-by-millions/",
     "https://cryptorank.io/news/feed/6c2dd-noones-shutdown-2026-crypto-closures"
    ]
+  },
+  {
+   "id": "rv_a_foreign_gaps",
+   "made": "2026-11-20",
+   "title": "Рынки вне США: где мелким фирмам не хватает простых программ",
+   "title_en": "Markets outside the US: where small firms lack simple software",
+   "lines": [
+    "Латинская Америка: больше 98% фирм — малые и средние; рынок онлайн-программ растёт примерно на 25% в год до 2030. У многих мелких фирм нет сайта — всё продают и записывают через WhatsApp.",
+    "Там уже есть игроки под WhatsApp: Leadsales (Мексика), Mercately (рост в 3,5 раза за год). Пусто — инструменты под WhatsApp для одной отрасли (запись, заказы, напоминания). Нужен испанский/португальский.",
+    "Центральная Азия: в Казахстане застройщики работают в программах, сделанных под другую страну; местная CRM Amanix Build появилась именно поэтому. Узбекистан: с 1 января 2026 налог ИП 1% вместо 4% и упрощённые отчёты — нужны местные простые программы учёта.",
+    "Исследование Accion (Казахстан, Узбекистан): одинаковые для всех программы мелкие фирмы бросают; работают решения под конкретный тип бизнеса.",
+    "Плюс для нас: русский язык в Центральной Азии. Старт $5–20 тыс., деньги через 3–6 месяцев. Убьёт: низкие цены на месте, местные игроки и банки с бесплатными приложениями."
+   ],
+   "lines_en": [
+    "Latin America: 98%+ of firms are SMEs; SaaS grows ~25%/yr to 2030. Many small firms have no website — they sell and book via WhatsApp.",
+    "WhatsApp players exist: Leadsales (Mexico), Mercately (3.5x yearly growth). Gap: WhatsApp tools for one trade (bookings, orders, reminders). Needs Spanish/Portuguese.",
+    "Central Asia: Kazakh property developers run software built for another country; local CRM Amanix Build exists for that reason. Uzbekistan: from 1 Jan 2026 sole-proprietor tax 1% instead of 4% with simpler reports — need for simple local accounting tools.",
+    "Accion study (Kazakhstan, Uzbekistan): one-size-fits-all tools get abandoned; trade-specific ones stick.",
+    "Our edge: Russian in Central Asia. Start $5-20k, money in 3-6 months. Killers: low local prices, local players, banks' free apps."
+   ],
+   "unknown": "Сколько мелких фирм в Казахстане и Узбекистане и сколько они готовы платить — не найдено. Местные цены и конкуренты (1С, банковские приложения Kaspi и др.) не проверены. Рост 25% — прогноз из блога платёжной компании, не замер.",
+   "unknown_en": "Firm counts and willingness to pay in Kazakhstan/Uzbekistan not found. Local prices and competitors (1C, Kaspi and other bank apps) unchecked. 25% growth is a forecast from a payments company blog.",
+   "sources": [
+    "https://knowledge.antom.com/latin-america-on-the-rise-sme-demand-powers-saas-growth",
+    "https://techcrunch.com/?p=2843693",
+    "https://techcrunch.com/?p=2590420",
+    "https://dev.to/tech_insider_kz/the-first-native-crm-for-kazakhstan-property-developers-how-amanix-build-works-j99",
+    "https://the-tech.kz/?p=31842",
+    "https://www.accion.org/wp-content/uploads/2026/02/Accion_Strive-Central-Asia-Insights-Paper_FINAL.pdf"
+   ]
   }
  ]
 }
