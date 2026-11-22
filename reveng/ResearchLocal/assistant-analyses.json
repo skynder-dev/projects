@@ -457,6 +457,39 @@
     "https://the-tech.kz/?p=31842",
     "https://www.accion.org/wp-content/uploads/2026/02/Accion_Strive-Central-Asia-Insights-Paper_FINAL.pdf"
    ]
+  },
+  {
+   "id": "rv_a_trucking_services",
+   "made": "2026-11-22",
+   "title": "Услуги для дальнобойщиков: на чём зарабатывают те, кто им помогает (для truckers.work)",
+   "title_en": "Services for truckers: who earns by helping them (for truckers.work)",
+   "lines": [
+    "Рынок: по данным FMCSA на февраль 2026 — около 2,08 млн действующих перевозчиков; больше половины — с одной машиной. Но перевозчиков с разрешением на перевозку с декабря 2022 по декабрь 2025 стало на 11,4% меньше.",
+    "Диспетчер-фрилансер: берёт 5–10% с груза (чаще 6%), это $150–600 за груз, $800–2 400 в месяц с одной машины. Лицензия не нужна, работают из дома, ведут 1–12 машин. Но рынок забит, много дешёвых исполнителей на Fiverr/Upwork.",
+    "Бумаги и отчёты за перевозчика (IFTA, UCR, MCS-150, подготовка к проверке): $150–400 в месяц пакетом, отдельно IFTA ~$30 за машину. Лицензия не нужна. Конкуренты: J. J. Keller, Simplex, исполнители из Индии и Пакистана на Fiverr.",
+    "Программы для одиночек дешёвые: TruckingOffice от $20 в месяц, TruckLogics ~$36–40. Программу писать незачем.",
+    "Для truckers.work: лучше не своя услуга, а сайт-посредник — напоминания о сроках (IFTA раз в квартал, UCR раз в год) и заявки на диспетчеров и бумаги с оплатой за клиента. Старт $0–2 тыс., деньги через 2–4 месяца. Убьёт: доверие (в диспетчерах много мошенников)."
+   ],
+   "lines_en": [
+    "Market: FMCSA Feb 2026 — ~2.08M active carriers; over half run one truck. But carriers with operating authority fell 11.4% from Dec 2022 to Dec 2025.",
+    "Freelance dispatcher: 5-10% per load (most often 6%), $150-600 per load, $800-2,400/mo per truck. No license, work from home, 1-12 trucks. Crowded; many cheap sellers on Fiverr/Upwork.",
+    "Paperwork for carriers (IFTA, UCR, MCS-150, audit prep): $150-400/mo bundles, IFTA ~$30/truck. No license. Competitors: J. J. Keller, Simplex, offshore Fiverr sellers.",
+    "Software for solo operators is cheap: TruckingOffice from $20/mo, TruckLogics ~$36-40. No point building one.",
+    "For truckers.work: not our own service but a go-between site — deadline reminders (IFTA quarterly, UCR yearly) and paid leads to dispatchers/paperwork services. Start $0-2k, money in 2-4 months. Killer: trust (many dispatch scams)."
+   ],
+   "unknown": "Цены — со страниц самих продавцов услуг (O Trucking, Truck Dispatch Experts), это реклама, а не средние по рынку. Сколько среди водителей русскоговорящих — не найдено; если много, сайт на русском — отдельное преимущество. Платят ли сервисы за переданных клиентов и сколько — не проверено.",
+   "unknown_en": "Prices come from sellers' own pages (ads, not market averages). Share of Russian-speaking drivers not found. Whether services pay for referrals and how much — unchecked.",
+   "sources": [
+    "https://ai.fmcsa.dot.gov/registrationstatistics",
+    "https://www.fleetowner.com/news/economics/article/55417315/trucking-by-the-numbers-overview-and-economics-for-the-trucking-industry-in-2026",
+    "https://www.fleetowner.com/news/article/55352178/trucking-capacity-reached-a-bottom-2026-just-needs-better-freight-rates",
+    "https://otrucking.com/resources/guides/how-much-do-dispatchers-charge/",
+    "https://practicetestgeeks.com/truck-dispatcher/how-to-become-a-truck-dispatcher/amp",
+    "https://otrucking.com/services/compliance/",
+    "https://trucking42.com/wp-content/uploads/pdf/general_offer.pdf",
+    "https://www.getapp.com/transportation-logistics-software/a/truckingoffice/reviews/",
+    "https://www.trucklogics.com/tms-pricing"
+   ]
   }
  ]
 }
