@@ -303,6 +303,13 @@ def build_request(record,claims,cfg,*,source_evidence=None):
     system += (' NEGATIVE FACTS: never build a concept or a hook on what does not exist or is not available. If the '
                'source says something is not offered, use it at most as a short setup and lead with what the viewer '
                'CAN get or do according to the source.')
+    # 22.11.2026 owner (listened to cards: "abbreviations, agency names, no money, nothing to draw - I'd hang up"):
+    system += (' OWNER STYLE (strict): the hook names a concrete money amount or concrete gain stated in the source and '
+               'an everyday situation one person can picture (a bill, a rent notice, a paycheck, a kid starting college). '
+               'Say who it is for in plain words (parents, renters, people who lost a job, shop owners). Never put in '
+               'the hook or angle any acronym, agency name, program name, form number or organization type '
+               '(no NGO, nonprofit, LIHEAP, SBA, IRS, HUD and the like). Every concept must be drawable as one simple '
+               'cartoon scene: describe that scene in angle_ru after the approach name. No lists of eligible groups.')
     system += (' EDITORIAL: the viewer is a person scrolling short videos, described by topic_direction, not the '
                'grant office of the applicant. A good concept answers: why should this viewer care, and what can they '
                'concretely do or check. Each concept must use a different editorial approach and name it in the first '

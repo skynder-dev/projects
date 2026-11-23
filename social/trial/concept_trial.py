@@ -286,6 +286,16 @@ for c in proposal.get('concepts', []):
     h = str(c.get('hook', '')).strip().lower()
     if _re.match(r"(there (are|is) no|no |stop |don'?t |you can'?t|there'?s no|it'?s not|never )", h):
         issues.append(f"{c['id']}: hook leads with a negative (owner rule 08.11)")
+# 22.11.2026 owner style: no acronyms or agency/organization names in the hook; the hook must carry money or a number
+for c in proposal.get('concepts', []):
+    h = str(c.get('hook', ''))
+    ac = [w for w in _re.findall(r"\b[A-Z]{2,}s?\b", h) if w not in ('US', 'USA', 'OK')]
+    if ac:
+        issues.append(f"{c['id']}: hook has acronym {ac} (owner rule 22.11)")
+    if _re.search(r"(?i)\b(nonprofit|non-profit|ngo|agency|department|administration|bureau|organization)s?\b", h):
+        issues.append(f"{c['id']}: hook names an agency/organization type (owner rule 22.11)")
+    if not _re.search(r"[$\d]", h):
+        issues.append(f"{c['id']}: hook has no money or number (owner rule 22.11)")
 # the viewer must not be told they can apply or get the money when only organizations can apply
 _types = ' '.join(rec.get('applicant_types') or []).lower()
 if 'individual' not in _types and not (TOPIC_AUDIENCE or {}).get('people'):

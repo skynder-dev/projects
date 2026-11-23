@@ -34,7 +34,7 @@ SCHEMA = {'type': 'object', 'additionalProperties': False,
           'properties': {k: {'type': 'string'} for k in ('topic_ru', 'hook_ru', 'question_ru', 'missing_ru')}}
 LIMITS = {'topic_ru': 40, 'hook_ru': 140, 'question_ru': 120, 'missing_ru': 110}
 SYSTEM = ('Ты редактор. Пиши простым разговорным русским, как говорят люди, без канцелярита, без кальки с английского и '
-          'без английских слов (кроме названий программ вроде LIHEAP, FHA, IRS). Ничего не добавляй от себя и не обещай '
+          'без английских слов и без аббревиатур и названий ведомств и программ (22.11: владелец — «на таких словах кладут трубку»): пиши «помощь со счетом за свет», а не LIHEAP. Ничего не добавляй от себя и не обещай '
           'больше, чем сказано. Ответ только JSON по схеме.')
 
 
@@ -76,7 +76,17 @@ def ask(card: dict, title: str) -> dict:
         return json.loads(json.loads(r.read().decode('utf-8'))['response'])
 
 
+def tts_clean(v: str) -> str:
+    """22.11.2026 owner: the phone voice reads every dash and symbol aloud - keep only words, digits, $ and plain punctuation."""
+    v = re.sub(r'\s*[\u2010-\u2015\-]+\s*', ' ', v)
+    v = re.sub(r'["«»“”„*_/\\|#~<>\[\]{}()]+', ' ', v)
+    return re.sub(r'\s{2,}', ' ', v).strip()
+
+
 def check(t: dict) -> list:
+    for k in LIMITS:
+        if isinstance(t.get(k), str):
+            t[k] = tts_clean(t[k])
     bad = []
     for k, lim in LIMITS.items():
         v = str(t.get(k, '')).strip()
@@ -86,6 +96,8 @@ def check(t: dict) -> list:
             bad.append(f'{k}: longer than {lim}')
         elif re.search(r'\b[a-z]{5,}\b', re.sub(r'\b[A-Z0-9]{2,}\b', '', v)):
             bad.append(f'{k}: English word inside')
+        elif re.search(r'\b[A-Z]{2,}\b', v):
+            bad.append(f'{k}: abbreviation inside (owner rule 22.11)')
     return bad
 
 
