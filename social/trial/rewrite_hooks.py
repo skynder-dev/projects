@@ -17,6 +17,11 @@ ap.add_argument('trials', nargs='+')
 ap.add_argument('--api', default='http://127.0.0.1:11435')
 ap.add_argument('--model', default='qwen3.5:27b')
 a = ap.parse_args()
+try:
+    import sys
+    sys.stdout.reconfigure(encoding='utf-8')
+except Exception:  # noqa: BLE001
+    pass
 
 SYSTEM = (
     'You write the first spoken line of a 30-second explainer cartoon for ordinary Americans scrolling short videos. '
@@ -73,7 +78,11 @@ for path in a.trials:
     concepts = (st.get('proposal') or {}).get('concepts') or []
     claims = st.get('claims') or []
     claims = claims.get('claims', claims) if isinstance(claims, dict) else claims
-    by_key = {c.get('key'): str(c.get('quote') or '') for c in claims if isinstance(c, dict)}
+    def fact_text(c):
+        vals = c.get('values')
+        vals = ' '.join(f'{k}: {v}' for k, v in vals.items()) if isinstance(vals, dict) else str(vals or '')
+        return ' '.join(x for x in (str(c.get('statement') or ''), str(c.get('quote') or ''), vals) if x).strip()
+    by_key = {c.get('key'): fact_text(c) for c in claims if isinstance(c, dict)}
     checks = list(st.get('program_checks') or [])
     for c in concepts:
         keys = c.get('basis_claim_keys') or []
