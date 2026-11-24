@@ -490,6 +490,35 @@
     "https://www.getapp.com/transportation-logistics-software/a/truckingoffice/reviews/",
     "https://www.trucklogics.com/tms-pricing"
    ]
+  },
+  {
+   "id": "rv_a_gov_gaps",
+   "made": "2026-11-24",
+   "title": "Закрытые бесплатные госуслуги: где люди теперь платят",
+   "title_en": "Closed free government services: where people now pay",
+   "lines": [
+    "Главный случай — бесплатная подача налогов через IRS (Direct File) закрыта на сезон 2026. В 2025 ею воспользовались 296 531 человек в 25 штатах, 94% оценили на «отлично» или «хорошо».",
+    "Замены уже есть и бесплатные: IRS Free File (8 компаний, для дохода до $84 тыс.), волонтёрская помощь VITA, Cash App Taxes. Платные — TurboTax, H&R Block.",
+    "Для нас пусто: подготовка налогов — регулируемое дело (нужна регистрация у IRS), а бесплатные замены уже есть. Годится разве что как тема ролика для Social («где теперь подать налоги бесплатно»).",
+    "Вывод по теме: когда госорган закрывает бесплатную услугу, место почти всегда сразу занимают крупные частные компании, которые этого и добивались. Мелким игрокам туда не попасть.",
+    "Тема слабая. Сильнейшее из всех ночных поисков остаётся: перевод файлов Microsoft Publisher для церквей и школ и сайт-посредник для дальнобойщиков на truckers.work."
+   ],
+   "lines_en": [
+    "Main case: IRS free Direct File is closed for the 2026 season. In 2025, 296,531 people in 25 states used it; 94% rated it excellent or above average.",
+    "Free replacements exist: IRS Free File (8 companies, income up to $84k), volunteer VITA, Cash App Taxes. Paid: TurboTax, H&R Block.",
+    "Nothing for us: tax prep is regulated (IRS registration) and free replacements exist. Only a Social video topic ('where to file free now').",
+    "Takeaway: when a government drops a free service, big private firms that lobbied for it fill the gap immediately. No room for small players.",
+    "Weak theme. Strongest of all night searches remains: Microsoft Publisher file conversion for churches/schools and a go-between site for truckers on truckers.work."
+   ],
+   "unknown": "Другие закрытые госпрограммы 2025–2026 (сокращения ведомств) в этот раз не разбирались — проверен один самый крупный случай.",
+   "unknown_en": "Other 2025-2026 government program cuts were not reviewed this time — only the largest case.",
+   "sources": [
+    "https://www.aol.com/finance/trump-administration-axed-free-online-123000639.html",
+    "https://www.cbpp.org/blog/trump-plan-to-end-free-direct-file-program-and-rely-on-for-profit-tax-preparers-is-a-mistake",
+    "https://legacy.jwu.edu/news/washington-news-article.html?docID=1370",
+    "https://www.kiplinger.com/taxes/irs-free-file",
+    "https://www.webpronews.com/irs-ends-free-direct-file-program-sparking-tax-equity-debates"
+   ]
   }
  ]
 }
