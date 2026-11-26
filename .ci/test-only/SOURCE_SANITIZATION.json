@@ -1,0 +1,26 @@
+[
+  {
+    "file": "production/social246/app/cpu_preparation.py",
+    "candidate_sha256": "4bd755b2116af761ac53e549fe65054fe5525c8c23ca499ba608a25ee9ef7fea",
+    "CI_copy_sha256": "18bbf7a5b441f7ad1c04b66ddd35a260494aa0cfcad0a9fde9b6752ea5d30d16",
+    "reason": "Machine-specific runtime defaults replaced by non-operational relative placeholders; CI supplies owned temporary paths; production candidate not modified"
+  },
+  {
+    "file": "production/social246/socialreel/common.py",
+    "candidate_sha256": "991bf601adb6380db1c53088f9c7b232229109382bcc5d929fdf7f67f103ac79",
+    "CI_copy_sha256": "f98b57ca1b96f1908b0ae9678cd72f0af019d1cc73b7b8dbfe6f265204bbcc3b",
+    "reason": "Machine-specific runtime defaults replaced by non-operational relative placeholders; CI supplies owned temporary paths; production candidate not modified"
+  },
+  {
+    "file": "production/forgeAlphaZero/Modules/Forge.LocalFlux.ps1",
+    "candidate_sha256": "c6958edc85bbccfb2cdef85e5e11eeaf255b8d4f1830bef4726962e74e499248",
+    "CI_copy_sha256": "20c2bd6089d00ecfa6b691366d1e5d1a4e8d8c21c0e84040079b946160bcedf5",
+    "reason": "Machine-specific runtime defaults replaced by non-operational relative placeholders; CI supplies owned temporary paths; production candidate not modified"
+  },
+  {
+    "file": "production/forgeAlphaZero/Modules/Forge.Preparation.ps1",
+    "candidate_sha256": "5c766a3d66e88e914a7a1692459a58fe89873d4e92935b576e1a79e1b533f16c",
+    "CI_copy_sha256": "2d4886d73c356aeeeddcaf4d48064db81221a6f8d4dad0158f17df4a583d3fdf",
+    "reason": "Machine-specific runtime defaults replaced by non-operational relative placeholders; CI supplies owned temporary paths; production candidate not modified"
+  }
+]
